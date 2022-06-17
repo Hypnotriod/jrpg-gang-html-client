@@ -1,13 +1,14 @@
-import { injectable, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-export const RESOURCE_COMPONENT: string = 'component';
+export const RESOURCE_DESIGN: string = 'design';
 export const RESOURCE_STYLE: string = 'style';
 
-export type ResourceLoaderServiceType = 'component' | 'style';
+export type ResourceLoaderServiceType =
+    typeof RESOURCE_DESIGN |
+    typeof RESOURCE_STYLE;
 
-@injectable()
 @singleton()
-class ResourceLoaderService {
+export default class ResourceLoaderService {
     private readonly resourcesMap: Map<ResourceLoaderServiceType, any> = new Map();
 
     public async load<T>(path: string, type: ResourceLoaderServiceType): Promise<T> {
@@ -23,7 +24,7 @@ class ResourceLoaderService {
     private async parseResponse<T>(response: Response, path: string, type: ResourceLoaderServiceType): Promise<T> {
         switch (type) {
             case RESOURCE_STYLE:
-            case RESOURCE_COMPONENT:
+            case RESOURCE_DESIGN:
                 this.resourcesMap[path] = await response.text();
                 break;
         }

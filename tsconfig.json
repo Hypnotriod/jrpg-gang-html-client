@@ -3,7 +3,7 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "module": "commonjs",
-        "target": "ESNext",
+        "target": "ES6",
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

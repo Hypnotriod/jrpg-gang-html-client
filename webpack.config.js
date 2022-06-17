@@ -1,6 +1,5 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -32,9 +31,14 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
-        contentBase: path.resolve(__dirname, 'dist'),
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+        },
         compress: true,
         port: 9000,
-        writeToDisk: true
+        devMiddleware: {
+            writeToDisk: true,
+            mimeTypes: { css: 'text/css' },
+        }
     }
 };
