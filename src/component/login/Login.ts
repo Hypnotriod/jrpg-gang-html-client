@@ -15,11 +15,13 @@ export default class Login extends Component {
     protected initialize(): void {
         this.userNameInput = this.instantiate(INPUT_USER_NAME, TextInput)!;
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
+        this.userNameInput.onInput = target => this.updateJoinButtonState();
         this.errorLabel = this.instantiate(LABEL_ERROR, Label)!;
         this.errorLabel.hide();
 
         this.joinButton = this.instantiate(BUTTON_JOIN, Button)!;
         this.joinButton.onClick = target => this.onJoin();
+        this.joinButton.disable();
 
         this.icons.push(Icon.createIcon('warrior', 0, this, ICONS_CONTAINER)!);
         this.icons.push(Icon.createIcon('magician', 1, this, ICONS_CONTAINER)!);
@@ -27,11 +29,21 @@ export default class Login extends Component {
         this.icons.forEach(icon => {
             icon.onClick = target => this.onClassIconClick(target);
         });
+        this.icons[0].select();
     }
 
     protected onClassIconClick(target: Icon): void {
         this.icons.forEach(icon => icon.unselect());
         target.select();
+        this.updateJoinButtonState();
+    }
+
+    protected updateJoinButtonState(): void {
+        if (this.userNameInput.isValid && this.userNameInput.value !== '') {
+            this.joinButton.enable();
+        } else {
+            this.joinButton.disable();
+        }
     }
 
     protected onJoin(): void {
