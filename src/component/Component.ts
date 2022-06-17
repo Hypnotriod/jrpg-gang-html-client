@@ -34,6 +34,14 @@ export default abstract class Component {
         return child ? container.resolve(clazz).init(child) as T : null;
     }
 
+    public create<T extends Component>(containerId: string, clazz: new (...args: any) => T): T | null {
+        const root: HTMLElement | null = this.findChild(containerId);
+        if (!root) { return null; }
+        const child: HTMLDivElement = document.createElement('div');
+        root.appendChild(child);
+        return container.resolve(clazz).init(child) as T;
+    }
+
     public show(): void {
         this._view.style.display = this.display || 'block';
     }
@@ -52,6 +60,14 @@ export default abstract class Component {
 
     public findChild(id: string): HTMLElement | null {
         return this._view.querySelector(`#${id}`);
+    }
+
+    public set backgroundImage(url: string) {
+        this.view.style.backgroundImage = `url('${url}')`;
+    }
+
+    public get backgroundImage(): string {
+        return this.view.style.backgroundImage;
     }
 
     public set backgroundColor(value: string) {

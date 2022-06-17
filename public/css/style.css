@@ -13,3 +13,32 @@ body {
     width: 100vw;
     height: 100vh;
 }
+
+.selection-icon {
+    background-color: aliceblue;
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 74px;
+    height: 74px;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 3px;
+}
+
+.unselected {
+    background-color: aliceblue;
+}
+
+.unselected:hover {
+    background-color: aquamarine;
+}
+
+.selected {
+    background-color: darkcyan;
+}
+
+.selected:hover {
+    background-color: cadetblue;
+}
