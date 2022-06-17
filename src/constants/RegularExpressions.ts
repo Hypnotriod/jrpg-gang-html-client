@@ -1,0 +1,1 @@
+export const USER_NAME_REGEXP: RegExp = /^[a-zA-Z0-9-_ ]{4,20}$/;

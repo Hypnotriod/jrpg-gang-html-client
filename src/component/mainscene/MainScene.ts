@@ -1,19 +1,18 @@
 import { injectable } from 'tsyringe';
-import ResourceLoaderService from '../../service/ResourceLoaderService';
+import { LOGIN } from '../../constants/Components';
+import { LOGIN_DESIGN, LOGIN_STYLE } from '../../constants/Resources';
 import Component from '../Component';
+import Login from '../login/Login';
 
 @injectable()
 export default class MainScene extends Component {
-    constructor(private readonly resourceLoader: ResourceLoaderService) {
-        super();
-    }
+    protected login: Login;
 
-    protected init(view: HTMLElement): Component {
+    protected initialize(): void {
         this.initializeComponents();
-        return this;
     }
 
     protected async initializeComponents(): Promise<void> {
-
+        this.login = (await Component.instantiateHighOrderComponent(LOGIN, LOGIN_DESIGN, LOGIN_STYLE, Login))!;
     }
 }

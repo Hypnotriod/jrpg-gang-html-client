@@ -1,6 +1,9 @@
 import Component from '../../Component';
 
 export default class Label extends Component {
+    protected initialize(): void {
+    }
+
     protected get view(): HTMLTextAreaElement {
         return this.view as HTMLTextAreaElement;
     }

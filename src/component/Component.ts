@@ -2,15 +2,18 @@ import { container } from 'tsyringe';
 import DomService from '../service/DomService';
 import ResourceLoaderService, { RESOURCE_DESIGN, RESOURCE_STYLE } from '../service/ResourceLoaderService';
 
-export default class Component {
+export default abstract class Component {
     private _view: HTMLElement;
     private display: string;
 
-    protected init(view: HTMLElement): Component {
+    private init(view: HTMLElement): Component {
         this._view = view;
         this.display = this._view.style.display;
+        this.initialize();
         return this;
     }
+
+    protected abstract initialize(): void;
 
     protected get view(): HTMLElement {
         return this._view;
@@ -51,7 +54,11 @@ export default class Component {
         return this._view.querySelector(`#${id}`);
     }
 
-    public setBackgroundColor(value: string): void {
+    public set backgroundColor(value: string) {
         this._view.style.backgroundColor = value;
+    }
+
+    public get backgroundColor(): string {
+        return this._view.style.backgroundColor;
     }
 }

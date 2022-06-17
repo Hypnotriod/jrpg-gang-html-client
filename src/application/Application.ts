@@ -11,6 +11,6 @@ export default class Application {
     }
 
     public async createMainSceneComponent(): Promise<void> {
-        const mainScene = await Component.instantiateHighOrderComponent(MAIN_SCENE, MAIN_SCENE_DESIGN, MAIN_SCENE_STYLE, MainScene);
+        await Component.instantiateHighOrderComponent(MAIN_SCENE, MAIN_SCENE_DESIGN, MAIN_SCENE_STYLE, MainScene);
     }
 }

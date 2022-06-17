@@ -1,0 +1,12 @@
+.input-field input {
+    color: white;
+}
+
+.login-wrapper {
+    background-color: darkslateblue;
+    width: 50vw;
+    height: 50vh;
+    margin-left: 25vw;
+    margin-top: 25vh;
+    padding: 10px;
+}

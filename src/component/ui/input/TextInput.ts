@@ -7,8 +7,7 @@ export default class TextInput extends Component {
     private onEnterPressCallback: (target: TextInput) => void;
     private onInputCallback: (target: TextInput) => void;
 
-    protected init(view: HTMLElement): Component {
-        super.init(view);
+    protected initialize(): void {
         this.view.oninput = (event) => {
             this.validate();
             this.onInputCallback && this.onInputCallback(this);
@@ -18,11 +17,10 @@ export default class TextInput extends Component {
                 this.onEnterPressCallback(this);
             }
         };
-        return this;
     }
 
     protected get view(): HTMLTextAreaElement {
-        return this.view as HTMLTextAreaElement;
+        return super.view as HTMLTextAreaElement;
     }
 
     public get validationRegEx(): RegExp {
