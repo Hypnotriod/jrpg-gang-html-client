@@ -4,7 +4,6 @@ export default class Icon extends Component {
     private onClickCallback: (target: Icon) => void;
     private _selected: boolean = false;
     private _icon: string;
-    private _uid: number;
 
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
@@ -13,11 +12,10 @@ export default class Icon extends Component {
         this.view.classList.add('unselected');
     }
 
-    public static createIcon(icon: string, uid: number, parent: Component, containerId: string): Icon | null {
-        const iconComponent: Icon | null = parent.create(containerId, Icon);
+    public static createIcon(icon: string, parent: Component, containerId: string): Icon | null {
+        const iconComponent: Icon | null = parent.create(containerId, null, Icon);
         if (iconComponent) {
             iconComponent.icon = icon;
-            iconComponent.uid = uid;
             iconComponent.view.classList.add('selection-icon');
         }
         return iconComponent;
@@ -30,14 +28,6 @@ export default class Icon extends Component {
 
     public get icon(): string {
         return this._icon;
-    }
-
-    public set uid(value: number) {
-        this._uid = this.uid;
-    }
-
-    public get uid(): number {
-        return this._uid;
     }
 
     public select(): void {

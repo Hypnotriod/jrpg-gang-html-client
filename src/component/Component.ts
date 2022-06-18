@@ -34,11 +34,12 @@ export default abstract class Component {
         return child ? container.resolve(clazz).init(child) as T : null;
     }
 
-    public create<T extends Component>(containerId: string, clazz: new (...args: any) => T): T | null {
+    public create<T extends Component>(containerId: string, design: string | null, clazz: new (...args: any) => T): T | null {
         const root: HTMLElement | null = this.findChild(containerId);
         if (!root) { return null; }
         const child: HTMLDivElement = document.createElement('div');
         root.appendChild(child);
+        if (design) { child.innerHTML = design; }
         return container.resolve(clazz).init(child) as T;
     }
 

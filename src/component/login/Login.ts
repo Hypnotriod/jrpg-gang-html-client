@@ -23,9 +23,9 @@ export default class Login extends Component {
         this.joinButton.onClick = target => this.onJoin();
         this.joinButton.disable();
 
-        this.icons.push(Icon.createIcon('warrior', 0, this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('magician', 1, this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('archer', 2, this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('warrior', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('magician', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('archer', this, ICONS_CONTAINER)!);
         this.icons.forEach(icon => {
             icon.onClick = target => this.onClassIconClick(target);
         });
