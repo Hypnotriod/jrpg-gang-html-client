@@ -1,35 +1,47 @@
+import { injectable } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
+import { RequestType, JoinRequestData } from '../../dto/requests';
+import { Response } from '../../dto/responces';
+import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
+import { instantiate } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 
-export default class Login extends Component {
-    private userNameInput: TextInput;
-    private errorLabel: Label;
-    private joinButton: Button;
+@injectable()
+export default class Login extends Component implements ServerCommunicatorHandler {
+    @instantiate(INPUT_USER_NAME, TextInput)
+    private readonly userNameInput: TextInput;
+    @instantiate(LABEL_ERROR, Label)
+    private readonly errorLabel: Label;
+    @instantiate(BUTTON_JOIN, Button)
+    private readonly joinButton: Button;
     private readonly icons: Icon[] = [];
 
+    constructor(private readonly communicator: ServerCommunicatorService) {
+        super();
+    }
+
     protected initialize(): void {
-        this.userNameInput = this.instantiate(INPUT_USER_NAME, TextInput)!;
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
         this.userNameInput.onInput = target => this.updateJoinButtonState();
-        this.errorLabel = this.instantiate(LABEL_ERROR, Label)!;
         this.errorLabel.hide();
 
-        this.joinButton = this.instantiate(BUTTON_JOIN, Button)!;
-        this.joinButton.onClick = target => this.onJoin();
+        this.joinButton.onClick = target => this.onJoinClick();
         this.joinButton.disable();
 
-        this.icons.push(Icon.createIcon('warrior', this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('magician', this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('archer', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('tank', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('mage', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('rogue', this, ICONS_CONTAINER)!);
         this.icons.forEach(icon => {
             icon.onClick = target => this.onClassIconClick(target);
         });
         this.icons[0].select();
+
+        this.communicator.subscribe([RequestType.JOIN], this);
     }
 
     protected onClassIconClick(target: Icon): void {
@@ -46,7 +58,19 @@ export default class Login extends Component {
         }
     }
 
-    protected onJoin(): void {
+    protected onJoinClick(): void {
+        this.joinButton.disable();
+        let clazz: string = '';
+        this.icons.forEach(icon => {
+            if (!icon.selected) { return; }
+            clazz = icon.icon;
+        });
+        this.communicator.sendMessage(RequestType.JOIN, {
+            nickname: this.userNameInput.value,
+            class: clazz,
+        } as JoinRequestData);
+    }
 
+    public handleServerResponse(response: Response): void {
     }
 }

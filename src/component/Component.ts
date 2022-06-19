@@ -2,15 +2,29 @@ import { container } from 'tsyringe';
 import DomService from '../service/DomService';
 import ResourceLoaderService, { RESOURCE_DESIGN, RESOURCE_STYLE } from '../service/ResourceLoaderService';
 
+interface InstantiateOnInitData {
+    id: string;
+    clazz: new (...args: any) => any;
+    propertyKey: string;
+}
+
 export default abstract class Component {
+    private instantiateOnInitList: InstantiateOnInitData[];
     private _view: HTMLElement;
     private display: string;
 
-    private init(view: HTMLElement): Component {
+    public init(view: HTMLElement): Component {
         this._view = view;
         this.display = this._view.style.display;
+        this.instantiateOnInit();
         this.initialize();
         return this;
+    }
+
+    private instantiateOnInit(): void {
+        this.instantiateOnInitList && this.instantiateOnInitList.forEach(({ id, clazz, propertyKey }) => {
+            (this as Object)[propertyKey] = this.instantiate(id, clazz);
+        });
     }
 
     protected abstract initialize(): void;
@@ -27,6 +41,11 @@ export default abstract class Component {
         const style: string = await loaderService.load(stylePath, RESOURCE_STYLE);
         const view: HTMLElement | null = domService.renderDesignTemplate(id, design, style);
         return view ? container.resolve(clazz).init(view) as T : null;
+    }
+
+    public addToInstantiateOnInitList(id: string, clazz: new (...args: any) => any, propertyKey: string): void {
+        if (!this.instantiateOnInitList) { this.instantiateOnInitList = []; }
+        this.instantiateOnInitList.push({ id, clazz, propertyKey });
     }
 
     public instantiate<T extends Component>(id: string, clazz: new (...args: any) => T): T | null {
