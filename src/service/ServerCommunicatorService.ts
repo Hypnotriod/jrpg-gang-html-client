@@ -92,6 +92,6 @@ export default class ServerCommunicatorService {
     }
 
     private generateRequestId(): string {
-        return (~~(Math.random() * Number.MAX_SAFE_INTEGER)).toString(16);
+        return (~~(Math.random() * (Number.MAX_SAFE_INTEGER - 1))).toString(16);
     }
 }

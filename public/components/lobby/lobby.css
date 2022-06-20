@@ -9,3 +9,9 @@
     transform: translate(-50%, -50%);
     border-radius: 10px;
 }
+
+.rooms-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}

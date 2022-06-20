@@ -6,7 +6,7 @@ import { Response, ResponseStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
-import { instantiate } from '../decorator/decorator';
+import { component } from '../decorator/decorator';
 import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
@@ -16,11 +16,11 @@ import Label from '../ui/label/Label';
 @injectable()
 @singleton()
 export default class Login extends Component implements ServerCommunicatorHandler {
-    @instantiate(INPUT_USER_NAME, TextInput)
+    @component(INPUT_USER_NAME, TextInput)
     private readonly userNameInput: TextInput;
-    @instantiate(LABEL_ERROR, Label)
+    @component(LABEL_ERROR, Label)
     private readonly errorLabel: Label;
-    @instantiate(BUTTON_JOIN, Button)
+    @component(BUTTON_JOIN, Button)
     private readonly joinButton: Button;
     private readonly icons: Icon[] = [];
     private isJoining: boolean = false;
