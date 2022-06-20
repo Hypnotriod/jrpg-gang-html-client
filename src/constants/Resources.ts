@@ -5,3 +5,6 @@ export const MAIN_SCENE_STYLE: string = COMPONENTS_PATH + 'mainscene/main-scene.
 
 export const LOGIN_DESIGN: string = COMPONENTS_PATH + 'login/login.html';
 export const LOGIN_STYLE: string = COMPONENTS_PATH + 'login/login.css';
+
+export const LOBBY_DESIGN: string = COMPONENTS_PATH + 'lobby/lobby.html';
+export const LOBBY_STYLE: string = COMPONENTS_PATH + 'lobby/lobby.css';

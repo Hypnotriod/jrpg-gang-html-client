@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, JoinRequestData } from '../../dto/requests';
@@ -7,12 +7,14 @@ import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { instantiate } from '../decorator/decorator';
+import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 
 @injectable()
+@singleton()
 export default class Login extends Component implements ServerCommunicatorHandler {
     @instantiate(INPUT_USER_NAME, TextInput)
     private readonly userNameInput: TextInput;
@@ -25,8 +27,18 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService) {
+        private readonly gameState: GameStateService,
+        private readonly lobby: Lobby) {
         super();
+    }
+
+    /**
+     * @deprecated test purpose only
+     */
+    public autologin(): void {
+        // todo: autologin
+        this.userNameInput.value = 'Tester' + ~~(Math.random() * 10000);
+        this.onJoinClick();
     }
 
     protected initialize(): void {
@@ -82,5 +94,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) { return; }
         this.gameState.userState = response.data;
         this.hide();
+        this.lobby.show();
     }
 }
