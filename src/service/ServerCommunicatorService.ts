@@ -39,6 +39,10 @@ export default class ServerCommunicatorService {
         return id;
     }
 
+    public isOpen(): boolean {
+        return !!this.ws && this.ws.readyState === WebSocket.OPEN;
+    }
+
     private prepareWs(): void {
         this.ws = new WebSocket('ws://localhost:3000/ws');
         this.ws.onopen = (event: Event) => this.onOpen(event);

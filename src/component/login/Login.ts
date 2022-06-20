@@ -2,7 +2,8 @@ import { injectable } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, JoinRequestData } from '../../dto/requests';
-import { Response } from '../../dto/responces';
+import { Response, ResponseStatus } from '../../dto/responces';
+import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { instantiate } from '../decorator/decorator';
@@ -20,8 +21,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
     @instantiate(BUTTON_JOIN, Button)
     private readonly joinButton: Button;
     private readonly icons: Icon[] = [];
+    private isJoining: boolean = false;
 
-    constructor(private readonly communicator: ServerCommunicatorService) {
+    constructor(
+        private readonly communicator: ServerCommunicatorService,
+        private readonly gameState: GameStateService) {
         super();
     }
 
@@ -51,7 +55,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected updateJoinButtonState(): void {
-        if (this.userNameInput.isValid && this.userNameInput.value !== '') {
+        if (this.userNameInput.isValid && this.userNameInput.value !== '' && !this.isJoining) {
             this.joinButton.enable();
         } else {
             this.joinButton.disable();
@@ -59,7 +63,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected onJoinClick(): void {
-        this.joinButton.disable();
+        this.isJoining = true;
+        this.updateJoinButtonState();
         let clazz: string = '';
         this.icons.forEach(icon => {
             if (!icon.selected) { return; }
@@ -72,5 +77,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public handleServerResponse(response: Response): void {
+        this.isJoining = false;
+        this.updateJoinButtonState();
+        if (response.status !== ResponseStatus.OK) { return; }
+        this.gameState.userState = response.data;
+        this.hide();
     }
 }

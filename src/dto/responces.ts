@@ -1,3 +1,4 @@
+import { GameUnit, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
 export enum ResponseStatus {
@@ -11,18 +12,10 @@ export enum ResponseStatus {
     ALREADY_EXISTS = 'alreadyExists',
 }
 
-export interface PlayerInfo {
-    nickname: string;
-    class: string;
-    level: number;
-}
-
-export interface RoomInfo {
-    uid: number;
-    capacity: number;
-    scenarioUid: number;
-    joinedUsers: PlayerInfo[];
-    host: PlayerInfo;
+export interface UserStateData {
+    userId: string;
+    userNickname: string;
+    unit: GameUnit;
 }
 
 export interface LobbyStatusData {
@@ -34,5 +27,5 @@ export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
-    data: LobbyStatusData | any;
+    data: LobbyStatusData | UserStateData | any;
 }
