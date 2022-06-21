@@ -59,7 +59,6 @@ export default class Room extends Component {
         if (isUserInRoom) {
             this.joinRoomButton.hide();
             this.leaveRoomButton.show();
-            this.leaveRoomButton.enable();
         } else if (isUserInRooms) {
             this.joinRoomButton.show();
             this.leaveRoomButton.hide();

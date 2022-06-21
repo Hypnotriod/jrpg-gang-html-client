@@ -95,7 +95,7 @@ export interface Item {
     code: string;
     name: string;
     type: ItemType;
-    price: number;
+    price: UnitBooty;
     description?: string;
 }
 

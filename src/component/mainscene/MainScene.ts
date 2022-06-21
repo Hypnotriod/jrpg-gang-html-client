@@ -19,7 +19,7 @@ export default class MainScene extends Component {
     }
 
     protected initialize(): void {
-        this.initializeComponents();
+        this.initializeComponents().then(() => this.tryToAutologin());
     }
 
     protected async preloadResources(): Promise<void> {
@@ -30,8 +30,6 @@ export default class MainScene extends Component {
         await this.preloadResources();
         this.login = (await Component.instantiateHighOrderComponent(LOGIN, LOGIN_DESIGN, LOGIN_STYLE, Login))!;
         this.lobby = (await Component.instantiateHighOrderComponent(LOBBY, LOBBY_DESIGN, LOBBY_STYLE, Lobby))!;
-
-        this.tryToAutologin();
     }
 
     protected tryToAutologin(): void {

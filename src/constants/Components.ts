@@ -12,8 +12,12 @@ export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 export const INPUT_USER_NAME: string = 'input_user_name';
 
 export const LABEL_ERROR: string = 'label_error';
+export const LABEL_NAME: string = 'label_name';
+export const LABEL_PRICE: string = 'label_price';
 
 export const ICONS_CONTAINER: string = 'icons_container';
+
+export const ICON: string = 'icon';
 
 export const PRFX_USER_PLACEHOLDER: string = 'user_placeholder_';
 export const PRFX_USER_NAME: string = 'user_name_';
