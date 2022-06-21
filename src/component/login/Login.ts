@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
-import { RequestType, JoinRequestData } from '../../dto/requests';
+import { JoinRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -32,13 +32,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
         super();
     }
 
-    /**
-     * @deprecated test purpose only
-     */
-    public autologin(): void {
-        // todo: autologin
-        this.userNameInput.value = 'Tester' + ~~(Math.random() * 10000);
-        this.onJoinClick();
+    public autologin(userName: string, clazz: string): void {
+        this.doJoin(userName, clazz);
     }
 
     protected initialize(): void {
@@ -82,8 +77,12 @@ export default class Login extends Component implements ServerCommunicatorHandle
             if (!icon.selected) { return; }
             clazz = icon.icon;
         });
+        this.doJoin(this.userNameInput.value, clazz);
+    }
+
+    protected doJoin(nickname: string, clazz: string): void {
         this.communicator.sendMessage(RequestType.JOIN, {
-            nickname: this.userNameInput.value,
+            nickname,
             class: clazz,
         } as JoinRequestData);
     }
