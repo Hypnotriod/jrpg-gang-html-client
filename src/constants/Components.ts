@@ -5,6 +5,8 @@ export const LOBBY: string = 'lobby_container';
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
 export const BUTTON_JOIN: string = 'button_join';
+export const BUTTON_JOIN_ROOM: string = 'button_join_room';
+export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';
 export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
@@ -12,3 +14,8 @@ export const INPUT_USER_NAME: string = 'input_user_name';
 export const LABEL_ERROR: string = 'label_error';
 
 export const ICONS_CONTAINER: string = 'icons_container';
+
+export const PRFX_USER_PLACEHOLDER: string = 'user_placeholder_';
+export const PRFX_USER_NAME: string = 'user_name_';
+export const PRFX_USER_LEVEL: string = 'user_level_';
+export const PRFX_USER_ICON: string = 'user_icon_';

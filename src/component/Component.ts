@@ -9,9 +9,9 @@ interface InstantiateOnInitData {
 }
 
 export default abstract class Component {
-    private instantiateOnInitList: InstantiateOnInitData[];
-    private _view: HTMLElement;
-    private display: string;
+    protected instantiateOnInitList: InstantiateOnInitData[];
+    protected _view: HTMLElement;
+    protected display: string;
 
     public init(view: HTMLElement): Component {
         this._view = view;
@@ -64,6 +64,7 @@ export default abstract class Component {
 
     public destroy(): void {
         this._view.remove();
+        (this._view as HTMLElement | null) = null;
     }
 
     public show(): void {

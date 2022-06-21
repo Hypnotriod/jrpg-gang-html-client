@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { BUTTON_CREATE_ROOM, ROOMS_CONTAINER } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
-import { RequestType } from '../../dto/requests';
+import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -25,6 +25,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected initialize(): void {
         this.hide();
+        this.createRoomButton.disable();
+        this.createRoomButton.onClick = target => this.onCreateRoom();
         this.communicator.subscribe([RequestType.LOBBY_STATUS], this);
     }
 
@@ -33,20 +35,39 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         super.show();
     }
 
-    handleServerResponse(response: Response): void {
+    public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
         const roomInfos: RoomInfo[] = (response.data as LobbyStatusData).rooms;
+        const isUserInRooms: boolean = this.gameState.isUserInRooms(roomInfos);
+        this.updateRooms(roomInfos, isUserInRooms);
+        this.updateState(isUserInRooms);
+    }
+
+    protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {
         const roomIds: number[] = [];
         roomInfos.forEach(roomInfo => {
             const room = this.rooms.get(roomInfo.uid) || Room.createRoom(this, ROOMS_CONTAINER);
             this.rooms.set(roomInfo.uid, room!);
-            room!.update(roomInfo);
+            room!.update(roomInfo, isUserInRooms);
             roomIds.push(roomInfo.uid);
         });
         this.rooms.forEach((room, uid) => {
             if (!roomIds.includes(uid)) {
                 room.destroy();
+                this.rooms.delete(uid);
             }
         });
+    }
+
+    protected updateState(isUserInRooms: boolean): void {
+        isUserInRooms && this.createRoomButton.disable();
+        !isUserInRooms && this.createRoomButton.enable();
+    }
+
+    protected onCreateRoom(): void {
+        this.communicator.sendMessage(RequestType.CREATE_ROOM, {
+            capacity: 4,
+            scenarioUid: 0,
+        } as CreateRoomRequestData);
     }
 }
