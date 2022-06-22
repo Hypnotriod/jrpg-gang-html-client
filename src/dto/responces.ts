@@ -27,5 +27,5 @@ export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
-    data: LobbyStatusData | UserStateData | any;
+    data: LobbyStatusData | UserStateData;
 }

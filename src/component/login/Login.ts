@@ -2,7 +2,7 @@ import { injectable, singleton } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus } from '../../dto/responces';
+import { Response, ResponseStatus, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -12,6 +12,7 @@ import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
+import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 
 @injectable()
 @singleton()
@@ -28,7 +29,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly gameState: GameStateService,
-        private readonly lobby: Lobby) {
+        private readonly lobby: Lobby,
+        private readonly configurator: UnitConfigurator) {
         super();
     }
 
@@ -91,8 +93,9 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.isJoining = false;
         this.updateJoinButtonState();
         if (response.status !== ResponseStatus.OK) { return; }
-        this.gameState.userState = response.data;
+        this.gameState.userState = response.data as UserStateData;
         this.hide();
-        this.lobby.show();
+        // this.lobby.show();
+        this.configurator.show();
     }
 }

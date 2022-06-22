@@ -42,3 +42,12 @@ body {
 .selected:hover {
     background-color: cadetblue;
 }
+
+.item-icon-warpper {
+    text-align: center;
+    width: 100px;
+}
+
+.items-container {
+    display: flex;
+}

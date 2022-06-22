@@ -1,6 +1,7 @@
 export const MAIN_SCENE: string = 'main_scene_container';
 export const LOGIN: string = 'login_container';
 export const LOBBY: string = 'lobby_container';
+export const UNIT_CONFIGURATOR: string = 'unit_configurator_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
@@ -14,8 +15,10 @@ export const INPUT_USER_NAME: string = 'input_user_name';
 export const LABEL_ERROR: string = 'label_error';
 export const LABEL_NAME: string = 'label_name';
 export const LABEL_PRICE: string = 'label_price';
+export const LABEL_QUANTITY: string = 'label_quantity';
 
 export const ICONS_CONTAINER: string = 'icons_container';
+export const ITEMS_CONTAINER: string = 'items_container';
 
 export const ICON: string = 'icon';
 
