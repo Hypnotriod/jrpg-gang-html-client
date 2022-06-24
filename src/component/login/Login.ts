@@ -7,7 +7,6 @@ import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
-import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
@@ -29,7 +28,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly gameState: GameStateService,
-        private readonly lobby: Lobby,
         private readonly configurator: UnitConfigurator) {
         super();
     }
@@ -95,7 +93,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) { return; }
         this.gameState.userState = response.data as UserStateData;
         this.hide();
-        // this.lobby.show();
         this.configurator.show();
     }
 }

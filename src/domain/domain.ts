@@ -200,3 +200,7 @@ export interface GameUnit extends Unit {
     faction: null;
     playerInfo?: PlayerInfo;
 }
+
+export interface GameShop {
+    items: UnitInventory;
+}

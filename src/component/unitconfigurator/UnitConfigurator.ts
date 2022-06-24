@@ -1,8 +1,8 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_LOBBY, ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE } from '../../constants/Components';
-import { Ammunition, Disposable, UnitInventory } from '../../domain/domain';
-import { RequestType } from '../../dto/requests';
-import { Response, UserStateData } from '../../dto/responces';
+import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER } from '../../constants/Components';
+import { Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionData, AtionType, RequestType } from '../../dto/requests';
+import { Response, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -12,6 +12,7 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
+import ShopItemIcon from '../ui/icon/ShopItemIcon';
 
 @singleton()
 @injectable()
@@ -35,7 +36,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     @component(UNIT_RESISTANCE, Container)
     private readonly unitResistance: Container;
 
-    private readonly items: Map<number, ItemIcon> = new Map();
+    private readonly unitItems: Map<number, ItemIcon> = new Map();
+    private readonly shopItems: Map<number, ItemIcon> = new Map();
 
     constructor(private readonly communicator: ServerCommunicatorService,
         private readonly gameState: GameStateService,
@@ -45,13 +47,13 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     public show(): void {
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         super.show();
     }
 
     protected initialize(): void {
         this.hide();
-        this.communicator.subscribe([RequestType.USER_STATUS], this);
-
+        this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
         this.lobbyButton.onClick = target => this.goToLobby();
     }
 
@@ -61,7 +63,50 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public handleServerResponse(response: Response): void {
-        this.gameState.userState = response.data as UserStateData;
+        switch (response.type) {
+            case RequestType.JOIN:
+            case RequestType.USER_STATUS:
+                this.updateUserStatus(response.data as UserStateData);
+                break;
+            case RequestType.SHOP_STATUS:
+                this.updateShopStatus(response.data as ShopStateData);
+                break;
+        }
+    }
+
+    protected updateShopStatus(data: ShopStateData): void {
+        this.updateShopInventoryIcons(data.shop.items);
+    }
+
+    protected updateShopInventoryIcons(inventory: UnitInventory): void {
+        const inventoryItems: (Disposable | Ammunition)[] = [
+            ...(inventory.ammunition || []),
+            ...(inventory.armor || []),
+            ...(inventory.disposable || []),
+            ...(inventory.magic || []),
+            ...(inventory.weapon || []),
+        ];
+        inventoryItems.forEach(v => this.updateShopItem(v));
+        this.shopItems.forEach((icon, uid) => {
+            if (!inventoryItems.find(i => i.uid === uid)) {
+                icon.destroy();
+                this.shopItems.delete(uid);
+            }
+        });
+    }
+
+    protected updateShopItem(data: Disposable | Ammunition): void {
+        let iconItem = this.shopItems.get(data.uid!);
+        if (!iconItem) {
+            iconItem = ShopItemIcon.createShopItemIcon(data.code, this, SHOP_ITEMS_CONTAINER)!;
+            iconItem.onClick = target => this.onShopItemClick(target);
+        }
+        this.shopItems.set(data.uid!, iconItem);
+        iconItem.update(data);
+    }
+
+    protected updateUserStatus(data: UserStateData): void {
+        this.gameState.userState = data;
         this.unitIcon.icon = this.gameState.userState.playerInfo.class;
         this.unitInfo.value = this.gameState.userState.playerInfo.nickname;
         this.unitBooty.value = this.objValues(this.gameState.userState.unit.booty);
@@ -70,7 +115,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitBaseAttributes.value = this.objValues(this.gameState.userState.unit.stats.baseAttributes);
         this.unitAttributes.value = this.objValues(this.gameState.userState.unit.stats.attributes);
         this.unitResistance.value = this.objValues(this.gameState.userState.unit.stats.resistance);
-        this.updateInventoryIcons(this.gameState.userState.unit.inventory);
+        this.updateUnitInventoryIcons(this.gameState.userState.unit.inventory);
     }
 
     protected objValues(obj: Object): string {
@@ -82,20 +127,47 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         return result;
     }
 
-    protected updateInventoryIcons(inventory: UnitInventory): void {
-        inventory.ammunition?.forEach(v => this.updateItem(v));
-        inventory.armor?.forEach(v => this.updateItem(v));
-        inventory.disposable?.forEach(v => this.updateItem(v));
-        inventory.magic?.forEach(v => this.updateItem(v));
-        inventory.weapon?.forEach(v => this.updateItem(v));
+    protected updateUnitInventoryIcons(inventory: UnitInventory): void {
+        const inventoryItems: (Disposable | Ammunition)[] = [
+            ...(inventory.ammunition || []),
+            ...(inventory.armor || []),
+            ...(inventory.disposable || []),
+            ...(inventory.magic || []),
+            ...(inventory.weapon || []),
+        ];
+        inventoryItems.forEach(v => this.updateUnitItem(v));
+        this.unitItems.forEach((icon, uid) => {
+            if (!inventoryItems.find(i => i.uid === uid)) {
+                icon.destroy();
+                this.unitItems.delete(uid);
+            }
+        });
     }
 
-    protected updateItem(data: Disposable | Ammunition): void {
-        let iconItem = this.items.get(data.uid!);
+    protected updateUnitItem(data: Disposable | Ammunition): void {
+        let iconItem = this.unitItems.get(data.uid!);
         if (!iconItem) {
-            iconItem = ItemIcon.createItemIcon(data.code, this, ITEMS_CONTAINER)!;
+            iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;
+            iconItem.onClick = target => this.onUnitItemClick(target);
         }
-        this.items.set(data.uid!, iconItem);
+        this.unitItems.set(data.uid!, iconItem);
         iconItem.update(data);
+    }
+
+    protected onUnitItemClick(target: ItemIcon): void {
+        if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
+        this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
+            action: !(target.data as Ammunition).equipped ? AtionType.EQUIP : AtionType.UNEQUIP,
+            itemUid: target.data.uid!,
+        } as ActionData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected onShopItemClick(target: ItemIcon): void {
+        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+            action: AtionType.BUY,
+            itemUid: target.data.uid!,
+        } as ActionData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }

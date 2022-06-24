@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { LOBBY, LOGIN, UNIT_CONFIGURATOR } from '../../constants/Components';
-import { ITEM_ICON_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, ROOM_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
+import { ITEM_ICON_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import QueryService from '../../service/QueryService';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import Component from '../Component';
@@ -27,6 +27,7 @@ export default class MainScene extends Component {
     protected async preloadResources(): Promise<void> {
         await this.loaderService.load(ROOM_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(ITEM_ICON_DESIGN, RESOURCE_DESIGN);
+        await this.loaderService.load(SHOP_ITEM_ICON_DESIGN, RESOURCE_DESIGN);
     }
 
     protected async initializeComponents(): Promise<void> {

@@ -45,11 +45,12 @@ body {
 
 .item-icon-warpper {
     text-align: center;
-    width: 100px;
+    width: 80px;
 }
 
 .items-container {
     display: flex;
+    flex-wrap: wrap;
 }
 span {
     padding-left: 3px;

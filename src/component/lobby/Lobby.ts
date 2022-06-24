@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM, BUTTON_UNIT, ROOMS_CONTAINER } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM, BUTTON_UNIT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus } from '../../dto/responces';
@@ -8,6 +8,8 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
+import Container from '../ui/container/Container';
+import Icon from '../ui/icon/Icon';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
 
@@ -20,6 +22,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly createRoomButton: Button;
     @component(BUTTON_UNIT, Button)
     private readonly unitButton: Button;
+    @component(UNIT_ICON, Icon)
+    private readonly unitIcon: Icon;
+    @component(UNIT_INFO, Container)
+    private readonly unitInfo: Container;
 
     constructor(private readonly communicator: ServerCommunicatorService,
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
@@ -51,6 +57,12 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         const isUserInRooms: boolean = this.gameState.isUserInRooms(roomInfos);
         this.updateRooms(roomInfos, isUserInRooms);
         this.updateState(isUserInRooms);
+        this.updateUnitInfo();
+    }
+
+    protected updateUnitInfo(): void {
+        this.unitIcon.icon = this.gameState.userState.playerInfo.class;
+        this.unitInfo.value = this.gameState.userState.playerInfo.nickname;
     }
 
     protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {

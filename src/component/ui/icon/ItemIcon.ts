@@ -14,7 +14,9 @@ export default class ItemIcon extends Component {
     @component(LABEL_NAME, Label)
     protected readonly nameLabel: Label;
     @component(LABEL_QUANTITY, Label)
-    protected readonly quantityLabel: Label;
+    protected readonly quantityLabel: Label | null;
+
+    private _data: Disposable | Ammunition;
 
     public static createItemIcon(icon: string, parent: Component, containerId: string): ItemIcon | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
@@ -37,14 +39,33 @@ export default class ItemIcon extends Component {
     protected initialize(): void {
     }
 
+    public set onClick(callback: (target: ItemIcon) => void) {
+        this._icon.onClick = t => callback(this);
+    }
+
+    public select(): void {
+        this._icon.select();
+    }
+
+    public unselect(): void {
+        this._icon.unselect();
+    }
+
     public update(data: Disposable | Ammunition): void {
+        this._data = data;
         this.nameLabel.value = data.name;
         this._icon.icon = data.code;
+        (data as Ammunition).equipped ? this.select() : this.unselect();
+        if (!this.quantityLabel) { return; }
         if (data.quantity !== undefined) {
             this.quantityLabel.show();
             this.quantityLabel.value = String(data.quantity);
         } else {
             this.quantityLabel.hide();
         }
+    }
+
+    public get data(): Disposable | Ammunition {
+        return this._data;
     }
 }

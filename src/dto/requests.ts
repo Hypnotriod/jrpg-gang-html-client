@@ -1,3 +1,5 @@
+import { Position } from '../domain/domain';
+
 export enum RequestType {
     JOIN = 'join',
     CREATE_ROOM = 'createRoom',
@@ -13,6 +15,15 @@ export enum RequestType {
     HAME_ACTION = 'gameAction',
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',
+}
+
+export enum AtionType {
+    USE = 'use',
+    EQUIP = 'equip',
+    UNEQUIP = 'unequip',
+    PLACE = 'place',
+    MOVE = 'move',
+    BUY = 'buy',
 }
 
 export interface Request {
@@ -35,4 +46,13 @@ export interface CreateRoomRequestData extends RequestData {
 
 export interface JoinGameRoomRequestData extends RequestData {
     roomUid: number;
+}
+
+export interface ActionData extends RequestData {
+    action: AtionType;
+    uid?: number;
+    targetUid?: number;
+    itemUid?: number;
+    quantity?: number;
+    position?: Position;
 }

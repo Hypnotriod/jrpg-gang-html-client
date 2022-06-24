@@ -20,7 +20,8 @@ export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 
 export const ICONS_CONTAINER: string = 'icons_container';
-export const ITEMS_CONTAINER: string = 'items_container';
+export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';
+export const SHOP_ITEMS_CONTAINER: string = 'shop_items_container';
 
 export const ICON: string = 'icon';
 

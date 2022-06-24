@@ -1,4 +1,4 @@
-import { GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
+import { GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
 export enum ResponseStatus {
@@ -18,6 +18,10 @@ export interface UserStateData {
     unit: GameUnit;
 }
 
+export interface ShopStateData {
+    shop: GameShop;
+}
+
 export interface LobbyStatusData {
     rooms: RoomInfo[];
     usersCount: number;
@@ -27,5 +31,5 @@ export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
-    data: LobbyStatusData | UserStateData;
+    data: LobbyStatusData | UserStateData | ShopStateData;
 }
