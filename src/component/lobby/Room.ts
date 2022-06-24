@@ -6,7 +6,7 @@ import ResourceLoaderService from '../../service/ResourceLoaderService';
 import Component from '../Component';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
-import Placeholder from '../ui/placeholder/Placeholder';
+import Container from '../ui/container/Container';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import GameStateService from '../../service/GameStateService';
@@ -15,7 +15,7 @@ import { JoinGameRoomRequestData, RequestType } from '../../dto/requests';
 
 @injectable()
 export default class Room extends Component {
-    private readonly userPlaceholders: Placeholder[] = [];
+    private readonly userPlaceholders: Container[] = [];
     private readonly userNameLabels: Label[] = [];
     private readonly userLevelLabels: Label[] = [];
     private readonly userIcons: Icon[] = [];
@@ -72,7 +72,7 @@ export default class Room extends Component {
 
     protected initialize(): void {
         for (let i = 1; i <= 4; i++) {
-            this.userPlaceholders.push(this.instantiate(PRFX_USER_PLACEHOLDER + i, Placeholder)!);
+            this.userPlaceholders.push(this.instantiate(PRFX_USER_PLACEHOLDER + i, Container)!);
             this.userNameLabels.push(this.instantiate(PRFX_USER_NAME + i, Label)!);
             this.userLevelLabels.push(this.instantiate(PRFX_USER_LEVEL + i, Label)!);
             this.userIcons.push(this.instantiate(PRFX_USER_ICON + i, Icon)!);
@@ -95,7 +95,7 @@ export default class Room extends Component {
     }
 
     protected doLeaveRoom(): void {
-        if (this.roomInfo.host.nickname === this.gameState.userState.userNickname) {
+        if (this.roomInfo.host.nickname === this.gameState.userState.playerInfo.nickname) {
             this.communicator.sendMessage(RequestType.DESTROY_ROOM);
         } else {
             this.communicator.sendMessage(RequestType.LEAVE_ROOM);

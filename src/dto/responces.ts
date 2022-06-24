@@ -1,4 +1,4 @@
-import { GameUnit, RoomInfo } from '../domain/domain';
+import { GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
 export enum ResponseStatus {
@@ -14,7 +14,7 @@ export enum ResponseStatus {
 
 export interface UserStateData {
     userId: string;
-    userNickname: string;
+    playerInfo: PlayerInfo;
     unit: GameUnit;
 }
 

@@ -1,5 +1,5 @@
-import { injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM, ROOMS_CONTAINER } from '../../constants/Components';
+import { delay, inject, injectable, singleton } from 'tsyringe';
+import { BUTTON_CREATE_ROOM, BUTTON_UNIT, ROOMS_CONTAINER } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus } from '../../dto/responces';
@@ -8,6 +8,7 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
+import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
 
 @injectable()
@@ -17,8 +18,11 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     @component(BUTTON_CREATE_ROOM, Button)
     private readonly createRoomButton: Button;
+    @component(BUTTON_UNIT, Button)
+    private readonly unitButton: Button;
 
     constructor(private readonly communicator: ServerCommunicatorService,
+        @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
         private readonly gameState: GameStateService) {
         super();
     }
@@ -27,7 +31,13 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.hide();
         this.createRoomButton.disable();
         this.createRoomButton.onClick = target => this.onCreateRoom();
+        this.unitButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([RequestType.LOBBY_STATUS], this);
+    }
+
+    protected goToUnitConfig(): void {
+        this.hide();
+        this.unitConfigurator.show();
     }
 
     public show(): void {
@@ -60,8 +70,13 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
-        isUserInRooms && this.createRoomButton.disable();
-        !isUserInRooms && this.createRoomButton.enable();
+        if (isUserInRooms) {
+            this.createRoomButton.disable();
+            this.unitButton.disable();
+        } else {
+            this.createRoomButton.enable();
+            this.unitButton.enable();
+        }
     }
 
     protected onCreateRoom(): void {

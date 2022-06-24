@@ -51,3 +51,9 @@ body {
 .items-container {
     display: flex;
 }
+span {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 1px;
+    border-radius: 5px;
+}

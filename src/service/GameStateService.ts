@@ -19,7 +19,7 @@ export default class GameStateService {
     }
 
     public isUserInRoom(roomInfo: RoomInfo): boolean {
-        return roomInfo.host.nickname === this.userState.userNickname ||
-            !!roomInfo.joinedUsers.find(u => u.nickname === this.userState.userNickname);
+        return roomInfo.host.nickname === this.userState.playerInfo.nickname ||
+            !!roomInfo.joinedUsers.find(u => u.nickname === this.userState.playerInfo.nickname);
     }
 }

@@ -9,6 +9,8 @@ export const BUTTON_JOIN: string = 'button_join';
 export const BUTTON_JOIN_ROOM: string = 'button_join_room';
 export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';
 export const BUTTON_CREATE_ROOM: string = 'button_create_room';
+export const BUTTON_LOBBY: string = 'button_lobby';
+export const BUTTON_UNIT: string = 'button_unit';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
 
@@ -21,6 +23,15 @@ export const ICONS_CONTAINER: string = 'icons_container';
 export const ITEMS_CONTAINER: string = 'items_container';
 
 export const ICON: string = 'icon';
+
+export const UNIT_ICON: string = 'unit_icon';
+export const UNIT_INFO: string = 'unit_info';
+export const UNIT_BOOTY: string = 'unit_booty';
+export const UNIT_STATE: string = 'unit_state';
+export const UNIT_PROGRESS: string = 'unit_progress';
+export const UNIT_BASE_ATTRIBUTES: string = 'unit_base_attributes';
+export const UNIT_ATTRIBUTES: string = 'unit_attributes';
+export const UNIT_RESISTANCE: string = 'unit_resistance';
 
 export const PRFX_USER_PLACEHOLDER: string = 'user_placeholder_';
 export const PRFX_USER_NAME: string = 'user_name_';
