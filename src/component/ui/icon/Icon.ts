@@ -1,7 +1,9 @@
 import Component from '../../Component';
 
 export default class Icon extends Component {
-    private onClickCallback: (target: Icon) => void;
+    private onClickCallback: ((target: Icon) => void) | null;
+    private onHoverCallback: ((target: Icon) => void) | null;
+    private onLeaveCallback: ((target: Icon) => void) | null;
     private _selected: boolean = false;
     private _icon: string;
 
@@ -9,7 +11,22 @@ export default class Icon extends Component {
         this.view.onclick = (event: MouseEvent) => {
             this.onClickCallback && this.onClickCallback(this);
         };
+        this.view.onmouseover = (event: MouseEvent) => {
+            this.onHoverCallback && this.onHoverCallback(this);
+        };
+        this.view.onmouseleave = (event: MouseEvent) => {
+            this.onLeaveCallback && this.onLeaveCallback(this);
+        };
         this.view.classList.add('unselected');
+    }
+
+    public destroy(): void {
+        this.onClickCallback = null;
+        this.onHoverCallback = null;
+        this.onLeaveCallback = null;
+        this.view.onclick = null;
+        this.view.onmouseover = null;
+        super.destroy();
     }
 
     public static createIcon(icon: string, parent: Component, containerId: string): Icon | null {
@@ -50,5 +67,13 @@ export default class Icon extends Component {
 
     public set onClick(callback: (target: Icon) => void) {
         this.onClickCallback = callback;
+    }
+
+    public set onHover(callback: (target: Icon) => void) {
+        this.onHoverCallback = callback;
+    }
+
+    public set onLeave(callback: (target: Icon) => void) {
+        this.onLeaveCallback = callback;
     }
 }

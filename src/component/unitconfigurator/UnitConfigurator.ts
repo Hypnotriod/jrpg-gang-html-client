@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER } from '../../constants/Components';
+import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER, ITEM_DESCRIPTION_POPUP } from '../../constants/Components';
 import { Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, AtionType, RequestType } from '../../dto/requests';
 import { Response, ShopStateData, UserStateData } from '../../dto/responces';
@@ -13,6 +13,7 @@ import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
+import ItemDescription from '../ui/popup/ItemDescription';
 
 @singleton()
 @injectable()
@@ -35,6 +36,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitAttributes: Container;
     @component(UNIT_RESISTANCE, Container)
     private readonly unitResistance: Container;
+    @component(ITEM_DESCRIPTION_POPUP, ItemDescription)
+    private readonly itemDescription: ItemDescription;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
@@ -53,6 +56,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected initialize(): void {
         this.hide();
+        this.itemDescription.hide();
         this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
         this.lobbyButton.onClick = target => this.goToLobby();
     }
@@ -100,6 +104,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         if (!iconItem) {
             iconItem = ShopItemIcon.createShopItemIcon(data.code, this, SHOP_ITEMS_CONTAINER)!;
             iconItem.onClick = target => this.onShopItemClick(target);
+            iconItem.descriptionPopup = this.itemDescription;
         }
         this.shopItems.set(data.uid!, iconItem);
         iconItem.update(data);
@@ -149,6 +154,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;
             iconItem.onClick = target => this.onUnitItemClick(target);
+            iconItem.descriptionPopup = this.itemDescription;
         }
         this.unitItems.set(data.uid!, iconItem);
         iconItem.update(data);

@@ -52,6 +52,17 @@ body {
     display: flex;
     flex-wrap: wrap;
 }
+
+.item-description-popup {
+    pointer-events: none;
+    position: fixed;
+    background-color: slategray;
+    z-index: 100;
+    min-height: 40px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
 span {
     padding-left: 3px;
     padding-right: 3px;

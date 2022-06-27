@@ -29,6 +29,11 @@ export default abstract class Component {
 
     protected abstract initialize(): void;
 
+    public destroy(): void {
+        this._view.remove();
+        (this._view as HTMLElement | null) = null;
+    }
+
     protected get view(): HTMLElement {
         return this._view;
     }
@@ -60,11 +65,6 @@ export default abstract class Component {
         root.appendChild(child);
         if (design) { child.innerHTML = design; }
         return container.resolve(clazz).init(child) as T;
-    }
-
-    public destroy(): void {
-        this._view.remove();
-        (this._view as HTMLElement | null) = null;
     }
 
     public show(): void {
@@ -101,5 +101,13 @@ export default abstract class Component {
 
     public get backgroundColor(): string {
         return this._view.style.backgroundColor;
+    }
+
+    public set left(value: number) {
+        this.view.style.left = `${value}px`;
+    }
+
+    public set top(value: number) {
+        this.view.style.top = `${value}px`;
     }
 }

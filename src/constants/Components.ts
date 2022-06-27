@@ -23,6 +23,8 @@ export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';
 export const SHOP_ITEMS_CONTAINER: string = 'shop_items_container';
 
+export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
+
 export const ICON: string = 'icon';
 
 export const UNIT_ICON: string = 'unit_icon';

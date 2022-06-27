@@ -13,6 +13,7 @@ export default class ShopItemIcon extends ItemIcon {
     protected readonly priceLabel: Label;
 
     protected initialize(): void {
+        super.initialize();
     }
 
     public static createShopItemIcon(icon: string, parent: Component, containerId: string): ShopItemIcon | null {
