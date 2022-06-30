@@ -84,11 +84,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
         const inventoryItems: (Disposable | Ammunition)[] = [
+            ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
+            ...(inventory.magic || []),
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
-            ...(inventory.magic || []),
-            ...(inventory.weapon || []),
         ];
         inventoryItems.forEach(v => this.updateShopItem(v));
         this.shopItems.forEach((icon, uid) => {
