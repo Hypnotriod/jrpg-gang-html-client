@@ -60,6 +60,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.updateUnitInfo();
     }
 
+    public handleConnectionLost(): void {
+        this.hide();
+    }
+
     protected updateUnitInfo(): void {
         this.unitIcon.icon = this.gameState.userState.playerInfo.class;
         this.unitInfo.value = this.gameState.userState.playerInfo.nickname;

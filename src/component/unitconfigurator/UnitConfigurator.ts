@@ -78,6 +78,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
     }
 
+    public handleConnectionLost(): void {
+        this.unitItems.forEach(item => item.destroy());
+        this.shopItems.forEach(item => item.destroy());
+        this.unitItems.clear();
+        this.shopItems.clear();
+        this.hide();
+    }
+
     protected updateShopStatus(data: ShopStateData): void {
         this.updateShopInventoryIcons(data.shop.items);
     }

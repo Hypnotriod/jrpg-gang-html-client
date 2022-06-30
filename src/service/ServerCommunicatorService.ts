@@ -4,6 +4,7 @@ import { Response } from '../dto/responces';
 
 export interface ServerCommunicatorHandler {
     handleServerResponse(response: Response): void;
+    handleConnectionLost(): void;
 }
 
 @singleton()
@@ -87,6 +88,9 @@ export default class ServerCommunicatorService {
     }
 
     private onClose(event: Event): void {
+        [...this.subscribers.values()]
+            .flatMap(handlers => handlers)
+            .forEach(handler => handler.handleConnectionLost());
         console.log('Disconnected:', event);
         this.ws = null;
     }
