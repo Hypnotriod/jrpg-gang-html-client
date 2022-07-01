@@ -33,6 +33,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public autologin(userName: string, clazz: string): void {
+        this.userNameInput.value = userName;
+        this.icons.forEach(icon => {
+            icon.icon === clazz ? icon.select() : icon.unselect();
+        });
         this.doJoin(userName, clazz);
     }
 

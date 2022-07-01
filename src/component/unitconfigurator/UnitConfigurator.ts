@@ -2,7 +2,7 @@ import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER, ITEM_DESCRIPTION_POPUP } from '../../constants/Components';
 import { Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, AtionType, RequestType } from '../../dto/requests';
-import { Response, ShopStateData, UserStateData } from '../../dto/responces';
+import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -67,6 +67,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public handleServerResponse(response: Response): void {
+        if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
             case RequestType.JOIN:
             case RequestType.USER_STATUS:
