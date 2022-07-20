@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { BUTTON_JOIN, BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
+import { BUTTON_JOIN, BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
 import { ROOM_DESIGN } from '../../constants/Resources';
 import { RoomInfo } from '../../domain/domain';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
@@ -18,6 +18,7 @@ export default class Room extends Component {
     private readonly userPlaceholders: Container[] = [];
     private readonly userNameLabels: Label[] = [];
     private readonly userLevelLabels: Label[] = [];
+    private readonly userConnectionStatusLabels: Label[] = [];
     private readonly userIcons: Icon[] = [];
 
     @component(BUTTON_JOIN_ROOM, Button)
@@ -47,12 +48,14 @@ export default class Room extends Component {
         this.userNameLabels[0].value = roomInfo.host.nickname;
         this.userLevelLabels[0].value = `Level: ${roomInfo.host.level}`;
         this.userIcons[0].icon = roomInfo.host.class;
+        this.userConnectionStatusLabels[0].value = roomInfo.host.isOffline ? '⚫' : '🟢';
 
         roomInfo.joinedUsers.forEach((user, i) => {
             this.userPlaceholders[i + 1].show();
             this.userNameLabels[i + 1].value = user.nickname;
             this.userLevelLabels[i + 1].value = `Level: ${user.level}`;
             this.userIcons[i + 1].icon = user.class;
+            this.userConnectionStatusLabels[i + 1].value = user.isOffline ? '⚫' : '🟢';
         });
 
         const isUserInRoom: boolean = this.gameState.isUserInRoom(roomInfo);
@@ -75,6 +78,7 @@ export default class Room extends Component {
             this.userPlaceholders.push(this.instantiate(PRFX_USER_PLACEHOLDER + i, Container)!);
             this.userNameLabels.push(this.instantiate(PRFX_USER_NAME + i, Label)!);
             this.userLevelLabels.push(this.instantiate(PRFX_USER_LEVEL + i, Label)!);
+            this.userConnectionStatusLabels.push(this.instantiate(PRFX_CONNECTION_STATUS + i, Label)!);
             this.userIcons.push(this.instantiate(PRFX_USER_ICON + i, Icon)!);
 
             this.userPlaceholders[i - 1].hide();

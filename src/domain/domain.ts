@@ -2,6 +2,7 @@ export interface PlayerInfo {
     nickname: string;
     class: string;
     level: number;
+    isOffline?: boolean;
 }
 
 export interface RoomInfo {

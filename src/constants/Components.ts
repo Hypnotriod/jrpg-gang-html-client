@@ -39,4 +39,5 @@ export const UNIT_RESISTANCE: string = 'unit_resistance';
 export const PRFX_USER_PLACEHOLDER: string = 'user_placeholder_';
 export const PRFX_USER_NAME: string = 'user_name_';
 export const PRFX_USER_LEVEL: string = 'user_level_';
+export const PRFX_CONNECTION_STATUS: string = 'connection_status_';
 export const PRFX_USER_ICON: string = 'user_icon_';
