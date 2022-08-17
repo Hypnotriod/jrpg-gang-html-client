@@ -1,4 +1,5 @@
-import { singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
+import AppConfig from '../application/AppConfig';
 import { Request, RequestType, RequestData } from '../dto/requests';
 import { Response } from '../dto/responces';
 
@@ -8,11 +9,14 @@ export interface ServerCommunicatorHandler {
 }
 
 @singleton()
+@injectable()
 export default class ServerCommunicatorService {
     private readonly subscribers: Map<RequestType, ServerCommunicatorHandler[]> = new Map();
     private readonly requestsQueue: Request[] = [];
     private pendingRequestId: string | undefined;
     private ws: WebSocket | null;
+
+    constructor(private readonly appConfig: AppConfig) { }
 
     public subscribe(requestTypes: RequestType[], handler: ServerCommunicatorHandler): void {
         this.unsubscribe(handler);
@@ -45,7 +49,7 @@ export default class ServerCommunicatorService {
     }
 
     private prepareWs(): void {
-        this.ws = new WebSocket('ws://localhost:3000/ws');
+        this.ws = new WebSocket(this.appConfig.gameServerWsUrl);
         this.ws.onopen = (event: Event) => this.onOpen(event);
         this.ws.onclose = (event: Event) => this.onClose(event);
         this.ws.onmessage = (event: MessageEvent<string>) => this.onMessage(event);
