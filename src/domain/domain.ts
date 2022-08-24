@@ -205,3 +205,111 @@ export interface GameUnit extends Unit {
 export interface GameShop {
     items: UnitInventory;
 }
+
+export enum GamePhase {
+    PLACE_UNIT = 'placeUnit',
+    READY_FOR_START_ROUND = 'readyForStartRound',
+    MAKE_MOVE_OR_ACTION_AI = 'makeMoveOrActionAI',
+    MAKE_ACTION_AI = 'makeActionAI',
+    MAKE_MOVE_OR_ACTION = 'makeMoveOrAction',
+    MAKE_ACTION = 'makeAction',
+    ACTION_COMPLETE = 'actionComplete',
+    BATTLE_COMPLETE = 'battleComplete',
+}
+
+export interface GameState {
+    activeUnitsQueue: number[];
+    inactiveUnits: number[];
+}
+
+export enum CellType {
+    SPACE = 'space',
+    OBSTACLE = 'obstacle',
+}
+
+export interface Cell {
+    code: string;
+    factions: number[];
+    type: CellType;
+}
+
+export interface Battlefield {
+    matrix: Cell[][];
+    units: GameUnit[];
+    corpses: GameUnit[];
+}
+
+export interface Spot {
+    name: string;
+    code: string;
+    battlefield: Battlefield;
+}
+
+export enum AtionType {
+    USE = 'use',
+    EQUIP = 'equip',
+    UNEQUIP = 'unequip',
+    PLACE = 'place',
+    MOVE = 'move',
+    BUY = 'buy'
+}
+
+export interface Position {
+    x: number;
+    y: number;
+}
+
+export interface Action {
+    action: AtionType;
+    uid?: number;
+    targetUid?: number;
+    itemUid?: number;
+    quantity?: number;
+    position?: Position;
+}
+
+export enum ActionResultType {
+    ACCOMPLISHED = 'accomplished',
+    NOT_ACCOMPLISHED = 'notAccomplished',
+    NOT_ALLOWED = 'notAllowed',
+    NOT_FOUND = 'notFound',
+    NOT_EMPTY = 'notEmpty',
+    NOT_EUIPPED = 'notEquipped',
+    NOT_REACHABLE = 'notReachable',
+    CANT_USE = 'cantUse',
+    OUT_OF_BOUNDS = 'outOfBounds',
+    NO_AMMUNITION = 'noAmmunition',
+    NOT_COMPATIBLE = 'notCompatible',
+    ZERO_QUANTITY = 'zeroQuantity',
+    NOT_ENOUGH_SLOTS = 'notEnoughSlots',
+    NOT_ENOUGH_RESOURCES = 'notEnoughResources',
+    IS_BROKEN = 'isBroken',
+}
+
+export interface ActionResult {
+    instantDamage: Damage[];
+    temporalDamage: DamageImpact[];
+    instantRecovery: UnitRecovery[];
+    temporalModification: UnitModificationImpact[];
+    result: ActionResultType;
+}
+
+export interface GameUnitActionResult {
+    action: Action;
+    result: ActionResult;
+}
+
+export interface EndTurnResult {
+    damage: { [key: number]: Damage };
+    recovery: { [key: number]: UnitRecovery };
+}
+
+export interface GameEvent {
+    phase: GamePhase;
+    nextPhase: GamePhase;
+    state: GameState;
+    spot: Spot
+    players?: PlayerInfo[];
+    unitActionResult?: GameUnitActionResult;
+    endRoundResult?: EndTurnResult;
+}

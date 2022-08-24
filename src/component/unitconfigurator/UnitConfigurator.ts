@@ -1,7 +1,7 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER, ITEM_DESCRIPTION_POPUP } from '../../constants/Components';
-import { Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
-import { ActionData, AtionType, RequestType } from '../../dto/requests';
+import { Ammunition, AtionType, Disposable, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';

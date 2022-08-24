@@ -1,4 +1,4 @@
-import { Position } from '../domain/domain';
+import { AtionType, Position } from '../domain/domain';
 
 export enum RequestType {
     JOIN = 'join',
@@ -15,15 +15,6 @@ export enum RequestType {
     HAME_ACTION = 'gameAction',
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',
-}
-
-export enum AtionType {
-    USE = 'use',
-    EQUIP = 'equip',
-    UNEQUIP = 'unequip',
-    PLACE = 'place',
-    MOVE = 'move',
-    BUY = 'buy',
 }
 
 export interface Request {
