@@ -7,6 +7,7 @@ import Component from '../Component';
 @singleton()
 export default class Game extends Component implements ServerCommunicatorHandler {
     protected initialize(): void {
+        this.hide();
     }
     public handleServerResponse(response: Response): void {
     }

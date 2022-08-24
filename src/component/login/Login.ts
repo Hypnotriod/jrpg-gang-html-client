@@ -2,18 +2,15 @@ import { injectable, singleton } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
+import { Response, ResponseStatus, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
-import Game from '../gamescene/Game';
-import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
-import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 
 @injectable()
 @singleton()
@@ -29,10 +26,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService,
-        private readonly configurator: UnitConfigurator,
-        private readonly game: Game,
-        private readonly lobby: Lobby) {
+        private readonly gameState: GameStateService) {
         super();
     }
 
@@ -104,18 +98,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) { return; }
         this.gameState.userState = response.data as UserStateData;
         localStorage.setItem(this.gameState.userState.playerInfo.nickname, this.gameState.userState.userId);
-        this.hide();
-        switch (this.gameState.userState.status) {
-            case UserStatus.IN_LOBBY:
-                this.configurator.show();
-                break;
-            case UserStatus.IN_ROOM:
-                this.lobby.show();
-                break;
-            case UserStatus.IN_GAME:
-                this.game.show();
-                break;
-        }
         this.communicator.unsubscribe(this);
     }
 

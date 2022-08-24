@@ -3,6 +3,7 @@ import { GAME_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, UNIT_CONFIGURATOR_CON
 import { GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import QueryService from '../../service/QueryService';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
+import SceneSwitcherService from '../../service/SceneSwitcherService';
 import Component from '../Component';
 import Game from '../gamescene/Game';
 import Lobby from '../lobby/Lobby';
@@ -18,6 +19,7 @@ export default class MainScene extends Component {
 
     constructor(
         private readonly loaderService: ResourceLoaderService,
+        private readonly sceneSwitcherService: SceneSwitcherService,
         private readonly query: QueryService) {
         super();
     }
