@@ -12,10 +12,17 @@ export enum ResponseStatus {
     ALREADY_EXISTS = 'alreadyExists',
 }
 
+export enum UserStatus {
+    IN_LOBBY = 'inLobby',
+    IN_ROOM = 'inRoom',
+    IN_GAME = 'inGame',
+}
+
 export interface UserStateData {
     userId: string;
     playerInfo: PlayerInfo;
     unit: GameUnit;
+    status: UserStatus;
 }
 
 export interface ShopStateData {

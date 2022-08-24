@@ -1,17 +1,17 @@
 import { container, injectable } from 'tsyringe';
-import { BUTTON_JOIN, BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
+import { BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, BUTTON_START_GAME, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
 import { ROOM_DESIGN } from '../../constants/Resources';
 import { RoomInfo } from '../../domain/domain';
+import { JoinGameRoomRequestData, RequestType } from '../../dto/requests';
+import GameStateService from '../../service/GameStateService';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
+import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import Component from '../Component';
-import Icon from '../ui/icon/Icon';
-import Label from '../ui/label/Label';
-import Container from '../ui/container/Container';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
-import GameStateService from '../../service/GameStateService';
-import ServerCommunicatorService from '../../service/ServerCommunicatorService';
-import { JoinGameRoomRequestData, RequestType } from '../../dto/requests';
+import Container from '../ui/container/Container';
+import Icon from '../ui/icon/Icon';
+import Label from '../ui/label/Label';
 
 @injectable()
 export default class Room extends Component {
@@ -25,6 +25,8 @@ export default class Room extends Component {
     private readonly joinRoomButton: Button;
     @component(BUTTON_LEAVE_ROOM, Button)
     private readonly leaveRoomButton: Button;
+    @component(BUTTON_START_GAME, Button)
+    private readonly startGameButton: Button;
 
     private roomInfo: RoomInfo;
 
@@ -59,6 +61,7 @@ export default class Room extends Component {
         });
 
         const isUserInRoom: boolean = this.gameState.isUserInRoom(roomInfo);
+        const isUserHostOfRoom: boolean = this.gameState.isUserHostOfRoom(roomInfo);
         if (isUserInRoom) {
             this.joinRoomButton.hide();
             this.leaveRoomButton.show();
@@ -71,6 +74,8 @@ export default class Room extends Component {
             this.leaveRoomButton.hide();
             this.joinRoomButton.enable();
         }
+        isUserHostOfRoom && this.startGameButton.show();
+        !isUserHostOfRoom && this.startGameButton.hide();
     }
 
     protected initialize(): void {
@@ -86,6 +91,11 @@ export default class Room extends Component {
 
         this.joinRoomButton.onClick = target => this.doJoinRoom();
         this.leaveRoomButton.onClick = target => this.doLeaveRoom();
+        this.startGameButton.onClick = target => this.doStartGame();
+    }
+
+    public doStartGame(): void {
+        this.communicator.sendMessage(RequestType.START_GAME);
     }
 
     public destroy(): void {

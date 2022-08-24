@@ -1,0 +1,11 @@
+.game-wrapper {
+    background-color: rgb(79, 73, 47);
+    position: absolute;
+    width: 900px;
+    height: 600px;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}

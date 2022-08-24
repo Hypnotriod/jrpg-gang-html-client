@@ -1,7 +1,8 @@
-export const MAIN_SCENE: string = 'main_scene_container';
-export const LOGIN: string = 'login_container';
-export const LOBBY: string = 'lobby_container';
-export const UNIT_CONFIGURATOR: string = 'unit_configurator_container';
+export const MAIN_SCENE_CONTAINER: string = 'main_scene_container';
+export const LOGIN_CONTAINER: string = 'login_container';
+export const LOBBY_CONTAINER: string = 'lobby_container';
+export const UNIT_CONFIGURATOR_CONTAINER: string = 'unit_configurator_container';
+export const GAME_CONTAINER: string = 'game_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
@@ -11,6 +12,7 @@ export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';
 export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 export const BUTTON_LOBBY: string = 'button_lobby';
 export const BUTTON_UNIT: string = 'button_unit';
+export const BUTTON_START_GAME: string = 'button_start_game';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
 

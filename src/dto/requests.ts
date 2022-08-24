@@ -42,7 +42,7 @@ export interface JoinRequestData extends RequestData {
 }
 export interface CreateRoomRequestData extends RequestData {
     capacity: number;
-    scenarioUid: number;
+    scenarioId: string;
 }
 
 export interface JoinGameRoomRequestData extends RequestData {

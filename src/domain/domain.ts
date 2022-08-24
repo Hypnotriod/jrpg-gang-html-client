@@ -8,7 +8,7 @@ export interface PlayerInfo {
 export interface RoomInfo {
     uid: number;
     capacity: number;
-    scenarioUid: number;
+    scenarioId: string;
     joinedUsers: PlayerInfo[];
     host: PlayerInfo;
 }

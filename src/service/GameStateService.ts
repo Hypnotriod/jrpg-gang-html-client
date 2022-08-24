@@ -22,4 +22,8 @@ export default class GameStateService {
         return roomInfo.host.nickname === this.userState.playerInfo.nickname ||
             !!roomInfo.joinedUsers.find(u => u.nickname === this.userState.playerInfo.nickname);
     }
+
+    public isUserHostOfRoom(roomInfo: RoomInfo): boolean {
+        return roomInfo.host.nickname === this.userState.playerInfo.nickname;
+    }
 }

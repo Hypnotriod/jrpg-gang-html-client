@@ -15,3 +15,6 @@ export const SHOP_ITEM_ICON_DESIGN: string = COMPONENTS_PATH + 'item/shop_item_i
 
 export const UNIT_CONFIGURATOR_DESIGN: string = COMPONENTS_PATH + 'unitconfigurator/unitconfigurator.html';
 export const UNIT_CONFIGURATOR_STYLE: string = COMPONENTS_PATH + 'unitconfigurator/unitconfigurator.css';
+
+export const GAME_DESIGN: string = COMPONENTS_PATH + 'game/game.html';
+export const GAME_STYLE: string = COMPONENTS_PATH + 'game/game.css';
