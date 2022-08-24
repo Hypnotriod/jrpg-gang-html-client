@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import Game from '../component/gamescene/Game';
+import GameScene from '../component/gamescene/GameScene';
 import Lobby from '../component/lobby/Lobby';
 import Login from '../component/login/Login';
 import UnitConfigurator from '../component/unitconfigurator/UnitConfigurator';
@@ -14,7 +14,7 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         private readonly communicator: ServerCommunicatorService,
         private readonly configurator: UnitConfigurator,
         private readonly login: Login,
-        private readonly game: Game,
+        private readonly gameScene: GameScene,
         private readonly lobby: Lobby) {
         this.communicator.subscribe([RequestType.JOIN, RequestType.USER_STATUS], this);
     }
@@ -25,13 +25,13 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
             status !== UserStatus.IN_GAME) { return; }
 
         this.login.hide();
-        this.game.hide();
+        this.gameScene.hide();
         this.lobby.hide();
         this.configurator.hide();
 
         status === UserStatus.IN_LOBBY && this.configurator.show();
         status === UserStatus.IN_ROOM && this.lobby.show();
-        status === UserStatus.IN_GAME && this.game.show();
+        status === UserStatus.IN_GAME && this.gameScene.show();
     }
     handleConnectionLost(): void {
         throw new Error('Method not implemented.');

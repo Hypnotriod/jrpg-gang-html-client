@@ -5,7 +5,7 @@ import QueryService from '../../service/QueryService';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
 import Component from '../Component';
-import Game from '../gamescene/Game';
+import GameScene from '../gamescene/GameScene';
 import Lobby from '../lobby/Lobby';
 import Login from '../login/Login';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
@@ -15,7 +15,7 @@ export default class MainScene extends Component {
     private login: Login;
     private lobby: Lobby;
     private configurator: UnitConfigurator;
-    private game: Game;
+    private gameScene: GameScene;
 
     constructor(
         private readonly loaderService: ResourceLoaderService,
@@ -39,7 +39,7 @@ export default class MainScene extends Component {
         this.login = (await Component.instantiateHighOrderComponent(LOGIN_CONTAINER, LOGIN_DESIGN, LOGIN_STYLE, Login))!;
         this.lobby = (await Component.instantiateHighOrderComponent(LOBBY_CONTAINER, LOBBY_DESIGN, LOBBY_STYLE, Lobby))!;
         this.configurator = (await Component.instantiateHighOrderComponent(UNIT_CONFIGURATOR_CONTAINER, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE, UnitConfigurator))!;
-        this.game = (await Component.instantiateHighOrderComponent(GAME_CONTAINER, GAME_DESIGN, GAME_STYLE, Game))!;
+        this.gameScene = (await Component.instantiateHighOrderComponent(GAME_CONTAINER, GAME_DESIGN, GAME_STYLE, GameScene))!;
     }
 
     protected tryToAutologin(): void {
