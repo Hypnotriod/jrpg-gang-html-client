@@ -1,4 +1,4 @@
-import { GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
+import { Action, ActionResult, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
 export enum ResponseStatus {
@@ -34,13 +34,23 @@ export interface LobbyStatusData {
     usersCount: number;
 }
 
-export interface GameStatedata {
+export interface GameStateData {
     gameState: GameEvent;
+}
+
+export interface GameNextPhaseData {
+    actionResult: ActionResult;
+}
+
+export interface GameActionData {
+    action: Action;
+    actionResult: ActionResult;
 }
 
 export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
-    data: LobbyStatusData | UserStateData | ShopStateData | GameStatedata;
+    data: LobbyStatusData | UserStateData | ShopStateData | GameStateData |
+    GameNextPhaseData | GameActionData;
 }

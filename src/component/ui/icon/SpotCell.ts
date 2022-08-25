@@ -7,7 +7,7 @@ import Component from '../../Component';
 import { component } from '../../decorator/decorator';
 import Icon from './Icon';
 
-export default class SpotCellIcon extends Component {
+export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
 
@@ -22,13 +22,11 @@ export default class SpotCellIcon extends Component {
         return this._icon.icon;
     }
 
-    public static createSpotCellIcon(icon: string, parent: Component, containerId: string): SpotCellIcon | null {
+    public static createSpotCell(icon: string, parent: Component, containerId: string): SpotCell | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
-        const iconComponent: SpotCellIcon | null = parent.create(containerId, resourceLoader.get(SPOT_CELL_DESIGN), SpotCellIcon);
-        if (iconComponent) {
-            iconComponent.icon = icon;
-            iconComponent.view.classList.add('item-icon-warpper');
-        }
+        const iconComponent: SpotCell = parent.create(containerId, SpotCell,
+            { design: resourceLoader.get(SPOT_CELL_DESIGN), classList: ['item-icon-warpper'] })!;
+        iconComponent.icon = icon;
         return iconComponent;
     }
 

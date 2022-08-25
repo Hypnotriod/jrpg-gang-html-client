@@ -53,6 +53,11 @@ body {
     flex-wrap: wrap;
 }
 
+.column-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .item-description-popup {
     pointer-events: none;
     position: fixed;

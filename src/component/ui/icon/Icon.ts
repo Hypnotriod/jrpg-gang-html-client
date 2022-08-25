@@ -30,11 +30,8 @@ export default class Icon extends Component {
     }
 
     public static createIcon(icon: string, parent: Component, containerId: string): Icon | null {
-        const iconComponent: Icon | null = parent.create(containerId, null, Icon);
-        if (iconComponent) {
-            iconComponent.icon = icon;
-            iconComponent.view.classList.add('selection-icon');
-        }
+        const iconComponent: Icon = parent.create(containerId, Icon, { classList: ['selection-icon'] })!;
+        iconComponent.icon = icon;
         return iconComponent;
     }
 

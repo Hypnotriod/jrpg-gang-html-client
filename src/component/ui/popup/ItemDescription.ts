@@ -6,8 +6,8 @@ export default class ItemDescription extends TextField {
     protected initialize(): void {
         super.initialize();
         window.addEventListener('mousemove', e => {
-            this.left = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.view.clientWidth;
-            this.top = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.view.clientHeight;
+            this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.view.clientWidth;
+            this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.view.clientHeight;
         });
     }
 

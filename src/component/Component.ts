@@ -58,12 +58,20 @@ export default abstract class Component {
         return child ? container.resolve(clazz).init(child) as T : null;
     }
 
-    public create<T extends Component>(containerId: string, design: string | null, clazz: new (...args: any) => T): T | null {
-        const root: HTMLElement | null = this.findChild(containerId);
+    public create<T extends Component>(
+        containerOrContainerId: HTMLElement | string,
+        clazz: new (...args: any) => T,
+        config?: { design?: string, classList?: string[], id?: string, tagName?: string }): T | null {
+        config = config || {};
+        const root: HTMLElement | null = (containerOrContainerId instanceof HTMLElement)
+            ? containerOrContainerId : this.findChild(containerOrContainerId);
         if (!root) { return null; }
-        const child: HTMLDivElement = document.createElement('div');
+        const tagName: string = config.tagName || 'div';
+        const child: HTMLElement = document.createElement(tagName);
+        if (config.design) { child.innerHTML = config.design; }
+        if (config.id) { child.id = config.id; }
+        config.classList && config.classList.forEach(c => child.classList.add(c));
         root.appendChild(child);
-        if (design) { child.innerHTML = design; }
         return container.resolve(clazz).init(child) as T;
     }
 
@@ -103,11 +111,11 @@ export default abstract class Component {
         return this._view.style.backgroundColor;
     }
 
-    public set left(value: number) {
+    public set leftPx(value: number) {
         this.view.style.left = `${value}px`;
     }
 
-    public set top(value: number) {
+    public set topPx(value: number) {
         this.view.style.top = `${value}px`;
     }
 }

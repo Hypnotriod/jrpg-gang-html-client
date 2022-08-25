@@ -186,6 +186,7 @@ export interface UnitStats {
 
 export interface Unit {
     uid?: number;
+    code?: string;
     name: string;
     booty: UnitBooty;
     state: UnitState;

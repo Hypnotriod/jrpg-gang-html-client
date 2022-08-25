@@ -37,8 +37,7 @@ export default class Room extends Component {
 
     public static createRoom(parent: Component, containerId: string): Room | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
-        const component: Room | null = parent.create(containerId, resourceLoader.get(ROOM_DESIGN), Room);
-        return component;
+        return parent.create(containerId, Room, { design: resourceLoader.get(ROOM_DESIGN) });
     }
 
     public update(roomInfo: RoomInfo, isUserInRooms: boolean): void {

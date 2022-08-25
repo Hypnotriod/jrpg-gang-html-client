@@ -2,7 +2,7 @@ import { injectable, singleton } from 'tsyringe';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus, UserStateData } from '../../dto/responces';
+import { Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -99,6 +99,9 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.gameState.userState = response.data as UserStateData;
         localStorage.setItem(this.gameState.userState.playerInfo.nickname, this.gameState.userState.userId);
         this.communicator.unsubscribe(this);
+        if (this.gameState.userState.status === UserStatus.IN_GAME) {
+            this.communicator.sendMessage(RequestType.GAME_STATE);
+        }
     }
 
     public handleConnectionLost(): void {
