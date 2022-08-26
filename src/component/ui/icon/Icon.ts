@@ -4,11 +4,13 @@ export default class Icon extends Component {
     private onClickCallback: ((target: Icon) => void) | null;
     private onHoverCallback: ((target: Icon) => void) | null;
     private onLeaveCallback: ((target: Icon) => void) | null;
+    private _enabled: boolean = true;
     private _selected: boolean = false;
     private _icon: string;
 
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
+            if (!this._enabled) { return; }
             this.onClickCallback && this.onClickCallback(this);
         };
         this.view.onmouseover = (event: MouseEvent) => {
@@ -45,14 +47,14 @@ export default class Icon extends Component {
     }
 
     public select(): void {
-        if (this._selected) { return; }
+        if (this._selected || !this._enabled) { return; }
         this._selected = true;
         this.view.classList.add('selected');
         this.view.classList.remove('unselected');
     }
 
     public unselect(): void {
-        if (!this._selected) { return; }
+        if (!this._selected || !this._enabled) { return; }
         this._selected = false;
         this.view.classList.remove('selected');
         this.view.classList.add('unselected');
@@ -72,5 +74,16 @@ export default class Icon extends Component {
 
     public set onLeave(callback: (target: Icon) => void) {
         this.onLeaveCallback = callback;
+    }
+
+    public disable(): void {
+        this._enabled = false;
+        this.view.classList.remove('selected');
+        this.view.classList.remove('unselected');
+    }
+
+    public enable(): void {
+        this._enabled = true;
+        this.unselect();
     }
 }

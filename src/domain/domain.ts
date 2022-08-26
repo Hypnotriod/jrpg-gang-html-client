@@ -198,8 +198,13 @@ export interface Unit {
     position: Position;
 }
 
+export enum GameUnitFaction {
+    PARTY = 0,
+    ENEMY = 1,
+}
+
 export interface GameUnit extends Unit {
-    faction: null;
+    faction: GameUnitFaction;
     playerInfo?: PlayerInfo;
 }
 
@@ -230,7 +235,7 @@ export enum CellType {
 
 export interface Cell {
     code: string;
-    factions: number[];
+    factions: GameUnitFaction[];
     type: CellType;
 }
 

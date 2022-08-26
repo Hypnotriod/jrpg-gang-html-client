@@ -39,12 +39,12 @@ export interface GameStateData {
 }
 
 export interface GameNextPhaseData {
-    actionResult: ActionResult;
+    actionResult: GameEvent;
 }
 
 export interface GameActionData {
     action: Action;
-    actionResult: ActionResult;
+    actionResult: GameEvent;
 }
 
 export interface Response {
