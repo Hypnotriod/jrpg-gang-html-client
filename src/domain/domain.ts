@@ -2,6 +2,7 @@ export interface PlayerInfo {
     nickname: string;
     class: string;
     level: number;
+    unitUid?: number;
     isOffline?: boolean;
 }
 
@@ -213,7 +214,7 @@ export interface GameShop {
 }
 
 export enum GamePhase {
-    PLACE_UNIT = 'placeUnit',
+    PLACE_UNIT_BEFORE_START_ROUND = 'placeUnitBeforeStartRound',
     READY_FOR_START_ROUND = 'readyForStartRound',
     MAKE_MOVE_OR_ACTION_AI = 'makeMoveOrActionAI',
     MAKE_ACTION_AI = 'makeActionAI',

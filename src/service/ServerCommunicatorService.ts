@@ -57,7 +57,7 @@ export default class ServerCommunicatorService {
     }
 
     private onMessage(event: MessageEvent<string>): void {
-        console.log('Message:', event.data);
+        console.log(event.data);
         const response: Response = JSON.parse(event.data) as Response;
         Object.freeze(response);
         this.notify(response);

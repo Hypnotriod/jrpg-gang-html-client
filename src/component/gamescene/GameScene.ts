@@ -93,7 +93,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected onSpotCellClick(target: SpotCell): void {
-        if (this.gameState.gameState.phase === GamePhase.PLACE_UNIT) {
+        if (this.gameState.gameState.phase === GamePhase.PLACE_UNIT_BEFORE_START_ROUND) {
             this.placeUnit({ x: target.x, y: target.y });
         }
     }

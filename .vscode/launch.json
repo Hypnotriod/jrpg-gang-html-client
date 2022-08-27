@@ -6,7 +6,7 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             // "url": "http://localhost:9000",
-            "url": "http://localhost:9000/?nickname=Super%20User&class=rogue",
+            "url": "http://localhost:9000/?nickname=User1&class=rogue",
             "webRoot": "${workspaceFolder}",
             "sourceMaps": true,
             "trace": true
