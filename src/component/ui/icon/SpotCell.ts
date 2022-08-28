@@ -11,6 +11,7 @@ export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
 
+    private _unit: GameUnit | undefined;
     private _x: number;
     private _y: number;
 
@@ -56,6 +57,10 @@ export default class SpotCell extends Component {
         this._y = value;
     }
 
+    public get unit(): GameUnit | undefined {
+        return this._unit;
+    }
+
     public static createSpotCell(parent: Component, containerId: string): SpotCell | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
         const iconComponent: SpotCell = parent.create(containerId, SpotCell,
@@ -70,9 +75,14 @@ export default class SpotCell extends Component {
         } else {
             this._icon.disable();
         }
+        this._unit = undefined;
     }
 
     public updateWithUnit(unit: GameUnit): void {
+        this._unit = unit;
         this.icon = unit.playerInfo ? unit.playerInfo.class! : unit.code!;
+        if (unit.faction === GameUnitFaction.ENEMY) {
+            this._icon.enable();
+        }
     }
 }

@@ -98,7 +98,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) { return; }
         this.state.userState = response.data as UserStateData;
         localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.userId);
-        this.communicator.unsubscribe(this);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }
@@ -106,5 +105,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public handleConnectionLost(): void {
         this.show();
+        localStorage.clear();
     }
 }

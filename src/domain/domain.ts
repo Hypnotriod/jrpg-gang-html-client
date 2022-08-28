@@ -4,6 +4,7 @@ export interface PlayerInfo {
     level: number;
     unitUid?: number;
     isOffline?: boolean;
+    isHost?: boolean;
 }
 
 export interface RoomInfo {
@@ -317,7 +318,7 @@ export interface GameEvent {
     nextPhase: GamePhase;
     state: GameState;
     spot: Spot
-    players?: PlayerInfo[];
+    players: PlayerInfo[];
     unitActionResult?: GameUnitActionResult;
     endRoundResult?: EndTurnResult;
 }

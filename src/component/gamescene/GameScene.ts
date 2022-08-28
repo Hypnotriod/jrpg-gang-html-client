@@ -1,12 +1,13 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { Ammunition, AtionType, Cell, Disposable, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { BATTLEFIELD_CONTAINER, BUTTON_NEXT_PHASE, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { Ammunition, AtionType, Cell, Disposable, GamePhase, GameUnit, GameUnitFaction, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, Response } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
+import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
@@ -19,6 +20,8 @@ import ItemDescription from '../ui/popup/ItemDescription';
 export default class GameScene extends Component implements ServerCommunicatorHandler {
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
+    @component(BUTTON_NEXT_PHASE, Button)
+    private readonly nextPhaseButton: Button;
     @component(ITEM_DESCRIPTION_POPUP, ItemDescription)
     private readonly itemDescription: ItemDescription;
     @component(UNITS_QUEUE_CONTAINER, Container)
@@ -41,6 +44,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             RequestType.GAME_ACTION,
         ], this);
         this.hide();
+        this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
         this.itemDescription.hide();
     }
 
@@ -53,6 +57,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 this.updateUnitsQueue();
                 break;
             case RequestType.GAME_ACTION:
+            case RequestType.NEXT_GAME_PHASE:
                 this.state.gameState = (response.data as GameActionData).actionResult;
                 this.updateBattleField();
                 this.updateUserItems();
@@ -71,8 +76,30 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         !this.spots && this.initBattlefield();
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
+        this.updateNextPhaseButton();
+        this.gameStatusLabel.value = this.state.gameState.nextPhase;
+    }
+
+    protected updateNextPhaseButton(): void {
         const gamePhase: string = this.state.gameState.nextPhase;
-        this.gameStatusLabel.value = `Game Phase: ${gamePhase}`;
+        switch (gamePhase) {
+            case GamePhase.READY_FOR_START_ROUND:
+            case GamePhase.PREPARE_UNIT:
+            case GamePhase.MAKE_MOVE_OR_ACTION_AI:
+            case GamePhase.MAKE_ACTION_AI:
+            case GamePhase.ACTION_COMPLETE:
+                this.nextPhaseButton.enable();
+                break;
+            default:
+                this.nextPhaseButton.disable();
+                break;
+        }
+        const playerInfo: PlayerInfo | undefined = this.currentPlayerInfo();
+        if (!playerInfo || !playerInfo.isHost) {
+            this.nextPhaseButton.hide();
+        } else {
+            this.nextPhaseButton.show();
+        }
     }
 
     protected updateBattleFieldUnits(): void {
@@ -109,8 +136,16 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected onSpotCellClick(target: SpotCell): void {
-        if (this.state.gameState.phase === GamePhase.PREPARE_UNIT) {
+        if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
+        }
+        if ((this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION ||
+            this.state.gameState.nextPhase === GamePhase.MAKE_ACTION) &&
+            target.unit?.faction === GameUnitFaction.ENEMY) {
+            this.attackUnit(target.unit.uid!);
+        }
+        if (this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION) {
+            this.moveUnit({ x: target.x, y: target.y });
         }
     }
 
@@ -121,14 +156,42 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         } as GameActionRequestData);
     }
 
+    protected moveUnit(position: Position): void {
+        this.communicator.sendMessage(RequestType.GAME_ACTION, {
+            action: AtionType.MOVE,
+            position,
+        } as GameActionRequestData);
+    }
+
+    protected attackUnit(targetUid: number): void {
+        const unit = this.currentActor();
+        if (!unit) { return; }
+        const weapon = unit.inventory.weapon?.find(weapon => weapon.equipped);
+        if (!weapon) { return; }
+        this.communicator.sendMessage(RequestType.GAME_ACTION, {
+            action: AtionType.USE,
+            itemUid: weapon.uid!,
+            targetUid,
+        } as GameActionRequestData);
+    }
+
     protected updateUserItems(): void {
-        const playerInfo: PlayerInfo | undefined = this.state.gameState.players!.find(
-            player => player.nickname === this.state.userState.playerInfo.nickname);
+        const playerInfo: PlayerInfo | undefined = this.currentPlayerInfo();
         if (!playerInfo) { return; }
         const unit: GameUnit | undefined = this.state.gameState.spot.battlefield.units.find(
             unit => unit.uid === playerInfo.unitUid);
         if (!unit) { return; }
         this.updateUnitInventoryIcons(unit.inventory);
+    }
+
+    protected currentPlayerInfo(): PlayerInfo | undefined {
+        return this.state.gameState.players.find(
+            player => player.nickname === this.state.userState.playerInfo.nickname);
+    }
+
+    protected currentActor(): GameUnit | undefined {
+        return this.state.gameState.spot.battlefield.units.find(
+            unit => unit.playerInfo?.nickname === this.state.userState.playerInfo.nickname);
     }
 
     protected updateUnitInventoryIcons(inventory: UnitInventory): void {
@@ -179,5 +242,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             itemUid: target.data.uid!,
         } as ActionData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected onNextPhaseClick(): void {
+        this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE);
     }
 }

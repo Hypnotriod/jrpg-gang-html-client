@@ -81,6 +81,10 @@ export default abstract class Component {
         }
     }
 
+    public appendChild(child: HTMLElement): void {
+        this.view.appendChild(child);
+    }
+
     public show(): void {
         this._view.style.display = this.display || 'block';
     }

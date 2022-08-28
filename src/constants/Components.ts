@@ -13,6 +13,7 @@ export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 export const BUTTON_LOBBY: string = 'button_lobby';
 export const BUTTON_UNIT: string = 'button_unit';
 export const BUTTON_START_GAME: string = 'button_start_game';
+export const BUTTON_NEXT_PHASE: string = 'button_next_phase';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
 
