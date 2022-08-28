@@ -29,7 +29,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     constructor(private readonly communicator: ServerCommunicatorService,
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
-        private readonly gameState: GameStateService) {
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -54,7 +54,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
         const roomInfos: RoomInfo[] = (response.data as LobbyStatusData).rooms;
-        const isUserInRooms: boolean = this.gameState.isUserInRooms(roomInfos);
+        const isUserInRooms: boolean = this.state.isUserInRooms(roomInfos);
         this.updateRooms(roomInfos, isUserInRooms);
         this.updateState(isUserInRooms);
         this.updateUnitInfo();
@@ -65,8 +65,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateUnitInfo(): void {
-        this.unitIcon.icon = this.gameState.userState.playerInfo.class;
-        this.unitInfo.value = this.gameState.userState.playerInfo.nickname;
+        this.unitIcon.icon = this.state.userState.playerInfo.class;
+        this.unitInfo.value = this.state.userState.playerInfo.nickname;
     }
 
     protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {

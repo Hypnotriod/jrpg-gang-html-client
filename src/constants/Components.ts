@@ -26,6 +26,7 @@ export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';
 export const SHOP_ITEMS_CONTAINER: string = 'shop_items_container';
 export const BATTLEFIELD_CONTAINER: string = 'battlefield_container';
+export const UNITS_QUEUE_CONTAINER: string = 'units_queue_container';
 
 export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
 

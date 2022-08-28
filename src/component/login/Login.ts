@@ -26,7 +26,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService) {
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -96,10 +96,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.isJoining = false;
         this.updateJoinButtonState();
         if (response.status !== ResponseStatus.OK) { return; }
-        this.gameState.userState = response.data as UserStateData;
-        localStorage.setItem(this.gameState.userState.playerInfo.nickname, this.gameState.userState.userId);
+        this.state.userState = response.data as UserStateData;
+        localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.userId);
         this.communicator.unsubscribe(this);
-        if (this.gameState.userState.status === UserStatus.IN_GAME) {
+        if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }
     }

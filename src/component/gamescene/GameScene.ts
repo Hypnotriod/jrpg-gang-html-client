@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { Ammunition, AtionType, Cell, Disposable, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, Response } from '../../dto/responces';
@@ -8,6 +8,7 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Container from '../ui/container/Container';
+import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
 import SpotCell from '../ui/icon/SpotCell';
 import Label from '../ui/label/Label';
@@ -20,6 +21,8 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     private readonly gameStatusLabel: Label;
     @component(ITEM_DESCRIPTION_POPUP, ItemDescription)
     private readonly itemDescription: ItemDescription;
+    @component(UNITS_QUEUE_CONTAINER, Container)
+    private readonly unitsQueueContainer: Container;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
 
@@ -27,7 +30,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService) {
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -44,14 +47,16 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     public handleServerResponse(response: Response): void {
         switch (response.type) {
             case RequestType.GAME_STATE:
-                this.gameState.gameState = (response.data as GameStateData).gameState;
+                this.state.gameState = (response.data as GameStateData).gameState;
                 this.updateBattleField();
                 this.updateUserItems();
+                this.updateUnitsQueue();
                 break;
             case RequestType.GAME_ACTION:
-                this.gameState.gameState = (response.data as GameActionData).actionResult;
+                this.state.gameState = (response.data as GameActionData).actionResult;
                 this.updateBattleField();
                 this.updateUserItems();
+                this.updateUnitsQueue();
                 break;
         }
     }
@@ -66,19 +71,19 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         !this.spots && this.initBattlefield();
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
-        const gamePhase: string = this.gameState.gameState.nextPhase;
+        const gamePhase: string = this.state.gameState.nextPhase;
         this.gameStatusLabel.value = `Game Phase: ${gamePhase}`;
     }
 
     protected updateBattleFieldUnits(): void {
-        const units: GameUnit[] = this.gameState.gameState.spot.battlefield.units;
+        const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
         units.forEach(unit => {
             this.spots[unit.position.x][unit.position.y].updateWithUnit(unit);
         });
     }
 
     protected updateBattlefieldCells(): void {
-        const matrix: Cell[][] = this.gameState.gameState.spot.battlefield.matrix;
+        const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
         for (const x in matrix) {
             for (const y in matrix[x]) {
                 this.spots[x][y].updateWithCell(matrix[x][y]);
@@ -87,7 +92,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected initBattlefield(): void {
-        const matrix: Cell[][] = this.gameState.gameState.spot.battlefield.matrix;
+        const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
         this.spots = [];
         for (const x in matrix) {
             this.spots[x] = [];
@@ -104,7 +109,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected onSpotCellClick(target: SpotCell): void {
-        if (this.gameState.gameState.phase === GamePhase.PREPARE_UNIT) {
+        if (this.state.gameState.phase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
         }
     }
@@ -117,10 +122,10 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected updateUserItems(): void {
-        const playerInfo: PlayerInfo | undefined = this.gameState.gameState.players!.find(
-            player => player.nickname === this.gameState.userState.playerInfo.nickname);
+        const playerInfo: PlayerInfo | undefined = this.state.gameState.players!.find(
+            player => player.nickname === this.state.userState.playerInfo.nickname);
         if (!playerInfo) { return; }
-        const unit: GameUnit | undefined = this.gameState.gameState.spot.battlefield.units.find(
+        const unit: GameUnit | undefined = this.state.gameState.spot.battlefield.units.find(
             unit => unit.uid === playerInfo.unitUid);
         if (!unit) { return; }
         this.updateUnitInventoryIcons(unit.inventory);
@@ -141,6 +146,19 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 this.unitItems.delete(uid);
             }
         });
+    }
+
+    protected updateUnitsQueue(): void {
+        const units: GameUnit[] = this.state.gameState.state.activeUnitsQueue.map(
+            unitUid => this.state.gameState.spot.battlefield.units.find(
+                unit => unit.uid === unitUid)!);
+        this.unitsQueueContainer.removeAllChildren();
+        units.forEach(unit => this.updateUnitInQueue(unit));
+    }
+
+    protected updateUnitInQueue(data: GameUnit): void {
+        const icon: string = data.playerInfo ? data.playerInfo.class! : data.code!;
+        Icon.createIcon(icon, this, UNITS_QUEUE_CONTAINER)!;
     }
 
     protected updateUnitItem(data: Disposable | Ammunition): void {

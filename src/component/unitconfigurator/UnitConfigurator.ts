@@ -43,7 +43,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly shopItems: Map<number, ItemIcon> = new Map();
 
     constructor(private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService,
+        private readonly state: GameStateService,
         @inject(delay(() => Lobby)) private readonly lobby: Lobby) {
         super();
     }
@@ -120,16 +120,16 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateUserStatus(data: UserStateData): void {
-        this.gameState.userState = data;
-        this.unitIcon.icon = this.gameState.userState.playerInfo.class;
-        this.unitInfo.value = this.gameState.userState.playerInfo.nickname;
-        this.unitBooty.value = this.objValues(this.gameState.userState.unit.booty);
-        this.unitState.value = this.objValues(this.gameState.userState.unit.state);
-        this.unitProgress.value = this.objValues(this.gameState.userState.unit.stats.progress);
-        this.unitBaseAttributes.value = this.objValues(this.gameState.userState.unit.stats.baseAttributes);
-        this.unitAttributes.value = this.objValues(this.gameState.userState.unit.stats.attributes);
-        this.unitResistance.value = this.objValues(this.gameState.userState.unit.stats.resistance);
-        this.updateUnitInventoryIcons(this.gameState.userState.unit.inventory);
+        this.state.userState = data;
+        this.unitIcon.icon = this.state.userState.playerInfo.class;
+        this.unitInfo.value = this.state.userState.playerInfo.nickname;
+        this.unitBooty.value = this.objValues(this.state.userState.unit.booty);
+        this.unitState.value = this.objValues(this.state.userState.unit.state);
+        this.unitProgress.value = this.objValues(this.state.userState.unit.stats.progress);
+        this.unitBaseAttributes.value = this.objValues(this.state.userState.unit.stats.baseAttributes);
+        this.unitAttributes.value = this.objValues(this.state.userState.unit.stats.attributes);
+        this.unitResistance.value = this.objValues(this.state.userState.unit.stats.resistance);
+        this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
     }
 
     protected objValues(obj: Object): string {

@@ -31,7 +31,7 @@ export default class Room extends Component {
     private roomInfo: RoomInfo;
 
     constructor(private readonly communicator: ServerCommunicatorService,
-        private readonly gameState: GameStateService) {
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -59,8 +59,8 @@ export default class Room extends Component {
             this.userConnectionStatusLabels[i + 1].value = user.isOffline ? '⚫' : '🟢';
         });
 
-        const isUserInRoom: boolean = this.gameState.isUserInRoom(roomInfo);
-        const isUserHostOfRoom: boolean = this.gameState.isUserHostOfRoom(roomInfo);
+        const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
+        const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
         if (isUserInRoom) {
             this.joinRoomButton.hide();
             this.leaveRoomButton.show();
@@ -108,7 +108,7 @@ export default class Room extends Component {
     }
 
     protected doLeaveRoom(): void {
-        if (this.roomInfo.host.nickname === this.gameState.userState.playerInfo.nickname) {
+        if (this.roomInfo.host.nickname === this.state.userState.playerInfo.nickname) {
             this.communicator.sendMessage(RequestType.DESTROY_ROOM);
         } else {
             this.communicator.sendMessage(RequestType.LEAVE_ROOM);

@@ -75,6 +75,12 @@ export default abstract class Component {
         return container.resolve(clazz).init(child) as T;
     }
 
+    public removeAllChildren(): void {
+        while (this.view.lastChild) {
+            this.view.removeChild(this.view.lastChild);
+        }
+    }
+
     public show(): void {
         this._view.style.display = this.display || 'block';
     }
