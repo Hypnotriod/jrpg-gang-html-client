@@ -1,21 +1,27 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, LABEL_GAME_STATUS } from '../../constants/Components';
-import { AtionType, Cell, GamePhase, GameUnit, Position } from '../../domain/domain';
-import { GameActionRequestData, RequestType } from '../../dto/requests';
+import { BATTLEFIELD_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { Ammunition, AtionType, Cell, Disposable, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, Response } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Container from '../ui/container/Container';
+import ItemIcon from '../ui/icon/ItemIcon';
 import SpotCell from '../ui/icon/SpotCell';
 import Label from '../ui/label/Label';
+import ItemDescription from '../ui/popup/ItemDescription';
 
 @injectable()
 @singleton()
 export default class GameScene extends Component implements ServerCommunicatorHandler {
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
+    @component(ITEM_DESCRIPTION_POPUP, ItemDescription)
+    private readonly itemDescription: ItemDescription;
+
+    private readonly unitItems: Map<number, ItemIcon> = new Map();
 
     private spots: SpotCell[][];
 
@@ -32,6 +38,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             RequestType.GAME_ACTION,
         ], this);
         this.hide();
+        this.itemDescription.hide();
     }
 
     public handleServerResponse(response: Response): void {
@@ -39,16 +46,20 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.GAME_STATE:
                 this.gameState.gameState = (response.data as GameStateData).gameState;
                 this.updateBattleField();
+                this.updateUserItems();
                 break;
             case RequestType.GAME_ACTION:
                 this.gameState.gameState = (response.data as GameActionData).actionResult;
                 this.updateBattleField();
+                this.updateUserItems();
                 break;
         }
     }
 
     public handleConnectionLost(): void {
         this.hide();
+        this.unitItems.forEach(item => item.destroy());
+        this.unitItems.clear();
     }
 
     protected updateBattleField(): void {
@@ -93,7 +104,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected onSpotCellClick(target: SpotCell): void {
-        if (this.gameState.gameState.phase === GamePhase.PLACE_UNIT_BEFORE_START_ROUND) {
+        if (this.gameState.gameState.phase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
         }
     }
@@ -103,5 +114,52 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             action: AtionType.PLACE,
             position,
         } as GameActionRequestData);
+    }
+
+    protected updateUserItems(): void {
+        const playerInfo: PlayerInfo | undefined = this.gameState.gameState.players!.find(
+            player => player.nickname === this.gameState.userState.playerInfo.nickname);
+        if (!playerInfo) { return; }
+        const unit: GameUnit | undefined = this.gameState.gameState.spot.battlefield.units.find(
+            unit => unit.uid === playerInfo.unitUid);
+        if (!unit) { return; }
+        this.updateUnitInventoryIcons(unit.inventory);
+    }
+
+    protected updateUnitInventoryIcons(inventory: UnitInventory): void {
+        const inventoryItems: (Disposable | Ammunition)[] = [
+            ...(inventory.weapon || []),
+            ...(inventory.ammunition || []),
+            ...(inventory.magic || []),
+            ...(inventory.armor || []),
+            ...(inventory.disposable || []),
+        ];
+        inventoryItems.forEach(v => this.updateUnitItem(v));
+        this.unitItems.forEach((icon, uid) => {
+            if (!inventoryItems.find(i => i.uid === uid)) {
+                icon.destroy();
+                this.unitItems.delete(uid);
+            }
+        });
+    }
+
+    protected updateUnitItem(data: Disposable | Ammunition): void {
+        let iconItem = this.unitItems.get(data.uid!);
+        if (!iconItem) {
+            iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;
+            iconItem.onClick = target => this.onUnitItemClick(target);
+            iconItem.descriptionPopup = this.itemDescription;
+        }
+        this.unitItems.set(data.uid!, iconItem);
+        iconItem.update(data);
+    }
+
+    protected onUnitItemClick(target: ItemIcon): void {
+        if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
+        this.communicator.sendMessage(RequestType.GAME_ACTION, {
+            action: !(target.data as Ammunition).equipped ? AtionType.EQUIP : AtionType.UNEQUIP,
+            itemUid: target.data.uid!,
+        } as ActionData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }

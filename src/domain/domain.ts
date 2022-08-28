@@ -207,6 +207,7 @@ export enum GameUnitFaction {
 export interface GameUnit extends Unit {
     faction: GameUnitFaction;
     playerInfo?: PlayerInfo;
+    isDead?: boolean;
 }
 
 export interface GameShop {
@@ -214,7 +215,7 @@ export interface GameShop {
 }
 
 export enum GamePhase {
-    PLACE_UNIT_BEFORE_START_ROUND = 'placeUnitBeforeStartRound',
+    PREPARE_UNIT = 'prepareUnit',
     READY_FOR_START_ROUND = 'readyForStartRound',
     MAKE_MOVE_OR_ACTION_AI = 'makeMoveOrActionAI',
     MAKE_ACTION_AI = 'makeActionAI',
