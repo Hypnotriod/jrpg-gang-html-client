@@ -260,7 +260,8 @@ export enum AtionType {
     UNEQUIP = 'unequip',
     PLACE = 'place',
     MOVE = 'move',
-    BUY = 'buy'
+    BUY = 'buy',
+    SKIP = 'skip',
 }
 
 export interface Position {
