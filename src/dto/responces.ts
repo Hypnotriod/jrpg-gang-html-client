@@ -38,6 +38,10 @@ export interface GameStateData {
     gameState: GameEvent;
 }
 
+export interface PlayerInfoData {
+    playerInfo: PlayerInfo;
+}
+
 export interface GameNextPhaseData {
     actionResult: GameEvent;
 }
@@ -51,6 +55,6 @@ export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
-    data: LobbyStatusData | UserStateData | ShopStateData | GameStateData |
+    data: LobbyStatusData | UserStateData | ShopStateData | GameStateData | PlayerInfoData |
     GameNextPhaseData | GameActionData;
 }

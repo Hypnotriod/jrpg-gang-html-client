@@ -6,7 +6,7 @@ import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
 import Label from '../label/Label';
-import ItemDescription from '../popup/ItemDescription';
+import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 
 export default class ItemIcon extends Component {
@@ -18,7 +18,7 @@ export default class ItemIcon extends Component {
     protected readonly quantityLabel: Label | null;
 
     private _data: Disposable | Ammunition;
-    private _descriptionPopup: ItemDescription;
+    private _descriptionPopup: ObjectDescription;
 
     public destroy(): void {
         this._icon.destroy();
@@ -61,8 +61,12 @@ export default class ItemIcon extends Component {
         this._icon.onClick = t => callback(this);
     }
 
-    public set descriptionPopup(value: ItemDescription) {
+    public set descriptionPopup(value: ObjectDescription) {
         this._descriptionPopup = value;
+    }
+
+    public get descriptionPopup(): ObjectDescription {
+        return this._descriptionPopup;
     }
 
     public select(): void {

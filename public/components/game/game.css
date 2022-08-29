@@ -9,3 +9,14 @@
     transform: translate(-50%, -50%);
     border-radius: 10px;
 }
+
+.game-log {
+    pointer-events: none;
+    background-color: slategray;
+    padding: 10px;
+    max-height: 325px;
+    min-height: 325px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 10px;
+}

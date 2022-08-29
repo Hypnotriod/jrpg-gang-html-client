@@ -15,6 +15,7 @@ export enum RequestType {
     GAME_ACTION = 'gameAction',
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',
+    PLAYER_INFO = 'playerInfo',
 }
 
 export interface Request {

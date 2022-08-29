@@ -13,7 +13,7 @@ import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
-import ItemDescription from '../ui/popup/ItemDescription';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @singleton()
 @injectable()
@@ -36,8 +36,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitAttributes: Container;
     @component(UNIT_RESISTANCE, Container)
     private readonly unitResistance: Container;
-    @component(ITEM_DESCRIPTION_POPUP, ItemDescription)
-    private readonly itemDescription: ItemDescription;
+    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    private readonly itemDescription: ObjectDescription;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();

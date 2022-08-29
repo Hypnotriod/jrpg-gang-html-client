@@ -5,12 +5,14 @@ import { Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
+import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 
 export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
 
+    private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
     private _x: number;
     private _y: number;
@@ -21,12 +23,27 @@ export default class SpotCell extends Component {
     }
 
     protected onHover(): void {
-        // this._descriptionPopup.data = this._data;
-        // this._descriptionPopup.show();
+        if (!this._unit) { return; }
+        this._descriptionPopup.data = {
+            name: this._unit.playerInfo?.nickname || this._unit.name,
+            unitUid: this._unit.uid,
+            state: this._unit.state,
+            damage: this._unit.damage,
+            // stats: this._unit.stats,
+        };
+        this._descriptionPopup.show();
     }
 
     protected onLeave(): void {
-        // this._descriptionPopup.hide();
+        this._descriptionPopup.hide();
+    }
+
+    public set descriptionPopup(value: ObjectDescription) {
+        this._descriptionPopup = value;
+    }
+
+    public get descriptionPopup(): ObjectDescription {
+        return this._descriptionPopup;
     }
 
     public set onClick(callback: (target: SpotCell) => void) {

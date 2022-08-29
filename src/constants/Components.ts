@@ -30,6 +30,7 @@ export const BATTLEFIELD_CONTAINER: string = 'battlefield_container';
 export const UNITS_QUEUE_CONTAINER: string = 'units_queue_container';
 
 export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
+export const GAME_LOG: string = 'game_log';
 
 export const ICON: string = 'icon';
 

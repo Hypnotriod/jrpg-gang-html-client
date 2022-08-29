@@ -1,11 +1,20 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, RoomInfo } from '../domain/domain';
+import { GameEvent, PlayerInfo, RoomInfo } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
 export default class GameStateService {
     private _userState: UserStateData;
+    private _playerInfo: PlayerInfo;
     private _gameState: GameEvent;
+
+    public set playerInfo(value: PlayerInfo) {
+        this._playerInfo = value;
+    }
+
+    public get playerInfo(): PlayerInfo {
+        return this._playerInfo;
+    }
 
     public set gameState(value: GameEvent) {
         this._gameState = value;

@@ -1,21 +1,9 @@
-import { Ammunition, Disposable } from '../../../domain/domain';
-import TextField from '../textfield/TextField';
+import { injectable, singleton } from 'tsyringe';
 
-export default class ItemDescription extends TextField {
-
-    protected initialize(): void {
-        super.initialize();
-        window.addEventListener('mousemove', e => {
-            this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.view.clientWidth;
-            this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.view.clientHeight;
-        });
-    }
-
-    public set data(data: Disposable | Ammunition) {
-        this.value = this.render(data, '');
-    }
-
-    protected render(data: Object, key: string, deep: number = 0): string {
+@injectable()
+@singleton()
+export default class GameObjectRenderer {
+    public render(data: Object, key: string = '', deep: number = 0): string {
         if (key === 'uid' || key === 'code') { return ''; }
         if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
             return this.valueNotZeroOrEmpty(key, data as (string | number | boolean));
@@ -38,7 +26,7 @@ export default class ItemDescription extends TextField {
             .reduce((acc, key) => acc + this.render(data[key], key, deep + 1), '');
     }
 
-    protected header(value: string, deep: number): string {
+    public header(value: string, deep: number): string {
         switch (deep) {
             case 0:
                 return '';
@@ -51,10 +39,20 @@ export default class ItemDescription extends TextField {
     }
 
     protected valueNotZeroOrEmpty(key: string, value: number | string | boolean | undefined): string {
-        return value ? `<span class="orange-text text-darken-1">${key}</span>: ${value}<br>` : '';
+        return value || this.isZeroValueKey(key) ?
+            `<span class="orange-text text-darken-1">${key}</span>: ${value}<br>` : '';
     }
 
     protected emptyOrAllFieldsZeros(data: Object): boolean {
-        return !data || Object.keys(data).every(key => !data[key]);
+        return !data || Object.keys(data).every(key => !data[key] && !this.isZeroValueKey(key));
+    }
+
+    protected isZeroValueKey(key: string): boolean {
+        switch (key) {
+            case 'x':
+            case 'y':
+                return true
+        }
+        return false;
     }
 }
