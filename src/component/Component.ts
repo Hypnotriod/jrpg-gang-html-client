@@ -93,6 +93,10 @@ export default abstract class Component {
         this._view.style.display = 'none';
     }
 
+    public get visible(): boolean {
+        return this._view.style.display !== 'none';
+    }
+
     public disable(): void {
         this._view.setAttribute('disabled', 'disabled');
     }

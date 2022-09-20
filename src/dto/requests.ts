@@ -12,6 +12,7 @@ export enum RequestType {
     SHOP_STATUS = 'shopStatus',
     SHOP_ACTION = 'shopAction',
     START_GAME = 'startGame',
+    LEAVE_GAME = 'leaveGame',
     GAME_ACTION = 'gameAction',
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',

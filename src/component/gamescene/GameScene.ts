@@ -1,8 +1,8 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, BUTTON_NEXT_PHASE, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { Ammunition, AtionType, Cell, Disposable, GamePhase, GameUnit, GameUnitFaction, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, GameUnitFaction, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
-import { GameActionData, GameStateData, PlayerInfoData, Response } from '../../dto/responces';
+import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -16,6 +16,7 @@ import SpotCell from '../ui/icon/SpotCell';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import TextField from '../ui/textfield/TextField';
+import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 
 @injectable()
 @singleton()
@@ -26,6 +27,8 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     private readonly gameLog: TextField;
     @component(BUTTON_NEXT_PHASE, Button)
     private readonly nextPhaseButton: Button;
+    @component(BUTTON_LEAVE_GAME, Button)
+    private readonly leaveGameButton: Button;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
     @component(UNITS_QUEUE_CONTAINER, Container)
@@ -37,6 +40,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
+        private readonly configurator: UnitConfigurator,
         private readonly renderer: GameObjectRenderer,
         private readonly state: GameStateService) {
         super();
@@ -45,12 +49,14 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected initialize(): void {
         this.communicator.subscribe([
             RequestType.GAME_STATE,
+            RequestType.USER_STATUS,
             RequestType.NEXT_GAME_PHASE,
             RequestType.GAME_ACTION,
             RequestType.PLAYER_INFO,
         ], this);
         this.hide();
         this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
+        this.leaveGameButton.onClick = target => this.onLeaveGameClick();
         this.itemDescription.hide();
     }
 
@@ -58,6 +64,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         switch (response.type) {
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
+                this.updatePlayerInfoFromGameState(this.state.gameState);
                 this.updateBattleField();
                 this.updateUserItems();
                 this.updateUnitsQueue();
@@ -74,6 +81,13 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
                 this.updateUserItems();
                 this.updateNextPhaseButton();
+                break;
+            case RequestType.USER_STATUS:
+                const status: UserStatus = (response.data as UserStateData).status;
+                if (status !== UserStatus.IN_GAME && this.visible) {
+                    this.hide();
+                    this.configurator.show();
+                }
                 break;
         }
     }
@@ -127,6 +141,11 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         } else {
             this.nextPhaseButton.show();
         }
+    }
+
+    protected updatePlayerInfoFromGameState(gameState: GameEvent): void {
+        if (!this.state.playerInfo) { return; }
+        this.state.playerInfo = gameState.players.filter(player => player.nickname === this.state.playerInfo.nickname)[0];
     }
 
     protected updateBattleFieldUnits(): void {
@@ -266,6 +285,11 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     protected onNextPhaseClick(): void {
         this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE);
+    }
+
+    protected onLeaveGameClick(): void {
+        this.communicator.sendMessage(RequestType.LEAVE_GAME);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
     protected findUnitByUid(unitUid: number): GameUnit {
