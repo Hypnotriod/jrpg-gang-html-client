@@ -72,6 +72,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
                 this.state.gameState = (response.data as GameActionData).actionResult;
+                this.updatePlayerInfoFromGameState(this.state.gameState);
                 this.updateBattleField();
                 this.updateUserItems();
                 this.updateUnitsQueue();
@@ -280,7 +281,6 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             action: !(target.data as Ammunition).equipped ? AtionType.EQUIP : AtionType.UNEQUIP,
             itemUid: target.data.uid!,
         } as ActionData);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
     protected onNextPhaseClick(): void {
