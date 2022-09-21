@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
@@ -105,16 +105,40 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected logAction(): void {
         if (this.state.gameState.unitActionResult) {
             const unit: GameUnit = this.findUnitByUid(this.state.gameState.unitActionResult.action.uid!);
-            const name: string = unit.playerInfo?.nickname || unit.name;
+            const name: string = this.getUnitName(unit);
             this.gameLog.value =
                 this.renderer.header(name, 2) + '<br>' +
-                this.renderer.render(this.state.gameState.unitActionResult);
+                this.renderer.render(this.distinguishUnitActionResult(this.state.gameState.unitActionResult));
         }
         if (this.state.gameState.endRoundResult) {
             this.gameLog.value =
                 this.renderer.header('End Round result', 2) + '<br>' +
                 this.renderer.render(this.state.gameState.endRoundResult);
         }
+    }
+
+    protected getUnitName(unit: GameUnit): string {
+        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : unit.name;
+    }
+
+    protected distinguishUnitActionResult(action: GameUnitActionResult): object {
+        const result: any = {
+            ...action,
+        };
+        const actorUnit = this.findUnitByUid(action.action.uid!);
+        const targetUnit = this.findUnitByUid(action.action.targetUid!);
+        if (action.action.itemUid) {
+            const actorItem = this.findItemInInventory(actorUnit.inventory, action.action.itemUid);
+            if (actorItem) {
+                result.action.itemUid = undefined;
+                result.action.item = actorItem.name;
+            }
+        }
+        if (targetUnit) {
+            result.action.targetUid = undefined;
+            result.action.target = this.getUnitName(targetUnit);
+        }
+        return result;
     }
 
     protected updateBattleField(): void {
@@ -266,6 +290,17 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         });
     }
 
+    protected findItemInInventory(inventory: UnitInventory, uid: number): Item | undefined {
+        const inventoryItems: Item[] = [
+            ...(inventory.weapon || []),
+            ...(inventory.ammunition || []),
+            ...(inventory.magic || []),
+            ...(inventory.armor || []),
+            ...(inventory.disposable || []),
+        ];
+        return inventoryItems.find(i => i.uid === uid);
+    }
+
     protected updateUnitsQueue(): void {
         const units: GameUnit[] = this.state.gameState.state.activeUnitsQueue.map(
             unitUid => this.findUnitByUid(unitUid));
@@ -322,9 +357,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected findUnitByUid(unitUid: number): GameUnit {
-        const result: GameUnit | undefined = this.state.gameState.spot.battlefield.units.find(
+        const result: GameUnit | undefined = this.state.gameState.spot.battlefield.units?.find(
             unit => unit.uid === unitUid);
-        return result || this.state.gameState.spot.battlefield.corpses.find(
+        return result || this.state.gameState.spot.battlefield.corpses?.find(
             unit => unit.uid === unitUid)!;
     }
 }
