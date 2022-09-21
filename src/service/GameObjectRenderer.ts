@@ -51,7 +51,7 @@ export default class GameObjectRenderer {
         switch (key) {
             case 'x':
             case 'y':
-                return true
+                return true;
         }
         return false;
     }

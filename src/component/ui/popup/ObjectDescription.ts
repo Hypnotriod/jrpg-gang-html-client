@@ -1,5 +1,4 @@
 import { injectable } from 'tsyringe';
-import { Ammunition, Disposable, GameUnit } from '../../../domain/domain';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import TextField from '../textfield/TextField';
 
@@ -11,10 +10,15 @@ export default class ObjectDescription extends TextField {
 
     protected initialize(): void {
         super.initialize();
-        window.addEventListener('mousemove', e => {
-            this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.view.clientWidth;
-            this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.view.clientHeight;
-        });
+        window.addEventListener('mousemove', e => this.updatepositionOnMouseMove(e));
+    }
+
+    protected updatepositionOnMouseMove(e: MouseEvent): void {
+        this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.width;
+        this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.height;
+        if (this.topPx + this.height > window.innerHeight) {
+            this.topPx = window.innerHeight - this.height;
+        }
     }
 
     public set data(data: object) {

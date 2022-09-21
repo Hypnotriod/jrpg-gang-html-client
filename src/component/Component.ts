@@ -129,7 +129,23 @@ export default abstract class Component {
         this.view.style.left = `${value}px`;
     }
 
+    public get leftPx(): number {
+        return Number(this.view.style.left.replace('px', ''));
+    }
+
     public set topPx(value: number) {
         this.view.style.top = `${value}px`;
+    }
+
+    public get topPx(): number {
+        return Number(this.view.style.top.replace('px', ''));
+    }
+
+    public get width(): number {
+        return this.view.clientWidth;
+    }
+
+    public get height(): number {
+        return this.view.clientHeight;
     }
 }

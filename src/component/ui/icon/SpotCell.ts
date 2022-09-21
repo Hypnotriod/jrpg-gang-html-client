@@ -29,7 +29,8 @@ export default class SpotCell extends Component {
             unitUid: this._unit.uid,
             state: this._unit.state,
             damage: this._unit.damage,
-            // stats: this._unit.stats,
+            stats: this._unit.stats,
+            modification: this._unit.modification,
         };
         this._descriptionPopup.show();
     }
