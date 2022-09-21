@@ -318,7 +318,7 @@ export interface GameEvent {
     phase: GamePhase;
     nextPhase: GamePhase;
     state: GameState;
-    spot: Spot
+    spot: Spot;
     players: PlayerInfo[];
     unitActionResult?: GameUnitActionResult;
     endRoundResult?: EndTurnResult;

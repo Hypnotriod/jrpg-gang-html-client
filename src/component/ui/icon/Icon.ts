@@ -6,6 +6,7 @@ export default class Icon extends Component {
     private onLeaveCallback: ((target: Icon) => void) | null;
     private _enabled: boolean = true;
     private _selected: boolean = false;
+    private _choosed: boolean = false;
     private _icon: string;
 
     protected initialize(): void {
@@ -62,6 +63,22 @@ export default class Icon extends Component {
 
     public get selected(): boolean {
         return this._selected;
+    }
+
+    public choose(): void {
+        if (this._choosed || !this._enabled) { return; }
+        this._choosed = true;
+        this.view.classList.add('choosed');
+    }
+
+    public unchoose(): void {
+        if (!this._choosed || !this._enabled) { return; }
+        this._choosed = false;
+        this.view.classList.remove('choosed');
+    }
+
+    public get choosed(): boolean {
+        return this._choosed;
     }
 
     public set onClick(callback: (target: Icon) => void) {

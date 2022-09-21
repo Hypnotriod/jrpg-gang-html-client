@@ -43,6 +43,10 @@ body {
     background-color: cadetblue;
 }
 
+.choosed {
+    border: 3px solid coral;
+}
+
 .item-icon-warpper {
     text-align: center;
     width: 80px;

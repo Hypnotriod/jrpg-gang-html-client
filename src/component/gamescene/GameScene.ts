@@ -1,10 +1,10 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, GameUnitFaction, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
-import GameStateService from '../../service/GameStateService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
+import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
@@ -187,13 +187,20 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected onSpotCellClick(target: SpotCell): void {
         if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
-        } else if ((this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION ||
-            this.state.gameState.nextPhase === GamePhase.MAKE_ACTION) &&
-            target.unit?.faction === GameUnitFaction.ENEMY) {
-            this.attackUnit(target.unit.uid!);
+        } else if (this.canDoAction() && target.unit) {
+            this.useItem(target.unit.uid!);
         } else if (this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION) {
             this.moveUnit({ x: target.x, y: target.y });
         }
+    }
+
+    protected canDoAction(): boolean {
+        return this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION ||
+            this.state.gameState.nextPhase === GamePhase.MAKE_ACTION;
+    }
+
+    protected canDoUnitConfiguration(): boolean {
+        return this.canDoAction() || this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT;
     }
 
     protected placeUnit(position: Position): void {
@@ -212,16 +219,19 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         } as GameActionRequestData);
     }
 
-    protected attackUnit(targetUid: number): void {
-        const unit = this.currentActor();
-        const weapon = unit.inventory.weapon?.find(weapon => weapon.equipped);
+    protected useItem(targetUid: number): void {
+        const weapon = this.getChoosedItem();
         if (!weapon) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
             action: AtionType.USE,
-            itemUid: weapon.uid!,
+            itemUid: weapon.data.uid!,
             targetUid,
         } as GameActionRequestData);
+    }
+
+    protected getChoosedItem(): ItemIcon | undefined {
+        return [...this.unitItems.values()].find(i => i.choosed);
     }
 
     protected updateUserItems(): void {
@@ -275,6 +285,13 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
+        if (!this.canDoUnitConfiguration()) { return; }
+        if (target.data.type === ItemType.WEAPON || target.data.type === ItemType.DISPOSABLE) {
+            const wansntChoosed = !target.choosed && target.selected;
+            this.unitItems.forEach(i => i.unchoose());
+            target.choose();
+            if (wansntChoosed) { return; }
+        }
         if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,

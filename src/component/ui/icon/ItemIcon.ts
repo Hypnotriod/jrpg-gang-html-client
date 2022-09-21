@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Disposable } from '../../../domain/domain';
+import { Ammunition, Disposable, Equipment } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -77,21 +77,37 @@ export default class ItemIcon extends Component {
         this._icon.unselect();
     }
 
-    public update(data: Disposable | Ammunition): void {
+    public get selected(): boolean {
+        return this._icon.selected;
+    }
+
+    public choose(): void {
+        this._icon.choose();
+    }
+
+    public unchoose(): void {
+        this._icon.unchoose();
+    }
+
+    public get choosed(): boolean {
+        return this._icon.choosed;
+    }
+
+    public update(data: Disposable | Ammunition | Equipment): void {
         this._data = data;
         this.nameLabel.value = data.name;
         this._icon.icon = data.code;
-        (data as Ammunition).equipped ? this.select() : this.unselect();
+        (data as Equipment).equipped ? this.select() : this.unselect();
         if (!this.quantityLabel) { return; }
-        if (data.quantity !== undefined) {
+        if ((data as Ammunition).quantity !== undefined) {
             this.quantityLabel.show();
-            this.quantityLabel.value = String(data.quantity);
+            this.quantityLabel.value = String((data as Ammunition).quantity);
         } else {
             this.quantityLabel.hide();
         }
     }
 
-    public get data(): Disposable | Ammunition {
+    public get data(): Disposable | Ammunition | Equipment {
         return this._data;
     }
 }

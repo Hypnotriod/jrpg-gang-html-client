@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { LABEL_PRICE } from '../../../constants/Components';
 import { SHOP_ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Disposable } from '../../../domain/domain';
+import { Ammunition, Disposable, Equipment } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -24,7 +24,7 @@ export default class ShopItemIcon extends ItemIcon {
         return iconComponent;
     }
 
-    public update(data: Disposable | Ammunition): void {
+    public update(data: Disposable | Ammunition | Equipment): void {
         super.update(data);
         this.priceLabel.value = `$${data.price.coins}`;
     }
