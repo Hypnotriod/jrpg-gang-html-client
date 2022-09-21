@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_LOBBY, UNIT_ITEMS_CONTAINER as UNIT_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_PROGRESS, UNIT_RESISTANCE, UNIT_STATE, SHOP_ITEMS_CONTAINER, ITEM_DESCRIPTION_POPUP } from '../../constants/Components';
+import { BUTTON_LOBBY, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { Ammunition, AtionType, Disposable, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
@@ -26,8 +26,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitInfo: Container;
     @component(UNIT_BOOTY, Container)
     private readonly unitBooty: Container;
-    @component(UNIT_STATE, Container)
-    private readonly unitState: Container;
     @component(UNIT_PROGRESS, Container)
     private readonly unitProgress: Container;
     @component(UNIT_BASE_ATTRIBUTES, Container)
@@ -124,7 +122,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitIcon.icon = this.state.userState.playerInfo.class;
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
         this.unitBooty.value = this.objValues(this.state.userState.unit.booty);
-        this.unitState.value = this.objValues(this.state.userState.unit.state);
         this.unitProgress.value = this.objValues(this.state.userState.unit.stats.progress);
         this.unitBaseAttributes.value = this.objValues(this.state.userState.unit.stats.baseAttributes);
         this.unitAttributes.value = this.objValues(this.state.userState.unit.stats.attributes);
