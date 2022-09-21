@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
@@ -27,6 +27,8 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     private readonly gameLog: TextField;
     @component(BUTTON_NEXT_PHASE, Button)
     private readonly nextPhaseButton: Button;
+    @component(BUTTON_SKIP, Button)
+    private readonly skipButton: Button;
     @component(BUTTON_LEAVE_GAME, Button)
     private readonly leaveGameButton: Button;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
@@ -57,6 +59,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.hide();
         this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
         this.leaveGameButton.onClick = target => this.onLeaveGameClick();
+        this.skipButton.onClick = target => this.onSkipButtonClick();
         this.itemDescription.hide();
     }
 
@@ -81,7 +84,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.PLAYER_INFO:
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
                 this.updateUserItems();
-                this.updateNextPhaseButton();
+                this.updateNextPhaseSkipButton();
                 break;
             case RequestType.USER_STATUS:
                 const status: UserStatus = (response.data as UserStateData).status;
@@ -118,29 +121,26 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         !this.spots && this.initBattlefield();
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
-        this.updateNextPhaseButton();
+        this.updateNextPhaseSkipButton();
         this.gameStatusLabel.value = this.state.gameState.nextPhase;
     }
 
-    protected updateNextPhaseButton(): void {
+    protected updateNextPhaseSkipButton(): void {
         const gamePhase: string = this.state.gameState.nextPhase;
+        const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
             case GamePhase.PREPARE_UNIT:
             case GamePhase.MAKE_MOVE_OR_ACTION_AI:
             case GamePhase.MAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
-                this.nextPhaseButton.enable();
+                playerInfo && playerInfo.isHost ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
+                this.skipButton.hide();
                 break;
             default:
-                this.nextPhaseButton.disable();
+                this.nextPhaseButton.hide();
+                this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
                 break;
-        }
-        const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
-        if (!playerInfo || !playerInfo.isHost) {
-            this.nextPhaseButton.hide();
-        } else {
-            this.nextPhaseButton.show();
         }
     }
 
@@ -201,6 +201,11 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     protected canDoUnitConfiguration(): boolean {
         return this.canDoAction() || this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT;
+    }
+
+    protected isCurrentUnitTurn(): boolean {
+        const activeUnitUid = this.state.gameState.state.activeUnitsQueue[0];
+        return Boolean(this.state.playerInfo && this.state.playerInfo.unitUid === activeUnitUid);
     }
 
     protected placeUnit(position: Position): void {
@@ -302,6 +307,13 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     protected onNextPhaseClick(): void {
         this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE);
+    }
+
+    protected onSkipButtonClick(): void {
+        this.communicator.sendMessage(RequestType.GAME_ACTION, {
+            uid: this.state.playerInfo.unitUid,
+            action: AtionType.SKIP,
+        } as ActionData);
     }
 
     protected onLeaveGameClick(): void {
