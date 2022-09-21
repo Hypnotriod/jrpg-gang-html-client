@@ -35,6 +35,7 @@ export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
 export const GAME_LOG: string = 'game_log';
 
 export const ICON: string = 'icon';
+export const ICON_STUNNED: string = 'icon_stunned';
 
 export const UNIT_ICON: string = 'unit_icon';
 export const UNIT_INFO: string = 'unit_info';

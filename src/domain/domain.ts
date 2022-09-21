@@ -26,6 +26,7 @@ export interface UnitState {
     mana: number;
     fear: number;
     curse: number;
+    isStunned?: boolean;
 }
 
 export interface Damage {
@@ -41,7 +42,8 @@ export interface Damage {
     bleeding?: number;
     fear?: number;
     curse?: number;
-    isCritical?: number;
+    isCritical?: boolean;
+    isStunned?: boolean;
 }
 
 export interface UnitBaseAttributes {

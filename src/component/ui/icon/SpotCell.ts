@@ -1,16 +1,19 @@
 import { container } from 'tsyringe';
-import { ICON } from '../../../constants/Components';
+import { ICON, ICON_STUNNED } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
+import Container from '../container/Container';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 
 export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
+    @component(ICON_STUNNED, Container)
+    protected readonly _iconStunned: Container;
 
     private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
@@ -20,6 +23,7 @@ export default class SpotCell extends Component {
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
+        this._iconStunned.hide();
     }
 
     protected onHover(): void {
@@ -93,11 +97,13 @@ export default class SpotCell extends Component {
         } else {
             this._icon.disable();
         }
+        this._iconStunned.hide();
         this._unit = undefined;
     }
 
     public updateWithUnit(unit: GameUnit): void {
         this._unit = unit;
+        unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         this.icon = unit.playerInfo ? unit.playerInfo.class! : unit.code!;
         if (unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();
