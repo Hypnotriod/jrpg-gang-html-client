@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { Ammunition, AtionType, Cell, Disposable, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { ActionResultType, Ammunition, AtionType, Cell, Disposable, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
@@ -113,7 +113,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         if (this.state.gameState.endRoundResult) {
             this.gameLog.value =
                 this.renderer.header('End Round result', 2) + '<br>' +
-                this.renderer.render(this.state.gameState.endRoundResult);
+                this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult));
         }
     }
 
@@ -121,10 +121,45 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : unit.name;
     }
 
+    protected distinguishEndRoundResult(endRound: EndTurnResult): object {
+        const result: any = {};
+        Object.keys(endRound.damage).forEach(key => {
+            if (!Object.keys(endRound.damage[key]).length) { return; }
+            result.damage = result.damage || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.damage[this.getUnitName(unit)] = endRound.damage[key];
+        });
+        Object.keys(endRound.recovery).forEach(key => {
+            if (!Object.keys(endRound.recovery[key]).length) { return; }
+            result.recovery = result.recovery || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.recovery[this.getUnitName(unit)] = endRound.recovery[key];
+        });
+        return result;
+    }
+
+    protected nullOrEmpty(arr: Array<any>): boolean {
+        return !arr || !arr.length;
+    }
+
     protected distinguishUnitActionResult(action: GameUnitActionResult): object {
         const result: any = {
             ...action,
         };
+        if (action.action.action === AtionType.USE &&
+            action.result.result === ActionResultType.ACCOMPLISHED) {
+            if (!action.result.instantDamage &&
+                !action.result.instantRecovery &&
+                !action.result.temporalDamage &&
+                !action.result.temporalModification) {
+                result.result.result = 'no success!';
+            } else if (this.nullOrEmpty(action.result.instantDamage) &&
+                this.nullOrEmpty(action.result.instantRecovery) &&
+                this.nullOrEmpty(action.result.temporalDamage) &&
+                this.nullOrEmpty(action.result.temporalModification)) {
+                result.result.result = 'no effect!';
+            }
+        }
         const actorUnit = this.findUnitByUid(action.action.uid!);
         const targetUnit = this.findUnitByUid(action.action.targetUid!);
         if (action.action.itemUid) {

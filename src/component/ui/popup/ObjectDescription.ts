@@ -19,6 +19,9 @@ export default class ObjectDescription extends TextField {
         if (this.topPx + this.height > window.innerHeight) {
             this.topPx = window.innerHeight - this.height;
         }
+        if (this.topPx < 0) {
+            this.topPx = 0;
+        }
     }
 
     public set data(data: object) {
