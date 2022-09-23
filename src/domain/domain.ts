@@ -224,6 +224,7 @@ export enum GamePhase {
     MAKE_ACTION_AI = 'makeActionAI',
     MAKE_MOVE_OR_ACTION = 'makeMoveOrAction',
     MAKE_ACTION = 'makeAction',
+    RETREAT_ACTION = 'retreatAction',
     ACTION_COMPLETE = 'actionComplete',
     BATTLE_COMPLETE = 'battleComplete',
 }

@@ -109,4 +109,8 @@ export default class SpotCell extends Component {
             this._icon.enable();
         }
     }
+
+    public updateWithCorpse(corpse: GameUnit): void {
+        this._icon.icon = 'tomb';
+    }
 }

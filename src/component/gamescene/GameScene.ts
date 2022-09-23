@@ -193,6 +193,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case GamePhase.MAKE_MOVE_OR_ACTION_AI:
             case GamePhase.MAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
+            case GamePhase.RETREAT_ACTION:
                 playerInfo && playerInfo.isHost ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
                 this.skipButton.hide();
                 break;
@@ -209,7 +210,11 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected updateBattleFieldUnits(): void {
+        const corpses: GameUnit[] = this.state.gameState.spot.battlefield.corpses;
         const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
+        corpses && corpses.forEach(corpse => {
+            this.spots[corpse.position.x][corpse.position.y].updateWithCorpse(corpse);
+        });
         units.forEach(unit => {
             this.spots[unit.position.x][unit.position.y].updateWithUnit(unit);
         });
