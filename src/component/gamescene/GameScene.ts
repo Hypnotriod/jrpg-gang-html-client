@@ -197,6 +197,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case GamePhase.MAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.RETREAT_ACTION:
+            case GamePhase.BATTLE_COMPLETE:
                 playerInfo && playerInfo.isHost ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
                 this.skipButton.hide();
                 break;
