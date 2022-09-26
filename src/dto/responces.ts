@@ -34,6 +34,11 @@ export interface LobbyStatusData {
     usersCount: number;
 }
 
+export interface RoomStatusData {
+    room: RoomInfo;
+    usersCount: number;
+}
+
 export interface GameStateData {
     gameState: GameEvent;
 }
@@ -56,5 +61,5 @@ export interface Response {
     id?: string;
     status: ResponseStatus;
     data: LobbyStatusData | UserStateData | ShopStateData | GameStateData | PlayerInfoData |
-    GameNextPhaseData | GameActionData;
+    GameNextPhaseData | GameActionData | RoomStatusData;
 }

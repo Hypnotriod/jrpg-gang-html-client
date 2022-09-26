@@ -7,6 +7,7 @@ export default class GameStateService {
     private _userState: UserStateData;
     private _playerInfo: PlayerInfo;
     private _gameState: GameEvent;
+    private _rooms: RoomInfo[];
 
     public set playerInfo(value: PlayerInfo) {
         this._playerInfo = value;
@@ -14,6 +15,14 @@ export default class GameStateService {
 
     public get playerInfo(): PlayerInfo {
         return this._playerInfo;
+    }
+
+    public set rooms(value: RoomInfo[]) {
+        this._rooms = value;
+    }
+
+    public get rooms(): RoomInfo[] {
+        return this._rooms;
     }
 
     public set gameState(value: GameEvent) {

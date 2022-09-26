@@ -13,6 +13,7 @@ export interface RoomInfo {
     scenarioId: string;
     joinedUsers: PlayerInfo[];
     host: PlayerInfo;
+    inactive?: boolean;
 }
 
 export interface UnitBooty {

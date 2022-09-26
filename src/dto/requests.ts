@@ -7,6 +7,7 @@ export enum RequestType {
     JOIN_ROOM = 'joinRoom',
     LEAVE_ROOM = 'leaveRoom',
     LOBBY_STATUS = 'lobbyStatus',
+    ROOM_STATUS = 'roomStatus',
     CONFIGURATION_ACTION = 'configuratorAction',
     USER_STATUS = 'userStatus',
     SHOP_STATUS = 'shopStatus',

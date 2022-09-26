@@ -2,7 +2,7 @@ import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_CREATE_ROOM, BUTTON_UNIT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
-import { LobbyStatusData, Response, ResponseStatus } from '../../dto/responces';
+import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -38,7 +38,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.createRoomButton.disable();
         this.createRoomButton.onClick = target => this.onCreateRoom();
         this.unitButton.onClick = target => this.goToUnitConfig();
-        this.communicator.subscribe([RequestType.LOBBY_STATUS], this);
+        this.communicator.subscribe([RequestType.LOBBY_STATUS, RequestType.ROOM_STATUS], this);
     }
 
     protected goToUnitConfig(): void {
@@ -53,9 +53,35 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
-        const roomInfos: RoomInfo[] = (response.data as LobbyStatusData).rooms;
-        const isUserInRooms: boolean = this.state.isUserInRooms(roomInfos);
-        this.updateRooms(roomInfos, isUserInRooms);
+        switch (response.type) {
+            case RequestType.LOBBY_STATUS:
+                this.state.rooms = (response.data as LobbyStatusData).rooms;
+                this.update();
+                break;
+            case RequestType.ROOM_STATUS:
+                this.onRoomStatus(response);
+                break;
+        }
+
+    }
+
+    protected onRoomStatus(response: Response): void {
+        const roomInfo: RoomInfo = (response.data as RoomStatusData).room;
+        this.state.rooms = this.state.rooms || [roomInfo];
+        const oldRoomInfo = this.state.rooms.find(r => r.uid === roomInfo.uid);
+        if (roomInfo.inactive) {
+            this.state.rooms = this.state.rooms.filter(r => r.uid !== roomInfo.uid)
+        } else if (!oldRoomInfo) {
+            this.state.rooms.push(roomInfo);
+        } else {
+            oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
+        }
+        this.update();
+    }
+
+    protected update(): void {
+        const isUserInRooms: boolean = this.state.isUserInRooms(this.state.rooms);
+        this.updateRooms(this.state.rooms, isUserInRooms);
         this.updateState(isUserInRooms);
         this.updateUnitInfo();
     }
@@ -70,19 +96,20 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {
-        const roomIds: number[] = [];
-        roomInfos.forEach(roomInfo => {
-            const room = this.rooms.get(roomInfo.uid) || Room.createRoom(this, ROOMS_CONTAINER);
-            this.rooms.set(roomInfo.uid, room!);
-            room!.update(roomInfo, isUserInRooms);
-            roomIds.push(roomInfo.uid);
-        });
+        const roomIds: number[] = roomInfos.map(roomInfo => this.updateRoom(roomInfo, isUserInRooms));
         this.rooms.forEach((room, uid) => {
             if (!roomIds.includes(uid)) {
                 room.destroy();
                 this.rooms.delete(uid);
             }
         });
+    }
+
+    protected updateRoom(roomInfo: RoomInfo, isUserInRooms: boolean): number {
+        const room = this.rooms.get(roomInfo.uid) || Room.createRoom(this, ROOMS_CONTAINER);
+        this.rooms.set(roomInfo.uid, room!);
+        room!.update(roomInfo, isUserInRooms);
+        return roomInfo.uid;
     }
 
     protected updateState(isUserInRooms: boolean): void {
