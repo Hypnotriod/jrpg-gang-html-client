@@ -228,6 +228,7 @@ export enum GamePhase {
     RETREAT_ACTION = 'retreatAction',
     ACTION_COMPLETE = 'actionComplete',
     BATTLE_COMPLETE = 'battleComplete',
+    DUNGEON_COMPLETE = 'dungeonComplete',
 }
 
 export interface GameState {
@@ -316,6 +317,7 @@ export interface GameUnitActionResult {
 export interface EndTurnResult {
     damage: { [key: number]: Damage };
     recovery: { [key: number]: UnitRecovery };
+    booty: UnitBooty;
 }
 
 export interface GameEvent {

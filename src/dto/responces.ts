@@ -1,4 +1,4 @@
-import { Action, ActionResult, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
+import { Action, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
 export enum ResponseStatus {

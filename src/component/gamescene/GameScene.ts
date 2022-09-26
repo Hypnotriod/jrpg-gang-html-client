@@ -135,6 +135,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             const unit = this.findUnitByUid(Number(key));
             result.recovery[this.getUnitName(unit)] = endRound.recovery[key];
         });
+        if (endRound.booty.coins || endRound.booty.ruby) {
+            result.booty = endRound.booty;
+        }
         return result;
     }
 
