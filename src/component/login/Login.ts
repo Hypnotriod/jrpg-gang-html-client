@@ -110,7 +110,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         this.isJoining = false;
         this.updateJoinButtonState();
-        if (response.status !== ResponseStatus.OK) { return; }
+        if (response.status !== ResponseStatus.OK) {
+            localStorage.clear();
+            return;
+        }
         this.state.userState = response.data as UserStateData;
         localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.userId);
         if (this.state.userState.status === UserStatus.IN_GAME) {

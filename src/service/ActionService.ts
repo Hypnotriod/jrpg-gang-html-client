@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResult } from '../domain/domain';
+import { ActionResult, Damage } from '../domain/domain';
 
 @singleton()
 @injectable()
@@ -26,6 +26,20 @@ export default class ActionService {
     public hasDamage(result: ActionResult): boolean {
         return !this.nullOrEmptyArray(result.instantDamage) ||
             !this.nullOrEmptyArray(result.temporalDamage);
+    }
+
+
+    public physicalInstantDamage(result: ActionResult): number {
+        return result.instantDamage ? result.instantDamage.reduce((acc, d) =>
+            acc + (d.bleeding || 0) +
+            acc + (d.cold || 0) +
+            acc + (d.crushing || 0) +
+            acc + (d.cutting || 0) +
+            acc + (d.fire || 0) +
+            acc + (d.lighting || 0) +
+            acc + (d.poison || 0) +
+            acc + (d.stabbing || 0)
+            , 0) : 0;
     }
 
     protected nullOrEmptyArray(arr: Array<any>): boolean {

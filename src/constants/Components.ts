@@ -24,6 +24,7 @@ export const LABEL_NAME: string = 'label_name';
 export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 export const LABEL_GAME_STATUS: string = 'label_game_status';
+export const LABEL_HIT_HP: string = 'label_hit_hp';
 
 export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';

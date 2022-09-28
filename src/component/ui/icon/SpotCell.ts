@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED } from '../../../constants/Components';
+import { ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, ActionType, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -7,6 +7,7 @@ import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
 import Container from '../container/Container';
+import Label from '../label/Label';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 
@@ -22,6 +23,8 @@ export default class SpotCell extends Component {
     protected readonly _iconHit: Container;
     @component(ICON_MISSED, Container)
     protected readonly _iconMissed: Container;
+    @component(LABEL_HIT_HP, Label)
+    protected readonly hitHpLabel: Label;
 
     private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
@@ -35,10 +38,7 @@ export default class SpotCell extends Component {
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
-        this._iconStunned.hide();
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
+        this.hideAll();
     }
 
     protected onHover(): void {
@@ -105,6 +105,14 @@ export default class SpotCell extends Component {
         return iconComponent;
     }
 
+    protected hideAll(): void {
+        this._iconStunned.hide();
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
+        this.hitHpLabel.hide();
+    }
+
     public updateWithCell(cell: Cell): void {
         this.icon = cell.code;
         if (cell.factions.includes(GameUnitFaction.PARTY)) {
@@ -112,10 +120,7 @@ export default class SpotCell extends Component {
         } else {
             this._icon.disable();
         }
-        this._iconStunned.hide();
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
+        this.hideAll();
         this._unit = undefined;
     }
 
@@ -126,26 +131,22 @@ export default class SpotCell extends Component {
         if (unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();
         }
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
+        this.hideAll();
     }
 
     public updateWithCorpse(corpse: GameUnit): void {
         this._icon.icon = 'tomb';
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
+        this.hideAll();
     }
 
     public updateWithActionResult(result: ActionResult): void {
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
+        this.hideAll();
         if (!this.actionService.hasEffect(result)) {
             this._iconMissed.show();
         } else if (this.actionService.hasDamage(result)) {
             this._iconHit.show();
+            this.hitHpLabel.show();
+            this.hitHpLabel.value = this.actionService.physicalInstantDamage(result) + 'HP';
         } else if (this.actionService.hasRecovery(result)) {
             this._iconEffect.show();
         }

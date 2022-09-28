@@ -112,7 +112,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected updateActionTarget(): void {
-        if (this.state.gameState.unitActionResult) {
+        if (this.state.gameState.unitActionResult && this.state.gameState.unitActionResult.result.result === ActionResultType.ACCOMPLISHED) {
             const targetuid = this.state.gameState.unitActionResult.action.targetUid;
             if (!targetuid) { return; }
             const unit: GameUnit = this.findUnitByUid(targetuid);
