@@ -29,8 +29,8 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         this.lobby.hide();
         this.configurator.hide();
 
-        status === UserStatus.IN_LOBBY && this.configurator.show();
-        status === UserStatus.IN_ROOM && this.lobby.show();
+        status === UserStatus.JOINED && this.configurator.show();
+        (status === UserStatus.IN_LOBBY || status === UserStatus.IN_ROOM) && this.lobby.show();
         status === UserStatus.IN_GAME && this.gameScene.show();
     }
     handleConnectionLost(): void {

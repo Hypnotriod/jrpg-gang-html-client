@@ -13,6 +13,7 @@ export enum ResponseStatus {
 }
 
 export enum UserStatus {
+    JOINED = 'joined',
     IN_LOBBY = 'inLobby',
     IN_ROOM = 'inRoom',
     IN_GAME = 'inGame',

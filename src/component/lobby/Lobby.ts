@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM, BUTTON_UNIT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM, BUTTON_UNIT, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
@@ -10,6 +10,7 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
+import Label from '../ui/label/Label';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
 
@@ -26,6 +27,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly unitIcon: Icon;
     @component(UNIT_INFO, Container)
     private readonly unitInfo: Container;
+    @component(LABEL_USERS_COUNT, Label)
+    protected readonly usersCountLabel: Label;
 
     constructor(private readonly communicator: ServerCommunicatorService,
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
@@ -43,6 +46,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected goToUnitConfig(): void {
         this.hide();
+        this.communicator.sendMessage(RequestType.EXIT_LOBBY);
         this.unitConfigurator.show();
     }
 
@@ -55,32 +59,40 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
             case RequestType.LOBBY_STATUS:
-                this.state.rooms = (response.data as LobbyStatusData).rooms;
-                this.update();
+                this.onLobbyStatus(response.data as LobbyStatusData);
                 break;
             case RequestType.ROOM_STATUS:
-                this.onRoomStatus(response);
+                if (!this.state.userState) { return; }
+                this.onRoomStatus(response.data as RoomStatusData);
                 break;
         }
 
     }
 
-    protected onRoomStatus(response: Response): void {
-        const roomInfo: RoomInfo = (response.data as RoomStatusData).room;
+    protected onLobbyStatus(data: LobbyStatusData): void {
+        this.state.rooms = data.rooms;
+        this.state.usersCount = data.usersCount;
+        this.update();
+    }
+
+    protected onRoomStatus(data: RoomStatusData): void {
+        const roomInfo: RoomInfo = data.room;
         this.state.rooms = this.state.rooms || [roomInfo];
         const oldRoomInfo = this.state.rooms.find(r => r.uid === roomInfo.uid);
         if (roomInfo.inactive) {
-            this.state.rooms = this.state.rooms.filter(r => r.uid !== roomInfo.uid)
+            this.state.rooms = this.state.rooms.filter(r => r.uid !== roomInfo.uid);
         } else if (!oldRoomInfo) {
             this.state.rooms.push(roomInfo);
         } else {
             oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
         }
+        this.state.usersCount = data.usersCount;
         this.update();
     }
 
     protected update(): void {
         const isUserInRooms: boolean = this.state.isUserInRooms(this.state.rooms);
+        this.usersCountLabel.value = `Users Count: ${this.state.usersCount}`;
         this.updateRooms(this.state.rooms, isUserInRooms);
         this.updateState(isUserInRooms);
         this.updateUnitInfo();

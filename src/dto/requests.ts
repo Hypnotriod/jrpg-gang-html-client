@@ -4,6 +4,8 @@ export enum RequestType {
     JOIN = 'join',
     CREATE_ROOM = 'createRoom',
     DESTROY_ROOM = 'destroyRoom',
+    ENTER_LOBBY = 'enterLobby',
+    EXIT_LOBBY = 'exitLobby',
     JOIN_ROOM = 'joinRoom',
     LEAVE_ROOM = 'leaveRoom',
     LOBBY_STATUS = 'lobbyStatus',

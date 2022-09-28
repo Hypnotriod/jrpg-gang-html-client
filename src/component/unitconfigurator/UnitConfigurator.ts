@@ -61,6 +61,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected goToLobby(): void {
         this.hide();
+        this.communicator.sendMessage(RequestType.ENTER_LOBBY);
         this.lobby.show();
     }
 
