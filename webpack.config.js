@@ -2,12 +2,20 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = {
+module.exports = (env) => ({
     entry: './src/index.ts',
     devtool: 'inline-source-map',
     mode: 'development',
     module: {
         rules: [
+            {
+                test: /app-config\.json$/,
+                loader: 'string-replace-loader',
+                options: {
+                    search: '${GAME_SERVER_WS_URL}',
+                    replace: env.gameServerWsUrl,
+                }
+            },
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
@@ -41,4 +49,4 @@ module.exports = {
             mimeTypes: { css: 'text/css' },
         }
     }
-};
+});
