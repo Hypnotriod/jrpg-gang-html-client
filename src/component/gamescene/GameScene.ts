@@ -103,6 +103,12 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.hide();
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
+        for (const x in this.spots) {
+            for (const y in this.spots[x]) {
+                this.spots[x][y].destroy();
+            }
+        }
+        (this.spots as SpotCell[][] | undefined) = undefined;
     }
 
     protected updateActionTarget(): void {
@@ -110,7 +116,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             const targetuid = this.state.gameState.unitActionResult.action.targetUid;
             if (!targetuid) { return; }
             const unit: GameUnit = this.findUnitByUid(targetuid);
-            this.spots[unit.position.x][unit.position.y].updateWithActionResult(this.state.gameState.unitActionResult.result)
+            this.spots[unit.position.x][unit.position.y].updateWithActionResult(this.state.gameState.unitActionResult.result);
         }
     }
 

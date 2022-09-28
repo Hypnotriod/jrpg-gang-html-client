@@ -34,6 +34,5 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         status === UserStatus.IN_GAME && this.gameScene.show();
     }
     handleConnectionLost(): void {
-        throw new Error('Method not implemented.');
     }
 }

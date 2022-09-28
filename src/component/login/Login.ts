@@ -4,6 +4,7 @@ import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
+import QueryService from '../../service/QueryService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
@@ -26,16 +27,9 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
+        private readonly query: QueryService,
         private readonly state: GameStateService) {
         super();
-    }
-
-    public autologin(userName: string, clazz: string): void {
-        this.userNameInput.value = userName;
-        this.icons.forEach(icon => {
-            icon.icon === clazz ? icon.select() : icon.unselect();
-        });
-        this.doJoin(userName, clazz);
     }
 
     protected initialize(): void {
@@ -71,6 +65,21 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
     }
 
+    public tryToAutologin(): void {
+        const nickname = this.query.parsedQuery['nickname'];
+        const clazz = this.query.parsedQuery['class'];
+        if (!nickname || !clazz) { return; }
+        this.autologin(nickname as string, clazz as string);
+    }
+
+    protected autologin(userName: string, clazz: string): void {
+        this.userNameInput.value = userName;
+        this.icons.forEach(icon => {
+            icon.icon === clazz ? icon.select() : icon.unselect();
+        });
+        this.doJoin(userName, clazz);
+    }
+
     protected onJoinClick(): void {
         this.isJoining = true;
         this.updateJoinButtonState();
@@ -79,7 +88,13 @@ export default class Login extends Component implements ServerCommunicatorHandle
             if (!icon.selected) { return; }
             clazz = icon.icon;
         });
-        this.doJoin(this.userNameInput.value, clazz);
+        this.replaceLocation(this.userNameInput.value, clazz);
+    }
+
+    protected replaceLocation(nickname: string, clazz: string): void {
+        nickname = nickname.split(' ').join('%20');
+        const href = window.location.href.split('?')[0] + `?nickname=${nickname}&class=${clazz}`;
+        window.location.href = href;
     }
 
     protected doJoin(nickname: string, clazz: string): void {
@@ -105,6 +120,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public handleConnectionLost(): void {
         this.show();
-        localStorage.clear();
+        this.tryToAutologin();
     }
 }
