@@ -1,4 +1,4 @@
-import { Action, AtionType, Position } from '../domain/domain';
+import { Action, ActionType, Position } from '../domain/domain';
 
 export enum RequestType {
     JOIN = 'join',
@@ -47,7 +47,7 @@ export interface GameActionRequestData extends Action, RequestData {
 }
 
 export interface ActionData extends RequestData {
-    action: AtionType;
+    action: ActionType;
     uid?: number;
     targetUid?: number;
     itemUid?: number;

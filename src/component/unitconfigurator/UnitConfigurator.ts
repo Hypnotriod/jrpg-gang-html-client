@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_LOBBY, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { Ammunition, AtionType, Disposable, ItemType, UnitInventory } from '../../domain/domain';
+import { Ammunition, ActionType, Disposable, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -169,7 +169,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected onUnitItemClick(target: ItemIcon): void {
         if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
-            action: !(target.data as Ammunition).equipped ? AtionType.EQUIP : AtionType.UNEQUIP,
+            action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,
         } as ActionData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
@@ -177,7 +177,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected onShopItemClick(target: ItemIcon): void {
         this.communicator.sendMessage(RequestType.SHOP_ACTION, {
-            action: AtionType.BUY,
+            action: ActionType.BUY,
             itemUid: target.data.uid!,
         } as ActionData);
         this.communicator.sendMessage(RequestType.USER_STATUS);

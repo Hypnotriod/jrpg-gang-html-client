@@ -1,7 +1,8 @@
-import { container } from 'tsyringe';
-import { ICON, ICON_STUNNED } from '../../../constants/Components';
+import { container, injectable } from 'tsyringe';
+import { ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
-import { Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
+import { ActionResult, ActionType, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
+import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -9,21 +10,35 @@ import Container from '../container/Container';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 
+@injectable()
 export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
-    @component(ICON_STUNNED, Container)
-    protected readonly _iconStunned: Container;
+    @component(ICON_STUNNED, Icon)
+    protected readonly _iconStunned: Icon;
+    @component(ICON_EFFECT, Container)
+    protected readonly _iconEffect: Container;
+    @component(ICON_HIT, Container)
+    protected readonly _iconHit: Container;
+    @component(ICON_MISSED, Container)
+    protected readonly _iconMissed: Container;
 
     private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
     private _x: number;
     private _y: number;
 
+    constructor(private readonly actionService: ActionService) {
+        super();
+    }
+
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
         this._iconStunned.hide();
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
     }
 
     protected onHover(): void {
@@ -98,6 +113,9 @@ export default class SpotCell extends Component {
             this._icon.disable();
         }
         this._iconStunned.hide();
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
         this._unit = undefined;
     }
 
@@ -108,9 +126,28 @@ export default class SpotCell extends Component {
         if (unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();
         }
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
     }
 
     public updateWithCorpse(corpse: GameUnit): void {
         this._icon.icon = 'tomb';
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
+    }
+
+    public updateWithActionResult(result: ActionResult): void {
+        this._iconEffect.hide();
+        this._iconHit.hide();
+        this._iconMissed.hide();
+        if (!this.actionService.hasEffect(result)) {
+            this._iconMissed.show();
+        } else if (this.actionService.hasDamage(result)) {
+            this._iconHit.show();
+        } else if (this.actionService.hasRecovery(result)) {
+            this._iconEffect.show();
+        }
     }
 }

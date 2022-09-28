@@ -36,6 +36,9 @@ export const GAME_LOG: string = 'game_log';
 
 export const ICON: string = 'icon';
 export const ICON_STUNNED: string = 'icon_stunned';
+export const ICON_EFFECT: string = 'icon_effect';
+export const ICON_HIT: string = 'icon_hit';
+export const ICON_MISSED: string = 'icon_missed';
 
 export const UNIT_ICON: string = 'unit_icon';
 export const UNIT_INFO: string = 'unit_info';

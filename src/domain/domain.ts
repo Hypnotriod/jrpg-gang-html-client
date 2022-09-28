@@ -259,7 +259,7 @@ export interface Spot {
     battlefield: Battlefield;
 }
 
-export enum AtionType {
+export enum ActionType {
     USE = 'use',
     EQUIP = 'equip',
     UNEQUIP = 'unequip',
@@ -275,7 +275,7 @@ export interface Position {
 }
 
 export interface Action {
-    action: AtionType;
+    action: ActionType;
     uid?: number;
     targetUid?: number;
     itemUid?: number;

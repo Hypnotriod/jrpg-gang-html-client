@@ -1,8 +1,9 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, Ammunition, AtionType, Cell, Disposable, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { ActionResultType, ActionType, Ammunition, Cell, Disposable, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
+import ActionService from '../../service/ActionService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -44,7 +45,8 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         private readonly communicator: ServerCommunicatorService,
         private readonly configurator: UnitConfigurator,
         private readonly renderer: GameObjectRenderer,
-        private readonly state: GameStateService) {
+        private readonly state: GameStateService,
+        private readonly actionService: ActionService) {
         super();
     }
 
@@ -79,6 +81,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 this.updateBattleField();
                 this.updateUserItems();
                 this.updateUnitsQueue();
+                this.updateActionTarget();
                 this.logAction();
                 break;
             case RequestType.PLAYER_INFO:
@@ -100,6 +103,15 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.hide();
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
+    }
+
+    protected updateActionTarget(): void {
+        if (this.state.gameState.unitActionResult) {
+            const targetuid = this.state.gameState.unitActionResult.action.targetUid;
+            if (!targetuid) { return; }
+            const unit: GameUnit = this.findUnitByUid(targetuid);
+            this.spots[unit.position.x][unit.position.y].updateWithActionResult(this.state.gameState.unitActionResult.result)
+        }
     }
 
     protected logAction(): void {
@@ -141,25 +153,15 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         return result;
     }
 
-    protected nullOrEmpty(arr: Array<any>): boolean {
-        return !arr || !arr.length;
-    }
-
     protected distinguishUnitActionResult(action: GameUnitActionResult): object {
         const result: any = {
             ...action,
         };
-        if (action.action.action === AtionType.USE &&
+        if (action.action.action === ActionType.USE &&
             action.result.result === ActionResultType.ACCOMPLISHED) {
-            if (!action.result.instantDamage &&
-                !action.result.instantRecovery &&
-                !action.result.temporalDamage &&
-                !action.result.temporalModification) {
+            if (!this.actionService.successfull(action.result)) {
                 result.result.result = 'no success!';
-            } else if (this.nullOrEmpty(action.result.instantDamage) &&
-                this.nullOrEmpty(action.result.instantRecovery) &&
-                this.nullOrEmpty(action.result.temporalDamage) &&
-                this.nullOrEmpty(action.result.temporalModification)) {
+            } else if (!this.actionService.hasEffect(action.result)) {
                 result.result.result = 'no effect!';
             }
         }
@@ -279,7 +281,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected placeUnit(position: Position): void {
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
-            action: AtionType.PLACE,
+            action: ActionType.PLACE,
             position,
         } as GameActionRequestData);
     }
@@ -287,7 +289,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected moveUnit(position: Position): void {
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
-            action: AtionType.MOVE,
+            action: ActionType.MOVE,
             position,
         } as GameActionRequestData);
     }
@@ -297,7 +299,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         if (!weapon) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
-            action: AtionType.USE,
+            action: ActionType.USE,
             itemUid: weapon.data.uid!,
             targetUid,
         } as GameActionRequestData);
@@ -379,7 +381,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
-            action: !(target.data as Ammunition).equipped ? AtionType.EQUIP : AtionType.UNEQUIP,
+            action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,
         } as ActionData);
     }
@@ -391,7 +393,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected onSkipButtonClick(): void {
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
-            action: AtionType.SKIP,
+            action: ActionType.SKIP,
         } as ActionData);
     }
 
