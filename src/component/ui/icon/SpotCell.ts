@@ -114,33 +114,34 @@ export default class SpotCell extends Component {
     }
 
     public updateWithCell(cell: Cell): void {
+        this.hideAll();
         this.icon = cell.code;
         if (cell.factions.includes(GameUnitFaction.PARTY)) {
             this._icon.enable();
         } else {
             this._icon.disable();
         }
-        this.hideAll();
         this._unit = undefined;
     }
 
     public updateWithUnit(unit: GameUnit): void {
+        this.hideAll();
         this._unit = unit;
-        unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
-        this.icon = unit.playerInfo ? unit.playerInfo.class! : unit.code!;
-        if (unit.faction === GameUnitFaction.ENEMY) {
+        this._unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
+        this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
+        if (this._unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();
         }
-        this.hideAll();
     }
 
     public updateWithCorpse(corpse: GameUnit): void {
-        this._icon.icon = 'tomb';
         this.hideAll();
+        this._icon.icon = 'tomb';
     }
 
     public updateWithActionResult(result: ActionResult): void {
         this.hideAll();
+        this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         if (!this.actionService.hasEffect(result)) {
             this._iconMissed.show();
         } else if (this.actionService.hasDamage(result)) {
