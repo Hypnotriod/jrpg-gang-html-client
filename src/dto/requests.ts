@@ -23,8 +23,8 @@ export enum RequestType {
 }
 
 export interface Request {
-    id: string;
     type: RequestType;
+    id: string;
     data?: RequestData;
 }
 
