@@ -38,7 +38,7 @@ export default class ServerCommunicatorService {
     public sendMessage(type: RequestType, data?: RequestData): string {
         if (!this.ws) { this.prepareWs(); }
         const id: string = this.generateRequestId();
-        const request: Request = { id, type, data };
+        const request: Request = { type, id, data };
         this.requestsQueue.push(request);
         this.nextRequest();
         return id;
@@ -99,7 +99,11 @@ export default class ServerCommunicatorService {
         this.ws = null;
     }
 
+    private genRandHex(size: number): string {
+        return [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+    }
+
     private generateRequestId(): string {
-        return (~~(Math.random() * (Number.MAX_SAFE_INTEGER - 1))).toString(16);
+        return this.genRandHex(16);
     }
 }

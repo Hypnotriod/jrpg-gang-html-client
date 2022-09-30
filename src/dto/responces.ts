@@ -5,7 +5,7 @@ export enum ResponseStatus {
     OK = 'ok',
     FAILED = 'failed',
     ERROR = 'error',
-    MAILFORMED = 'mailformed',
+    MALFORMED = 'malformed',
     UNSUPPORTED = 'unsupported',
     NOT_ALLOWED = 'notAllowed',
     NOT_FOUND = 'notFound',
