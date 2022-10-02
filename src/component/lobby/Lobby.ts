@@ -137,7 +137,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected onCreateRoom(): void {
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
             capacity: 4,
-            scenarioId: 'test-scenario',
+            scenarioId: 'test', // todo: make room creation dialog
         } as CreateRoomRequestData);
     }
 }
