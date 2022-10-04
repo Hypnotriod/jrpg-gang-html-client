@@ -325,6 +325,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected updateUserItems(): void {
         if (!this.state.playerInfo) { return; }
         const unit: GameUnit = this.currentActor();
+        if (!unit) { return; }
         this.updateUnitInventoryIcons(unit.inventory);
     }
 
