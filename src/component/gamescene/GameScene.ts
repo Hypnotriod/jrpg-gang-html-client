@@ -136,7 +136,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected getUnitName(unit: GameUnit): string {
-        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : unit.name;
+        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : (`${unit.name} (${unit.uid})`);
     }
 
     protected distinguishEndRoundResult(endRound: EndTurnResult): object {

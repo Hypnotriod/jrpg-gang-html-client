@@ -30,15 +30,15 @@ export default class ActionService {
 
 
     public physicalInstantDamage(result: ActionResult): number {
-        return result.instantDamage ? result.instantDamage.reduce((acc, d) =>
-            acc + (d.bleeding || 0) +
-            acc + (d.cold || 0) +
-            acc + (d.crushing || 0) +
-            acc + (d.cutting || 0) +
-            acc + (d.fire || 0) +
-            acc + (d.lighting || 0) +
-            acc + (d.poison || 0) +
-            acc + (d.stabbing || 0)
+        return result.instantDamage ? result.instantDamage.reduce((acc, d) => acc +
+            (d.bleeding || 0) +
+            (d.cold || 0) +
+            (d.crushing || 0) +
+            (d.cutting || 0) +
+            (d.fire || 0) +
+            (d.lighting || 0) +
+            (d.poison || 0) +
+            (d.stabbing || 0)
             , 0) : 0;
     }
 
