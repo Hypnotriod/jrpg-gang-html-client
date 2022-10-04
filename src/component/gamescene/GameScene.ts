@@ -77,6 +77,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
                 this.state.gameState = (response.data as GameActionData).actionResult;
+                if (this.state.gameState.phase === GamePhase.PREPARE_UNIT) {
+                    this.destroy();
+                }
                 this.updatePlayerInfoFromGameState(this.state.gameState);
                 this.updateBattleField();
                 this.updateUserItems();
@@ -101,6 +104,10 @@ export default class GameScene extends Component implements ServerCommunicatorHa
 
     public handleConnectionLost(): void {
         this.hide();
+        this.destroy();
+    }
+
+    public destroy(): void {
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
         for (const x in this.spots) {
