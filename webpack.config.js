@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = (env) => ({
@@ -29,13 +30,17 @@ module.exports = (env) => ({
             patterns: [
                 { from: 'public' },
             ],
+        }),
+        new HtmlWebpackPlugin({
+            template: 'template/index.html',
+            scriptLoading: 'defer'
         })
     ],
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: 'main.min.js',
+        filename: 'main.min-[fullhash].js',
         path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
