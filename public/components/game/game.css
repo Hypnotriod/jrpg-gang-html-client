@@ -13,8 +13,8 @@
 .game-log {
     background-color: slategray;
     padding: 10px;
-    max-height: 325px;
-    min-height: 325px;
+    max-height: 250px;
+    min-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 10px;

@@ -41,6 +41,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.joinButton.disable();
 
         this.icons.push(Icon.createIcon('tank', this, ICONS_CONTAINER)!);
+        this.icons.push(Icon.createIcon('barbarian', this, ICONS_CONTAINER)!);
         this.icons.push(Icon.createIcon('mage', this, ICONS_CONTAINER)!);
         this.icons.push(Icon.createIcon('rogue', this, ICONS_CONTAINER)!);
         this.icons.forEach(icon => {

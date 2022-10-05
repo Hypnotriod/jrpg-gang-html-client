@@ -232,6 +232,7 @@ export enum GamePhase {
 }
 
 export interface GameState {
+    booty: UnitBooty;
     activeUnitsQueue: number[];
     inactiveUnits: number[];
 }

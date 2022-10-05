@@ -77,7 +77,8 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
                 this.state.gameState = (response.data as GameActionData).actionResult;
-                if (this.state.gameState.phase === GamePhase.PREPARE_UNIT) {
+                if (this.state.gameState.phase === GamePhase.BATTLE_COMPLETE &&
+                    this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
                     this.destroy();
                 }
                 this.updatePlayerInfoFromGameState(this.state.gameState);
@@ -95,6 +96,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             case RequestType.USER_STATUS:
                 const status: UserStatus = (response.data as UserStateData).status;
                 if (status !== UserStatus.IN_GAME && this.visible) {
+                    this.destroy();
                     this.hide();
                     this.configurator.show();
                 }
@@ -199,7 +201,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
         this.updateNextPhaseSkipButton();
-        this.gameStatusLabel.value = this.state.gameState.nextPhase;
+        this.gameStatusLabel.value = `(coins: ${this.state.gameState.state.booty.coins} ruby: ${this.state.gameState.state.booty.ruby || 0}) ${this.state.gameState.nextPhase}`;
     }
 
     protected updateNextPhaseSkipButton(): void {
