@@ -113,6 +113,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.updateJoinButtonState();
         if (response.status !== ResponseStatus.OK) {
             localStorage.clear();
+            this.tryToAutologin();
             return;
         }
         this.state.userState = response.data as UserStateData;
