@@ -161,10 +161,12 @@ export default class SpotCell extends Component {
 
     public updateWithActionResult(result: ActionResult): void {
         this.hideAll();
-        this.idLabel.show();
-        this.healthBar.show();
-        this.staminaBar.show();
-        this.manaBar.show();
+        if (this._unit) {
+            this.idLabel.show();
+            this.healthBar.show();
+            this.staminaBar.show();
+            this.manaBar.show();
+        }
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         if (!this.actionService.hasEffect(result)) {
             this._iconMissed.show();
