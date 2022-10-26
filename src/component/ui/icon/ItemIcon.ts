@@ -27,9 +27,9 @@ export default class ItemIcon extends Component {
         super.destroy();
     }
 
-    public static createItemIcon(icon: string, parent: Component, containerId: string): ItemIcon | null {
+    public static createItemIcon(icon: string, parent: Component, containerId: string | undefined = undefined): ItemIcon | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
-        const iconComponent: ItemIcon = parent.create(containerId, ItemIcon,
+        const iconComponent: ItemIcon = parent.create(containerId || parent.view, ItemIcon,
             { design: resourceLoader.get(ITEM_ICON_DESIGN), classList: ['item-icon-warpper'] })!;
         iconComponent.icon = icon;
         return iconComponent;

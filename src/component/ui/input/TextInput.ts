@@ -19,7 +19,7 @@ export default class TextInput extends Component {
         };
     }
 
-    protected get view(): HTMLTextAreaElement {
+    public get view(): HTMLTextAreaElement {
         return super.view as HTMLTextAreaElement;
     }
 

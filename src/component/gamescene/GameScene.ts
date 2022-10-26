@@ -1,28 +1,28 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, Ammunition, Cell, Disposable, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
-import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Checkbox from '../ui/checkbox/Checkbox';
 import Container from '../ui/container/Container';
-import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
 import SpotCell from '../ui/icon/SpotCell';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
+import GameBase from './GameBase';
+import GameUnitItems from './GameUnitItems';
 
 @injectable()
 @singleton()
-export default class GameScene extends Component implements ServerCommunicatorHandler {
+export default class GameScene extends GameBase implements ServerCommunicatorHandler {
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
     @component(GAME_LOG, TextField)
@@ -36,13 +36,15 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     @component(CHECKBOX_AUTO, Checkbox)
     private readonly autoCheckbox: Checkbox;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
-    private readonly itemDescription: ObjectDescription;
+    private readonly objectDescription: ObjectDescription;
     @component(UNITS_QUEUE_CONTAINER, Container)
     private readonly unitsQueueContainer: Container;
     @component(BOOTY_CONTAINER, Container)
     private readonly bootyContainer: Container;
+    @component(UNIT_ITEMS_CONTAINER, GameUnitItems)
+    private readonly unitItems: GameUnitItems;
 
-    private readonly unitItems: Map<number, ItemIcon> = new Map();
+
     private readonly bootyIcons: Map<string, ItemIcon> = new Map();
 
     private nextPhaseTimeoutId: NodeJS.Timeout;
@@ -55,7 +57,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         private readonly renderer: GameObjectRenderer,
         private readonly state: GameStateService,
         private readonly actionService: ActionService) {
-        super();
+        super(state);
     }
 
     protected initialize(): void {
@@ -66,12 +68,14 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             RequestType.GAME_ACTION,
             RequestType.PLAYER_INFO,
         ], this);
+        super.initialize();
         this.hide();
         this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
         this.leaveGameButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
         this.autoCheckbox.onChange = target => this.timeoutAutoNextPhase();
-        this.itemDescription.hide();
+        this.objectDescription.hide();
+        this.unitItems.objectDescription = this.objectDescription;
         this.bootyIcons.set('coins', ItemIcon.createItemIcon('coins', this, BOOTY_CONTAINER)!);
         this.bootyIcons.set('ruby', ItemIcon.createItemIcon('ruby', this, BOOTY_CONTAINER)!);
         this.bootyIcons.get('coins')!.name = 'Coins';
@@ -124,8 +128,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     public destroy(): void {
-        this.unitItems.forEach(item => item.destroy());
-        this.unitItems.clear();
+
         for (const x in this.spots) {
             for (const y in this.spots[x]) {
                 this.spots[x][y].destroy();
@@ -275,7 +278,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 const id: string = `cells_row_${x}`;
                 this.create(BATTLEFIELD_CONTAINER, Container, { classList: ['column-container'], id });
                 const spotCell: SpotCell = SpotCell.createSpotCell(this, id)!;
-                spotCell.descriptionPopup = this.itemDescription;
+                spotCell.descriptionPopup = this.objectDescription;
                 spotCell.x = Number(x);
                 spotCell.y = Number(y);
                 this.spots[x][y] = spotCell;
@@ -293,15 +296,6 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         } else if (this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION) {
             this.moveUnit({ x: target.x, y: target.y });
         }
-    }
-
-    protected canDoAction(): boolean {
-        return this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION ||
-            this.state.gameState.nextPhase === GamePhase.MAKE_ACTION;
-    }
-
-    protected canDoUnitConfiguration(): boolean {
-        return this.canDoAction() || this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT;
     }
 
     protected isCurrentUnitTurn(): boolean {
@@ -326,7 +320,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected useItem(targetUid: number): void {
-        const weapon = this.getChoosedItem();
+        const weapon = this.unitItems.getChoosedItem();
         if (!weapon) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
@@ -336,36 +330,15 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         } as GameActionRequestData);
     }
 
-    protected getChoosedItem(): ItemIcon | undefined {
-        return [...this.unitItems.values()].find(i => i.choosed);
-    }
-
     protected updateUserItems(): void {
         if (!this.state.playerInfo) { return; }
         const unit: GameUnit = this.currentActor();
         if (!unit) { return; }
-        this.updateUnitInventoryIcons(unit.inventory);
+        this.unitItems.updateUnitInventoryIcons(unit.inventory);
     }
 
     protected currentActor(): GameUnit {
         return this.findUnitByUid(this.state.playerInfo.unitUid!);
-    }
-
-    protected updateUnitInventoryIcons(inventory: UnitInventory): void {
-        const inventoryItems: (Disposable | Ammunition)[] = [
-            ...(inventory.weapon || []),
-            ...(inventory.ammunition || []),
-            ...(inventory.magic || []),
-            ...(inventory.armor || []),
-            ...(inventory.disposable || []),
-        ];
-        inventoryItems.forEach(v => this.updateUnitItem(v));
-        this.unitItems.forEach((icon, uid) => {
-            if (!inventoryItems.find(i => i.uid === uid)) {
-                icon.destroy();
-                this.unitItems.delete(uid);
-            }
-        });
     }
 
     protected findItemInInventory(inventory: UnitInventory, uid: number): Item | undefined {
@@ -389,34 +362,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     protected updateUnitInQueue(data: GameUnit): void {
         const cell: SpotCell = SpotCell.createSpotCell(this, UNITS_QUEUE_CONTAINER)!;
         cell.updateWithUnit(data);
-        cell.descriptionPopup = this.itemDescription;
-    }
-
-    protected updateUnitItem(data: Disposable | Ammunition): void {
-        let iconItem = this.unitItems.get(data.uid!);
-        if (!iconItem) {
-            iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;
-            iconItem.onClick = target => this.onUnitItemClick(target);
-            iconItem.descriptionPopup = this.itemDescription;
-        }
-        this.unitItems.set(data.uid!, iconItem);
-        iconItem.update(data);
-    }
-
-    protected onUnitItemClick(target: ItemIcon): void {
-        if (!this.canDoUnitConfiguration()) { return; }
-        if (target.data.type === ItemType.WEAPON || target.data.type === ItemType.DISPOSABLE) {
-            const wansntChoosed = !target.choosed && target.selected;
-            this.unitItems.forEach(i => i.unchoose());
-            target.choose();
-            if (wansntChoosed) { return; }
-        }
-        if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
-        this.communicator.sendMessage(RequestType.GAME_ACTION, {
-            uid: this.state.playerInfo.unitUid,
-            action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
-            itemUid: target.data.uid!,
-        } as ActionData);
+        cell.descriptionPopup = this.objectDescription;
     }
 
     protected onNextPhaseClick(): void {

@@ -4,7 +4,7 @@ export default class Label extends Component {
     protected initialize(): void {
     }
 
-    protected get view(): HTMLTextAreaElement {
+    public get view(): HTMLTextAreaElement {
         return this._view as HTMLTextAreaElement;
     }
 

@@ -15,8 +15,8 @@ import Icon from './Icon';
 export default class SpotCell extends Component {
     @component(ICON, Icon)
     protected readonly _icon: Icon;
-    @component(ICON_STUNNED, Icon)
-    protected readonly _iconStunned: Icon;
+    @component(ICON_STUNNED, Container)
+    protected readonly _iconStunned: Container;
     @component(ICON_EFFECT, Container)
     protected readonly _iconEffect: Container;
     @component(ICON_HIT, Container)

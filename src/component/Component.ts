@@ -34,7 +34,7 @@ export default abstract class Component {
         (this._view as HTMLElement | null) = null;
     }
 
-    protected get view(): HTMLElement {
+    public get view(): HTMLElement {
         return this._view;
     }
 
