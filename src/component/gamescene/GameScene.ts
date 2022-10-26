@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, Ammunition, Cell, Disposable, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, ItemType, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
@@ -10,6 +10,7 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
+import Checkbox from '../ui/checkbox/Checkbox';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
@@ -32,12 +33,19 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     private readonly skipButton: Button;
     @component(BUTTON_LEAVE_GAME, Button)
     private readonly leaveGameButton: Button;
+    @component(CHECKBOX_AUTO, Checkbox)
+    private readonly autoCheckbox: Checkbox;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
     @component(UNITS_QUEUE_CONTAINER, Container)
     private readonly unitsQueueContainer: Container;
+    @component(BOOTY_CONTAINER, Container)
+    private readonly bootyContainer: Container;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
+    private readonly bootyIcons: Map<string, ItemIcon> = new Map();
+
+    private nextPhaseTimeoutId: NodeJS.Timeout;
 
     private spots: SpotCell[][];
 
@@ -62,7 +70,12 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
         this.leaveGameButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
+        this.autoCheckbox.onChange = target => this.timeoutAutoNextPhase();
         this.itemDescription.hide();
+        this.bootyIcons.set('coins', ItemIcon.createItemIcon('coins', this, BOOTY_CONTAINER)!);
+        this.bootyIcons.set('ruby', ItemIcon.createItemIcon('ruby', this, BOOTY_CONTAINER)!);
+        this.bootyIcons.get('coins')!.name = 'Coins';
+        this.bootyIcons.get('ruby')!.name = 'Ruby';
     }
 
     public handleServerResponse(response: Response): void {
@@ -87,6 +100,7 @@ export default class GameScene extends Component implements ServerCommunicatorHa
                 this.updateUnitsQueue();
                 this.updateActionTarget();
                 this.logAction();
+                this.timeoutAutoNextPhase();
                 break;
             case RequestType.PLAYER_INFO:
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
@@ -201,7 +215,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
         this.updateNextPhaseSkipButton();
-        this.gameStatusLabel.value = `(coins: ${this.state.gameState.state.booty.coins} ruby: ${this.state.gameState.state.booty.ruby || 0}) ${this.state.gameState.nextPhase}`;
+        this.bootyIcons.get('coins')!.quantity = this.state.gameState.state.booty.coins;
+        this.bootyIcons.get('ruby')!.quantity = this.state.gameState.state.booty.ruby || 0;
+        this.gameStatusLabel.value = `${this.state.gameState.nextPhase}`;
     }
 
     protected updateNextPhaseSkipButton(): void {
@@ -371,8 +387,9 @@ export default class GameScene extends Component implements ServerCommunicatorHa
     }
 
     protected updateUnitInQueue(data: GameUnit): void {
-        const icon: string = data.playerInfo ? data.playerInfo.class! : data.code!;
-        Icon.createIcon(icon, this, UNITS_QUEUE_CONTAINER)!;
+        const cell: SpotCell = SpotCell.createSpotCell(this, UNITS_QUEUE_CONTAINER)!;
+        cell.updateWithUnit(data);
+        cell.descriptionPopup = this.itemDescription;
     }
 
     protected updateUnitItem(data: Disposable | Ammunition): void {
@@ -411,6 +428,20 @@ export default class GameScene extends Component implements ServerCommunicatorHa
             uid: this.state.playerInfo.unitUid,
             action: ActionType.SKIP,
         } as ActionData);
+    }
+
+    protected timeoutAutoNextPhase(): void {
+        clearTimeout(this.nextPhaseTimeoutId);
+        this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), 1500);
+    }
+
+    protected callAutoNextPhase(): void {
+        if (!this.autoCheckbox.checked || !this.nextPhaseButton.visible ||
+            this.state.gameState.nextPhase === GamePhase.BATTLE_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
+            return;
+        }
+        this.onNextPhaseClick();
     }
 
     protected onLeaveGameClick(): void {

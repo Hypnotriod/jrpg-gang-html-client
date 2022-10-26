@@ -145,7 +145,15 @@ export default abstract class Component {
         return this.view.clientWidth;
     }
 
+    public set width(value: number) {
+        this.view.style.width = value + 'px';
+    }
+
     public get height(): number {
         return this.view.clientHeight;
+    }
+
+    public set height(value: number) {
+        this.view.style.height = value + 'px';
     }
 }

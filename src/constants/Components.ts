@@ -17,6 +17,8 @@ export const BUTTON_NEXT_PHASE: string = 'button_next_phase';
 export const BUTTON_SKIP: string = 'button_skip';
 export const BUTTON_LEAVE_GAME: string = 'button_leave_game';
 
+export const CHECKBOX_AUTO: string = 'checkbox_auto';
+
 export const INPUT_USER_NAME: string = 'input_user_name';
 
 export const LABEL_ERROR: string = 'label_error';
@@ -25,6 +27,7 @@ export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 export const LABEL_GAME_STATUS: string = 'label_game_status';
 export const LABEL_HIT_HP: string = 'label_hit_hp';
+export const LABEL_ID: string = 'label_id';
 export const LABEL_USERS_COUNT: string = 'label_users_count';
 
 export const ICONS_CONTAINER: string = 'icons_container';
@@ -32,6 +35,11 @@ export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';
 export const SHOP_ITEMS_CONTAINER: string = 'shop_items_container';
 export const BATTLEFIELD_CONTAINER: string = 'battlefield_container';
 export const UNITS_QUEUE_CONTAINER: string = 'units_queue_container';
+export const BOOTY_CONTAINER: string = 'booty_container';
+
+export const HEALTH_BAR: string = 'health_bar';
+export const STAMINA_BAR: string = 'stamina_bar';
+export const MANA_BAR: string = 'mana_bar';
 
 export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
 export const GAME_LOG: string = 'game_log';

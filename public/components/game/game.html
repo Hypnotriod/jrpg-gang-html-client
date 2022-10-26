@@ -1,15 +1,19 @@
 <div class="game-wrapper">
-    <div class="row">
+    <div class="row" style="min-height: 160px;">
         <div class="col s4 center-align">
-            <span id="label_game_status" class="white-text text-center"></span>
+            <span id="label_game_status" class="white-text text-center left"></span>
+            <label>
+                <input id="checkbox_auto" type="checkbox" />
+                <span>Auto</span>
+            </label>
             <div class="row">
-                <br>
                 <div class="col s4"><button id="button_leave_game" class="btn">Leave</button></div>
                 <div class="col s8">
                     <button id="button_next_phase" class="btn blue">Next Phase</button>
                     <button id="button_skip" class="btn red">Skip</button>
                 </div>
             </div>
+            <div id="booty_container" class="items-container"></div>
         </div>
         <div class="col s8">
             <div id="units_queue_container" class="items-container"></div>

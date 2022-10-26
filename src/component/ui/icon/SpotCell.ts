@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, ActionType, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -25,6 +25,14 @@ export default class SpotCell extends Component {
     protected readonly _iconMissed: Container;
     @component(LABEL_HIT_HP, Label)
     protected readonly hitHpLabel: Label;
+    @component(LABEL_ID, Label)
+    protected readonly idLabel: Label;
+    @component(HEALTH_BAR, Container)
+    protected readonly healthBar: Container;
+    @component(STAMINA_BAR, Container)
+    protected readonly staminaBar: Container;
+    @component(MANA_BAR, Container)
+    protected readonly manaBar: Container;
 
     private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
@@ -111,6 +119,10 @@ export default class SpotCell extends Component {
         this._iconHit.hide();
         this._iconMissed.hide();
         this.hitHpLabel.hide();
+        this.idLabel.hide();
+        this.healthBar.hide();
+        this.staminaBar.hide();
+        this.manaBar.hide();
     }
 
     public updateWithCell(cell: Cell): void {
@@ -126,12 +138,20 @@ export default class SpotCell extends Component {
 
     public updateWithUnit(unit: GameUnit): void {
         this.hideAll();
+        this.idLabel.show();
+        this.idLabel.value = String(unit.uid);
         this._unit = unit;
         this._unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
         if (this._unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();
         }
+        this.healthBar.show();
+        this.staminaBar.show();
+        this.manaBar.show();
+        this.healthBar.width = this._unit.state.health / (this._unit.stats.baseAttributes.health || 1) * 64;
+        this.staminaBar.width = this._unit.state.stamina / (this._unit.stats.baseAttributes.stamina || 1) * 64;
+        this.manaBar.width = this._unit.state.mana / (this._unit.stats.baseAttributes.mana || 1) * 64;
     }
 
     public updateWithCorpse(corpse: GameUnit): void {
@@ -141,6 +161,10 @@ export default class SpotCell extends Component {
 
     public updateWithActionResult(result: ActionResult): void {
         this.hideAll();
+        this.idLabel.show();
+        this.healthBar.show();
+        this.staminaBar.show();
+        this.manaBar.show();
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         if (!this.actionService.hasEffect(result)) {
             this._iconMissed.show();

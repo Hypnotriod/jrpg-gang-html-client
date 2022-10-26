@@ -6,6 +6,7 @@ export default class Button extends Component {
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
             this.onClickCallback && this.onClickCallback(this);
+            event.stopPropagation();
         };
     }
 

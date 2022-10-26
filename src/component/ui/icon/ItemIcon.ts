@@ -95,16 +95,25 @@ export default class ItemIcon extends Component {
 
     public update(data: Disposable | Ammunition | Equipment): void {
         this._data = data;
-        this.nameLabel.value = data.name;
-        this._icon.icon = data.code;
+        this.name = data.name;
+        this.icon = data.code;
         (data as Equipment).equipped ? this.select() : this.unselect();
         if (!this.quantityLabel) { return; }
         if ((data as Ammunition).quantity !== undefined) {
-            this.quantityLabel.show();
-            this.quantityLabel.value = String((data as Ammunition).quantity);
+            this.quantity = (data as Ammunition).quantity || 0;
         } else {
             this.quantityLabel.hide();
         }
+    }
+
+    public set quantity(value: number) {
+        if (!this.quantityLabel) { return; }
+        this.quantityLabel.show();
+        this.quantityLabel.value = String(value);
+    }
+
+    public set name(value: string) {
+        this.nameLabel.value = value;
     }
 
     public get data(): Disposable | Ammunition | Equipment {
