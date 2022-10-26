@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, Cell, EndTurnResult, GameEvent, GamePhase, GameUnit, GameUnitActionResult, Item, PlayerInfo, Position, UnitInventory } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, GameEvent, GamePhase, GameUnit, PlayerInfo, Position } from '../../domain/domain';
 import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
 import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -44,11 +44,10 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     @component(UNIT_ITEMS_CONTAINER, GameUnitItems)
     private readonly unitItems: GameUnitItems;
 
-
     private readonly bootyIcons: Map<string, ItemIcon> = new Map();
 
+    private currUnit: GameUnit | null = null;
     private nextPhaseTimeoutId: NodeJS.Timeout;
-
     private spots: SpotCell[][];
 
     constructor(
@@ -57,7 +56,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         private readonly renderer: GameObjectRenderer,
         private readonly state: GameStateService,
         private readonly actionService: ActionService) {
-        super(state);
+        super(state, actionService);
     }
 
     protected initialize(): void {
@@ -128,7 +127,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public destroy(): void {
-
+        this.unitItems.destroy();
         for (const x in this.spots) {
             for (const y in this.spots[x]) {
                 this.spots[x][y].destroy();
@@ -159,58 +158,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.renderer.header('End Round result', 2) + '<br>' +
                 this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult));
         }
-    }
-
-    protected getUnitName(unit: GameUnit): string {
-        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : (`${unit.name} (${unit.uid})`);
-    }
-
-    protected distinguishEndRoundResult(endRound: EndTurnResult): object {
-        const result: any = {};
-        Object.keys(endRound.damage).forEach(key => {
-            if (!Object.keys(endRound.damage[key]).length) { return; }
-            result.damage = result.damage || {};
-            const unit = this.findUnitByUid(Number(key));
-            result.damage[this.getUnitName(unit)] = endRound.damage[key];
-        });
-        Object.keys(endRound.recovery).forEach(key => {
-            if (!Object.keys(endRound.recovery[key]).length) { return; }
-            result.recovery = result.recovery || {};
-            const unit = this.findUnitByUid(Number(key));
-            result.recovery[this.getUnitName(unit)] = endRound.recovery[key];
-        });
-        if (endRound.booty.coins || endRound.booty.ruby) {
-            result.booty = endRound.booty;
-        }
-        return result;
-    }
-
-    protected distinguishUnitActionResult(action: GameUnitActionResult): object {
-        const result: any = {
-            ...action,
-        };
-        if (action.action.action === ActionType.USE &&
-            action.result.result === ActionResultType.ACCOMPLISHED) {
-            if (!this.actionService.successfull(action.result)) {
-                result.result.result = 'no success!';
-            } else if (!this.actionService.hasEffect(action.result)) {
-                result.result.result = 'no effect!';
-            }
-        }
-        const actorUnit = this.findUnitByUid(action.action.uid!);
-        const targetUnit = this.findUnitByUid(action.action.targetUid!);
-        if (action.action.itemUid) {
-            const actorItem = this.findItemInInventory(actorUnit.inventory, action.action.itemUid);
-            if (actorItem) {
-                result.action.itemUid = undefined;
-                result.action.item = actorItem.name;
-            }
-        }
-        if (targetUnit) {
-            result.action.targetUid = undefined;
-            result.action.target = this.getUnitName(targetUnit);
-        }
-        return result;
     }
 
     protected updateBattleField(): void {
@@ -252,11 +199,23 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected updateBattleFieldUnits(): void {
         const corpses: GameUnit[] = this.state.gameState.spot.battlefield.corpses;
         const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
+        if (this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE &&
+            (this.state.gameState.phase === GamePhase.MAKE_ACTION ||
+                this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION ||
+                this.state.gameState.phase === GamePhase.MAKE_ACTION_AI ||
+                this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION_AI)) {
+        } else {
+            this.currUnit = this.currentUnit();
+        }
         corpses && corpses.forEach(corpse => {
             this.spots[corpse.position.x][corpse.position.y].updateWithCorpse(corpse);
         });
         units.forEach(unit => {
-            this.spots[unit.position.x][unit.position.y].updateWithUnit(unit);
+            const spot: SpotCell = this.spots[unit.position.x][unit.position.y];
+            spot.updateWithUnit(unit);
+            if (this.currUnit && this.currUnit.uid === unit.uid && this.state.gameState.phase !== GamePhase.PREPARE_UNIT) {
+                spot.choose();
+            }
         });
     }
 
@@ -337,21 +296,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitItems.updateUnitInventoryIcons(unit.inventory);
     }
 
-    protected currentActor(): GameUnit {
-        return this.findUnitByUid(this.state.playerInfo.unitUid!);
-    }
-
-    protected findItemInInventory(inventory: UnitInventory, uid: number): Item | undefined {
-        const inventoryItems: Item[] = [
-            ...(inventory.weapon || []),
-            ...(inventory.ammunition || []),
-            ...(inventory.magic || []),
-            ...(inventory.armor || []),
-            ...(inventory.disposable || []),
-        ];
-        return inventoryItems.find(i => i.uid === uid);
-    }
-
     protected updateUnitsQueue(): void {
         const units: GameUnit[] = this.state.gameState.state.activeUnitsQueue.map(
             unitUid => this.findUnitByUid(unitUid));
@@ -393,12 +337,5 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected onLeaveGameClick(): void {
         this.communicator.sendMessage(RequestType.LEAVE_GAME);
         this.communicator.sendMessage(RequestType.USER_STATUS);
-    }
-
-    protected findUnitByUid(unitUid: number): GameUnit {
-        const result: GameUnit | undefined = this.state.gameState.spot.battlefield.units?.find(
-            unit => unit.uid === unitUid);
-        return result || this.state.gameState.spot.battlefield.corpses?.find(
-            unit => unit.uid === unitUid)!;
     }
 }

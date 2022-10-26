@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
-import { ActionResult, ActionType, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
+import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -17,6 +17,8 @@ export default class SpotCell extends Component {
     protected readonly _icon: Icon;
     @component(ICON_STUNNED, Container)
     protected readonly _iconStunned: Container;
+    @component(ICON_CURRENT, Container)
+    protected readonly _iconCurrent: Container;
     @component(ICON_EFFECT, Container)
     protected readonly _iconEffect: Container;
     @component(ICON_HIT, Container)
@@ -123,6 +125,7 @@ export default class SpotCell extends Component {
         this.healthBar.hide();
         this.staminaBar.hide();
         this.manaBar.hide();
+        this._iconCurrent.hide();
     }
 
     public updateWithCell(cell: Cell): void {
@@ -134,6 +137,14 @@ export default class SpotCell extends Component {
             this._icon.disable();
         }
         this._unit = undefined;
+    }
+
+    public choose(): void {
+        this._iconCurrent.show();
+    }
+
+    public unchoose(): void {
+        this._iconCurrent.hide();
     }
 
     public updateWithUnit(unit: GameUnit): void {

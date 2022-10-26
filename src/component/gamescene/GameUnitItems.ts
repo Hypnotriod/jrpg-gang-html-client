@@ -1,6 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { ActionType, Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
+import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import ItemIcon from '../ui/icon/ItemIcon';
@@ -15,8 +16,9 @@ export default class GameUnitItems extends GameBase {
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly state: GameStateService) {
-        super(state);
+        private readonly state: GameStateService,
+        private readonly actionService: ActionService) {
+        super(state, actionService);
     }
 
     protected initialize(): void {
@@ -26,7 +28,6 @@ export default class GameUnitItems extends GameBase {
     public destroy(): void {
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
-        super.destroy();
     }
 
     public set objectDescription(value: ObjectDescription) {
