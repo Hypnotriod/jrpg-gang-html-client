@@ -41,10 +41,10 @@ export interface Damage {
     exhaustion?: number;
     manaDrain?: number;
     bleeding?: number;
-    fear?: number;
-    curse?: number;
+    morale?: number;
+    fortune?: number;
     isCritical?: boolean;
-    isStunned?: boolean;
+    withStun?: boolean;
 }
 
 export interface UnitBaseAttributes {
@@ -66,7 +66,7 @@ export interface UnitAttributes {
 export interface UnitResistance extends Damage {
 }
 
-export interface UnitRecovery extends UnitState {
+export interface UnitRecovery extends UnitState, Damage {
 }
 
 export interface UnitModification {
