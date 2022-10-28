@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_LOBBY, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { Ammunition, ActionType, Disposable, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -91,7 +91,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
-        const inventoryItems: (Disposable | Ammunition)[] = [
+        const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
             ...(inventory.magic || []),
@@ -107,7 +107,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         });
     }
 
-    protected updateShopItem(data: Disposable | Ammunition): void {
+    protected updateShopItem(data: InventoryItem): void {
         let iconItem = this.shopItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ShopItemIcon.createShopItemIcon(data.code, this, SHOP_ITEMS_CONTAINER)!;
@@ -140,7 +140,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateUnitInventoryIcons(inventory: UnitInventory): void {
-        const inventoryItems: (Disposable | Ammunition)[] = [
+        const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
             ...(inventory.magic || []),
@@ -156,7 +156,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         });
     }
 
-    protected updateUnitItem(data: Disposable | Ammunition): void {
+    protected updateUnitItem(data: InventoryItem): void {
         let iconItem = this.unitItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;

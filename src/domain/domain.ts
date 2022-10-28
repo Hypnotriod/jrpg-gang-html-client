@@ -129,8 +129,7 @@ export interface ActionRange {
     maximumX?: number;
     minimumY?: number;
     maximumY?: number;
-    radiusX?: number;
-    radiusY?: number;
+    radius?: number;
 }
 
 export interface Weapon extends Equipment {
@@ -153,6 +152,7 @@ export interface Armor extends Equipment {
 
 export interface Disposable extends Item {
     quantity?: number;
+    range: ActionRange;
     damage?: DamageImpact[];
     modification?: UnitModificationImpact[];
 }
@@ -163,6 +163,8 @@ export interface Ammunition extends Item {
     quantity?: number;
     damage?: DamageImpact[];
 }
+
+export type InventoryItem = Weapon | Disposable | Ammunition | Magic | Armor;
 
 export interface UnitInventory {
     weapon?: Weapon[];

@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Disposable, Equipment } from '../../../domain/domain';
+import { Ammunition, Equipment, InventoryItem } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -17,7 +17,7 @@ export default class ItemIcon extends Component {
     @component(LABEL_QUANTITY, Label)
     protected readonly quantityLabel: Label | null;
 
-    private _data: Disposable | Ammunition;
+    private _data: InventoryItem;
     private _descriptionPopup: ObjectDescription;
 
     public destroy(): void {
@@ -93,7 +93,7 @@ export default class ItemIcon extends Component {
         return this._icon.choosed;
     }
 
-    public update(data: Disposable | Ammunition | Equipment): void {
+    public update(data: InventoryItem): void {
         this._data = data;
         this.name = data.name;
         this.icon = data.code;
@@ -116,7 +116,7 @@ export default class ItemIcon extends Component {
         this.nameLabel.value = value;
     }
 
-    public get data(): Disposable | Ammunition | Equipment {
+    public get data(): InventoryItem {
         return this._data;
     }
 }

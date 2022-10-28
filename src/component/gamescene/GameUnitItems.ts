@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionType, Ammunition, Disposable, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -39,7 +39,7 @@ export default class GameUnitItems extends GameBase {
     }
 
     public updateUnitInventoryIcons(inventory: UnitInventory): void {
-        const inventoryItems: (Disposable | Ammunition)[] = [
+        const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
             ...(inventory.magic || []),
@@ -55,7 +55,7 @@ export default class GameUnitItems extends GameBase {
         });
     }
 
-    protected updateUnitItem(data: Disposable | Ammunition): void {
+    protected updateUnitItem(data: InventoryItem): void {
         let iconItem = this.unitItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this)!;
