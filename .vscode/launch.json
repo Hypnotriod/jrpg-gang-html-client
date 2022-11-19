@@ -10,6 +10,16 @@
             "webRoot": "${workspaceFolder}",
             "sourceMaps": true,
             "trace": true
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Launch edge msedge against localhost",
+            // "url": "http://localhost:9000",
+            "url": "http://localhost:9000/?nickname=User1&class=rogue",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "trace": true
         }
     ]
 }
