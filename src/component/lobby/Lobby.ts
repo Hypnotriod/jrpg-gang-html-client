@@ -85,6 +85,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             this.state.rooms.push(roomInfo);
         } else {
             oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
+            oldRoomInfo.host = roomInfo.host;
         }
         this.state.usersCount = data.usersCount;
         this.update();
