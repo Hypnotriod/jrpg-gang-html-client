@@ -1,8 +1,8 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_GAME_STATUS, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, Cell, GameEvent, GamePhase, GameUnit, PlayerInfo, Position } from '../../domain/domain';
-import { ActionData, GameActionRequestData, RequestType } from '../../dto/requests';
-import { GameActionData, GameStateData, PlayerInfoData, Response, UserStateData, UserStatus } from '../../dto/responces';
+import { ActionData, GameActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
+import { GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
@@ -69,10 +69,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         ], this);
         super.initialize();
         this.hide();
-        this.nextPhaseButton.onClick = target => this.onNextPhaseClick();
+        this.nextPhaseButton.onClick = target => this.onNextPhase();
         this.leaveGameButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
         this.autoCheckbox.onChange = target => this.timeoutAutoNextPhase();
+        this.autoCheckbox.checked = true;
         this.objectDescription.hide();
         this.unitItems.objectDescription = this.objectDescription;
         this.bootyIcons.set('coins', ItemIcon.createItemIcon('coins', this, BOOTY_CONTAINER)!);
@@ -82,6 +83,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public handleServerResponse(response: Response): void {
+        if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
@@ -92,7 +94,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
-                this.state.gameState = (response.data as GameActionData).actionResult;
+                this.state.gameState = (response.data as GameActionData | GameNextPhaseData).actionResult;
                 if (this.state.gameState.phase === GamePhase.BATTLE_COMPLETE &&
                     this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
                     this.destroy();
@@ -181,7 +183,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.RETREAT_ACTION:
             case GamePhase.BATTLE_COMPLETE:
-                playerInfo && playerInfo.isHost ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
+                playerInfo && !playerInfo.isReady ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
                 this.skipButton.hide();
                 break;
             default:
@@ -309,8 +311,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         cell.descriptionPopup = this.objectDescription;
     }
 
-    protected onNextPhaseClick(): void {
-        this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE);
+    protected onNextPhase(): void {
+        this.clearAutoNextPhase();
+        this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE, {
+            isReady: true,
+        } as NextGamePhaseData);
     }
 
     protected onSkipButtonClick(): void {
@@ -320,18 +325,36 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         } as ActionData);
     }
 
+    private autoNextPhaseInProgress: boolean = false;
     protected timeoutAutoNextPhase(): void {
-        clearTimeout(this.nextPhaseTimeoutId);
+        if (!this.checkAutoNextPhaseConditions()) { return; }
+        this.clearAutoNextPhase();
+        if (this.state.userState.playerInfo.isReady) { return; }
+        this.autoNextPhaseInProgress = true;
         this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), 1500);
     }
 
     protected callAutoNextPhase(): void {
+        this.clearAutoNextPhase();
+        if (!this.checkAutoNextPhaseConditions()) { return; }
+        this.onNextPhase();
+    }
+
+    protected clearAutoNextPhase(): void {
+        clearTimeout(this.nextPhaseTimeoutId);
+        this.autoNextPhaseInProgress = false;
+    }
+
+    protected checkAutoNextPhaseConditions(): boolean {
+        if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
+        const unit: GameUnit = this.currentActor();
+        if (!unit || this.autoNextPhaseInProgress) { return false; }
         if (!this.autoCheckbox.checked || !this.nextPhaseButton.visible ||
-            this.state.gameState.nextPhase === GamePhase.BATTLE_COMPLETE ||
-            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
-            return;
+            (this.state.gameState.nextPhase === GamePhase.BATTLE_COMPLETE ||
+                this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
+            return false;
         }
-        this.onNextPhaseClick();
+        return true;
     }
 
     protected onLeaveGameClick(): void {

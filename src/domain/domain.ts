@@ -4,7 +4,7 @@ export interface PlayerInfo {
     level: number;
     unitUid?: number;
     isOffline?: boolean;
-    isHost?: boolean;
+    isReady?: boolean;
 }
 
 export interface RoomInfo {

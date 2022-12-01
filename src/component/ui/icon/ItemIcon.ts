@@ -49,11 +49,13 @@ export default class ItemIcon extends Component {
     }
 
     protected onHover(): void {
+        if (!this._descriptionPopup || this._data) { return; }
         this._descriptionPopup.data = this._data;
         this._descriptionPopup.show();
     }
 
     protected onLeave(): void {
+        if (!this._descriptionPopup || this._data) { return; }
         this._descriptionPopup.hide();
     }
 

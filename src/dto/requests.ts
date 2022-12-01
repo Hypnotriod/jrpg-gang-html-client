@@ -56,3 +56,7 @@ export interface ActionData extends RequestData {
     quantity?: number;
     position?: Position;
 }
+
+export interface NextGamePhaseData extends RequestData {
+    isReady: boolean;
+}
