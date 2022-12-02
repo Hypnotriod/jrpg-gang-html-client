@@ -33,6 +33,7 @@ export const LABEL_USERS_COUNT: string = 'label_users_count';
 export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';
 export const SHOP_ITEMS_CONTAINER: string = 'shop_items_container';
+export const GAME_FLOW_CONTROLS_CONTAINER: string = 'flow_controls_container';
 export const BATTLEFIELD_CONTAINER: string = 'battlefield_container';
 export const UNITS_QUEUE_CONTAINER: string = 'units_queue_container';
 export const BOOTY_CONTAINER: string = 'booty_container';

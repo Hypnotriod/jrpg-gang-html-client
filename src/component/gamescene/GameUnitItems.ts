@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionType, Ammunition, GameUnit, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -38,7 +38,14 @@ export default class GameUnitItems extends GameBase {
         return [...this.unitItems.values()].find(i => i.choosed);
     }
 
-    public updateUnitInventoryIcons(inventory: UnitInventory): void {
+    public update(): void {
+        if (!this.state.playerInfo) { return; }
+        const unit: GameUnit = this.currentActor();
+        if (!unit) { return; }
+        this.updateUnitInventoryIcons(unit.inventory);
+    }
+
+    private updateUnitInventoryIcons(inventory: UnitInventory): void {
         const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),

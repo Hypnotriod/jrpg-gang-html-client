@@ -108,9 +108,9 @@ export default class SpotCell extends Component {
         return this._unit;
     }
 
-    public static createSpotCell(parent: Component, containerId: string): SpotCell | null {
+    public static createSpotCell(parent: Component, containerOrContainerId: HTMLElement | string): SpotCell | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
-        const iconComponent: SpotCell = parent.create(containerId, SpotCell,
+        const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
             { design: resourceLoader.get(SPOT_CELL_DESIGN), classList: ['item-icon-warpper'] })!;
         return iconComponent;
     }

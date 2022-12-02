@@ -32,6 +32,11 @@ export default class GameBase extends Component {
         return this.findUnitByUid(uid);
     }
 
+    protected isCurrentUnitTurn(): boolean {
+        const activeUnitUid = this._state.gameState.state.activeUnitsQueue[0];
+        return Boolean(this._state.playerInfo && this._state.playerInfo.unitUid === activeUnitUid);
+    }
+
     protected findUnitByUid(unitUid: number): GameUnit {
         const result: GameUnit | undefined = this._state.gameState.spot.battlefield.units?.find(
             unit => unit.uid === unitUid);
