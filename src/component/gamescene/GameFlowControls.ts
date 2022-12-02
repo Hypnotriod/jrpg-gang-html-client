@@ -46,7 +46,6 @@ export default class GameFlowControls extends GameBase {
     public update(): void {
         this.gameStatusLabel.value = `${this.state.gameState.nextPhase}`;
         const gamePhase: string = this.state.gameState.nextPhase;
-        const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
             case GamePhase.PREPARE_UNIT:
@@ -55,7 +54,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.RETREAT_ACTION:
             case GamePhase.BATTLE_COMPLETE:
-                playerInfo && !playerInfo.isReady ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
+                this.updateNextPhaseButtonVisibility();
                 this.skipButton.hide();
                 break;
             default:
@@ -63,6 +62,12 @@ export default class GameFlowControls extends GameBase {
                 this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
                 break;
         }
+    }
+
+    protected updateNextPhaseButtonVisibility(): void {
+        const allDead: boolean = this.allActors().every(actor => actor.isDead);
+        const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
+        !allDead && playerInfo && !playerInfo.isReady ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
     }
 
     public timeoutAutoNextPhase(): void {

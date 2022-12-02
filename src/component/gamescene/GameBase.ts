@@ -26,6 +26,10 @@ export default class GameBase extends Component {
         return this.findUnitByUid(this._state.playerInfo.unitUid!);
     }
 
+    protected allActors(): GameUnit[] {
+        return this._state.gameState.spot.battlefield.units?.filter(unit => Boolean(unit.playerInfo));
+    }
+
     protected currentUnit(): GameUnit | null {
         const uid: number = this._state.gameState.state.activeUnitsQueue[0];
         if (!uid) { return null; }
