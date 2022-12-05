@@ -198,8 +198,8 @@ export interface Unit {
     booty: UnitBooty;
     state: UnitState;
     stats: UnitStats;
-    damage: DamageImpact[];
-    modification: UnitModificationImpact[];
+    damage?: DamageImpact[];
+    modification?: UnitModificationImpact[];
     inventory: UnitInventory;
     slots: Map<EquipmentSlot, number>;
     position: Position;
