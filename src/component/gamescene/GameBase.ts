@@ -1,4 +1,4 @@
-import { ActionResultType, ActionType, EndTurnResult, GamePhase, GameUnit, GameUnitActionResult, Item, UnitInventory } from '../../domain/domain';
+import { ActionResult, ActionResultType, ActionType, EndTurnResult, GamePhase, GameUnit, GameUnitActionResult, Item, UnitInventory } from '../../domain/domain';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import Component from '../Component';
@@ -34,6 +34,11 @@ export default class GameBase extends Component {
         const uid: number = this._state.gameState.state.activeUnitsQueue[0];
         if (!uid) { return null; }
         return this.findUnitByUid(uid);
+    }
+
+    protected hasCriticalMiss(result: ActionResult): boolean {
+        return !!result.instantDamage.find(d => d.isCriticalMiss) ||
+            !!result.temporalDamage.find(d => d.isCriticalMiss);
     }
 
     protected isCurrentUnitTurn(): boolean {

@@ -44,6 +44,7 @@ export interface Damage {
     curse?: number;
     madness?: number;
     isCritical?: boolean;
+    isCriticalMiss?: boolean;
     withStun?: boolean;
 }
 

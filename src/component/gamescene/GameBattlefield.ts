@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResultType, ActionType, Cell, GamePhase, GameUnit, Position } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, GamePhase, GameUnit, GameUnitActionResult, Position } from '../../domain/domain';
 import { GameActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -44,12 +44,14 @@ export default class GameBattlefield extends GameBase {
     }
 
     public updateActionTarget(): void {
-        if (this.state.gameState.unitActionResult && this.state.gameState.unitActionResult.result.result === ActionResultType.ACCOMPLISHED) {
-            const targetuid = this.state.gameState.unitActionResult.action.targetUid;
-            if (!targetuid) { return; }
-            const unit: GameUnit = this.findUnitByUid(targetuid);
-            this.spots[unit.position.x][unit.position.y].updateWithActionResult(this.state.gameState.unitActionResult.result);
-        }
+        const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
+        if (!unitActionResult || unitActionResult.result.result !== ActionResultType.ACCOMPLISHED) { return; }
+        const targetuid = this.hasCriticalMiss(unitActionResult.result) ?
+            unitActionResult.action.uid :
+            unitActionResult.action.targetUid;
+        if (!targetuid) { return; }
+        const unit: GameUnit = this.findUnitByUid(targetuid);
+        this.spots[unit.position.x][unit.position.y].updateWithActionResult(unitActionResult.result);
     }
 
     public updateBattleField(): void {

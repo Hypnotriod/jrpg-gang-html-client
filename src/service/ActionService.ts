@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResult, Damage } from '../domain/domain';
+import { ActionResult } from '../domain/domain';
 
 @singleton()
 @injectable()
