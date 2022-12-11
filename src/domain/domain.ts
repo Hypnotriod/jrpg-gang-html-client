@@ -25,8 +25,7 @@ export interface UnitState {
     health: number;
     stamina: number;
     mana: number;
-    fear: number;
-    curse: number;
+    stress: number;
     isStunned?: boolean;
 }
 
@@ -41,8 +40,9 @@ export interface Damage {
     exhaustion?: number;
     manaDrain?: number;
     bleeding?: number;
-    morale?: number;
-    fortune?: number;
+    fear?: number;
+    curse?: number;
+    madness?: number;
     isCritical?: boolean;
     withStun?: boolean;
 }
