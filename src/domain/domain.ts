@@ -241,14 +241,14 @@ export interface GameState {
 }
 
 export enum CellType {
-    SPACE = 'space',
-    OBSTACLE = 'obstacle',
+    SPACE = 0,
+    OBSTACLE = 1,
 }
 
 export interface Cell {
     code: string;
     factions: GameUnitFaction[];
-    type: CellType;
+    type?: CellType;
 }
 
 export interface Battlefield {
