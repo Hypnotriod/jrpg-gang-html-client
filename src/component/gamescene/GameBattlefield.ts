@@ -46,9 +46,7 @@ export default class GameBattlefield extends GameBase {
     public updateActionTarget(): void {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
         if (!unitActionResult || unitActionResult.result.result !== ActionResultType.ACCOMPLISHED) { return; }
-        const targetuid = this.hasCriticalMiss(unitActionResult.result) ?
-            unitActionResult.action.uid :
-            unitActionResult.action.targetUid;
+        const targetuid = unitActionResult.action.targetUid;
         if (!targetuid) { return; }
         const unit: GameUnit = this.findUnitByUid(targetuid);
         this.spots[unit.position.x][unit.position.y].updateWithActionResult(unitActionResult.result);
