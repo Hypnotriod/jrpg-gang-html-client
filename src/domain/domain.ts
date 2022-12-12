@@ -327,6 +327,7 @@ export interface EndTurnResult {
 export interface GameEvent {
     phase: GamePhase;
     nextPhase: GamePhase;
+    phaseTimeout?: number;
     state: GameState;
     spot: Spot;
     players: PlayerInfo[];
