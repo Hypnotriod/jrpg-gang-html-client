@@ -26,6 +26,7 @@ export default class GameFlowControls extends GameBase {
     private readonly autoCheckbox: Checkbox;
 
     private nextPhaseTimeoutId: NodeJS.Timeout;
+    private nextPhaseLabelTimeoutId: NodeJS.Timeout;
     private autoNextPhaseInProgress: boolean = false;
 
     constructor(
@@ -44,7 +45,7 @@ export default class GameFlowControls extends GameBase {
     }
 
     public update(): void {
-        this.gameStatusLabel.value = `${this.state.gameState.nextPhase}`;
+        this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
@@ -60,6 +61,28 @@ export default class GameFlowControls extends GameBase {
             default:
                 this.nextPhaseButton.hide();
                 this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
+                break;
+        }
+    }
+
+    protected updatenextPhaseLabel(): void {
+        clearTimeout(this.nextPhaseLabelTimeoutId);
+        const gamePhase: string = this.state.gameState.nextPhase;
+        switch (gamePhase) {
+            case GamePhase.PREPARE_UNIT:
+            case GamePhase.MAKE_MOVE_OR_ACTION:
+            case GamePhase.MAKE_ACTION:
+            case GamePhase.BATTLE_COMPLETE:
+                let timeout: number = this.state.gameState.phaseTimeout || 0;
+                timeout = Math.max(timeout - 2, 0);
+                this.gameStatusLabel.value = `${this.state.gameState.nextPhase} (${timeout})`;
+                if (this.state.gameState.phaseTimeout) {
+                    this.state.gameState.phaseTimeout--;
+                    this.nextPhaseLabelTimeoutId = setTimeout(() => this.updatenextPhaseLabel(), 1000);
+                }
+                break;
+            default:
+                this.gameStatusLabel.value = `${this.state.gameState.nextPhase}`;
                 break;
         }
     }
