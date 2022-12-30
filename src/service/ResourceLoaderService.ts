@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import AppConfig from '../application/AppConfig';
 
 export const RESOURCE_DESIGN: string = 'design';
 export const RESOURCE_STYLE: string = 'style';
@@ -11,9 +12,11 @@ export type ResourceLoaderServiceType =
 export default class ResourceLoaderService {
     private readonly resourcesMap: Map<ResourceLoaderServiceType, any> = new Map();
 
+    constructor(private readonly appConfig: AppConfig) { }
+
     public async load<T>(path: string, type: ResourceLoaderServiceType): Promise<T> {
         try {
-            const response = await fetch(path);
+            const response = await fetch(path + '?v=' + this.appConfig.version);
             return await this.parseResponse(response, path, type);
         } catch (error) {
             console.error(`Error occured while loading ${path}`);

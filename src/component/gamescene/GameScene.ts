@@ -67,43 +67,20 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         switch (response.type) {
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
-                this.updatePlayerInfoFromGameState(this.state.gameState);
-                this.unitItems.update();
-                this.battlefield.updateBattleField();
-                this.unitsQueue.updateUnitsQueue();
-                this.booty.update();
-                this.flowControls.update();
+                this.handleGameState();
                 break;
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
                 this.state.gameState = (response.data as GameActionData | GameNextPhaseData).actionResult;
-                if (this.state.gameState.phase === GamePhase.BATTLE_COMPLETE &&
-                    this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
-                    this.destroy();
-                }
-                this.updatePlayerInfoFromGameState(this.state.gameState);
-                this.unitItems.update();
-                this.unitsQueue.updateUnitsQueue();
-                this.battlefield.updateBattleField();
-                this.battlefield.updateActionTarget();
-                this.booty.update();
-                this.flowControls.update();
-                this.flowControls.timeoutAutoNextPhase();
-                this.logAction();
+                this.handleGameAction();
                 break;
             case RequestType.PLAYER_INFO:
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
-                this.unitItems.update();
-                this.flowControls.update();
-                this.flowControls.timeoutAutoNextPhase();
+                this.handlePlayerInfo();
                 break;
             case RequestType.USER_STATUS:
                 const status: UserStatus = (response.data as UserStateData).status;
-                if (status !== UserStatus.IN_GAME && this.visible) {
-                    this.destroy();
-                    this.hide();
-                    this.configurator.show();
-                }
+                this.handleUserStatus(status);
                 break;
         }
     }
@@ -116,6 +93,45 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     public destroy(): void {
         this.unitItems.destroy();
         this.battlefield.destroy();
+    }
+
+    protected handleGameState(): void {
+        this.updatePlayerInfoFromGameState(this.state.gameState);
+        this.unitItems.update();
+        this.battlefield.updateBattleField();
+        this.unitsQueue.updateUnitsQueue();
+        this.booty.update();
+        this.flowControls.update();
+    }
+
+    protected handleGameAction(): void {
+        if (this.state.gameState.phase === GamePhase.BATTLE_COMPLETE &&
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
+            this.destroy();
+        }
+        this.updatePlayerInfoFromGameState(this.state.gameState);
+        this.unitItems.update();
+        this.unitsQueue.updateUnitsQueue();
+        this.battlefield.updateBattleField();
+        this.battlefield.updateActionTarget();
+        this.booty.update();
+        this.flowControls.update();
+        this.flowControls.timeoutAutoNextPhase();
+        this.logAction();
+    }
+
+    protected handlePlayerInfo(): void {
+        this.unitItems.update();
+        this.flowControls.update();
+        this.flowControls.timeoutAutoNextPhase();
+    }
+
+    protected handleUserStatus(status: UserStatus): void {
+        if (status !== UserStatus.IN_GAME && this.visible) {
+            this.destroy();
+            this.hide();
+            this.configurator.show();
+        }
     }
 
     protected logAction(): void {

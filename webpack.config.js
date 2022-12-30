@@ -18,6 +18,14 @@ module.exports = (env) => ({
                 }
             },
             {
+                test: /app-config\.json$/,
+                loader: 'string-replace-loader',
+                options: {
+                    search: '${VERSION}',
+                    replace: env.version,
+                }
+            },
+            {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
