@@ -40,7 +40,7 @@ export default class GameObjectRenderer {
 
     protected valueNotZeroOrEmpty(key: string, value: number | string | boolean | undefined): string {
         return value || this.isZeroValueKey(key) ?
-            `<span class="orange-text text-darken-1">${key}</span>: ${value}<br>` : '';
+            `<span class="orange-text text-lighten-1">${key}</span>: ${value}<br>` : '';
     }
 
     protected emptyOrAllFieldsZeros(data: Object): boolean {
