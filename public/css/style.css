@@ -28,6 +28,34 @@ body {
     border-radius: 3px;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #00000000;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(170, 170, 170);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(200, 200, 200);
+    border-radius: 10px;
+}
+
+.scrollbar-y {
+    scrollbar-width: 2px;
+    overflow-y: auto;
+}
+
 .unselected {
     background-color: aliceblue;
 }

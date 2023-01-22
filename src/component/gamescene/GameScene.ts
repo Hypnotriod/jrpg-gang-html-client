@@ -93,6 +93,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     public destroy(): void {
         this.unitItems.destroy();
         this.battlefield.destroy();
+        this.gameLog.value = '';
     }
 
     protected handleGameState(): void {
@@ -140,12 +141,14 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             const name: string = this.getUnitName(unit);
             this.gameLog.value =
                 this.renderer.header(name, 2) + '<br>' +
-                this.renderer.render(this.distinguishUnitActionResult(this.state.gameState.unitActionResult));
+                this.renderer.render(this.distinguishUnitActionResult(this.state.gameState.unitActionResult)) +
+                '--------------------<br>' + this.gameLog.value;
         }
         if (this.state.gameState.endRoundResult) {
             this.gameLog.value =
                 this.renderer.header('End Round result', 2) + '<br>' +
-                this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult));
+                this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult)) +
+                '--------------------<br>' + this.gameLog.value;
         }
     }
 
