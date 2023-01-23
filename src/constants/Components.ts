@@ -18,6 +18,7 @@ export const BUTTON_SKIP: string = 'button_skip';
 export const BUTTON_LEAVE_GAME: string = 'button_leave_game';
 
 export const CHECKBOX_AUTO: string = 'checkbox_auto';
+export const CHECKBOX_SELL: string = 'checkbox_sell';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
 

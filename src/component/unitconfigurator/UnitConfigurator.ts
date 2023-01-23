@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_LOBBY, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_LOBBY, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
 import { ActionData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
@@ -9,6 +9,7 @@ import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
+import Checkbox from '../ui/checkbox/Checkbox';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
@@ -36,6 +37,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitResistance: Container;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
+    @component(CHECKBOX_SELL, Checkbox)
+    private readonly sellCheckbox: Checkbox;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
@@ -168,9 +171,21 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
+        this.sellCheckbox.checked ? this.sellItem(target) : this.euipUneuipItem(target);
+    }
+
+    protected euipUneuipItem(target: ItemIcon): void {
         if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
+            itemUid: target.data.uid!,
+        } as ActionData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected sellItem(target: ItemIcon): void {
+        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+            action: ActionType.SELL,
             itemUid: target.data.uid!,
         } as ActionData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
