@@ -102,6 +102,8 @@ export interface Item {
     code: string;
     name: string;
     type: ItemType;
+    canBeThrownAway: boolean;
+    canBeSold: boolean;
     price: UnitBooty;
     description?: string;
 }
@@ -270,6 +272,8 @@ export enum ActionType {
     PLACE = 'place',
     MOVE = 'move',
     BUY = 'buy',
+    SELL = 'sell',
+    THROW_AWAY = 'throwAway',
     SKIP = 'skip',
 }
 
