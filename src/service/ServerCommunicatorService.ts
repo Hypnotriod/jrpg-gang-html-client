@@ -84,6 +84,7 @@ export default class ServerCommunicatorService {
 
     private onError(event: ErrorEvent): void {
         console.log('Error:', event.error);
+        this.onConnectionLost();
     }
 
     private onOpen(event: Event): void {
@@ -92,11 +93,15 @@ export default class ServerCommunicatorService {
     }
 
     private onClose(event: Event): void {
+        this.onConnectionLost();
+        console.log('Disconnected:', event);
+        this.ws = null;
+    }
+
+    private onConnectionLost(): void {
         [...this.subscribers.values()]
             .flatMap(handlers => handlers)
             .forEach(handler => handler.handleConnectionLost());
-        console.log('Disconnected:', event);
-        this.ws = null;
     }
 
     private genRandHex(size: number): string {
