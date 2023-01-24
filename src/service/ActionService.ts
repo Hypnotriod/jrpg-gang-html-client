@@ -28,6 +28,10 @@ export default class ActionService {
             !this.nullOrEmptyArray(result.temporalDamage);
     }
 
+    protected hasCriticalMiss(result: ActionResult): boolean {
+        return !this.nullOrEmptyArray(result.instantDamage) && !!result.instantDamage!.find(d => d.isCriticalMiss) ||
+            !this.nullOrEmptyArray(result.temporalDamage) && !!result.temporalDamage!.find(d => d.isCriticalMiss);
+    }
 
     public physicalInstantDamage(result: ActionResult): number {
         return result.instantDamage ? result.instantDamage.reduce((acc, d) => acc +
@@ -42,7 +46,7 @@ export default class ActionService {
             , 0) : 0;
     }
 
-    protected nullOrEmptyArray(arr: Array<any>): boolean {
+    protected nullOrEmptyArray(arr?: Array<any>): boolean {
         return !arr || !arr.length;
     }
 }

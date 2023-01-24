@@ -310,10 +310,11 @@ export enum ActionResultType {
 }
 
 export interface ActionResult {
-    instantDamage: Damage[];
-    temporalDamage: DamageImpact[];
-    instantRecovery: UnitRecovery[];
-    temporalModification: UnitModificationImpact[];
+    instantDamage?: Damage[];
+    temporalDamage?: DamageImpact[];
+    instantRecovery?: UnitRecovery[];
+    temporalModification?: UnitModificationImpact[];
+    booty?: UnitBooty;
     result: ActionResultType;
 }
 

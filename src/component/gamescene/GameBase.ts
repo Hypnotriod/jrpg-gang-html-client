@@ -36,11 +36,6 @@ export default class GameBase extends Component {
         return this.findUnitByUid(uid);
     }
 
-    protected hasCriticalMiss(result: ActionResult): boolean {
-        return !!result.instantDamage.find(d => d.isCriticalMiss) ||
-            !!result.temporalDamage.find(d => d.isCriticalMiss);
-    }
-
     protected isCurrentUnitTurn(): boolean {
         const activeUnitUid = this._state.gameState.state.activeUnitsQueue[0];
         return Boolean(this._state.playerInfo && this._state.playerInfo.unitUid === activeUnitUid);
