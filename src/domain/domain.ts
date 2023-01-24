@@ -278,6 +278,17 @@ export enum ActionType {
     SELL = 'sell',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
+    LEVEL_UP = 'levelUp',
+}
+
+export enum ActionProperty {
+    STRENGTH = "strength",
+    PHYSIQUE = "physique",
+    AGILITY = "agility",
+    ENDURANCE = "endurance",
+    INTELLIGENCE = "intelligence",
+    INITIATIVE = "initiative",
+    LUCK = "luck",
 }
 
 export interface Position {
@@ -291,7 +302,7 @@ export interface Action {
     targetUid?: number;
     itemUid?: number;
     quantity?: number;
-    property?: string;
+    property?: ActionProperty;
     position?: Position;
 }
 
