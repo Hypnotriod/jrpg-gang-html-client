@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, LABEL_GAME_STATUS } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
-import { ActionData, NextGamePhaseData, RequestType } from '../../dto/requests';
+import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -112,7 +112,7 @@ export default class GameFlowControls extends GameBase {
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
             action: ActionType.SKIP,
-        } as ActionData);
+        } as ActionRequestData);
     }
 
 

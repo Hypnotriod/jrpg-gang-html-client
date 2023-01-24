@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { ActionResultType, ActionType, Cell, GamePhase, GameUnit, GameUnitActionResult, Position } from '../../domain/domain';
-import { GameActionRequestData, RequestType } from '../../dto/requests';
+import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -124,7 +124,7 @@ export default class GameBattlefield extends GameBase {
             uid: this.state.playerInfo.unitUid,
             action: ActionType.PLACE,
             position,
-        } as GameActionRequestData);
+        } as ActionRequestData);
     }
 
     protected moveUnit(position: Position): void {
@@ -132,7 +132,7 @@ export default class GameBattlefield extends GameBase {
             uid: this.state.playerInfo.unitUid,
             action: ActionType.MOVE,
             position,
-        } as GameActionRequestData);
+        } as ActionRequestData);
     }
 
     protected useItem(targetUid: number): void {
@@ -143,6 +143,6 @@ export default class GameBattlefield extends GameBase {
             action: ActionType.USE,
             itemUid: weapon.data.uid!,
             targetUid,
-        } as GameActionRequestData);
+        } as ActionRequestData);
     }
 }

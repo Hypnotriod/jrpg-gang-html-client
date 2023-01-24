@@ -45,16 +45,7 @@ export interface JoinGameRoomRequestData extends RequestData {
     roomUid: number;
 }
 
-export interface GameActionRequestData extends Action, RequestData {
-}
-
-export interface ActionData extends RequestData {
-    action: ActionType;
-    uid?: number;
-    targetUid?: number;
-    itemUid?: number;
-    quantity?: number;
-    position?: Position;
+export interface ActionRequestData extends Action, RequestData {
 }
 
 export interface NextGamePhaseData extends RequestData {

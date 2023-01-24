@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { ActionType, Ammunition, GameUnit, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
-import { ActionData, RequestType } from '../../dto/requests';
+import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -88,7 +88,7 @@ export default class GameUnitItems extends GameBase {
             uid: this.state.playerInfo.unitUid,
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,
-        } as ActionData);
+        } as ActionRequestData);
     }
 
 }

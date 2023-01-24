@@ -291,6 +291,7 @@ export interface Action {
     targetUid?: number;
     itemUid?: number;
     quantity?: number;
+    property?: string;
     position?: Position;
 }
 

@@ -1,7 +1,7 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_LOBBY, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
-import { ActionData, RequestType } from '../../dto/requests';
+import { ActionRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -179,7 +179,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,
-        } as ActionData);
+        } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
@@ -187,7 +187,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_ACTION, {
             action: ActionType.SELL,
             itemUid: target.data.uid!,
-        } as ActionData);
+        } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
@@ -195,7 +195,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_ACTION, {
             action: ActionType.BUY,
             itemUid: target.data.uid!,
-        } as ActionData);
+        } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }
