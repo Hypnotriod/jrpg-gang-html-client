@@ -289,6 +289,9 @@ export enum ActionProperty {
     INTELLIGENCE = "intelligence",
     INITIATIVE = "initiative",
     LUCK = "luck",
+    HEALTH = "health",
+    STAMINA = "stamina",
+    MANA = "mana",
 }
 
 export interface Position {
