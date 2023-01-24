@@ -185,6 +185,9 @@ export interface Position {
 export interface UnitProgress {
     level: number;
     experience: number;
+    experienceNext?: number;
+    attributesPoints?: number;
+    baseAttributesPoints?: number;
 }
 
 export interface UnitStats {
