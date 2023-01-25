@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_LOBBY, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, SHOP_ITEMS_CONTAINER, UNIT_ATTRIBUTES, UNIT_BASE_ATTRIBUTES, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -14,6 +14,7 @@ import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
+import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @singleton()
@@ -29,16 +30,54 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitBooty: Container;
     @component(UNIT_PROGRESS, Container)
     private readonly unitProgress: Container;
-    @component(UNIT_BASE_ATTRIBUTES, Container)
-    private readonly unitBaseAttributes: Container;
-    @component(UNIT_ATTRIBUTES, Container)
-    private readonly unitAttributes: Container;
+    @component(BUTTON_HEALTH, Button)
+    private readonly btnHealth: Button;
+    @component(BUTTON_STAMINA, Button)
+    private readonly btnStamina: Button;
+    @component(BUTTON_MANA, Button)
+    private readonly btnMana: Button;
+    @component(BUTTON_STRENGTH, Button)
+    private readonly btnStrength: Button;
+    @component(BUTTON_PHYSIQUE, Button)
+    private readonly btnPhysique: Button;
+    @component(BUTTON_AGILITY, Button)
+    private readonly btnAgility: Button;
+    @component(BUTTON_ENDURANCE, Button)
+    private readonly btnEndurance: Button;
+    @component(BUTTON_INTELLIGENCE, Button)
+    private readonly btnIntelligence: Button;
+    @component(BUTTON_INITIATIVE, Button)
+    private readonly btnInitiative: Button;
+    @component(BUTTON_LUCK, Button)
+    private readonly btnLuck: Button;
+    @component(LABEL_HEALTH, Label)
+    private readonly labelHealth: Label;
+    @component(LABEL_STAMINA, Label)
+    private readonly labelStamina: Label;
+    @component(LABEL_MANA, Label)
+    private readonly labelMana: Label;
+    @component(LABEL_STRENGTH, Label)
+    private readonly labelStrength: Label;
+    @component(LABEL_PHYSIQUE, Label)
+    private readonly labelPhysique: Label;
+    @component(LABEL_AGILITY, Label)
+    private readonly labelAgility: Label;
+    @component(LABEL_ENDURANCE, Label)
+    private readonly labelEndurance: Label;
+    @component(LABEL_INTELLIGENCE, Label)
+    private readonly labelIntelligence: Label;
+    @component(LABEL_INITIATIVE, Label)
+    private readonly labelInitiative: Label;
+    @component(LABEL_LUCK, Label)
+    private readonly labelLuck: Label;
     @component(UNIT_RESISTANCE, Container)
     private readonly unitResistance: Container;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
     @component(CHECKBOX_SELL, Checkbox)
     private readonly sellCheckbox: Checkbox;
+    @component(BUTTON_LEVEL_UP, Button)
+    private readonly btnLevelUp: Button;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
@@ -60,6 +99,17 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.itemDescription.hide();
         this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
         this.lobbyButton.onClick = target => this.goToLobby();
+        this.btnHealth.onClick = target => this.skillUp(ActionProperty.HEALTH);
+        this.btnStamina.onClick = target => this.skillUp(ActionProperty.STAMINA);
+        this.btnMana.onClick = target => this.skillUp(ActionProperty.MANA);
+        this.btnStrength.onClick = target => this.skillUp(ActionProperty.STRENGTH);
+        this.btnPhysique.onClick = target => this.skillUp(ActionProperty.PHYSIQUE);
+        this.btnAgility.onClick = target => this.skillUp(ActionProperty.AGILITY);
+        this.btnEndurance.onClick = target => this.skillUp(ActionProperty.ENDURANCE);
+        this.btnIntelligence.onClick = target => this.skillUp(ActionProperty.INTELLIGENCE);
+        this.btnInitiative.onClick = target => this.skillUp(ActionProperty.INITIATIVE);
+        this.btnLuck.onClick = target => this.skillUp(ActionProperty.LUCK);
+        this.btnLevelUp.onClick = target => this.levelUp();
     }
 
     protected goToLobby(): void {
@@ -125,12 +175,77 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.state.userState = data;
         this.unitIcon.icon = this.state.userState.playerInfo.class;
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
-        this.unitBooty.value = this.objValues(this.state.userState.unit.booty);
-        this.unitProgress.value = this.objValues(this.state.userState.unit.stats.progress);
-        this.unitBaseAttributes.value = this.objValues(this.state.userState.unit.stats.baseAttributes);
-        this.unitAttributes.value = this.objValues(this.state.userState.unit.stats.attributes);
-        this.unitResistance.value = this.objValues(this.state.userState.unit.stats.resistance);
         this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
+        this.updateBooty();
+        this.updateResistance();
+        this.updateProgress();
+        this.updateUnitAttributes();
+    }
+
+    protected updateBooty(): void {
+        const bt: UnitBooty = this.state.userState.unit.booty;
+        this.unitBooty.value = `Coins: ${bt.coins}<br>
+                                Ruby: ${bt.ruby || 0}<br>
+                               `;
+
+    }
+
+    protected updateResistance(): void {
+        const res: UnitResistance = this.state.userState.unit.stats.resistance;
+        this.unitResistance.value = `Stabbing: ${res.stabbing || 0}<br>
+                                     Cutting: ${res.cutting || 0}<br>
+                                     Crushing: ${res.crushing || 0}<br>
+                                     Fire: ${res.fire || 0}<br>
+                                     Cold: ${res.cold || 0}<br>
+                                     Lighting: ${res.lighting || 0}<br>
+                                     Poison: ${res.poison || 0}<br>
+                                     Exhaustion: ${res.exhaustion || 0}<br>
+                                     ManaDrain: ${res.manaDrain || 0}<br>
+                                     Bleeding: ${res.bleeding || 0}<br>
+                                     Fear: ${res.fear || 0}<br>
+                                     Curse: ${res.curse || 0}<br>
+                                     Madness: ${res.madness || 0}<br>
+                                     `;
+
+    }
+
+    protected updateProgress(): void {
+        const pr: UnitProgress = this.state.userState.unit.stats.progress;
+        this.unitProgress.value = `Level: ${pr.level}<br>
+                                   Exp: ${pr.experience} / ${pr.experienceNext}<br>
+                                   Base Attr Points: ${pr.baseAttributesPoints || 0}<br>
+                                   Attr Points: ${pr.attributesPoints || 0}<br>
+                                   `;
+        pr.experience >= pr.experienceNext! ? this.btnLevelUp.show() : this.btnLevelUp.hide();
+    }
+
+    protected updateUnitAttributes(): void {
+        const hasBaseAttributes: boolean = Boolean(this.state.userState.unit.stats.progress.baseAttributesPoints);
+        const hasAttributes: boolean = Boolean(this.state.userState.unit.stats.progress.attributesPoints);
+        const battr: UnitBaseAttributes = this.state.userState.unit.stats.baseAttributes;
+        const attr: UnitAttributes = this.state.userState.unit.stats.attributes;
+
+        hasBaseAttributes ? this.btnHealth.show() : this.btnHealth.hide();
+        hasBaseAttributes ? this.btnStamina.show() : this.btnStamina.hide();
+        hasBaseAttributes ? this.btnMana.show() : this.btnMana.hide();
+        hasAttributes ? this.btnStrength.show() : this.btnStrength.hide();
+        hasAttributes ? this.btnPhysique.show() : this.btnPhysique.hide();
+        hasAttributes ? this.btnAgility.show() : this.btnAgility.hide();
+        hasAttributes ? this.btnEndurance.show() : this.btnEndurance.hide();
+        hasAttributes ? this.btnIntelligence.show() : this.btnIntelligence.hide();
+        hasAttributes ? this.btnInitiative.show() : this.btnInitiative.hide();
+        hasAttributes ? this.btnLuck.show() : this.btnLuck.hide();
+
+        this.labelHealth.value = `Health: ${battr.health || 0}`;
+        this.labelStamina.value = `Stamina: ${battr.stamina || 0}`;
+        this.labelMana.value = `Mana: ${battr.mana || 0}`;
+        this.labelStrength.value = `Strength: ${attr.strength || 0}`;
+        this.labelPhysique.value = `Physique: ${attr.physique || 0}`;
+        this.labelAgility.value = `Agility: ${attr.agility || 0}`;
+        this.labelEndurance.value = `Endurance: ${attr.endurance || 0}`;
+        this.labelIntelligence.value = `Intelligence: ${attr.intelligence || 0}`;
+        this.labelInitiative.value = `Initiative: ${attr.initiative || 0}`;
+        this.labelLuck.value = `Luck: ${attr.luck || 0}`;
     }
 
     protected objValues(obj: Object): string {
@@ -179,6 +294,21 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,
+        } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected skillUp(skill: ActionProperty): void {
+        this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
+            action: ActionType.SKILL_UP,
+            property: skill,
+        } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected levelUp(): void {
+        this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
+            action: ActionType.LEVEL_UP,
         } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
