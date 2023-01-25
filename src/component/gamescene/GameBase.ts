@@ -1,4 +1,4 @@
-import { ActionResult, ActionResultType, ActionType, EndTurnResult, GamePhase, GameUnit, GameUnitActionResult, Item, UnitInventory } from '../../domain/domain';
+import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, UnitInventory } from '../../domain/domain';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import Component from '../Component';
@@ -52,7 +52,7 @@ export default class GameBase extends Component {
         return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : (`${unit.name} (${unit.uid})`);
     }
 
-    protected distinguishEndRoundResult(endRound: EndTurnResult): object {
+    protected distinguishEndRoundResult(endRound: EndRoundResult): object {
         const result: any = {};
         Object.keys(endRound.damage).forEach(key => {
             if (!Object.keys(endRound.damage[key]).length) { return; }

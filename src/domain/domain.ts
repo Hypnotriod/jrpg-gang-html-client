@@ -342,7 +342,7 @@ export interface GameUnitActionResult {
     result: ActionResult;
 }
 
-export interface EndTurnResult {
+export interface EndRoundResult {
     damage: { [key: number]: Damage };
     recovery: { [key: number]: UnitRecovery };
     booty: UnitBooty;
@@ -356,5 +356,5 @@ export interface GameEvent {
     spot: Spot;
     players: PlayerInfo[];
     unitActionResult?: GameUnitActionResult;
-    endRoundResult?: EndTurnResult;
+    endRoundResult?: EndRoundResult;
 }
