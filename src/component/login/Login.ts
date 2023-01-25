@@ -24,6 +24,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     private readonly joinButton: Button;
     private readonly icons: Icon[] = [];
     private isJoining: boolean = false;
+    private unsuccessJoinAttempts: number = 0;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -70,7 +71,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     public tryToAutologin(): void {
         const nickname = this.query.parsedQuery['nickname'];
         const clazz = this.query.parsedQuery['class'];
-        if (!nickname || !clazz) { return; }
+        if (!nickname || !clazz || this.unsuccessJoinAttempts > 3) { return; }
         this.autologin(nickname as string, clazz as string);
     }
 
@@ -114,9 +115,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.updateJoinButtonState();
         if (response.status !== ResponseStatus.OK) {
             localStorage.clear();
+            this.unsuccessJoinAttempts++;
             this.tryToAutologin();
             return;
         }
+        this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
         localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.userId);
         if (this.state.userState.status === UserStatus.IN_GAME) {
