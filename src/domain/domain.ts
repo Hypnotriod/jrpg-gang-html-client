@@ -279,19 +279,20 @@ export enum ActionType {
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
     LEVEL_UP = 'levelUp',
+    SKILL_UP = 'skillUp',
 }
 
 export enum ActionProperty {
-    STRENGTH = "strength",
-    PHYSIQUE = "physique",
-    AGILITY = "agility",
-    ENDURANCE = "endurance",
-    INTELLIGENCE = "intelligence",
-    INITIATIVE = "initiative",
-    LUCK = "luck",
-    HEALTH = "health",
-    STAMINA = "stamina",
-    MANA = "mana",
+    STRENGTH = 'strength',
+    PHYSIQUE = 'physique',
+    AGILITY = 'agility',
+    ENDURANCE = 'endurance',
+    INTELLIGENCE = 'intelligence',
+    INITIATIVE = 'initiative',
+    LUCK = 'luck',
+    HEALTH = 'health',
+    STAMINA = 'stamina',
+    MANA = 'mana',
 }
 
 export interface Position {
