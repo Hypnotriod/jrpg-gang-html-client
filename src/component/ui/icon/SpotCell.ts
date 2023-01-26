@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -25,8 +25,12 @@ export default class SpotCell extends Component {
     protected readonly _iconHit: Container;
     @component(ICON_MISSED, Container)
     protected readonly _iconMissed: Container;
+    @component(ICON_EXPERIENCE, Container)
+    protected readonly _iconExperience: Container;
     @component(LABEL_HIT_HP, Label)
     protected readonly hitHpLabel: Label;
+    @component(LABEL_EXP, Label)
+    protected readonly expLabel: Label;
     @component(LABEL_ID, Label)
     protected readonly idLabel: Label;
     @component(HEALTH_BAR, Container)
@@ -120,7 +124,9 @@ export default class SpotCell extends Component {
         this._iconEffect.hide();
         this._iconHit.hide();
         this._iconMissed.hide();
+        this._iconExperience.hide();
         this.hitHpLabel.hide();
+        this.expLabel.hide();
         this.idLabel.hide();
         this.healthBar.hide();
         this.staminaBar.hide();
@@ -188,5 +194,11 @@ export default class SpotCell extends Component {
         } else if (this.actionService.hasRecovery(result)) {
             this._iconEffect.show();
         }
+    }
+
+    public updateWithExperience(experience: number): void {
+        this.expLabel.value = `+${experience}XP`;
+        this.expLabel.show();
+        this._iconExperience.show();
     }
 }

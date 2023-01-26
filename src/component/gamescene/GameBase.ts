@@ -77,7 +77,8 @@ export default class GameBase extends Component {
 
     protected distinguishUnitActionResult(action: GameUnitActionResult): object {
         const result: any = {
-            ...action,
+            action: { ...action.action },
+            result: { ...action.result },
         };
         const actionResult: ActionResult = action.result;
         if (action.action.action === ActionType.USE &&

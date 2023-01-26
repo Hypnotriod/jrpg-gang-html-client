@@ -29,6 +29,7 @@ export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 export const LABEL_GAME_STATUS: string = 'label_game_status';
 export const LABEL_HIT_HP: string = 'label_hit_hp';
+export const LABEL_EXP: string = 'label_exp';
 export const LABEL_ID: string = 'label_id';
 export const LABEL_USERS_COUNT: string = 'label_users_count';
 
@@ -74,6 +75,7 @@ export const ICON_CURRENT: string = 'icon_current';
 export const ICON_EFFECT: string = 'icon_effect';
 export const ICON_HIT: string = 'icon_hit';
 export const ICON_MISSED: string = 'icon_missed';
+export const ICON_EXPERIENCE: string = 'icon_experience';
 
 export const UNIT_ICON: string = 'unit_icon';
 export const UNIT_INFO: string = 'unit_info';

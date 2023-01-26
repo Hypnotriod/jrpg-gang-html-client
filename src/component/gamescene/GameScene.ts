@@ -115,6 +115,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitsQueue.updateUnitsQueue();
         this.battlefield.updateBattleField();
         this.battlefield.updateActionTarget();
+        this.battlefield.updateWithExperience();
         this.booty.update();
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();

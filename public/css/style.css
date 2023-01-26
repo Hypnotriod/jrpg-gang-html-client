@@ -130,3 +130,18 @@ span {
     padding-bottom: 1px;
     border-radius: 5px;
 }
+
+.text-shadow-white {
+    text-shadow: 1px 1px #fff, -1px -1px #fff, -1px 1px #fff, 1px -1px #fff,
+        1px 0px #fff, -1px 0px #fff, 0px 1px #fff, 0px -1px #fff;
+}
+
+.text-shadow-black {
+    text-shadow: 1px 1px #000, -1px -1px #000, -1px 1px #000, 1px -1px #000,
+        1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000;
+}
+
+.text-shadow-gray {
+    text-shadow: 1px 1px #444, -1px -1px #444, -1px 1px #444, 1px -1px #444,
+        1px 0px #444, -1px 0px #444, 0px 1px #444, 0px -1px #444;
+}

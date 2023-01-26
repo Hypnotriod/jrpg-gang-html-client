@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResultType, ActionType, Cell, GamePhase, GameUnit, GameUnitActionResult, Position } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Position } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -45,11 +45,29 @@ export default class GameBattlefield extends GameBase {
 
     public updateActionTarget(): void {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
-        if (!unitActionResult || unitActionResult.result.result !== ActionResultType.ACCOMPLISHED) { return; }
+        if (unitActionResult?.result.result !== ActionResultType.ACCOMPLISHED) { return; }
         const targetuid = unitActionResult.action.targetUid;
         if (!targetuid) { return; }
         const unit: GameUnit = this.findUnitByUid(targetuid);
         this.spots[unit.position.x][unit.position.y].updateWithActionResult(unitActionResult.result);
+    }
+
+    public updateWithExperience(): void {
+        const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
+        const endRoundResult: EndRoundResult | undefined = this.state.gameState.endRoundResult;
+        if (unitActionResult?.result.result === ActionResultType.ACCOMPLISHED && unitActionResult.result.experience) {
+            this.updateSpotsWithExperience(unitActionResult.result.experience);
+        }
+        endRoundResult?.experience && this.updateSpotsWithExperience(endRoundResult.experience);
+    }
+
+    protected updateSpotsWithExperience(experience: { [key: number]: number }): void {
+        Object.keys(experience).forEach(key => {
+            const uid: number = Number(key);
+            const exp: number = experience[uid];
+            const unit: GameUnit = this.findUnitByUid(uid);
+            this.spots[unit.position.x][unit.position.y].updateWithExperience(exp);
+        });
     }
 
     public updateBattleField(): void {
