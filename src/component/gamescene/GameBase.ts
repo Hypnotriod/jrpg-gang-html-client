@@ -54,19 +54,22 @@ export default class GameBase extends Component {
 
     protected distinguishEndRoundResult(endRound: EndRoundResult): object {
         const result: any = {};
-        Object.keys(endRound.damage).forEach(key => {
-            if (!Object.keys(endRound.damage[key]).length) { return; }
+        endRound.damage && Object.keys(endRound.damage).forEach(key => {
             result.damage = result.damage || {};
             const unit = this.findUnitByUid(Number(key));
-            result.damage[this.getUnitName(unit)] = endRound.damage[key];
+            result.damage[this.getUnitName(unit)] = endRound.damage![key];
         });
-        Object.keys(endRound.recovery).forEach(key => {
-            if (!Object.keys(endRound.recovery[key]).length) { return; }
+        endRound.recovery && Object.keys(endRound.recovery).forEach(key => {
             result.recovery = result.recovery || {};
             const unit = this.findUnitByUid(Number(key));
-            result.recovery[this.getUnitName(unit)] = endRound.recovery[key];
+            result.recovery[this.getUnitName(unit)] = endRound.recovery![key];
         });
-        if (endRound.booty.coins || endRound.booty.ruby) {
+        endRound.experience && Object.keys(endRound.experience).forEach(key => {
+            result.experience = result.experience || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.experience[this.getUnitName(unit)] = endRound.experience![key];
+        });
+        if (endRound.booty) {
             result.booty = endRound.booty;
         }
         return result;
@@ -76,11 +79,12 @@ export default class GameBase extends Component {
         const result: any = {
             ...action,
         };
+        const actionResult: ActionResult = action.result;
         if (action.action.action === ActionType.USE &&
-            action.result.result === ActionResultType.ACCOMPLISHED) {
-            if (!this._actionService.successfull(action.result)) {
+            actionResult.result === ActionResultType.ACCOMPLISHED) {
+            if (!this._actionService.successfull(actionResult)) {
                 result.result.result = 'no success!';
-            } else if (!this._actionService.hasEffect(action.result)) {
+            } else if (!this._actionService.hasEffect(actionResult)) {
                 result.result.result = 'no effect!';
             }
         }
@@ -92,6 +96,14 @@ export default class GameBase extends Component {
                 result.action.itemUid = undefined;
                 result.action.item = actorItem.name;
             }
+        }
+        if (actionResult.experience) {
+            const experience = { ...actionResult.experience };
+            result.result.experience = {};
+            Object.keys(experience).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.experience[this.getUnitName(unit)] = experience[key];
+            });
         }
         if (targetUnit) {
             result.action.targetUid = undefined;

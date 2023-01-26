@@ -333,6 +333,7 @@ export interface ActionResult {
     temporalDamage?: DamageImpact[];
     instantRecovery?: UnitRecovery[];
     temporalModification?: UnitModificationImpact[];
+    experience?: { [key: number]: number };
     booty?: UnitBooty;
     result: ActionResultType;
 }
@@ -343,9 +344,10 @@ export interface GameUnitActionResult {
 }
 
 export interface EndRoundResult {
-    damage: { [key: number]: Damage };
-    recovery: { [key: number]: UnitRecovery };
-    booty: UnitBooty;
+    damage?: { [key: number]: Damage };
+    recovery?: { [key: number]: UnitRecovery };
+    experience?: { [key: number]: number };
+    booty?: UnitBooty;
 }
 
 export interface GameEvent {
