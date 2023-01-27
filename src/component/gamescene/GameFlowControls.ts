@@ -54,7 +54,8 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.MAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.RETREAT_ACTION:
-            case GamePhase.BATTLE_COMPLETE:
+            case GamePhase.SPOT_COMPLETE:
+            case GamePhase.SCENARIO_COMPLETE:
                 this.updateNextPhaseButtonVisibility();
                 this.skipButton.hide();
                 break;
@@ -72,7 +73,8 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.PREPARE_UNIT:
             case GamePhase.MAKE_MOVE_OR_ACTION:
             case GamePhase.MAKE_ACTION:
-            case GamePhase.BATTLE_COMPLETE:
+            case GamePhase.SPOT_COMPLETE:
+            case GamePhase.SCENARIO_COMPLETE:
                 let timeout: number = this.state.gameState.phaseTimeout || 0;
                 timeout = Math.max(timeout - 2, 0);
                 this.gameStatusLabel.value = `${this.state.gameState.nextPhase} (${timeout})`;
@@ -137,7 +139,8 @@ export default class GameFlowControls extends GameBase {
         const unit: GameUnit = this.currentActor();
         if (!unit || this.autoNextPhaseInProgress) { return false; }
         if (!this.autoCheckbox.checked || !this.nextPhaseButton.visible ||
-            (this.state.gameState.nextPhase === GamePhase.BATTLE_COMPLETE ||
+            (this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
+                this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
                 this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
             return false;
         }

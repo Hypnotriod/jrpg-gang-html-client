@@ -235,8 +235,8 @@ export enum GamePhase {
     MAKE_ACTION = 'makeAction',
     RETREAT_ACTION = 'retreatAction',
     ACTION_COMPLETE = 'actionComplete',
-    BATTLE_COMPLETE = 'battleComplete',
-    DUNGEON_COMPLETE = 'dungeonComplete',
+    SPOT_COMPLETE = 'spotComplete',
+    SCENARIO_COMPLETE = 'scenarioComplete',
 }
 
 export interface GameState {

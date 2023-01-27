@@ -106,7 +106,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected handleGameAction(): void {
-        if (this.state.gameState.phase === GamePhase.BATTLE_COMPLETE &&
+        if (this.state.gameState.phase === GamePhase.SPOT_COMPLETE &&
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.destroy();
         }
