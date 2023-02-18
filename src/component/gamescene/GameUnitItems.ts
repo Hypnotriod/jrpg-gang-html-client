@@ -74,13 +74,13 @@ export default class GameUnitItems extends GameBase {
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
-        if (!this.canDoUnitConfiguration()) { return; }
         if (target.data.type === ItemType.WEAPON || target.data.type === ItemType.DISPOSABLE || target.data.type === ItemType.MAGIC) {
             const wansntChoosed = !target.choosed && target.selected;
             this.unitItems.forEach(i => i.unchoose());
             target.choose();
             if (wansntChoosed) { return; }
         }
+        if (!this.canDoUnitConfiguration()) { return; }
         if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE || target.data.type === ItemType.MAGIC) {
             return;
         }
