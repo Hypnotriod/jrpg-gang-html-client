@@ -101,11 +101,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected doJoin(nickname: string, clazz: string): void {
-        const userId: string = localStorage.getItem(nickname) || '';
+        const playerId: string = localStorage.getItem(nickname) || '';
         localStorage.removeItem(nickname);
         this.communicator.sendMessage(RequestType.JOIN, {
             nickname,
-            userId,
+            playerId,
             class: clazz,
         } as JoinRequestData);
     }
@@ -121,7 +121,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
-        localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.userId);
+        localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.playerId);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }

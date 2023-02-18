@@ -20,7 +20,7 @@ export enum UserStatus {
 }
 
 export interface UserStateData {
-    userId: string;
+    playerId: string;
     playerInfo: PlayerInfo;
     unit: GameUnit;
     status: UserStatus;
