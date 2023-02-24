@@ -32,9 +32,10 @@ export interface RequestData {
 }
 
 export interface JoinRequestData extends RequestData {
-    nickname: string;
-    playerId: string;
-    class: string;
+    token?: string;
+    nickname?: string;
+    playerId?: string;
+    class?: string;
 }
 export interface CreateRoomRequestData extends RequestData {
     capacity: number;

@@ -1,4 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
+import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
@@ -27,6 +28,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     private unsuccessJoinAttempts: number = 0;
 
     constructor(
+        private readonly appConfig: AppConfig,
         private readonly communicator: ServerCommunicatorService,
         private readonly query: QueryService,
         private readonly state: GameStateService) {
@@ -50,6 +52,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             icon.onClick = target => this.onClassIconClick(target);
         });
         this.icons[0].select();
+        this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
     }
@@ -69,45 +72,45 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public tryToAutologin(): void {
-        const nickname = this.query.parsedQuery['nickname'];
-        const clazz = this.query.parsedQuery['class'];
-        if (!nickname || !clazz || this.unsuccessJoinAttempts > 3) { return; }
-        this.autologin(nickname as string, clazz as string);
-    }
-
-    protected autologin(userName: string, clazz: string): void {
-        this.userNameInput.value = userName;
-        this.icons.forEach(icon => {
-            icon.icon === clazz ? icon.select() : icon.unselect();
-        });
-        this.doJoin(userName, clazz);
+        const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
+        if (isNewPlayer === 'true') { return; }
+        this.doJoin();
     }
 
     protected onJoinClick(): void {
         this.isJoining = true;
         this.updateJoinButtonState();
-        let clazz: string = '';
-        this.icons.forEach(icon => {
-            if (!icon.selected) { return; }
-            clazz = icon.icon;
-        });
-        this.replaceLocation(this.userNameInput.value, clazz);
+        this.doJoin();
     }
 
-    protected replaceLocation(nickname: string, clazz: string): void {
-        nickname = nickname.split(' ').join('%20');
-        const href = window.location.href.split('?')[0] + `?nickname=${nickname}&class=${clazz}`;
-        window.location.href = href;
-    }
-
-    protected doJoin(nickname: string, clazz: string): void {
-        const playerId: string = localStorage.getItem(nickname) || '';
-        localStorage.removeItem(nickname);
-        this.communicator.sendMessage(RequestType.JOIN, {
-            nickname,
-            playerId,
-            class: clazz,
-        } as JoinRequestData);
+    protected doJoin(): void {
+        const playerId: string | undefined = localStorage.getItem('playerId') || undefined;
+        localStorage.removeItem('playerId');
+        if (playerId) {
+            this.communicator.sendMessage(RequestType.JOIN, {
+                playerId,
+            } as JoinRequestData);
+            return;
+        }
+        const token: string | undefined = this.query.parsedQuery['token'] as string || undefined;
+        const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
+        if (token && isNewPlayer === 'true') {
+            const nickname: string = this.getNickname();
+            const clazz: string = this.getClass();
+            this.communicator.sendMessage(RequestType.JOIN, {
+                token,
+                nickname,
+                class: clazz,
+            } as JoinRequestData);
+            return;
+        }
+        if (token && isNewPlayer === 'false') {
+            this.communicator.sendMessage(RequestType.JOIN, {
+                token,
+            } as JoinRequestData);
+            return;
+        }
+        window.location.href = this.appConfig.gameServerAuthUrl;
     }
 
     public handleServerResponse(response: Response): void {
@@ -121,7 +124,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
-        localStorage.setItem(this.state.userState.playerInfo.nickname, this.state.userState.playerId);
+        localStorage.setItem('playerId', this.state.userState.playerId);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }
@@ -130,5 +133,18 @@ export default class Login extends Component implements ServerCommunicatorHandle
     public handleConnectionLost(): void {
         this.show();
         setTimeout(() => this.tryToAutologin());
+    }
+
+    protected getClass(): string {
+        let clazz: string = '';
+        this.icons.forEach(icon => {
+            if (!icon.selected) { return; }
+            clazz = icon.icon;
+        });
+        return clazz;
+    }
+
+    protected getNickname(): string {
+        return this.userNameInput.value;
     }
 }
