@@ -73,7 +73,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public tryToAutologin(): void {
         const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
-        if (isNewPlayer === 'true') { return; }
+        if (isNewPlayer === 'true') {
+            this.show();
+            return;
+        }
         this.doJoin();
     }
 
@@ -125,6 +128,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
         localStorage.setItem('playerId', this.state.userState.playerId);
+        window.history.replaceState({}, document.title, window.location.origin);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }
@@ -132,7 +136,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public handleConnectionLost(): void {
         this.show();
-        setTimeout(() => this.tryToAutologin());
+        setTimeout(() => this.tryToAutologin(), 500);
     }
 
     protected getClass(): string {
