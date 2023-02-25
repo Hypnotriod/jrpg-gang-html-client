@@ -72,6 +72,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public tryToAutologin(): void {
+        if (this.unsuccessJoinAttempts >= 5) { return; }
         const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
         if (isNewPlayer === 'true') {
             this.show();
@@ -82,6 +83,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected onJoinClick(): void {
         this.isJoining = true;
+        this.errorLabel.hide();
         this.updateJoinButtonState();
         this.doJoin();
     }
@@ -119,6 +121,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         this.isJoining = false;
         this.updateJoinButtonState();
+        if (response.status === ResponseStatus.ALREADY_EXISTS) {
+            this.errorLabel.show();
+            this.errorLabel.value = 'A user with this nickname already exists';
+            return;
+        }
         if (response.status !== ResponseStatus.OK) {
             localStorage.clear();
             this.unsuccessJoinAttempts++;
