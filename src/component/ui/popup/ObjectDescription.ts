@@ -14,7 +14,7 @@ export default class ObjectDescription extends TextField {
     }
 
     protected updatepositionOnMouseMove(e: MouseEvent): void {
-        this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX : e.clientX - this.width;
+        this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX + 32 : e.clientX - this.width - 32;
         this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.height;
         if (this.topPx + this.height > window.innerHeight) {
             this.topPx = window.innerHeight - this.height;
