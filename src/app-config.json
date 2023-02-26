@@ -1,5 +1,5 @@
 {
     "gameServerWsUrl": "${GAME_SERVER_WS_URL}",
-    "gameServerAuthUrl": "${GAME_SERVER_AUTH_URL}",
+    "authUrl": "${AUTH_URL}",
     "version": "${VERSION}"
 }

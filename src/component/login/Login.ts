@@ -115,7 +115,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             } as JoinRequestData);
             return;
         }
-        window.location.href = this.appConfig.gameServerAuthUrl;
+        window.location.href = this.appConfig.authUrl;
     }
 
     public handleServerResponse(response: Response): void {

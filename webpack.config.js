@@ -21,8 +21,8 @@ module.exports = (env) => ({
                 test: /app-config\.json$/,
                 loader: 'string-replace-loader',
                 options: {
-                    search: '${GAME_SERVER_AUTH_URL}',
-                    replace: env.gameServerAuthUrl,
+                    search: '${AUTH_URL}',
+                    replace: env.authUrl,
                 }
             },
             {
