@@ -1,4 +1,5 @@
 export interface PlayerInfo {
+    playerId: string;
     nickname: string;
     class: string;
     level: number;
