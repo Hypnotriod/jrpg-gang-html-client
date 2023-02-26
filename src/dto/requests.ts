@@ -34,7 +34,7 @@ export interface RequestData {
 export interface JoinRequestData extends RequestData {
     token?: string;
     nickname?: string;
-    playerId?: string;
+    sessionId?: string;
     class?: string;
 }
 export interface CreateRoomRequestData extends RequestData {

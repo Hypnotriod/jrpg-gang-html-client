@@ -1,6 +1,12 @@
 import { Action, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
 import { RequestType } from './requests';
 
+export const KEY_SESSION_ID: string = 'sessionId';
+export const KEY_IS_NEW_PLAYER: string = 'isNewPlayer';
+export const KEY_TOKEN: string = 'token';
+export const VALUE_TRUE: string = 'true';
+export const VALUE_FALSE: string = 'false';
+
 export enum ResponseStatus {
     OK = 'ok',
     FAILED = 'failed',
@@ -20,7 +26,7 @@ export enum UserStatus {
 }
 
 export interface UserStateData {
-    playerId: string;
+    sessionId: string;
     playerInfo: PlayerInfo;
     unit: GameUnit;
     status: UserStatus;

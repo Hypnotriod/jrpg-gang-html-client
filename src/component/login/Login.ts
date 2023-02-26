@@ -3,7 +3,7 @@ import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
+import { Response, ResponseStatus, KEY_SESSION_ID, UserStateData, UserStatus, KEY_IS_NEW_PLAYER, KEY_TOKEN, VALUE_TRUE, VALUE_FALSE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import QueryService from '../../service/QueryService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -73,8 +73,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public tryToAutologin(): void {
         if (this.unsuccessJoinAttempts >= 5) { return; }
-        const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
-        if (isNewPlayer === 'true') {
+        const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
+        if (isNewPlayer === VALUE_TRUE) {
             this.show();
             return;
         }
@@ -89,17 +89,17 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected doJoin(): void {
-        const playerId: string | undefined = localStorage.getItem('playerId') || undefined;
-        localStorage.removeItem('playerId');
-        if (playerId) {
+        const sessionId: string | undefined = localStorage.getItem(KEY_SESSION_ID) || undefined;
+        localStorage.removeItem(KEY_SESSION_ID);
+        if (sessionId) {
             this.communicator.sendMessage(RequestType.JOIN, {
-                playerId,
+                sessionId: sessionId,
             } as JoinRequestData);
             return;
         }
-        const token: string | undefined = this.query.parsedQuery['token'] as string || undefined;
-        const isNewPlayer: string | undefined = this.query.parsedQuery['isNewPlayer'] as string || undefined;
-        if (token && isNewPlayer === 'true') {
+        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
+        const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
+        if (token && isNewPlayer === VALUE_TRUE) {
             const nickname: string = this.getNickname();
             const clazz: string = this.getClass();
             this.communicator.sendMessage(RequestType.JOIN, {
@@ -109,7 +109,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             } as JoinRequestData);
             return;
         }
-        if (token && isNewPlayer === 'false') {
+        if (token && isNewPlayer === VALUE_FALSE) {
             this.communicator.sendMessage(RequestType.JOIN, {
                 token,
             } as JoinRequestData);
@@ -134,7 +134,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
-        localStorage.setItem('playerId', this.state.userState.playerId);
+        localStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
         window.history.replaceState({}, document.title, window.location.origin);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
