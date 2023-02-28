@@ -129,7 +129,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status !== ResponseStatus.OK) {
             localStorage.clear();
             this.unsuccessJoinAttempts++;
-            this.tryToAutologin();
+            if (this.query.parsedQuery[KEY_IS_NEW_PLAYER] === VALUE_FALSE) {
+                window.location.href = this.appConfig.authUrl;
+            } else {
+                this.tryToAutologin();
+            }
             return;
         }
         this.unsuccessJoinAttempts = 0;
