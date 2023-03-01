@@ -65,6 +65,10 @@ export interface UnitAttributes {
     luck: number;
 }
 
+export interface UnitRequirements extends UnitAttributes {
+    class?: string;
+}
+
 export interface UnitResistance extends Damage {
 }
 
@@ -124,7 +128,7 @@ export interface Equipment extends Item {
     slot: EquipmentSlot;
     slotsNumber: number;
     equipped: boolean;
-    requirements: UnitAttributes;
+    requirements: UnitRequirements;
     modification: UnitModification[];
 }
 
@@ -144,7 +148,7 @@ export interface Weapon extends Equipment {
 }
 
 export interface Magic extends Item {
-    requirements: UnitAttributes;
+    requirements: UnitRequirements;
     range: ActionRange;
     useCost: UnitBaseAttributes;
     damage?: DamageImpact[];
