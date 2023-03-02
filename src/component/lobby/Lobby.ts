@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM, BUTTON_UNIT, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
@@ -21,8 +21,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     @component(BUTTON_CREATE_ROOM, Button)
     private readonly createRoomButton: Button;
-    @component(BUTTON_UNIT, Button)
-    private readonly unitButton: Button;
+    @component(BUTTON_CONFIGURATOR, Button)
+    private readonly configuratorButton: Button;
     @component(UNIT_ICON, Icon)
     private readonly unitIcon: Icon;
     @component(UNIT_INFO, Container)
@@ -40,7 +40,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.hide();
         this.createRoomButton.disable();
         this.createRoomButton.onClick = target => this.onCreateRoom();
-        this.unitButton.onClick = target => this.goToUnitConfig();
+        this.configuratorButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([RequestType.LOBBY_STATUS, RequestType.ROOM_STATUS], this);
     }
 
@@ -128,10 +128,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected updateState(isUserInRooms: boolean): void {
         if (isUserInRooms) {
             this.createRoomButton.disable();
-            this.unitButton.disable();
+            this.configuratorButton.disable();
         } else {
             this.createRoomButton.enable();
-            this.unitButton.enable();
+            this.configuratorButton.enable();
         }
     }
 

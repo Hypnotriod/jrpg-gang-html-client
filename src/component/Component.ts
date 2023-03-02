@@ -105,6 +105,10 @@ export default abstract class Component {
         this._view.removeAttribute('disabled');
     }
 
+    public set enabled(value: boolean) {
+        value ? this.enable() : this.disable();
+    }
+
     public findChild(id: string): HTMLElement | null {
         return this._view.querySelector(`#${id}`);
     }

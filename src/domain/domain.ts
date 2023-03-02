@@ -368,16 +368,17 @@ export interface GameEvent {
 }
 
 export interface PlayerJob {
+    name: string;
     code: string;
     reward: string;
-    duration: string;
-    countdown: string;
+    duration: number;
+    countdown: number;
     requirements?: UnitRequirements;
     description?: string;
 }
 
 export interface EmploymentStatus {
-    currentJobCode?: string;
+    currentJob?: PlayerJob;
     isInProgress?: boolean;
     isComplete?: boolean;
     timeLeft?: number;

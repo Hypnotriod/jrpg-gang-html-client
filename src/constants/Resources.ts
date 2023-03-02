@@ -21,4 +21,5 @@ export const GAME_DESIGN: string = COMPONENTS_PATH + 'game/game.html';
 export const GAME_STYLE: string = COMPONENTS_PATH + 'game/game.css';
 
 export const JOBS_DESIGN: string = COMPONENTS_PATH + 'jobs/jobs.html';
+export const JOB_DESIGN: string = COMPONENTS_PATH + 'jobs/job.html';
 export const JOBS_STYLE: string = COMPONENTS_PATH + 'jobs/jobs.css';

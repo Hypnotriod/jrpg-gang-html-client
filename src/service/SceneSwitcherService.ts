@@ -1,5 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import GameScene from '../component/gamescene/GameScene';
+import Jobs from '../component/jobs/Jobs';
 import Lobby from '../component/lobby/Lobby';
 import Login from '../component/login/Login';
 import UnitConfigurator from '../component/unitconfigurator/UnitConfigurator';
@@ -11,6 +12,7 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from './ServerCo
 @injectable()
 export default class SceneSwitcherService implements ServerCommunicatorHandler {
     constructor(
+        private readonly jobs: Jobs,
         private readonly communicator: ServerCommunicatorService,
         private readonly configurator: UnitConfigurator,
         private readonly login: Login,
@@ -30,6 +32,7 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         this.configurator.hide();
 
         status === UserStatus.JOINED && this.configurator.show();
+        status === UserStatus.AT_JOB && this.jobs.show();
         (status === UserStatus.IN_LOBBY || status === UserStatus.IN_ROOM) && this.lobby.show();
         status === UserStatus.IN_GAME && this.gameScene.show();
     }

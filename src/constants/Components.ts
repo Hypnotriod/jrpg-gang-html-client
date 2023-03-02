@@ -5,6 +5,7 @@ export const UNIT_CONFIGURATOR_CONTAINER: string = 'unit_configurator_container'
 export const GAME_CONTAINER: string = 'game_container';
 
 export const JOBS_CONTAINER: string = 'jobs_container';
+export const JOBS_LIST_CONTAINER: string = 'jobs_list_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
@@ -15,11 +16,13 @@ export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 export const BUTTON_LOBBY: string = 'button_lobby';
 export const BUTTON_JOBS: string = 'button_jobs';
 export const BUTTON_LEVEL_UP: string = 'button_level_up';
-export const BUTTON_UNIT: string = 'button_unit';
+export const BUTTON_CONFIGURATOR: string = 'button_configurator';
 export const BUTTON_START_GAME: string = 'button_start_game';
 export const BUTTON_NEXT_PHASE: string = 'button_next_phase';
 export const BUTTON_SKIP: string = 'button_skip';
 export const BUTTON_LEAVE_GAME: string = 'button_leave_game';
+export const BUTTON_COMPLETE_JOB: string = 'button_complete_job';
+export const BUTTON_QUIT_JOB: string = 'button_quit_job';
 
 export const CHECKBOX_AUTO: string = 'checkbox_auto';
 export const CHECKBOX_SELL: string = 'checkbox_sell';
@@ -35,6 +38,11 @@ export const LABEL_HIT_HP: string = 'label_hit_hp';
 export const LABEL_EXP: string = 'label_exp';
 export const LABEL_ID: string = 'label_id';
 export const LABEL_USERS_COUNT: string = 'label_users_count';
+export const LABEL_HEADER: string = 'label_header';
+export const LABEL_DESCRIPTION: string = 'label_description';
+export const LABEL_REQUIREMENTS: string = 'label_requirements';
+export const LABEL_REWARD: string = 'label_reward';
+export const LABEL_TIME: string = 'label_time';
 
 export const LABEL_HEALTH: string = 'label_health';
 export const BUTTON_HEALTH: string = 'button_health';
@@ -56,6 +64,7 @@ export const LABEL_INITIATIVE: string = 'label_initiative';
 export const BUTTON_INITIATIVE: string = 'button_initiative';
 export const LABEL_LUCK: string = 'label_luck';
 export const BUTTON_LUCK: string = 'button_luck';
+export const BUTTON_APPLY: string = 'button_apply';
 
 export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';

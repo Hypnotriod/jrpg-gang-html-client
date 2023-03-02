@@ -10,7 +10,7 @@
     border-radius: 10px;
 }
 
-.jobs-container {
+.jobs-list-container {
     max-height: 430px;
     overflow-y: auto;
 }
