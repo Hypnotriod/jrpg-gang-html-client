@@ -366,3 +366,20 @@ export interface GameEvent {
     unitActionResult?: GameUnitActionResult;
     endRoundResult?: EndRoundResult;
 }
+
+export interface PlayerJob {
+    code: string;
+    reward: string;
+    duration: string;
+    countdown: string;
+    requirements?: UnitRequirements;
+    description?: string;
+}
+
+export interface EmploymentStatus {
+    currentJobCode?: string;
+    isInProgress?: boolean;
+    isComplete?: boolean;
+    timeLeft?: number;
+    availableJobs: PlayerJob[];
+}

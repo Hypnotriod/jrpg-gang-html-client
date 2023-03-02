@@ -1,4 +1,4 @@
-import { Action, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo } from '../domain/domain';
+import { Action, EmploymentStatus, GameEvent, GameShop, GameUnit, PlayerInfo, RoomInfo, UnitBooty } from '../domain/domain';
 import { RequestType } from './requests';
 
 export const KEY_SESSION_ID: string = 'sessionId';
@@ -23,6 +23,7 @@ export enum UserStatus {
     IN_LOBBY = 'inLobby',
     IN_ROOM = 'inRoom',
     IN_GAME = 'inGame',
+    AT_JOB = 'atJob',
 }
 
 export interface UserStateData {
@@ -63,10 +64,18 @@ export interface GameActionData {
     actionResult: GameEvent;
 }
 
+export interface JobStatusData {
+    employment: EmploymentStatus;
+}
+
+export interface CompleteJobData {
+    reward: UnitBooty;
+}
+
 export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
     data: LobbyStatusData | UserStateData | ShopStateData | GameStateData | PlayerInfoData |
-    GameNextPhaseData | GameActionData | RoomStatusData;
+    GameNextPhaseData | GameActionData | RoomStatusData | JobStatusData | CompleteJobData;
 }

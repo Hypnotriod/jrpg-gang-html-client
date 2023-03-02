@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
@@ -7,6 +7,7 @@ import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
+import Jobs from '../jobs/Jobs';
 import Lobby from '../lobby/Lobby';
 import Button from '../ui/button/Button';
 import Checkbox from '../ui/checkbox/Checkbox';
@@ -22,6 +23,8 @@ import ObjectDescription from '../ui/popup/ObjectDescription';
 export default class UnitConfigurator extends Component implements ServerCommunicatorHandler {
     @component(BUTTON_LOBBY, Button)
     private readonly lobbyButton: Button;
+    @component(BUTTON_JOBS, Button)
+    private readonly jobsButton: Button;
     @component(UNIT_ICON, Icon)
     private readonly unitIcon: Icon;
     @component(UNIT_INFO, Container)
@@ -84,7 +87,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     constructor(private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
-        @inject(delay(() => Lobby)) private readonly lobby: Lobby) {
+        @inject(delay(() => Lobby)) private readonly lobby: Lobby,
+        @inject(delay(() => Jobs)) private readonly jobs: Jobs) {
         super();
     }
 
@@ -99,6 +103,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.itemDescription.hide();
         this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
         this.lobbyButton.onClick = target => this.goToLobby();
+        this.jobsButton.onClick = target => this.goToJobs();
         this.btnHealth.onClick = target => this.skillUp(ActionProperty.HEALTH);
         this.btnStamina.onClick = target => this.skillUp(ActionProperty.STAMINA);
         this.btnMana.onClick = target => this.skillUp(ActionProperty.MANA);
@@ -116,6 +121,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.hide();
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
         this.lobby.show();
+    }
+
+    protected goToJobs(): void {
+        this.hide();
+        this.jobs.show();
     }
 
     public handleServerResponse(response: Response): void {

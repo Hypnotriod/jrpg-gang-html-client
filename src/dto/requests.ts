@@ -20,6 +20,10 @@ export enum RequestType {
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',
     PLAYER_INFO = 'playerInfo',
+    APPLY_FOR_A_JOB = 'applyForAJob',
+    QUIT_JOB = 'quitJob',
+    COMPLETE_JOB = 'completeJob',
+    JOBS_STATUS = 'jobsStatus',
 }
 
 export interface Request {
@@ -51,4 +55,8 @@ export interface ActionRequestData extends Action, RequestData {
 
 export interface NextGamePhaseData extends RequestData {
     isReady: boolean;
+}
+
+export interface ApplyForAJobRequestData extends RequestData {
+    code: string;
 }

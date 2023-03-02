@@ -4,6 +4,8 @@ export const LOBBY_CONTAINER: string = 'lobby_container';
 export const UNIT_CONFIGURATOR_CONTAINER: string = 'unit_configurator_container';
 export const GAME_CONTAINER: string = 'game_container';
 
+export const JOBS_CONTAINER: string = 'jobs_container';
+
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
 export const BUTTON_JOIN: string = 'button_join';
@@ -11,6 +13,7 @@ export const BUTTON_JOIN_ROOM: string = 'button_join_room';
 export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';
 export const BUTTON_CREATE_ROOM: string = 'button_create_room';
 export const BUTTON_LOBBY: string = 'button_lobby';
+export const BUTTON_JOBS: string = 'button_jobs';
 export const BUTTON_LEVEL_UP: string = 'button_level_up';
 export const BUTTON_UNIT: string = 'button_unit';
 export const BUTTON_START_GAME: string = 'button_start_game';

@@ -1,0 +1,16 @@
+.jobs-wrapper {
+    background-color: darkslategrey;
+    position: absolute;
+    width: 900px;
+    height: 600px;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+.jobs-container {
+    max-height: 430px;
+    overflow-y: auto;
+}
