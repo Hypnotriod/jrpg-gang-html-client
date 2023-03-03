@@ -139,7 +139,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
         localStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
-        window.history.replaceState({}, document.title, window.location.origin);
+        window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
         }
