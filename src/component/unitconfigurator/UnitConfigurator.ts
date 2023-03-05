@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
@@ -78,7 +78,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
     @component(CHECKBOX_SELL, Checkbox)
-    private readonly sellCheckbox: Checkbox;
+    private readonly checkboxSell: Checkbox;
+    @component(CHECKBOX_REPAIR, Checkbox)
+    private readonly checkboxRepair: Checkbox;
     @component(BUTTON_LEVEL_UP, Button)
     private readonly btnLevelUp: Button;
 
@@ -115,6 +117,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.btnInitiative.onClick = target => this.skillUp(ActionProperty.INITIATIVE);
         this.btnLuck.onClick = target => this.skillUp(ActionProperty.LUCK);
         this.btnLevelUp.onClick = target => this.levelUp();
+        this.checkboxSell.onChange = target => this.onCheckboxChange(target);
+        this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
     }
 
     protected goToLobby(): void {
@@ -295,8 +299,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         iconItem.update(data);
     }
 
+    protected onCheckboxChange(target: Checkbox): void {
+        if (target.checked && target === this.checkboxSell) {
+            this.checkboxRepair.checked = false;
+        } else if (target.checked && target === this.checkboxRepair) {
+            this.checkboxSell.checked = false;
+        }
+    }
+
     protected onUnitItemClick(target: ItemIcon): void {
-        this.sellCheckbox.checked ? this.sellItem(target) : this.euipUneuipItem(target);
+        if (this.checkboxSell.checked) {
+            this.sellItem(target);
+        } else if (this.checkboxRepair.checked) {
+            this.repairItem(target);
+        } else {
+            this.euipUneuipItem(target);
+        }
     }
 
     protected euipUneuipItem(target: ItemIcon): void {
@@ -326,6 +344,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected sellItem(target: ItemIcon): void {
         this.communicator.sendMessage(RequestType.SHOP_ACTION, {
             action: ActionType.SELL,
+            itemUid: target.data.uid!,
+        } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected repairItem(target: ItemIcon): void {
+        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+            action: ActionType.REPAIR,
             itemUid: target.data.uid!,
         } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);

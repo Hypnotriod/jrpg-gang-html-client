@@ -23,6 +23,7 @@ export default class Checkbox extends Component {
     public get checked(): boolean {
         return (this.view as HTMLInputElement).checked;
     }
+
     public set checked(value: boolean) {
         (this.view as HTMLInputElement).checked = value;
     }

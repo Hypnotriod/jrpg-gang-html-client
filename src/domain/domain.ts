@@ -282,6 +282,7 @@ export enum ActionType {
     MOVE = 'move',
     BUY = 'buy',
     SELL = 'sell',
+    REPAIR = 'repair',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
     LEVEL_UP = 'levelUp',

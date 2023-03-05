@@ -26,6 +26,7 @@ export const BUTTON_QUIT_JOB: string = 'button_quit_job';
 
 export const CHECKBOX_AUTO: string = 'checkbox_auto';
 export const CHECKBOX_SELL: string = 'checkbox_sell';
+export const CHECKBOX_REPAIR: string = 'checkbox_repair';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
 
