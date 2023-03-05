@@ -4,4 +4,5 @@ node_modules
 .vscode-test/
 *.vsix
 *.code-workspace
+*.pem
 package-lock.json
