@@ -1,11 +1,12 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, PlayerInfo, RoomInfo } from '../domain/domain';
+import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
 export default class GameStateService {
     private _userState: UserStateData;
     private _playerInfo: PlayerInfo;
+    private _shopStatus: GameShopStatus;
     private _gameState: GameEvent;
     private _rooms: RoomInfo[];
     private _usersCount: number;
@@ -40,6 +41,14 @@ export default class GameStateService {
 
     public get gameState(): GameEvent {
         return this._gameState;
+    }
+
+    public set shopStatus(value: GameShopStatus) {
+        this._shopStatus = value;
+    }
+
+    public get shopStatus(): GameShopStatus {
+        return this._shopStatus;
     }
 
     public set userState(value: UserStateData) {

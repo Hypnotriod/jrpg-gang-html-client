@@ -228,8 +228,10 @@ export interface GameUnit extends Unit {
     isDead?: boolean;
 }
 
-export interface GameShop {
+export interface GameShopStatus {
     items: UnitInventory;
+    purchase: Map<string, UnitBooty>;
+    repair: Map<string, UnitBooty>;
 }
 
 export enum GamePhase {

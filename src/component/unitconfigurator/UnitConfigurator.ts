@@ -1,8 +1,8 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus, ShopStateData, UserStateData } from '../../dto/responces';
+import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -95,8 +95,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public show(): void {
-        this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
         super.show();
     }
 
@@ -140,7 +140,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                 this.updateUserStatus(response.data as UserStateData);
                 break;
             case RequestType.SHOP_STATUS:
-                this.updateShopStatus(response.data as ShopStateData);
+                this.state.shopStatus = (response.data as ShopStatusData).shop;
+                this.updateShopStatus(response.data as ShopStatusData);
                 break;
         }
     }
@@ -153,7 +154,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.hide();
     }
 
-    protected updateShopStatus(data: ShopStateData): void {
+    protected updateShopStatus(data: ShopStatusData): void {
         this.updateShopInventoryIcons(data.shop.items);
     }
 
@@ -290,6 +291,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateUnitItem(data: InventoryItem): void {
         let iconItem = this.unitItems.get(data.uid!);
+        if (this.state.shopStatus && this.state.shopStatus.purchase[data.uid!]) {
+            (data as any).purchasePrice = this.state.shopStatus.purchase[data.uid!];
+        }
+        if (this.state.shopStatus && this.state.shopStatus.repair[data.uid!]) {
+            (data as any).repairPrice = this.state.shopStatus.repair[data.uid!];
+        }
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this, UNIT_ITEMS_CONTAINER)!;
             iconItem.onClick = target => this.onUnitItemClick(target);
