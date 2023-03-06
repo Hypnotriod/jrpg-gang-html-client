@@ -361,6 +361,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             action: ActionType.REPAIR,
             itemUid: target.data.uid!,
         } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
@@ -369,6 +370,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             action: ActionType.BUY,
             itemUid: target.data.uid!,
         } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }
