@@ -243,6 +243,7 @@ export enum GamePhase {
     MAKE_ACTION = 'makeAction',
     RETREAT_ACTION = 'retreatAction',
     ACTION_COMPLETE = 'actionComplete',
+    BEFORE_SPOT_COMPLETE = 'beforeSpotComplete',
     SPOT_COMPLETE = 'spotComplete',
     SCENARIO_COMPLETE = 'scenarioComplete',
 }

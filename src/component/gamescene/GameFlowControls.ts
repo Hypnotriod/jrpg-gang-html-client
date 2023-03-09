@@ -53,6 +53,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.MAKE_MOVE_OR_ACTION_AI:
             case GamePhase.MAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
+            case GamePhase.BEFORE_SPOT_COMPLETE:
             case GamePhase.RETREAT_ACTION:
             case GamePhase.SPOT_COMPLETE:
             case GamePhase.SCENARIO_COMPLETE:
