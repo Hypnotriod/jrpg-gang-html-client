@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
@@ -19,8 +19,10 @@ import Room from './Room';
 export default class Lobby extends Component implements ServerCommunicatorHandler {
     private readonly rooms: Map<number, Room> = new Map();
 
-    @component(BUTTON_CREATE_ROOM, Button)
-    private readonly createRoomButton: Button;
+    @component(BUTTON_CREATE_ROOM_EASY, Button)
+    private readonly createRoomEasyButton: Button;
+    @component(BUTTON_CREATE_ROOM_ADVANCED, Button)
+    private readonly createRoomAdvancedButton: Button;
     @component(BUTTON_CONFIGURATOR, Button)
     private readonly configuratorButton: Button;
     @component(UNIT_ICON, Icon)
@@ -38,8 +40,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected initialize(): void {
         this.hide();
-        this.createRoomButton.disable();
-        this.createRoomButton.onClick = target => this.onCreateRoom();
+        this.createRoomEasyButton.disable();
+        this.createRoomEasyButton.onClick = target => this.onCreateRoom('easy-01');
+        this.createRoomAdvancedButton.disable();
+        this.createRoomAdvancedButton.onClick = target => this.onCreateRoom('advanced-01');
         this.configuratorButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([RequestType.LOBBY_STATUS, RequestType.ROOM_STATUS], this);
     }
@@ -126,19 +130,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
-        if (isUserInRooms) {
-            this.createRoomButton.disable();
-            this.configuratorButton.disable();
-        } else {
-            this.createRoomButton.enable();
-            this.configuratorButton.enable();
-        }
+        this.createRoomEasyButton.enabled = !isUserInRooms;
+        this.createRoomAdvancedButton.enabled = !isUserInRooms;
+        this.configuratorButton.enabled = !isUserInRooms;
     }
 
-    protected onCreateRoom(): void {
+    protected onCreateRoom(scenarioId: string): void {
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
             capacity: 4,
-            scenarioId: 'test', // todo: make room creation dialog
+            scenarioId, // todo: make room creation dialog
         } as CreateRoomRequestData);
     }
 }
