@@ -3,7 +3,7 @@ import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { JoinRequestData, RequestType } from '../../dto/requests';
-import { Response, ResponseStatus, KEY_SESSION_ID, UserStateData, UserStatus, KEY_IS_NEW_PLAYER, KEY_TOKEN, VALUE_TRUE, VALUE_FALSE } from '../../dto/responces';
+import { KEY_IS_NEW_PLAYER, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import QueryService from '../../service/QueryService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';

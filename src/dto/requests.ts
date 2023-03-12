@@ -2,6 +2,7 @@ import { Action, ActionType, Position } from '../domain/domain';
 
 export enum RequestType {
     JOIN = 'join',
+    LEAVE = 'leave',
     CREATE_ROOM = 'createRoom',
     DESTROY_ROOM = 'destroyRoom',
     ENTER_LOBBY = 'enterLobby',
