@@ -151,6 +151,12 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult)) +
                 '--------------------<br>' + this.gameLog.value;
         }
+        if (this.state.gameState.spotCompleteResult) {
+            this.gameLog.value =
+                this.renderer.header('End Battle result', 2) + '<br>' +
+                this.renderer.render(this.distinguishSpotCompleteResultResult(this.state.gameState.spotCompleteResult)) +
+                '--------------------<br>' + this.gameLog.value;
+        }
     }
 
     protected updatePlayerInfoFromGameState(gameState: GameEvent): void {

@@ -1,4 +1,4 @@
-import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, UnitInventory } from '../../domain/domain';
+import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../../domain/domain';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import Component from '../Component';
@@ -69,8 +69,18 @@ export default class GameBase extends Component {
             const unit = this.findUnitByUid(Number(key));
             result.experience[this.getUnitName(unit)] = endRound.experience![key];
         });
-        if (endRound.booty) {
-            result.booty = endRound.booty;
+        return result;
+    }
+
+    protected distinguishSpotCompleteResultResult(spotComplete: SpotCompleteResult): object {
+        const result: any = {};
+        spotComplete.experience && Object.keys(spotComplete.experience).forEach(key => {
+            result.experience = result.experience || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.experience[this.getUnitName(unit)] = spotComplete.experience![key];
+        });
+        if (spotComplete.booty) {
+            result.booty = spotComplete.booty;
         }
         return result;
     }

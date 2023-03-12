@@ -357,6 +357,10 @@ export interface EndRoundResult {
     damage?: { [key: number]: Damage };
     recovery?: { [key: number]: UnitRecovery };
     experience?: { [key: number]: number };
+}
+
+export interface SpotCompleteResult {
+    experience?: { [key: number]: number };
     booty?: UnitBooty;
 }
 
@@ -369,6 +373,7 @@ export interface GameEvent {
     players: PlayerInfo[];
     unitActionResult?: GameUnitActionResult;
     endRoundResult?: EndRoundResult;
+    spotCompleteResult?: SpotCompleteResult;
 }
 
 export interface PlayerJob {
