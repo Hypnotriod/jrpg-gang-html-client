@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, CHECKBOX_AUTO, LABEL_GAME_STATUS } from '../../constants/Components';
+import { BUTTON_LEAVE_GAME, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_TAKE_SHARE, CHECKBOX_AUTO, LABEL_GAME_STATUS } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -22,6 +22,8 @@ export default class GameFlowControls extends GameBase {
     private readonly skipButton: Button;
     @component(BUTTON_LEAVE_GAME, Button)
     private readonly leaveGameButton: Button;
+    @component(BUTTON_TAKE_SHARE, Button)
+    private readonly takeShareButton: Button;
     @component(CHECKBOX_AUTO, Checkbox)
     private readonly autoCheckbox: Checkbox;
 
@@ -39,6 +41,7 @@ export default class GameFlowControls extends GameBase {
     protected initialize(): void {
         this.nextPhaseButton.onClick = target => this.onNextPhase();
         this.leaveGameButton.onClick = target => this.onLeaveGameClick();
+        this.takeShareButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
         this.autoCheckbox.onChange = target => this.timeoutAutoNextPhase();
         this.autoCheckbox.checked = true;
@@ -47,6 +50,17 @@ export default class GameFlowControls extends GameBase {
     public update(): void {
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
+        switch (gamePhase) {
+            case GamePhase.SCENARIO_COMPLETE:
+            case GamePhase.SPOT_COMPLETE:
+                this.takeShareButton.show();
+                this.leaveGameButton.hide();
+                break;
+            default:
+                this.takeShareButton.hide();
+                this.leaveGameButton.show();
+                break;
+        }
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
             case GamePhase.PREPARE_UNIT:
