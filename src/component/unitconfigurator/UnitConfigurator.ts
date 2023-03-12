@@ -95,6 +95,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public show(): void {
+        this.unitItems.forEach(item => item.destroy());
+        this.unitItems.clear();
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         super.show();
