@@ -21,8 +21,8 @@ export const BUTTON_CONFIGURATOR: string = 'button_configurator';
 export const BUTTON_START_GAME: string = 'button_start_game';
 export const BUTTON_NEXT_PHASE: string = 'button_next_phase';
 export const BUTTON_SKIP: string = 'button_skip';
-export const BUTTON_LEAVE_GAME: string = 'button_leave_game';
-export const BUTTON_TAKE_SHARE: string = 'button_take_share';
+export const BUTTON_RETREAT: string = 'button_retreat';
+export const BUTTON_LEAVE: string = 'button_leave';
 export const BUTTON_COMPLETE_JOB: string = 'button_complete_job';
 export const BUTTON_QUIT_JOB: string = 'button_quit_job';
 
