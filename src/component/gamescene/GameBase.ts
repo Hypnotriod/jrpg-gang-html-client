@@ -69,6 +69,11 @@ export default class GameBase extends Component {
             const unit = this.findUnitByUid(Number(key));
             result.experience[this.getUnitName(unit)] = endRound.experience![key];
         });
+        endRound.drop && Object.keys(endRound.drop).forEach(key => {
+            result.drop = result.drop || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.drop[this.getUnitName(unit)] = endRound.drop![key];
+        });
         return result;
     }
 
@@ -114,6 +119,14 @@ export default class GameBase extends Component {
             Object.keys(experience).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
                 result.result.experience[this.getUnitName(unit)] = experience[key];
+            });
+        }
+        if (actionResult.drop) {
+            const drop = { ...actionResult.drop };
+            result.result.drop = {};
+            Object.keys(drop).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.drop[this.getUnitName(unit)] = drop[key];
             });
         }
         if (targetUnit) {

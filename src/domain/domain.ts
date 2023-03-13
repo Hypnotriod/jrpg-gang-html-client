@@ -344,6 +344,7 @@ export interface ActionResult {
     instantRecovery?: UnitRecovery[];
     temporalModification?: UnitModificationImpact[];
     experience?: { [key: number]: number };
+    drop?: { [key: number]: UnitBooty };
     booty?: UnitBooty;
     result: ActionResultType;
 }
@@ -357,6 +358,7 @@ export interface EndRoundResult {
     damage?: { [key: number]: Damage };
     recovery?: { [key: number]: UnitRecovery };
     experience?: { [key: number]: number };
+    drop?: { [key: number]: UnitBooty };
 }
 
 export interface SpotCompleteResult {
