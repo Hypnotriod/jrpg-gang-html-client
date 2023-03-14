@@ -252,6 +252,7 @@ export interface GameState {
     booty: UnitBooty;
     activeUnitsQueue: number[];
     inactiveUnits: number[];
+    spotNumber: number;
 }
 
 export enum CellType {

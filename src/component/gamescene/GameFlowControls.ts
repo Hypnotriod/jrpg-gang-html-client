@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_RETREAT, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_LEAVE, CHECKBOX_AUTO, LABEL_GAME_STATUS } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_RETREAT, BUTTON_SKIP, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -16,6 +16,8 @@ import GameBase from './GameBase';
 export default class GameFlowControls extends GameBase {
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
+    @component(LABEL_DUNGEON_STATE, Label)
+    private readonly dungeonStateLabel: Label;
     @component(BUTTON_NEXT_PHASE, Button)
     private readonly nextPhaseButton: Button;
     @component(BUTTON_SKIP, Button)
@@ -48,6 +50,7 @@ export default class GameFlowControls extends GameBase {
     }
 
     public update(): void {
+        this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber}`;
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
         switch (gamePhase) {

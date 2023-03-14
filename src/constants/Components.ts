@@ -37,6 +37,7 @@ export const LABEL_NAME: string = 'label_name';
 export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 export const LABEL_GAME_STATUS: string = 'label_game_status';
+export const LABEL_DUNGEON_STATE: string = 'label_dungeon_state';
 export const LABEL_HIT_HP: string = 'label_hit_hp';
 export const LABEL_EXP: string = 'label_exp';
 export const LABEL_ID: string = 'label_id';
