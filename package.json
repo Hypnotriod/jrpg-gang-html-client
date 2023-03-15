@@ -8,7 +8,7 @@
   "scripts": {
     "start-dev": "webpack-cli serve --mode development --config webpack.config.js --env gameServerWsUrl=ws://localhost:3000/ws --env authUrl=http://localhost:3000/google/oauth2 --env version=0",
     "start-dev-tls": "webpack-cli serve --https-request-cert --https-key ./key.pem --https-cert ./cert.pem --mode development --config webpack.config.js --env gameServerWsUrl=wss://localhost:3000/ws --env authUrl=https://localhost:3000/google/oauth2 --env version=0",
-    "build-prod": "webpack --mode production --config webpack.config.js --env gameServerWsUrl=wss://jrpg-gang-n4wn5xencq-lm.a.run.app/ws authUrl=https://jrpg-gang-n4wn5xencq-lm.a.run.app/google/oauth2 --env version=17"
+    "build-prod": "webpack --mode production --config webpack.config.js --env gameServerWsUrl=wss://the_host_name/ws authUrl=https://the_host_name/google/oauth2 --env version=version"
   },
   "dependencies": {
     "local-storage": "^2.0.0",
