@@ -36,7 +36,7 @@ export interface Damage {
     crushing?: number;
     fire?: number;
     cold?: number;
-    lighting?: number;
+    lightning?: number;
     poison?: number;
     exhaustion?: number;
     manaDrain?: number;

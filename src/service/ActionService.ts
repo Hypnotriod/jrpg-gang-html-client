@@ -40,7 +40,7 @@ export default class ActionService {
             (d.crushing || 0) +
             (d.cutting || 0) +
             (d.fire || 0) +
-            (d.lighting || 0) +
+            (d.lightning || 0) +
             (d.poison || 0) +
             (d.stabbing || 0)
             , 0) : 0;

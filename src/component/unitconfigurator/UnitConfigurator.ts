@@ -214,7 +214,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                                      Crushing: ${res.crushing || 0}<br>
                                      Fire: ${res.fire || 0}<br>
                                      Cold: ${res.cold || 0}<br>
-                                     Lighting: ${res.lighting || 0}<br>
+                                     Lightning: ${res.lightning || 0}<br>
                                      Poison: ${res.poison || 0}<br>
                                      Exhaustion: ${res.exhaustion || 0}<br>
                                      ManaDrain: ${res.manaDrain || 0}<br>
