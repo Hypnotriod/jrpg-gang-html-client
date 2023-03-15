@@ -1,0 +1,41 @@
+{
+    "name": "jrpg-gang-html-client",
+    "author": "Ilya Pikin",
+    "version": "0.0.1",
+    "license": "ISC",
+    "main": "src/index.ts",
+    "registry": "https://registry.npmjs.org",
+    "scripts": {
+        "start-dev": "webpack-cli serve --mode development --config webpack.config.js --env gameServerWsUrl=ws://localhost:3000/ws --env authUrl=http://localhost:3000/google/oauth2 --env version=0",
+        "start-dev-tls": "webpack-cli serve --https-request-cert --https-key ./key.pem --https-cert ./cert.pem --mode development --config webpack.config.js --env gameServerWsUrl=wss://localhost:3000/ws --env authUrl=https://localhost:3000/google/oauth2 --env version=0",
+        "build-prod": "webpack --mode production --config webpack.config.js --env gameServerWsUrl=wss://the_host_name/ws authUrl=https://the_host_name/google/oauth2 --env version=version_number"
+    },
+    "dependencies": {
+        "local-storage": "^2.0.0",
+        "query-string": "^7.1.1",
+        "reflect-metadata": "^0.1.13",
+        "ts-key-enum": "^2.0.12",
+        "tsyringe": "^4.7.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.20.2",
+        "@babel/plugin-transform-runtime": "^7.19.6",
+        "@babel/preset-env": "^7.20.2",
+        "@types/local-storage": "^2.0.0",
+        "@types/query-string": "^6.3.0",
+        "babel-loader": "^9.1.0",
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^11.0.0",
+        "html-webpack-plugin": "^5.5.0",
+        "script-ext-html-webpack-plugin": "^2.1.5",
+        "string-replace-loader": "^3.1.0",
+        "ts-keycode-enum": "^1.0.6",
+        "ts-loader": "^9.4.1",
+        "tsc": "^2.0.4",
+        "tslint": "^6.1.3",
+        "typescript": "^4.9.3",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.0",
+        "webpack-dev-server": "^4.11.1"
+    }
+}
