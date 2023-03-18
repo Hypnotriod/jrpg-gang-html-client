@@ -100,7 +100,7 @@ export default class GameBase extends Component {
             actionResult.result === ActionResultType.ACCOMPLISHED) {
             if (!this._actionService.successfull(actionResult)) {
                 result.result.result = 'no success!';
-            } else if (!this._actionService.hasEffect(actionResult)) {
+            } else if (!this._actionService.hasAnyEffect(actionResult)) {
                 result.result.result = 'no effect!';
             }
         }
@@ -119,6 +119,38 @@ export default class GameBase extends Component {
             Object.keys(experience).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
                 result.result.experience[this.getUnitName(unit)] = experience[key];
+            });
+        }
+        if (actionResult.instantDamage) {
+            const instantDamage = { ...actionResult.instantDamage };
+            result.result.instantDamage = {};
+            Object.keys(instantDamage).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.instantDamage[this.getUnitName(unit)] = instantDamage[key];
+            });
+        }
+        if (actionResult.temporalDamage) {
+            const temporalDamage = { ...actionResult.temporalDamage };
+            result.result.temporalDamage = {};
+            Object.keys(temporalDamage).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.temporalDamage[this.getUnitName(unit)] = temporalDamage[key];
+            });
+        }
+        if (actionResult.instantRecovery) {
+            const instantRecovery = { ...actionResult.instantRecovery };
+            result.result.instantRecovery = {};
+            Object.keys(instantRecovery).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.instantRecovery[this.getUnitName(unit)] = instantRecovery[key];
+            });
+        }
+        if (actionResult.temporalModification) {
+            const temporalModification = { ...actionResult.temporalModification };
+            result.result.temporalModification = {};
+            Object.keys(temporalModification).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.temporalModification[this.getUnitName(unit)] = temporalModification[key];
             });
         }
         if (actionResult.drop) {

@@ -176,7 +176,7 @@ export default class SpotCell extends Component {
         this._icon.icon = 'tomb';
     }
 
-    public updateWithActionResult(result: ActionResult): void {
+    public updateWithActionResult(result: ActionResult, targetUid: number): void {
         this.hideAll();
         if (this._unit) {
             this.idLabel.show();
@@ -185,13 +185,13 @@ export default class SpotCell extends Component {
             this.manaBar.show();
         }
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
-        if (!this.actionService.hasEffect(result)) {
+        if (!this.actionService.hasEffect(result, targetUid)) {
             this._iconMissed.show();
-        } else if (this.actionService.hasDamage(result)) {
+        } else if (this.actionService.hasDamage(result, targetUid)) {
             this._iconHit.show();
             this.hitHpLabel.show();
-            this.hitHpLabel.value = this.actionService.physicalInstantDamage(result) + 'HP';
-        } else if (this.actionService.hasRecovery(result)) {
+            this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
+        } else if (this.actionService.hasRecovery(result, targetUid)) {
             this._iconEffect.show();
         }
     }

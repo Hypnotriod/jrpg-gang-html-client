@@ -11,39 +11,62 @@ export default class ActionService {
             !!result.temporalModification;
     }
 
-    public hasEffect(result: ActionResult): boolean {
-        return !this.nullOrEmptyArray(result.instantDamage) ||
-            !this.nullOrEmptyArray(result.instantRecovery) ||
-            !this.nullOrEmptyArray(result.temporalDamage) ||
-            !this.nullOrEmptyArray(result.temporalModification);
+    public targets(result: ActionResult): number[] {
+        return this.objectKeys(result.instantDamage)
+            .concat(this.objectKeys(result.instantRecovery))
+            .concat(this.objectKeys(result.temporalDamage))
+            .concat(this.objectKeys(result.temporalModification));
     }
 
-    public hasRecovery(result: ActionResult): boolean {
-        return !this.nullOrEmptyArray(result.instantRecovery) ||
-            !this.nullOrEmptyArray(result.temporalModification);
+    public hasAnyEffect(result: ActionResult): boolean {
+        return !this.nullOrEmptyObject(result.instantDamage) ||
+            !this.nullOrEmptyObject(result.instantRecovery) ||
+            !this.nullOrEmptyObject(result.temporalDamage) ||
+            !this.nullOrEmptyObject(result.temporalModification);
     }
 
-    public hasDamage(result: ActionResult): boolean {
-        return !this.nullOrEmptyArray(result.instantDamage) ||
-            !this.nullOrEmptyArray(result.temporalDamage);
+    public hasEffect(result: ActionResult, unitUid: number): boolean {
+        return !this.nullOrEmptyArray(result.instantDamage && result.instantDamage[unitUid]) ||
+            !this.nullOrEmptyArray(result.instantRecovery && result.instantRecovery[unitUid]) ||
+            !this.nullOrEmptyArray(result.temporalDamage && result.temporalDamage[unitUid]) ||
+            !this.nullOrEmptyArray(result.temporalModification && result.temporalModification[unitUid]);
     }
 
-    protected hasCriticalMiss(result: ActionResult): boolean {
-        return !this.nullOrEmptyArray(result.instantDamage) && !!result.instantDamage!.find(d => d.isCriticalMiss) ||
-            !this.nullOrEmptyArray(result.temporalDamage) && !!result.temporalDamage!.find(d => d.isCriticalMiss);
+    public hasRecovery(result: ActionResult, unitUid: number): boolean {
+        return !this.nullOrEmptyArray(result.instantRecovery && result.instantRecovery[unitUid]) ||
+            !this.nullOrEmptyArray(result.temporalModification && result.temporalModification[unitUid]);
     }
 
-    public physicalInstantDamage(result: ActionResult): number {
-        return result.instantDamage ? result.instantDamage.reduce((acc, d) => acc +
-            (d.bleeding || 0) +
-            (d.cold || 0) +
-            (d.crushing || 0) +
-            (d.cutting || 0) +
-            (d.fire || 0) +
-            (d.lightning || 0) +
-            (d.poison || 0) +
-            (d.stabbing || 0)
-            , 0) : 0;
+    public hasDamage(result: ActionResult, unitUid: number): boolean {
+        return !this.nullOrEmptyArray(result.instantDamage && result.instantDamage[unitUid]) ||
+            !this.nullOrEmptyArray(result.temporalDamage && result.temporalDamage[unitUid]);
+    }
+
+    protected hasCriticalMiss(result: ActionResult, unitUid: number): boolean {
+        return !this.nullOrEmptyArray(result.instantDamage && result.instantDamage[unitUid]) && !!result.instantDamage![unitUid].find(d => d.isCriticalMiss) ||
+            !this.nullOrEmptyArray(result.temporalDamage && result.temporalDamage[unitUid]) && !!result.temporalDamage![unitUid].find(d => d.isCriticalMiss);
+    }
+
+    public physicalInstantDamage(result: ActionResult, unitUid: number): number {
+        return result.instantDamage && result.instantDamage[unitUid] ?
+            result.instantDamage[unitUid].reduce((acc, d) => acc +
+                (d.bleeding || 0) +
+                (d.cold || 0) +
+                (d.crushing || 0) +
+                (d.cutting || 0) +
+                (d.fire || 0) +
+                (d.lightning || 0) +
+                (d.poison || 0) +
+                (d.stabbing || 0)
+                , 0) : 0;
+    }
+
+    protected objectKeys(obj?: object): number[] {
+        return obj ? Object.keys(obj).map(v => Number(v)) : [];
+    }
+
+    protected nullOrEmptyObject(obj?: object): boolean {
+        return !obj || !Object.keys(obj).length;
     }
 
     protected nullOrEmptyArray(arr?: Array<any>): boolean {

@@ -340,10 +340,10 @@ export enum ActionResultType {
 }
 
 export interface ActionResult {
-    instantDamage?: Damage[];
-    temporalDamage?: DamageImpact[];
-    instantRecovery?: UnitRecovery[];
-    temporalModification?: UnitModificationImpact[];
+    instantDamage?: { [key: number]: Damage[] };
+    temporalDamage?: { [key: number]: DamageImpact[] };
+    instantRecovery?: { [key: number]: UnitRecovery[] };
+    temporalModification?: { [key: number]: UnitModificationImpact[] };
     experience?: { [key: number]: number };
     drop?: { [key: number]: UnitBooty };
     booty?: UnitBooty;
