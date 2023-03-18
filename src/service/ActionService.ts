@@ -12,10 +12,13 @@ export default class ActionService {
     }
 
     public targets(result: ActionResult): number[] {
-        return this.objectKeys(result.instantDamage)
-            .concat(this.objectKeys(result.instantRecovery))
-            .concat(this.objectKeys(result.temporalDamage))
-            .concat(this.objectKeys(result.temporalModification));
+        const s: Set<number> = new Set([
+            ...this.objectKeys(result.instantDamage),
+            ...this.objectKeys(result.instantRecovery),
+            ...this.objectKeys(result.temporalDamage),
+            ...this.objectKeys(result.temporalModification),
+        ]);
+        return Array.from(s);
     }
 
     public hasAnyEffect(result: ActionResult): boolean {
