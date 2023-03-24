@@ -86,11 +86,13 @@ export interface UnitModification {
 export interface DamageImpact extends Damage {
     duration?: number;
     chance?: number;
+    deviation?: number;
 }
 
 export interface UnitModificationImpact extends UnitModification {
     duration?: number;
     chance?: number;
+    deviation?: number;
 }
 
 export enum ItemType {
