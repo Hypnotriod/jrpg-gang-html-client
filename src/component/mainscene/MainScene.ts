@@ -25,7 +25,11 @@ export default class MainScene extends Component {
     }
 
     protected initialize(): void {
-        this.initializeComponents().then(() => this.login.tryToAutologin());
+        this.hide();
+        this.initializeComponents().then(() => {
+            this.login.tryToAutologin();
+            this.show();
+        });
     }
 
     protected async preloadResources(): Promise<void> {

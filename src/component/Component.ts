@@ -160,4 +160,10 @@ export default abstract class Component {
     public set height(value: number) {
         this.view.style.height = value + 'px';
     }
+
+    protected async delay(ms?: number): Promise<void> {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
+    }
 }
