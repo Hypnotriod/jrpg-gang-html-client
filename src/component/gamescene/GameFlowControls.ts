@@ -50,7 +50,7 @@ export default class GameFlowControls extends GameBase {
     }
 
     public update(): void {
-        this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber}`;
+        this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber} / ${this.state.gameState.state.spotsTotal}`;
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
         switch (gamePhase) {

@@ -255,6 +255,7 @@ export interface GameState {
     activeUnitsQueue: number[];
     inactiveUnits: number[];
     spotNumber: number;
+    spotsTotal: number;
 }
 
 export enum CellType {
