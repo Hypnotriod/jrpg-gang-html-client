@@ -104,6 +104,7 @@ export default class GameBattlefield extends GameBase {
                 this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION ||
                 this.state.gameState.phase === GamePhase.MAKE_ACTION_AI ||
                 this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION_AI)) {
+            this.currUnit = this.currUnit ? this.findUnitByUid(this.currUnit.uid!) : this.currUnit;
         } else {
             this.currUnit = this.currentUnit();
         }

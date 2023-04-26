@@ -150,7 +150,7 @@ export default class SpotCell extends Component {
 
     public choose(actionPoints: number): void {
         this.actionPointsLabel.value = String(actionPoints);
-        this.actionPointsLabel.show();
+        actionPoints ? this.actionPointsLabel.show() : this.actionPointsLabel.hide();
         this._iconCurrent.show();
     }
 
