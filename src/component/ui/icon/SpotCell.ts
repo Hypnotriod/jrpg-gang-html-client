@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -33,6 +33,8 @@ export default class SpotCell extends Component {
     protected readonly expLabel: Label;
     @component(LABEL_ID, Label)
     protected readonly idLabel: Label;
+    @component(LABEL_ACTION_POINTS, Label)
+    protected readonly actionPointsLabel: Label;
     @component(HEALTH_BAR, Container)
     protected readonly healthBar: Container;
     @component(STAMINA_BAR, Container)
@@ -131,6 +133,7 @@ export default class SpotCell extends Component {
         this.healthBar.hide();
         this.staminaBar.hide();
         this.manaBar.hide();
+        this.actionPointsLabel.hide();
         this._iconCurrent.hide();
     }
 
@@ -145,11 +148,14 @@ export default class SpotCell extends Component {
         this._unit = undefined;
     }
 
-    public choose(): void {
+    public choose(actionPoints: number): void {
+        this.actionPointsLabel.value = String(actionPoints);
+        this.actionPointsLabel.show();
         this._iconCurrent.show();
     }
 
     public unchoose(): void {
+        this.actionPointsLabel.hide();
         this._iconCurrent.hide();
     }
 

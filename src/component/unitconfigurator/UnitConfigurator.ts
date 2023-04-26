@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
@@ -59,6 +59,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly labelStamina: Label;
     @component(LABEL_MANA, Label)
     private readonly labelMana: Label;
+    @component(LABEL_ACTION_POINTS, Label)
+    private readonly labelActionPoints: Label;
     @component(LABEL_STRENGTH, Label)
     private readonly labelStrength: Label;
     @component(LABEL_PHYSIQUE, Label)
@@ -256,6 +258,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelHealth.value = `Health: ${battr.health || 0}`;
         this.labelStamina.value = `Stamina: ${battr.stamina || 0}`;
         this.labelMana.value = `Mana: ${battr.mana || 0}`;
+        this.labelActionPoints.value = `Action Points: ${battr.actionPoints || 0}`;
         this.labelStrength.value = `Strength: ${attr.strength || 0}`;
         this.labelPhysique.value = `Physique: ${attr.physique || 0}`;
         this.labelAgility.value = `Agility: ${attr.agility || 0}`;

@@ -54,6 +54,7 @@ export const LABEL_STAMINA: string = 'label_stamina';
 export const BUTTON_STAMINA: string = 'button_stamina';
 export const LABEL_MANA: string = 'label_mana';
 export const BUTTON_MANA: string = 'button_mana';
+export const LABEL_ACTION_POINTS: string = 'label_action_points';
 export const LABEL_STRENGTH: string = 'label_strength';
 export const BUTTON_STRENGTH: string = 'button_strength';
 export const LABEL_PHYSIQUE: string = 'label_physique';

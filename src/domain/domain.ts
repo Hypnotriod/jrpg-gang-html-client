@@ -26,6 +26,7 @@ export interface UnitState {
     health: number;
     stamina: number;
     mana: number;
+    actionPoints: number;
     stress: number;
     isStunned?: boolean;
 }
@@ -53,6 +54,7 @@ export interface UnitBaseAttributes {
     health: number;
     stamina: number;
     mana: number;
+    actionPoints: number;
 }
 
 export interface UnitAttributes {
