@@ -20,6 +20,7 @@ export default class Jobs extends Component implements ServerCommunicatorHandler
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
+        // @ts-ignore
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
         private readonly state: GameStateService) {
         super();

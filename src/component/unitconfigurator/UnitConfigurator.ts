@@ -91,7 +91,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     constructor(private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
+        // @ts-ignore
         @inject(delay(() => Lobby)) private readonly lobby: Lobby,
+        // @ts-ignore
         @inject(delay(() => Jobs)) private readonly jobs: Jobs) {
         super();
     }

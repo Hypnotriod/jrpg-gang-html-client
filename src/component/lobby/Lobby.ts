@@ -33,6 +33,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected readonly usersCountLabel: Label;
 
     constructor(private readonly communicator: ServerCommunicatorService,
+        // @ts-ignore
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
         private readonly state: GameStateService) {
         super();
