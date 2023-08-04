@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_RETREAT, BUTTON_SKIP, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_RETREAT, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -20,6 +20,8 @@ export default class GameFlowControls extends GameBase {
     private readonly dungeonStateLabel: Label;
     @component(BUTTON_NEXT_PHASE, Button)
     private readonly nextPhaseButton: Button;
+    @component(BUTTON_WAIT, Button)
+    private readonly waitButton: Button;
     @component(BUTTON_SKIP, Button)
     private readonly skipButton: Button;
     @component(BUTTON_RETREAT, Button)
@@ -42,6 +44,7 @@ export default class GameFlowControls extends GameBase {
 
     protected initialize(): void {
         this.nextPhaseButton.onClick = target => this.onNextPhase();
+        this.waitButton.onClick = target => this.onWait();
         this.retreatButton.onClick = target => this.onLeaveGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
@@ -76,10 +79,12 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.SCENARIO_COMPLETE:
                 this.updateNextPhaseButtonVisibility();
                 this.skipButton.hide();
+                this.waitButton.hide();
                 break;
             default:
                 this.nextPhaseButton.hide();
                 this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
+                this.isCurrentUnitTurn() && !this.currentUnit()?.state.waitingOrder ? this.waitButton.show() : this.waitButton.hide();
                 break;
         }
     }
@@ -126,6 +131,13 @@ export default class GameFlowControls extends GameBase {
         this.communicator.sendMessage(RequestType.NEXT_GAME_PHASE, {
             isReady: true,
         } as NextGamePhaseData);
+    }
+
+    protected onWait(): void {
+        this.communicator.sendMessage(RequestType.GAME_ACTION, {
+            uid: this.state.playerInfo.unitUid,
+            action: ActionType.WAIT,
+        } as ActionRequestData);
     }
 
     protected onSkipButtonClick(): void {

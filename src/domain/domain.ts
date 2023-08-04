@@ -29,6 +29,7 @@ export interface UnitState {
     actionPoints: number;
     stress: number;
     isStunned?: boolean;
+    waitingOrder?: number;
 }
 
 export interface Damage {
@@ -294,6 +295,7 @@ export enum ActionType {
     REPAIR = 'repair',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
+    WAIT = 'wait',
     LEVEL_UP = 'levelUp',
     SKILL_UP = 'skillUp',
 }

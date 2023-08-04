@@ -20,6 +20,7 @@ export const BUTTON_LEVEL_UP: string = 'button_level_up';
 export const BUTTON_CONFIGURATOR: string = 'button_configurator';
 export const BUTTON_START_GAME: string = 'button_start_game';
 export const BUTTON_NEXT_PHASE: string = 'button_next_phase';
+export const BUTTON_WAIT: string = 'button_wait';
 export const BUTTON_SKIP: string = 'button_skip';
 export const BUTTON_RETREAT: string = 'button_retreat';
 export const BUTTON_LEAVE: string = 'button_leave';
