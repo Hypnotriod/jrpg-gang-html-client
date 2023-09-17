@@ -260,7 +260,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelHealth.value = `Health: ${battr.health || 0}`;
         this.labelStamina.value = `Stamina: ${battr.stamina || 0}`;
         this.labelMana.value = `Mana: ${battr.mana || 0}`;
-        this.labelActionPoints.value = `Action Points: ${battr.actionPoints || 0}`;
+        this.labelActionPoints.value = `Action Points: ${battr.actionPoints + Math.floor(attr.initiative / 10) || 0}`;
         this.labelStrength.value = `Strength: ${attr.strength || 0}`;
         this.labelPhysique.value = `Physique: ${attr.physique || 0}`;
         this.labelAgility.value = `Agility: ${attr.agility || 0}`;
