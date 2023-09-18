@@ -25,6 +25,7 @@ export enum RequestType {
     QUIT_JOB = 'quitJob',
     COMPLETE_JOB = 'completeJob',
     JOBS_STATUS = 'jobsStatus',
+    SWITCH_UNIT = 'switchUnit',
 }
 
 export interface Request {
@@ -60,4 +61,8 @@ export interface NextGamePhaseData extends RequestData {
 
 export interface ApplyForAJobRequestData extends RequestData {
     code: string;
+}
+
+export interface SwitchUnitRequestData extends RequestData {
+    class: string;
 }

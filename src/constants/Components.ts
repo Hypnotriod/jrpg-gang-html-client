@@ -48,6 +48,7 @@ export const LABEL_DESCRIPTION: string = 'label_description';
 export const LABEL_REQUIREMENTS: string = 'label_requirements';
 export const LABEL_REWARD: string = 'label_reward';
 export const LABEL_TIME: string = 'label_time';
+export const LABEL_CLASS: string = 'label_class';
 
 export const LABEL_HEALTH: string = 'label_health';
 export const BUTTON_HEALTH: string = 'button_health';
@@ -71,6 +72,8 @@ export const BUTTON_INITIATIVE: string = 'button_initiative';
 export const LABEL_LUCK: string = 'label_luck';
 export const BUTTON_LUCK: string = 'button_luck';
 export const BUTTON_APPLY: string = 'button_apply';
+export const BUTTON_PREVIOUS: string = 'button_previous';
+export const BUTTON_NEXT: string = 'button_next';
 
 export const ICONS_CONTAINER: string = 'icons_container';
 export const UNIT_ITEMS_CONTAINER: string = 'unit_items_container';

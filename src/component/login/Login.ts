@@ -13,6 +13,7 @@ import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
+import { USER_CLASSES } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
@@ -43,10 +44,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.joinButton.onClick = target => this.onJoinClick();
         this.joinButton.disable();
 
-        this.icons.push(Icon.createIcon('tank', this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('barbarian', this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('mage', this, ICONS_CONTAINER)!);
-        this.icons.push(Icon.createIcon('rogue', this, ICONS_CONTAINER)!);
+        USER_CLASSES.forEach(clazz =>
+            this.icons.push(Icon.createIcon(clazz, this, ICONS_CONTAINER)!));
         this.icons.forEach(icon => {
             icon.onClick = target => this.onClassIconClick(target);
         });

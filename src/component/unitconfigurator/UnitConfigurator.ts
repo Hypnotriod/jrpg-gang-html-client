@@ -1,7 +1,7 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_PHYSIQUE, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus } from '../../domain/domain';
-import { ActionRequestData, RequestType } from '../../dto/requests';
+import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -17,6 +17,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
+import { USER_CLASSES } from '../../constants/Configuration';
 
 @singleton()
 @injectable()
@@ -53,6 +54,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly btnInitiative: Button;
     @component(BUTTON_LUCK, Button)
     private readonly btnLuck: Button;
+    @component(BUTTON_PREVIOUS, Button)
+    private readonly btnUnitPrevious: Button;
+    @component(BUTTON_NEXT, Button)
+    private readonly btnUnitNext: Button;
+    @component(LABEL_CLASS, Label)
+    private readonly labelClass: Label;
     @component(LABEL_HEALTH, Label)
     private readonly labelHealth: Label;
     @component(LABEL_STAMINA, Label)
@@ -123,6 +130,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.btnInitiative.onClick = target => this.skillUp(ActionProperty.INITIATIVE);
         this.btnLuck.onClick = target => this.skillUp(ActionProperty.LUCK);
         this.btnLevelUp.onClick = target => this.levelUp();
+        this.btnUnitPrevious.onClick = target => this.previousUnit();
+        this.btnUnitNext.onClick = target => this.nextUnit();
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
     }
@@ -196,6 +205,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.state.userState = data;
         this.unitIcon.icon = this.state.userState.playerInfo.class;
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
+        this.labelClass.value = this.state.userState.playerInfo.class;
         this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
         this.updateBooty();
         this.updateResistance();
@@ -378,6 +388,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             itemUid: target.data.uid!,
         } as ActionRequestData);
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected previousUnit(): void {
+        let n = (USER_CLASSES.indexOf(this.state.userState.playerInfo.class) + 1) % USER_CLASSES.length;
+        this.communicator.sendMessage(RequestType.SWITCH_UNIT, {
+            class: USER_CLASSES[n],
+        } as SwitchUnitRequestData);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+    }
+
+    protected nextUnit(): void {
+        let n = (USER_CLASSES.indexOf(this.state.userState.playerInfo.class) + USER_CLASSES.length - 1) % USER_CLASSES.length;
+        this.communicator.sendMessage(RequestType.SWITCH_UNIT, {
+            class: USER_CLASSES[n],
+        } as SwitchUnitRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }
