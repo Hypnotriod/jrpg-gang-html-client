@@ -166,4 +166,11 @@ export default abstract class Component {
             setTimeout(resolve, ms);
         });
     }
+
+    protected addHorizontalScroll(container: HTMLElement, scrollStep: number = 50): void {
+        container.addEventListener('wheel', function (e) {
+            container.scrollLeft += e.deltaY > 0 ? scrollStep : -scrollStep;
+            e.preventDefault();
+        });
+    }
 }

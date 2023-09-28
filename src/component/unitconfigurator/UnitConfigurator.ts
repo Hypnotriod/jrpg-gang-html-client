@@ -115,6 +115,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected initialize(): void {
         this.hide();
+        this.addHorizontalScroll(this.findChild(UNIT_ITEMS_CONTAINER)!, 78);
         this.itemDescription.hide();
         this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
         this.lobbyButton.onClick = target => this.goToLobby();

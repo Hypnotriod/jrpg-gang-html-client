@@ -54,6 +54,7 @@ body {
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
 }
 
 /* Track */
@@ -74,9 +75,15 @@ body {
     border-radius: 10px;
 }
 
+.scrollbar-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 .scrollbar-y {
     scrollbar-width: 2px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .unselected {
@@ -104,7 +111,12 @@ body {
     width: 80px;
 }
 
-.items-container {
+.items-container-x {
+    display: flex;
+    flex-direction: row;
+}
+
+.items-container-y {
     display: flex;
     flex-wrap: wrap;
 }

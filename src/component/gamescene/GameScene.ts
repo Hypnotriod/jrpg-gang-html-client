@@ -56,6 +56,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         super.initialize();
         this.hide();
         this.objectDescription.hide();
+        this.addHorizontalScroll(this.findChild(UNIT_ITEMS_CONTAINER)!, 78);
         this.unitItems.objectDescription = this.objectDescription;
         this.unitsQueue.objectDescription = this.objectDescription;
         this.battlefield.objectDescription = this.objectDescription;
