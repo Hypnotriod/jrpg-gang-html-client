@@ -74,6 +74,9 @@ export default class GameBase extends Component {
             const unit = this.findUnitByUid(Number(key));
             result.drop[this.getUnitName(unit)] = endRound.drop![key];
         });
+        if (endRound.achievements) {
+            result.achievements = endRound.achievements;
+        }
         return result;
     }
 
@@ -86,6 +89,9 @@ export default class GameBase extends Component {
         });
         if (spotComplete.booty) {
             result.booty = spotComplete.booty;
+        }
+        if (spotComplete.achievements) {
+            result.achievements = spotComplete.achievements;
         }
         return result;
     }
@@ -160,6 +166,9 @@ export default class GameBase extends Component {
                 const unit = this.findUnitByUid(Number(key));
                 result.result.drop[this.getUnitName(unit)] = drop[key];
             });
+        }
+        if (actionResult.achievements) {
+            result.result.achievements = actionResult.achievements;
         }
         if (targetUnit) {
             result.action.targetUid = undefined;

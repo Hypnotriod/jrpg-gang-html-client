@@ -219,6 +219,7 @@ export interface Unit {
     modification?: UnitModificationImpact[];
     inventory: UnitInventory;
     slots: Map<EquipmentSlot, number>;
+    achievements: Map<string, number>;
     position: Position;
 }
 
@@ -353,6 +354,7 @@ export interface ActionResult {
     temporalModification?: { [key: number]: UnitModificationImpact[] };
     experience?: { [key: number]: number };
     drop?: { [key: number]: UnitBooty };
+    achievements?: { [key: string]: number };
     booty?: UnitBooty;
     result: ActionResultType;
 }
@@ -367,11 +369,13 @@ export interface EndRoundResult {
     recovery?: { [key: number]: UnitRecovery };
     experience?: { [key: number]: number };
     drop?: { [key: number]: UnitBooty };
+    achievements?: { [key: string]: number };
 }
 
 export interface SpotCompleteResult {
     experience?: { [key: number]: number };
     booty?: UnitBooty;
+    achievements?: { [key: string]: number };
 }
 
 export interface GameEvent {

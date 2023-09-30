@@ -84,7 +84,10 @@ export default class GameFlowControls extends GameBase {
             default:
                 this.nextPhaseButton.hide();
                 this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
-                this.isCurrentUnitTurn() && !this.currentUnit()?.state.waitingOrder ? this.waitButton.show() : this.waitButton.hide();
+                this.isCurrentUnitTurn() &&
+                    !this.currentUnit()?.state.waitingOrder &&
+                    this.state.gameState.state.activeUnitsQueue.length > 1 ?
+                    this.waitButton.show() : this.waitButton.hide();
                 break;
         }
     }
