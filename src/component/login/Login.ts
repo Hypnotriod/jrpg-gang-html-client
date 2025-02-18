@@ -2,7 +2,7 @@ import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
-import { JoinRequestData, RequestType } from '../../dto/requests';
+import { JoinRequestData, RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
 import { KEY_IS_NEW_PLAYER, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import QueryService from '../../service/QueryService';
@@ -50,7 +50,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
             icon.onClick = target => this.onClassIconClick(target);
         });
         this.icons[0].select();
-        this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
     }
@@ -83,7 +82,26 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.isJoining = true;
         this.errorLabel.hide();
         this.updateJoinButtonState();
-        this.doJoin();
+        this.updatePlayerInfoAndJoin();
+    }
+
+    protected async updatePlayerInfoAndJoin(): Promise<void> {
+        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
+        const nickname: string = this.getNickname();
+        const clazz: string = this.getClass();
+        const response = await this.communicator.sendConfigurationMessage(RequestType.SET_PLAYER_INFO, {
+            token,
+            nickname,
+            class: clazz,
+        } as SetPlayerInfoRequestData);
+        if (response.status === ResponseStatus.ALREADY_EXISTS) {
+            this.errorLabel.show();
+            this.errorLabel.value = 'A user with this nickname already exists';
+            return;
+        }
+        if (response.status === ResponseStatus.OK) {
+            this.doJoin();
+        }
     }
 
     protected doJoin(): void {
@@ -96,18 +114,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             return;
         }
         const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
-        const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
-        if (token && isNewPlayer === VALUE_TRUE) {
-            const nickname: string = this.getNickname();
-            const clazz: string = this.getClass();
-            this.communicator.sendMessage(RequestType.JOIN, {
-                token,
-                nickname,
-                class: clazz,
-            } as JoinRequestData);
-            return;
-        }
-        if (token && isNewPlayer === VALUE_FALSE) {
+        if (token) {
             this.communicator.sendMessage(RequestType.JOIN, {
                 token,
             } as JoinRequestData);
@@ -119,11 +126,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         this.isJoining = false;
         this.updateJoinButtonState();
-        if (response.status === ResponseStatus.ALREADY_EXISTS) {
-            this.errorLabel.show();
-            this.errorLabel.value = 'A user with this nickname already exists';
-            return;
-        }
         if (response.status !== ResponseStatus.OK) {
             localStorage.clear();
             this.unsuccessJoinAttempts++;

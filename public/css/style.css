@@ -15,6 +15,10 @@ body {
     height: 100vh;
 }
 
+.hidden {
+    display: none;
+}
+
 .selection-icon {
     background-color: aliceblue;
     display: inline-block;

@@ -35,6 +35,16 @@ export default class ServerCommunicatorService {
         });
     }
 
+    public async sendConfigurationMessage(type: RequestType, data?: RequestData): Promise<Response> {
+        const id: string = this.generateRequestId();
+        const request: Request = { type, id, data };
+        const response = await fetch(this.appConfig.configurationUrl, {
+            method: 'POST',
+            body: JSON.stringify(request),
+        });
+        return await response.json() as Response;
+    }
+
     public sendMessage(type: RequestType, data?: RequestData): string {
         if (!this.ws) { this.prepareWs(); }
         const id: string = this.generateRequestId();

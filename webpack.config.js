@@ -21,6 +21,14 @@ module.exports = (env) => ({
                 test: /app-config\.json$/,
                 loader: 'string-replace-loader',
                 options: {
+                    search: '${CONFIGURATION_URL}',
+                    replace: env.configurationUrl,
+                }
+            },
+            {
+                test: /app-config\.json$/,
+                loader: 'string-replace-loader',
+                options: {
                     search: '${AUTH_URL}',
                     replace: env.authUrl,
                 }

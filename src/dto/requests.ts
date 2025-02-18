@@ -20,6 +20,7 @@ export enum RequestType {
     GAME_ACTION = 'gameAction',
     NEXT_GAME_PHASE = 'nextGamePhase',
     GAME_STATE = 'gameState',
+    SET_PLAYER_INFO = 'setPlayerInfo',
     PLAYER_INFO = 'playerInfo',
     APPLY_FOR_A_JOB = 'applyForAJob',
     QUIT_JOB = 'quitJob',
@@ -37,12 +38,17 @@ export interface Request {
 export interface RequestData {
 }
 
+export interface SetPlayerInfoRequestData extends RequestData {
+    token: string;
+    nickname: string;
+    class: string;
+}
+
 export interface JoinRequestData extends RequestData {
     token?: string;
-    nickname?: string;
     sessionId?: string;
-    class?: string;
 }
+
 export interface CreateRoomRequestData extends RequestData {
     capacity: number;
     scenarioId: string;
