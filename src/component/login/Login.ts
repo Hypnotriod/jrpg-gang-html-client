@@ -50,6 +50,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             icon.onClick = target => this.onClassIconClick(target);
         });
         this.icons[0].select();
+        this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
     }
@@ -144,8 +145,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public handleConnectionLost(): void {
-        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
-        token && this.show();
         setTimeout(() => this.tryToAutologin(), 500);
     }
 
