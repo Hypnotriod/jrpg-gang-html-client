@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../application/AppConfig';
-import { Request, RequestType, RequestData } from '../dto/requests';
+import { Request, RequestData, RequestType } from '../dto/requests';
 import { Response } from '../dto/responces';
 
 export interface ServerCommunicatorHandler {
@@ -45,8 +45,15 @@ export default class ServerCommunicatorService {
         return await response.json() as Response;
     }
 
+    public joinWithToken(token: string): void {
+        this.connectToWs(`?token=${token}`);
+    }
+
+    public joinWithSessionId(sessionId: string): void {
+        this.connectToWs(`?sessionId=${sessionId}`);
+    }
+
     public sendMessage(type: RequestType, data?: RequestData): string {
-        if (!this.ws) { this.prepareWs(); }
         const id: string = this.generateRequestId();
         const request: Request = { type, id, data };
         this.requestsQueue.push(request);
@@ -58,8 +65,8 @@ export default class ServerCommunicatorService {
         return !!this.ws && this.ws.readyState === WebSocket.OPEN;
     }
 
-    private prepareWs(): void {
-        this.ws = new WebSocket(this.appConfig.gameServerWsUrl);
+    private connectToWs(suffix: string): void {
+        this.ws = new WebSocket(this.appConfig.gameServerWsUrl + suffix);
         this.ws.onopen = (event: Event) => this.onOpen(event);
         this.ws.onclose = (event: Event) => this.onClose(event);
         this.ws.onmessage = (event: MessageEvent<string>) => this.onMessage(event);

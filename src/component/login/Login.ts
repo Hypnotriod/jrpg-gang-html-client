@@ -1,8 +1,9 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
+import { USER_CLASSES } from '../../constants/Configuration';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
-import { JoinRequestData, RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
+import { RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
 import { KEY_IS_NEW_PLAYER, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import QueryService from '../../service/QueryService';
@@ -13,7 +14,6 @@ import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
-import { USER_CLASSES } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
@@ -111,15 +111,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
         const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
         localStorage.removeItem(KEY_SESSION_ID);
         if (token) {
-            this.communicator.sendMessage(RequestType.JOIN, {
-                token,
-            } as JoinRequestData);
+            this.communicator.joinWithToken(token);
             return;
         }
         if (sessionId) {
-            this.communicator.sendMessage(RequestType.JOIN, {
-                sessionId: sessionId,
-            } as JoinRequestData);
+            this.communicator.joinWithSessionId(sessionId);
             return;
         }
         window.location.href = this.appConfig.authUrl;
