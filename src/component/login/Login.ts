@@ -97,6 +97,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
         if (response.status === ResponseStatus.ALREADY_EXISTS) {
             this.errorLabel.show();
             this.errorLabel.value = 'A user with this nickname already exists';
+            this.isJoining = false;
+            this.updateJoinButtonState();
             return;
         }
         if (response.status === ResponseStatus.OK) {
@@ -106,17 +108,17 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected doJoin(): void {
         const sessionId: string | undefined = localStorage.getItem(KEY_SESSION_ID) || undefined;
-        localStorage.removeItem(KEY_SESSION_ID);
-        if (sessionId) {
-            this.communicator.sendMessage(RequestType.JOIN, {
-                sessionId: sessionId,
-            } as JoinRequestData);
-            return;
-        }
         const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
+        localStorage.removeItem(KEY_SESSION_ID);
         if (token) {
             this.communicator.sendMessage(RequestType.JOIN, {
                 token,
+            } as JoinRequestData);
+            return;
+        }
+        if (sessionId) {
+            this.communicator.sendMessage(RequestType.JOIN, {
+                sessionId: sessionId,
             } as JoinRequestData);
             return;
         }
@@ -146,7 +148,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public handleConnectionLost(): void {
-        this.show();
+        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
+        token && this.show();
         setTimeout(() => this.tryToAutologin(), 500);
     }
 
