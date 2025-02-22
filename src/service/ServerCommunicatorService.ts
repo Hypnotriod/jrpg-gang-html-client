@@ -38,8 +38,11 @@ export default class ServerCommunicatorService {
     public async sendConfigurationMessage(type: RequestType, data?: RequestData): Promise<Response> {
         const id: string = this.generateRequestId();
         const request: Request = { type, id, data };
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
         const response = await fetch(this.appConfig.configurationUrl, {
             method: 'POST',
+            headers,
             body: JSON.stringify(request),
         });
         return await response.json() as Response;
