@@ -14,6 +14,7 @@ import Button from '../ui/button/Button';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
+import Auth from '../auth/Auth';
 
 @injectable()
 @singleton()
@@ -32,7 +33,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
         private readonly appConfig: AppConfig,
         private readonly communicator: ServerCommunicatorService,
         private readonly query: QueryService,
-        private readonly state: GameStateService) {
+        private readonly state: GameStateService,
+        private readonly auth: Auth) {
         super();
     }
 
@@ -119,7 +121,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
             this.communicator.joinWithSessionId(sessionId);
             return;
         }
-        window.location.href = this.appConfig.authUrl;
+        this.hide();
+        this.auth.show();
     }
 
     public handleServerResponse(response: Response): void {
@@ -129,7 +132,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
             localStorage.clear();
             this.unsuccessJoinAttempts++;
             if (this.query.parsedQuery[KEY_IS_NEW_PLAYER] === VALUE_FALSE) {
-                window.location.href = this.appConfig.authUrl;
+                this.hide();
+                this.auth.show();
             } else {
                 this.tryToAutologin();
             }

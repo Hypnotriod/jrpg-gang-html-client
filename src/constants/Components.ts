@@ -1,5 +1,6 @@
 export const MAIN_SCENE_CONTAINER: string = 'main_scene_container';
 export const LOGIN_CONTAINER: string = 'login_container';
+export const AUTH_CONTAINER: string = 'auth_container';
 export const LOBBY_CONTAINER: string = 'lobby_container';
 export const UNIT_CONFIGURATOR_CONTAINER: string = 'unit_configurator_container';
 export const GAME_CONTAINER: string = 'game_container';
@@ -9,6 +10,7 @@ export const JOBS_LIST_CONTAINER: string = 'jobs_list_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
 
+export const BUTTON_AUTH: string = 'button_auth';
 export const BUTTON_JOIN: string = 'button_join';
 export const BUTTON_JOIN_ROOM: string = 'button_join_room';
 export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';

@@ -5,6 +5,13 @@
     width: 100vw;
 }
 
+.auth-container {
+    z-index: 1;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+}
+
 .lobby-container {
     z-index: 1;
     position: relative;

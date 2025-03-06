@@ -1,0 +1,11 @@
+.auth-wrapper {
+    background-color: darkslateblue;
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
