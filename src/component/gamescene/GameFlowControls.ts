@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_RETREAT, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -24,7 +24,7 @@ export default class GameFlowControls extends GameBase {
     private readonly waitButton: Button;
     @component(BUTTON_SKIP, Button)
     private readonly skipButton: Button;
-    @component(BUTTON_RETREAT, Button)
+    @component(BUTTON_ABANDON, Button)
     private readonly retreatButton: Button;
     @component(BUTTON_LEAVE, Button)
     private readonly leaveButton: Button;

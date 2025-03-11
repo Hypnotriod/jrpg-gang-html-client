@@ -23,7 +23,7 @@ export default class GameBase extends Component {
     }
 
     protected currentActor(): GameUnit {
-        return this.findUnitByUid(this._state.playerInfo.unitUid!);
+        return this.findUnitByUid(this._state.playerInfo?.unitUid! || 0);
     }
 
     protected allActors(): GameUnit[] {
@@ -38,7 +38,7 @@ export default class GameBase extends Component {
 
     protected isCurrentUnitTurn(): boolean {
         const activeUnitUid = this._state.gameState.state.activeUnitsQueue[0];
-        return Boolean(this._state.playerInfo && this._state.playerInfo.unitUid === activeUnitUid);
+        return Boolean(this._state.playerInfo?.unitUid === activeUnitUid);
     }
 
     protected findUnitByUid(unitUid: number): GameUnit {
