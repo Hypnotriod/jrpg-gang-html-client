@@ -34,7 +34,7 @@ export default class Job extends Component {
     private readonly buttonComplete: Button;
     @component(BUTTON_QUIT_JOB, Button)
     private readonly buttonQuit: Button;
-    private countdownId: NodeJS.Timer;
+    private countdownId: NodeJS.Timeout;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
