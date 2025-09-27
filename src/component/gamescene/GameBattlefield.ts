@@ -100,9 +100,9 @@ export default class GameBattlefield extends GameBase {
         const corpses: GameUnit[] = this.state.gameState.spot.battlefield.corpses;
         const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
         if (this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE &&
-            (this.state.gameState.phase === GamePhase.MAKE_ACTION ||
+            (this.state.gameState.phase === GamePhase.TAKE_ACTION ||
                 this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION ||
-                this.state.gameState.phase === GamePhase.MAKE_ACTION_AI ||
+                this.state.gameState.phase === GamePhase.TAKE_ACTION_AI ||
                 this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION_AI)) {
             this.currUnit = this.currUnit ? this.findUnitByUid(this.currUnit.uid!) : this.currUnit;
         } else {

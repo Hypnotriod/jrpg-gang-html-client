@@ -71,7 +71,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.READY_FOR_START_ROUND:
             case GamePhase.PREPARE_UNIT:
             case GamePhase.MAKE_MOVE_OR_ACTION_AI:
-            case GamePhase.MAKE_ACTION_AI:
+            case GamePhase.TAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.BEFORE_SPOT_COMPLETE:
             case GamePhase.RETREAT_ACTION:
@@ -98,7 +98,7 @@ export default class GameFlowControls extends GameBase {
         switch (gamePhase) {
             case GamePhase.PREPARE_UNIT:
             case GamePhase.MAKE_MOVE_OR_ACTION:
-            case GamePhase.MAKE_ACTION:
+            case GamePhase.TAKE_ACTION:
             case GamePhase.SPOT_COMPLETE:
             case GamePhase.SCENARIO_COMPLETE:
                 let timeout: number = this.state.gameState.phaseTimeout || 0;
