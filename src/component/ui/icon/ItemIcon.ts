@@ -59,6 +59,8 @@ export default class ItemIcon extends Component {
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
+        this.iconCurrent?.hide();
+        this.actionPointsLabel?.hide();
     }
 
     protected onHover(): void {
@@ -120,9 +122,11 @@ export default class ItemIcon extends Component {
             this.quantityLabel.hide();
         }
         const actionPoints = (data as Weapon).useCost?.actionPoints ?? 0;
-        actionPoints ? this.iconCurrent.show() : this.iconCurrent.hide();
-        actionPoints ? this.actionPointsLabel.show() : this.actionPointsLabel.hide();
-        this.actionPointsLabel.value = `${actionPoints}`;
+        actionPoints ? this.iconCurrent?.show() : this.iconCurrent?.hide();
+        actionPoints ? this.actionPointsLabel?.show() : this.actionPointsLabel?.hide();
+        if (this.actionPointsLabel) {
+            this.actionPointsLabel.value = `${actionPoints}`;
+        }
     }
 
     public set quantity(value: number) {
