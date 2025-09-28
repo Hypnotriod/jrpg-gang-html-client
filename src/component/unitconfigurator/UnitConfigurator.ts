@@ -154,10 +154,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             case RequestType.JOIN:
             case RequestType.USER_STATUS:
                 this.updateUserStatus(response.data as UserStateData);
+                this.state.shopStatus && this.updateShopStatus(this.state.shopStatus);
                 break;
             case RequestType.SHOP_STATUS:
                 this.state.shopStatus = (response.data as ShopStatusData).shop;
-                this.updateShopStatus(response.data as ShopStatusData);
+                this.updateShopStatus(this.state.shopStatus);
                 break;
         }
     }
@@ -170,8 +171,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.hide();
     }
 
-    protected updateShopStatus(data: ShopStatusData): void {
-        this.updateShopInventoryIcons(data.shop.items);
+    protected updateShopStatus(data: GameShopStatus): void {
+        this.updateShopInventoryIcons(data.items);
     }
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
@@ -201,6 +202,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         this.shopItems.set(data.uid!, iconItem);
         iconItem.update(data);
+        this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
     }
 
     protected updateUserStatus(data: UserStateData): void {

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitRequirements } from '../domain/domain';
+import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitBooty, UnitRequirements } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -93,5 +93,9 @@ export default class GameStateService {
         return [...Object.keys(required)].every(k => required[k] <= unit.achievements[k]);
     }
 
-
+    public checkPrice(required: UnitBooty): boolean {
+        const unit = this.userState.unit;
+        return required.coins <= unit.booty.coins &&
+            (required.ruby ?? 0) <= (unit.booty.ruby ?? 0);
+    }
 }
