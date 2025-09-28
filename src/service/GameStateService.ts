@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo } from '../domain/domain';
+import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitRequirements } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -71,4 +71,27 @@ export default class GameStateService {
     public isUserHostOfRoom(roomInfo: RoomInfo): boolean {
         return roomInfo.host.nickname === this.userState.playerInfo.nickname;
     }
+
+    public checkRequirements(required?: UnitRequirements) {
+        if (!required) return true;
+        const unit = this.userState.unit;
+        return (!required.class || required.class === unit.class) &&
+            (required.level ?? 0) <= unit.stats.progress.level &&
+            this.checkAchievements(required.achievements) &&
+            required.strength <= unit.stats.attributes.strength &&
+            required.physique <= unit.stats.attributes.physique &&
+            required.agility <= unit.stats.attributes.agility &&
+            required.endurance <= unit.stats.attributes.endurance &&
+            required.intelligence <= unit.stats.attributes.intelligence &&
+            required.initiative <= unit.stats.attributes.initiative &&
+            required.luck <= unit.stats.attributes.luck
+    }
+
+    public checkAchievements(required?: { [key: string]: number }) {
+        const unit = this.userState.unit;
+        if (!required || !unit.achievements) return true;
+        return [...Object.keys(required)].every(k => required[k] <= unit.achievements[k]);
+    }
+
+
 }

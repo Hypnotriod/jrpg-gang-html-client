@@ -11,6 +11,6 @@
 }
 
 .jobs-list-container {
-    max-height: 430px;
+    max-height: 500px;
     overflow-y: auto;
 }

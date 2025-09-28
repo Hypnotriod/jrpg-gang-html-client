@@ -69,7 +69,9 @@ export interface UnitAttributes {
 }
 
 export interface UnitRequirements extends UnitAttributes {
+    level?: number;
     class?: string;
+    achievements?: { [key: string]: number };
 }
 
 export interface UnitResistance extends Damage {
@@ -225,8 +227,8 @@ export interface Unit {
     damage?: DamageImpact[];
     modification?: UnitModificationImpact[];
     inventory: UnitInventory;
-    slots: Map<EquipmentSlot, number>;
-    achievements: Map<string, number>;
+    slots: { [key: string]: number };
+    achievements: { [key: string]: number };
     position: Position;
 }
 
@@ -243,8 +245,8 @@ export interface GameUnit extends Unit {
 
 export interface GameShopStatus {
     items: UnitInventory;
-    purchase: Map<string, UnitBooty>;
-    repair: Map<string, UnitBooty>;
+    purchase: { [key: string]: UnitBooty };
+    repair: { [key: string]: UnitBooty };
 }
 
 export enum GamePhase {

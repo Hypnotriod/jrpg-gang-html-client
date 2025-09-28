@@ -65,7 +65,9 @@ export default class Jobs extends Component implements ServerCommunicatorHandler
     protected createJob(jobConfig: PlayerJob, employment: EmploymentStatus): Job {
         const job: Job = Job.createJob(this, JOBS_LIST_CONTAINER)!;
         job.update(jobConfig, employment);
-        job.enabled = !employment.isComplete && !employment.isInProgress;
+        job.enabled = !employment.isComplete &&
+            !employment.isInProgress &&
+            this.state.checkRequirements(jobConfig.requirements);
         return job;
     }
 
