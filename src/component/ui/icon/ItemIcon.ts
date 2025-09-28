@@ -43,6 +43,14 @@ export default class ItemIcon extends Component {
         return this._icon.icon;
     }
 
+    public override enable(): void {
+        this._icon.enable();
+    }
+
+    public override disable(): void {
+        this._icon.disable();
+    }
+
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();

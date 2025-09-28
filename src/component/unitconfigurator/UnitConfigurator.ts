@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -213,6 +213,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.updateResistance();
         this.updateProgress();
         this.updateUnitAttributes();
+        this.updateActiveItems();
     }
 
     protected updateBooty(): void {
@@ -332,6 +333,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         } else if (target.checked && target === this.checkboxRepair) {
             this.checkboxSell.checked = false;
         }
+        this.updateActiveItems();
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
@@ -342,6 +344,19 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         } else {
             this.euipUneuipItem(target);
         }
+    }
+
+    protected updateActiveItems(): void {
+        this.unitItems.forEach(item => {
+            if (this.checkboxSell.checked) {
+                item.data.canBeSold ? item.enable() : item.disable();
+            } else if (this.checkboxRepair.checked) {
+                (item.data as Equipment).wearout ? item.enable() : item.disable();
+            } else {
+                [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON]
+                    .some(t => t === item.data.type) ? item.enable() : item.disable();
+            }
+        })
     }
 
     protected euipUneuipItem(target: ItemIcon): void {

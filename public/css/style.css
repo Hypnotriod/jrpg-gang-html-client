@@ -32,6 +32,10 @@ body {
     border-radius: 3px;
 }
 
+.selection-icon:disabled {
+    background-color: gray;
+}
+
 .btn-plus {
     background-color: darkcyan;
     border-radius: 3px;

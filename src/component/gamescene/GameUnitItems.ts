@@ -38,14 +38,14 @@ export default class GameUnitItems extends GameBase {
         return [...this.unitItems.values()].find(i => i.choosed);
     }
 
-    public update(): void {
+    public update(activeTypes: ItemType[]): void {
         if (!this.state.playerInfo) { return; }
         const unit: GameUnit = this.currentActor();
         if (!unit) { return; }
-        this.updateUnitInventoryIcons(unit.inventory);
+        this.updateUnitInventoryIcons(unit.inventory, activeTypes);
     }
 
-    private updateUnitInventoryIcons(inventory: UnitInventory): void {
+    private updateUnitInventoryIcons(inventory: UnitInventory, activeTypes: ItemType[]): void {
         const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
@@ -54,7 +54,7 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.disposable || []),
             ...(inventory.provision || []),
         ];
-        inventoryItems.forEach(v => this.updateUnitItem(v));
+        inventoryItems.forEach(v => this.updateUnitItem(v, activeTypes));
         this.unitItems.forEach((icon, uid) => {
             if (!inventoryItems.find(i => i.uid === uid)) {
                 icon.destroy();
@@ -63,7 +63,7 @@ export default class GameUnitItems extends GameBase {
         });
     }
 
-    protected updateUnitItem(data: InventoryItem): void {
+    protected updateUnitItem(data: InventoryItem, activeTypes: ItemType[]): void {
         let iconItem = this.unitItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this)!;
@@ -72,6 +72,7 @@ export default class GameUnitItems extends GameBase {
         }
         this.unitItems.set(data.uid!, iconItem);
         iconItem.update(data);
+        activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
     }
 
     protected onUnitItemClick(target: ItemIcon): void {

@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { GameEvent, GamePhase, GameUnit } from '../../domain/domain';
+import { GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { RequestType } from '../../dto/requests';
 import { GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -99,7 +99,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected handleGameState(): void {
         this.updatePlayerInfoFromGameState(this.state.gameState);
-        this.unitItems.update();
+        this.unitItems.update(this.activeItemTypes(this.state.gameState.phase));
         this.battlefield.updateBattleField();
         this.unitsQueue.updateUnitsQueue();
         this.booty.update();
@@ -112,7 +112,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.destroy();
         }
         this.updatePlayerInfoFromGameState(this.state.gameState);
-        this.unitItems.update();
+        this.unitItems.update(this.activeItemTypes(this.state.gameState.nextPhase));
         this.unitsQueue.updateUnitsQueue();
         this.battlefield.updateBattleField();
         this.battlefield.updateActionTargets();
@@ -124,9 +124,22 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected handlePlayerInfo(): void {
-        this.unitItems.update();
+        this.unitItems.update(this.activeItemTypes(this.state.gameState.nextPhase));
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
+    }
+
+    protected activeItemTypes(phase: GamePhase): ItemType[] {
+        if (phase === GamePhase.PREPARE_UNIT) {
+            return [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON];
+        }
+        if (phase === GamePhase.TAKE_ACTION && this.isCurrentUnitTurn()) {
+            return [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON, ItemType.DISPOSABLE, ItemType.MAGIC];
+        }
+        if (phase === GamePhase.SPOT_COMPLETE) {
+            return [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON, ItemType.PROVISION];
+        }
+        return [];
     }
 
     protected handleUserStatus(status: UserStatus): void {

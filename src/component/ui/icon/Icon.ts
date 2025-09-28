@@ -95,15 +95,12 @@ export default class Icon extends Component {
 
     public disable(): void {
         this._enabled = false;
-        this.view.classList.remove('selected');
-        this.view.classList.remove('unselected');
         this.view.classList.add('red');
         this.view.classList.add('lighten-4');
     }
 
     public enable(): void {
         this._enabled = true;
-        this.unselect();
         this.view.classList.remove('red');
         this.view.classList.remove('lighten-4');
     }
