@@ -243,9 +243,7 @@ export interface GameShopStatus {
 export enum GamePhase {
     PREPARE_UNIT = 'prepareUnit',
     READY_FOR_START_ROUND = 'readyForStartRound',
-    MAKE_MOVE_OR_ACTION_AI = 'makeMoveOrActionAI',
     TAKE_ACTION_AI = 'takeActionAI',
-    MAKE_MOVE_OR_ACTION = 'makeMoveOrAction',
     TAKE_ACTION = 'takeAction',
     RETREAT_ACTION = 'retreatAction',
     ACTION_COMPLETE = 'actionComplete',

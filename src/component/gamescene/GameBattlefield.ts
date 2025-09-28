@@ -101,9 +101,7 @@ export default class GameBattlefield extends GameBase {
         const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
         if (this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE &&
             (this.state.gameState.phase === GamePhase.TAKE_ACTION ||
-                this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION ||
-                this.state.gameState.phase === GamePhase.TAKE_ACTION_AI ||
-                this.state.gameState.phase === GamePhase.MAKE_MOVE_OR_ACTION_AI)) {
+                this.state.gameState.phase === GamePhase.TAKE_ACTION_AI)) {
             this.currUnit = this.currUnit ? this.findUnitByUid(this.currUnit.uid!) : this.currUnit;
         } else {
             this.currUnit = this.currentUnit();
@@ -134,7 +132,7 @@ export default class GameBattlefield extends GameBase {
             this.placeUnit({ x: target.x, y: target.y });
         } else if (this.canDoAction() && target.unit) {
             this.useItem(target.unit.uid!);
-        } else if (this.state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION) {
+        } else if (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
             this.moveUnit({ x: target.x, y: target.y });
         }
     }

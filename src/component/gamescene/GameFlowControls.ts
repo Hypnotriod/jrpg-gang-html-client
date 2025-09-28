@@ -70,7 +70,6 @@ export default class GameFlowControls extends GameBase {
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
             case GamePhase.PREPARE_UNIT:
-            case GamePhase.MAKE_MOVE_OR_ACTION_AI:
             case GamePhase.TAKE_ACTION_AI:
             case GamePhase.ACTION_COMPLETE:
             case GamePhase.BEFORE_SPOT_COMPLETE:
@@ -97,7 +96,6 @@ export default class GameFlowControls extends GameBase {
         const gamePhase: string = this.state.gameState.nextPhase;
         switch (gamePhase) {
             case GamePhase.PREPARE_UNIT:
-            case GamePhase.MAKE_MOVE_OR_ACTION:
             case GamePhase.TAKE_ACTION:
             case GamePhase.SPOT_COMPLETE:
             case GamePhase.SCENARIO_COMPLETE:

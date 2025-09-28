@@ -18,8 +18,7 @@ export default class GameBase extends Component {
     }
 
     protected canDoAction(): boolean {
-        return this._state.gameState.nextPhase === GamePhase.MAKE_MOVE_OR_ACTION ||
-            this._state.gameState.nextPhase === GamePhase.TAKE_ACTION;
+        return this._state.gameState.nextPhase === GamePhase.TAKE_ACTION;
     }
 
     protected currentActor(): GameUnit {
