@@ -104,6 +104,7 @@ export enum ItemType {
     MAGIC = 'magic',
     DISPOSABLE = 'disposable',
     AMMUNITION = 'ammunition',
+    PROVISION = 'provision',
     NONE = 'none',
 }
 
@@ -177,7 +178,12 @@ export interface Ammunition extends Item {
     damage?: DamageImpact[];
 }
 
-export type InventoryItem = Weapon | Disposable | Ammunition | Magic | Armor;
+export interface Provision extends Item {
+    quantity?: number;
+    recovery: UnitRecovery;
+}
+
+export type InventoryItem = Weapon | Disposable | Ammunition | Provision | Magic | Armor;
 
 export interface UnitInventory {
     weapon?: Weapon[];
@@ -185,6 +191,7 @@ export interface UnitInventory {
     armor?: Armor[];
     disposable?: Disposable[];
     ammunition?: Ammunition[];
+    provision?: Provision[];
 }
 
 export interface Position {

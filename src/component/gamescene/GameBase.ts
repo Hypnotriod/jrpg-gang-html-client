@@ -14,7 +14,13 @@ export default class GameBase extends Component {
     }
 
     protected canDoUnitConfiguration(): boolean {
-        return this.canDoAction() || this._state.gameState.nextPhase === GamePhase.PREPARE_UNIT;
+        return this.canDoAction() ||
+            this._state.gameState.nextPhase === GamePhase.PREPARE_UNIT ||
+            this._state.gameState.nextPhase === GamePhase.SPOT_COMPLETE;
+    }
+
+    protected canUseItem(): boolean {
+        return this.canDoAction() || this._state.gameState.nextPhase === GamePhase.SPOT_COMPLETE;
     }
 
     protected canDoAction(): boolean {
@@ -183,6 +189,7 @@ export default class GameBase extends Component {
             ...(inventory.magic || []),
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
+            ...(inventory.provision || []),
         ];
         return inventoryItems.find(i => i.uid === uid);
     }

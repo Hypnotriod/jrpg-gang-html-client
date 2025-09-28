@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_HIT, ICON_MISSED, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -17,6 +17,16 @@ export default class SpotCell extends Component {
     protected readonly _icon: Icon;
     @component(ICON_STUNNED, Container)
     protected readonly _iconStunned: Container;
+    @component(ICON_BLEEDING, Container)
+    protected readonly _iconBleeding: Container;
+    @component(ICON_POISON, Container)
+    protected readonly _iconPoison: Container;
+    @component(ICON_COLD, Container)
+    protected readonly _iconCold: Container;
+    @component(ICON_FIRE, Container)
+    protected readonly _iconFire: Container;
+    @component(ICON_LIGHTING, Container)
+    protected readonly _iconLighting: Container;
     @component(ICON_CURRENT, Container)
     protected readonly _iconCurrent: Container;
     @component(ICON_EFFECT, Container)
@@ -123,6 +133,11 @@ export default class SpotCell extends Component {
 
     protected hideAll(): void {
         this._iconStunned.hide();
+        this._iconBleeding.hide();
+        this._iconPoison.hide();
+        this._iconCold.hide();
+        this._iconFire.hide();
+        this._iconLighting.hide();
         this._iconEffect.hide();
         this._iconHit.hide();
         this._iconMissed.hide();
@@ -165,6 +180,11 @@ export default class SpotCell extends Component {
         this.idLabel.value = String(unit.uid);
         this._unit = unit;
         this._unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
+        this._unit.damage?.find(m => m.bleeding) ? this._iconBleeding.show() : this._iconBleeding.hide();
+        this._unit.damage?.find(m => m.poison) ? this._iconPoison.show() : this._iconPoison.hide();
+        this._unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
+        this._unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
+        this._unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
         if (this._unit.faction === GameUnitFaction.ENEMY) {
             this._icon.enable();

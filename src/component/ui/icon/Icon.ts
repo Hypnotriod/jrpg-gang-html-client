@@ -12,13 +12,13 @@ export default class Icon extends Component {
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
             if (!this._enabled) { return; }
-            this.onClickCallback && this.onClickCallback(this);
+            this.onClickCallback?.(this);
         };
         this.view.onmouseover = (event: MouseEvent) => {
-            this.onHoverCallback && this.onHoverCallback(this);
+            this.onHoverCallback?.(this);
         };
         this.view.onmouseleave = (event: MouseEvent) => {
-            this.onLeaveCallback && this.onLeaveCallback(this);
+            this.onLeaveCallback?.(this);
         };
         this.view.classList.add('unselected');
     }

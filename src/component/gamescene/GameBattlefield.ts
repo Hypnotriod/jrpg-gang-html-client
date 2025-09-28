@@ -130,7 +130,7 @@ export default class GameBattlefield extends GameBase {
     protected onSpotCellClick(target: SpotCell): void {
         if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
-        } else if (this.canDoAction() && target.unit) {
+        } else if (this.canUseItem() && target.unit) {
             this.useItem(target.unit.uid!);
         } else if (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
             this.moveUnit({ x: target.x, y: target.y });

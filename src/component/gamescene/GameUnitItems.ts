@@ -52,6 +52,7 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.magic || []),
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
+            ...(inventory.provision || []),
         ];
         inventoryItems.forEach(v => this.updateUnitItem(v));
         this.unitItems.forEach((icon, uid) => {
@@ -74,14 +75,21 @@ export default class GameUnitItems extends GameBase {
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
-        if (target.data.type === ItemType.WEAPON || target.data.type === ItemType.DISPOSABLE || target.data.type === ItemType.MAGIC) {
+        if (target.data.type === ItemType.WEAPON ||
+            target.data.type === ItemType.DISPOSABLE ||
+            target.data.type === ItemType.PROVISION ||
+            target.data.type === ItemType.MAGIC
+        ) {
             const wansntChoosed = !target.choosed && target.selected;
             this.unitItems.forEach(i => i.unchoose());
             target.choose();
             if (wansntChoosed) { return; }
         }
         if (!this.canDoUnitConfiguration()) { return; }
-        if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE || target.data.type === ItemType.MAGIC) {
+        if (target.data.type === ItemType.NONE ||
+            target.data.type === ItemType.DISPOSABLE ||
+            target.data.type === ItemType.PROVISION ||
+            target.data.type === ItemType.MAGIC) {
             return;
         }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {

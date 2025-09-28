@@ -94,6 +94,11 @@ export const GAME_LOG: string = 'game_log';
 
 export const ICON: string = 'icon';
 export const ICON_STUNNED: string = 'icon_stunned';
+export const ICON_BLEEDING: string = 'icon_bleeding';
+export const ICON_POISON: string = 'icon_poison';
+export const ICON_COLD: string = 'icon_cold';
+export const ICON_LIGHTING: string = 'icon_lighting';
+export const ICON_FIRE: string = 'icon_fire';
 export const ICON_CURRENT: string = 'icon_current';
 export const ICON_EFFECT: string = 'icon_effect';
 export const ICON_HIT: string = 'icon_hit';

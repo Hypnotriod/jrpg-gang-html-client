@@ -181,6 +181,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             ...(inventory.magic || []),
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
+            ...(inventory.provision || []),
         ];
         inventoryItems.forEach(v => this.updateShopItem(v));
         this.shopItems.forEach((icon, uid) => {
@@ -297,6 +298,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             ...(inventory.magic || []),
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
+            ...(inventory.provision || []),
         ];
         inventoryItems.forEach(v => this.updateUnitItem(v));
         this.unitItems.forEach((icon, uid) => {
