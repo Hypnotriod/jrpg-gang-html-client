@@ -1,13 +1,14 @@
 import { container } from 'tsyringe';
-import { ICON, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
+import { ICON, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Equipment, InventoryItem } from '../../../domain/domain';
+import { Ammunition, Equipment, InventoryItem, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
 import Label from '../label/Label';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
+import Container from '../container/Container';
 
 export default class ItemIcon extends Component {
     @component(ICON, Icon)
@@ -16,6 +17,10 @@ export default class ItemIcon extends Component {
     protected readonly nameLabel: Label;
     @component(LABEL_QUANTITY, Label)
     protected readonly quantityLabel: Label | null;
+    @component(ICON_CURRENT, Container)
+    protected readonly iconCurrent: Container;
+    @component(LABEL_ACTION_POINTS, Label)
+    protected readonly actionPointsLabel: Label;
 
     private _data: InventoryItem;
     private _descriptionPopup: ObjectDescription;
@@ -114,6 +119,10 @@ export default class ItemIcon extends Component {
         } else {
             this.quantityLabel.hide();
         }
+        const actionPoints = (data as Weapon).useCost?.actionPoints ?? 0;
+        actionPoints ? this.iconCurrent.show() : this.iconCurrent.hide();
+        actionPoints ? this.actionPointsLabel.show() : this.actionPointsLabel.hide();
+        this.actionPointsLabel.value = `${actionPoints}`;
     }
 
     public set quantity(value: number) {

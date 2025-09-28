@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -20,6 +20,8 @@ export default class GameFlowControls extends GameBase {
     private readonly dungeonStateLabel: Label;
     @component(BUTTON_NEXT_PHASE, Button)
     private readonly nextPhaseButton: Button;
+    @component(BUTTON_NEXT_BATTLE, Button)
+    private readonly nextBattleButton: Button;
     @component(BUTTON_WAIT, Button)
     private readonly waitButton: Button;
     @component(BUTTON_SKIP, Button)
@@ -44,6 +46,7 @@ export default class GameFlowControls extends GameBase {
 
     protected initialize(): void {
         this.nextPhaseButton.onClick = target => this.onNextPhase();
+        this.nextBattleButton.onClick = target => this.onNextPhase();
         this.waitButton.onClick = target => this.onWait();
         this.retreatButton.onClick = target => this.onLeaveGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
@@ -82,6 +85,7 @@ export default class GameFlowControls extends GameBase {
                 break;
             default:
                 this.nextPhaseButton.hide();
+                this.nextBattleButton.hide();
                 this.isCurrentUnitTurn() ? this.skipButton.show() : this.skipButton.hide();
                 this.isCurrentUnitTurn() &&
                     !this.currentUnit()?.state.waitingOrder &&
@@ -116,7 +120,11 @@ export default class GameFlowControls extends GameBase {
     protected updateNextPhaseButtonVisibility(): void {
         const allDead: boolean = this.allActors().every(actor => actor.isDead);
         const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
-        !allDead && playerInfo && !playerInfo.isReady ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
+        const battleComplete = this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE;
+        const scenarioComplete = this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE;
+        const show = !allDead && playerInfo && !playerInfo.isReady && !scenarioComplete;
+        show && !battleComplete ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
+        show && battleComplete ? this.nextBattleButton.show() : this.nextBattleButton.hide();
     }
 
     public timeoutAutoNextPhase(): void {
@@ -169,7 +177,7 @@ export default class GameFlowControls extends GameBase {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
         const unit: GameUnit = this.currentActor();
         if (!unit || this.autoNextPhaseInProgress) { return false; }
-        if (!this.autoCheckbox.checked || !this.nextPhaseButton.visible ||
+        if (!this.autoCheckbox.checked || (!this.nextPhaseButton.visible && !this.nextBattleButton.visible) ||
             (this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
                 this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
                 this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
