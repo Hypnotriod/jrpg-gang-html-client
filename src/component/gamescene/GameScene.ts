@@ -125,6 +125,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected handlePlayerInfo(): void {
         this.unitItems.update(this.activeItemTypes(this.state.gameState.nextPhase));
+        this.battlefield.updateBattleField();
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
     }

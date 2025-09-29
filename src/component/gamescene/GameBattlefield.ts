@@ -109,9 +109,10 @@ export default class GameBattlefield extends GameBase {
         corpses && corpses.forEach(corpse => {
             this.spots[corpse.position.x][corpse.position.y].updateWithCorpse(corpse);
         });
+        const isActive = this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT;
         units.forEach(unit => {
             const spot: SpotCell = this.spots[unit.position.x][unit.position.y];
-            spot.updateWithUnit(unit);
+            spot.updateWithUnit(unit, isActive);
             if (this.currUnit && this.currUnit.uid === unit.uid && this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT) {
                 spot.choose(this.currUnit.state.actionPoints);
             }
@@ -120,9 +121,11 @@ export default class GameBattlefield extends GameBase {
 
     protected updateBattlefieldCells(): void {
         const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
+        const isActive = (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION && this.isCurrentUnitTurn() ||
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT);
         for (const x in matrix) {
             for (const y in matrix[x]) {
-                this.spots[x][y].updateWithCell(matrix[x][y]);
+                this.spots[x][y].updateWithCell(matrix[x][y], isActive);
             }
         }
     }

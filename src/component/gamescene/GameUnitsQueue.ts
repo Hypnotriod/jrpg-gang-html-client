@@ -30,7 +30,7 @@ export default class GameUnitsQueue extends GameBase {
 
     protected updateUnitInQueue(data: GameUnit): void {
         const cell: SpotCell = SpotCell.createSpotCell(this, this.view)!;
-        cell.updateWithUnit(data);
+        cell.updateWithUnit(data, true);
         cell.descriptionPopup = this._objectDescription;
     }
 
