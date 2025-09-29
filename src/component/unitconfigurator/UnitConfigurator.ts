@@ -135,6 +135,30 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.btnUnitNext.onClick = target => this.nextUnit();
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
+
+        this.labelHealth.descriptionPopup = this.itemDescription;
+        this.labelStamina.descriptionPopup = this.itemDescription;
+        this.labelMana.descriptionPopup = this.itemDescription;
+        this.labelActionPoints.descriptionPopup = this.itemDescription;
+        this.labelStrength.descriptionPopup = this.itemDescription;
+        this.labelPhysique.descriptionPopup = this.itemDescription;
+        this.labelAgility.descriptionPopup = this.itemDescription;
+        this.labelEndurance.descriptionPopup = this.itemDescription;
+        this.labelIntelligence.descriptionPopup = this.itemDescription;
+        this.labelInitiative.descriptionPopup = this.itemDescription;
+        this.labelLuck.descriptionPopup = this.itemDescription;
+
+        this.labelHealth.description = { Health: 'The hit points a unit can take before dying' };
+        this.labelStamina.description = { Stamina: 'A weapon may require stamina points to perform an action' };
+        this.labelMana.description = { Mana: 'A weapon or spell may require mana points to perform an action' };
+        this.labelActionPoints.description = { ActionPoints: 'A weapon, spell, or disposable item may require action points to perform an action' };
+        this.labelStrength.description = { Strength: 'Enhances stabbing, cutting, crushing, and bleeding damage' };
+        this.labelPhysique.description = { Physique: 'Affects stun chance. For every 10 points, adds 1 point to all physical resistances' };
+        this.labelAgility.description = { Agility: 'Affects attack/dodge chance' };
+        this.labelEndurance.description = { Endurance: 'Affects stamina recovery' };
+        this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
+        this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
+        this.labelLuck.description = { Luck: 'Affects critical chance' };
     }
 
     protected goToLobby(): void {
