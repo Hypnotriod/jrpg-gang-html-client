@@ -137,7 +137,7 @@ body {
 .item-description-popup {
     pointer-events: none;
     position: fixed;
-    background-color: slategray;
+    background-color: rgb(95, 109, 123);
     z-index: 100;
     min-height: 40px;
     padding: 10px;

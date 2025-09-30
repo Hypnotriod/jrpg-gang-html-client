@@ -25,6 +25,6 @@ export default class ObjectDescription extends TextField {
     }
 
     public set data(data: object) {
-        this.value = this.renderer.render(data, '');
+        this.value = this.renderer.renderMain(data) + this.renderer.render(data, '');
     }
 }

@@ -28,11 +28,15 @@ export default class GameBase extends Component {
     }
 
     protected currentActor(): GameUnit {
-        return this.findUnitByUid(this._state.playerInfo?.unitUid! || 0);
+        return this.findUnitByUid(this._state.playerInfo?.unitUid ?? 0);
     }
 
     protected allActors(): GameUnit[] {
-        return this._state.gameState.spot.battlefield.units?.filter(unit => Boolean(unit.playerInfo));
+        return this._state.gameState.spot.battlefield.units?.filter(unit => Boolean(unit.playerInfo)) ?? [];
+    }
+
+    protected allEnemyIsDefeated(): boolean {
+        return (this._state.gameState.spot.battlefield.units ?? []).length === this.allActors().length;
     }
 
     protected currentUnit(): GameUnit | null {
