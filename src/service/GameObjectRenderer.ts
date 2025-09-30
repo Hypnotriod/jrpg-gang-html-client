@@ -16,6 +16,7 @@ export default class GameObjectRenderer {
             result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${data.stats.baseAttributes.mana}`);
             result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${data.stats.baseAttributes.actionPoints}`);
             result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
+            result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
         }
         return result;
     }
