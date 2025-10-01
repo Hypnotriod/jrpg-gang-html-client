@@ -1,13 +1,8 @@
 <div class="game-wrapper">
     <div class="row" style="min-height: 150px;">
         <div id="flow_controls_container" class="col s5 center-align">
-            <span id="label_game_status" class="white-text text-center left"></span>
-            <label>
-                <input id="checkbox_auto" type="checkbox" />
-                <span>Auto</span>
-            </label>
             <div class="row">
-                <div class="col s4">
+                <div class="col s4" style="margin-top: 0;">
                     <button id="button_abandon" class="btn-small red">Abandon</button>
                     <button id="button_leave" class="btn-small">I'm Done</button>
                 </div>
@@ -19,8 +14,11 @@
                 </div>
             </div>
             <div id="booty_container" class="items-container-y" style="margin-top: -25px;"></div>
-            <div class="col s7 left-align" style="width: auto;">
-                <span ID="label_dungeon_state" class="white-text">Dungeon Level: 7</span>
+            <div class="col s6 left-align" style="padding: 0; margin-top: 14px;">
+                <span id="label_dungeon_state" class="white-text grey darken-2">Dungeon Level: 7</span><br>
+            </div>
+            <div class="col s6 left-align" style="padding: 0; margin-top: 14px;">
+                <span id="label_game_status" class="white-text green darken-2"></span>
             </div>
         </div>
         <div class="col s7">

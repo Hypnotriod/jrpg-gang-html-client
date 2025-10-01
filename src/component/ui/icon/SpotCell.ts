@@ -174,7 +174,7 @@ export default class SpotCell extends Component {
         this._iconCurrent.hide();
     }
 
-    public updateWithUnit(unit: GameUnit, isActive: boolean): void {
+    public updateWithUnit(unit: GameUnit, isActive: boolean, forceDisable: boolean = false): void {
         this.hideAll();
         this.idLabel.show();
         this.idLabel.value = String(unit.uid);
@@ -188,6 +188,8 @@ export default class SpotCell extends Component {
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
         if ((this._unit.faction === GameUnitFaction.ENEMY || this._unit.faction === GameUnitFaction.PARTY) && isActive) {
             this._icon.enable();
+        } else if (forceDisable) {
+            this._icon.disable();
         }
         this.healthBar.show();
         this.staminaBar.show();

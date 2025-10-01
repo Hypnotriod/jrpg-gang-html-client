@@ -30,8 +30,6 @@ export default class GameFlowControls extends GameBase {
     private readonly retreatButton: Button;
     @component(BUTTON_LEAVE, Button)
     private readonly leaveButton: Button;
-    @component(CHECKBOX_AUTO, Checkbox)
-    private readonly autoCheckbox: Checkbox;
 
     private nextPhaseTimeoutId: NodeJS.Timeout;
     private nextPhaseLabelTimeoutId: NodeJS.Timeout;
@@ -51,8 +49,6 @@ export default class GameFlowControls extends GameBase {
         this.retreatButton.onClick = target => this.onLeaveGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
-        this.autoCheckbox.onChange = target => this.timeoutAutoNextPhase();
-        this.autoCheckbox.checked = true;
     }
 
     public update(): void {
@@ -122,7 +118,10 @@ export default class GameFlowControls extends GameBase {
         const playerInfo: PlayerInfo | undefined = this.state.playerInfo;
         const battleComplete = this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE;
         const scenarioComplete = this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE;
-        const show = !allDead && playerInfo && !playerInfo.isReady && !scenarioComplete;
+        const show = !allDead && playerInfo && !playerInfo.isReady && !scenarioComplete &&
+            (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT ||
+                this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
+                this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE);
         show && !battleComplete ? this.nextPhaseButton.show() : this.nextPhaseButton.hide();
         show && battleComplete ? this.nextBattleButton.show() : this.nextBattleButton.hide();
     }
@@ -177,10 +176,9 @@ export default class GameFlowControls extends GameBase {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
         const unit: GameUnit = this.currentActor();
         if (!unit || this.autoNextPhaseInProgress) { return false; }
-        if (!this.autoCheckbox.checked || (!this.nextPhaseButton.visible && !this.nextBattleButton.visible) ||
-            (this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
-                this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
-                this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
+        if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
             return false;
         }
         return true;
