@@ -25,6 +25,7 @@ export default class ObjectDescription extends TextField {
     }
 
     public set data(data: object) {
-        this.value = this.renderer.renderMain(data) + this.renderer.render(data, '');
+        const ignoreHeaders: string[] = [];
+        this.value = this.renderer.renderMain(data, ignoreHeaders) + this.renderer.render(data, ignoreHeaders);
     }
 }

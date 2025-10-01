@@ -1,11 +1,10 @@
 import { injectable, singleton } from 'tsyringe';
 import { Unit } from '../domain/domain';
-import { Key } from 'ts-key-enum';
 
 @injectable()
 @singleton()
 export default class GameObjectRenderer {
-    public renderMain(data: any): string {
+    public renderMain(data: any, ignoreHeaders: string[] = []): string {
         let result = '';
         if (data.name) {
             result += `<span class="purple lighten-1">${data.name}</span><br>`;
@@ -17,6 +16,7 @@ export default class GameObjectRenderer {
             result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${data.stats.baseAttributes.actionPoints}`);
             result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
             result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
+            ignoreHeaders.push('baseAttributes', 'state');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -31,14 +31,14 @@ export default class GameObjectRenderer {
         return result;
     }
 
-    public render(data: Object, key: string = '', deep: number = 0, header: string = ''): string {
+    public render(data: Object, ignoreHeaders: string[] = [], key: string = '', depth: number = 0, header: string = ''): string {
         if (key === 'uid' || key === 'code') { return ''; }
         if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
-            return this.valueNotZeroOrEmpty(header, key, data as (string | number | boolean));
+            return this.valueNotZeroOrEmpty(ignoreHeaders, header, key, data as (string | number | boolean));
         } else if (data instanceof Array) {
-            return this.renderObjects(data, key, deep);
+            return this.renderObjects(data, ignoreHeaders, key, depth);
         } else {
-            return this.renderObject(data, key, deep);
+            return this.renderObject(data, ignoreHeaders, key, depth);
         }
     }
 
@@ -46,21 +46,21 @@ export default class GameObjectRenderer {
         return Boolean(data.state && data.stats);
     }
 
-    protected renderObjects(data: Object[], header: string, deep: number): string {
-        if (!data || !data.length || this.ignoreKey(header)) { return ''; }
-        const result = data.reduce((acc, d, i) => acc + this.renderObject(d, `${header} #${i + 1}`, deep), '');
+    protected renderObjects(data: Object[], ignoreHeaders: string[], header: string, depth: number): string {
+        if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
+        const result = data.reduce((acc, d, i) => acc + this.renderObject(d, ignoreHeaders, `${header} #${i + 1}`, depth), '');
         return result.toString();
     }
 
-    protected renderObject(data: Object, header: string, deep: number): string {
-        if (!data || this.emptyOrAllFieldsZeros(header, data) || this.ignoreKey(header)) { return ''; }
-        return this.header(header, deep) + Object.keys(data)
-            .reduce((acc, key) => acc + this.render(data[key], key, deep + 1, header), '');
+    protected renderObject(data: Object, ignoreHeaders: string[], header: string, depth: number): string {
+        if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
+        return this.header(header, depth) + Object.keys(data)
+            .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
     }
 
-    public header(value: string, deep: number): string {
+    public header(value: string, depth: number): string {
         value = this.capitalize(value);
-        switch (deep) {
+        switch (depth) {
             case 0:
                 return '';
             case 1:
@@ -71,8 +71,8 @@ export default class GameObjectRenderer {
         }
     }
 
-    protected valueNotZeroOrEmpty(header: string, key: string, value: number | string | boolean | undefined): string {
-        return (value || this.isZeroValueKey(header, key)) && !this.ignoreKey(header, key) ? this.keyValue(key, value) : '';
+    protected valueNotZeroOrEmpty(ignoreHeaders: string[], header: string, key: string, value: number | string | boolean | undefined): string {
+        return (value || this.isZeroValueKey(header, key)) && !this.ignoreKey(ignoreHeaders, header, key) ? this.keyValue(key, value) : '';
     }
 
     protected keyValue(key: string, value: number | string | boolean | undefined): string {
@@ -86,9 +86,9 @@ export default class GameObjectRenderer {
         <span class="${colorClass} lighten-1">${value}</span><br>`;
     }
 
-    protected emptyOrAllFieldsZeros(header: string, data: Object): boolean {
+    protected emptyOrAllFieldsZeros(ignoreHeaders: string[], header: string, data: Object): boolean {
         return !data || Object.keys(data).every(key => !data[key] &&
-            !this.isZeroValueKey(header, key) && !this.ignoreKey(header, key));
+            !this.isZeroValueKey(header, key) && !this.ignoreKey(ignoreHeaders, header, key));
     }
 
     protected isZeroValueKey(header: string, key: string): boolean {
@@ -100,12 +100,8 @@ export default class GameObjectRenderer {
         return false;
     }
 
-    protected ignoreKey(header: string, key?: string): boolean {
-        switch (header) {
-            case 'state':
-            case 'baseAttributes':
-                return true;
-        }
+    protected ignoreKey(ignoreHeaders: string[], header: string, key?: string): boolean {
+        if (ignoreHeaders.includes(header)) return true;
         switch (key) {
             case 'name':
             case 'unitUid':
