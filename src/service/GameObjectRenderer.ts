@@ -18,6 +18,16 @@ export default class GameObjectRenderer {
             result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
             result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
         }
+        if (data.type) {
+            result += this.keyValueColor('type', 'blue', data.type);
+        }
+        if (data.slot) {
+            result += this.keyValueColor('slot', 'orange', data.slot);
+        }
+        if (data.wearout || data.durability) {
+            result += this.keyValueColor('wearout', 'blue-grey', `${data.wearout ?? 0} / ${data.durability}`);
+        }
+
         return result;
     }
 
@@ -82,6 +92,10 @@ export default class GameObjectRenderer {
     }
 
     protected isZeroValueKey(header: string, key: string): boolean {
+        switch (header) {
+            case 'attributes':
+                return true;
+        }
         switch (key) {
             case 'x':
             case 'y':
@@ -99,6 +113,10 @@ export default class GameObjectRenderer {
         switch (key) {
             case 'name':
             case 'unitUid':
+            case 'wearout':
+            case 'durability':
+            case 'type':
+            case 'slot':
                 return true;
         }
         return false;
