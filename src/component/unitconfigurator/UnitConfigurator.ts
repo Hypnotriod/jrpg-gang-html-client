@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -18,6 +18,7 @@ import ShopItemIcon from '../ui/icon/ShopItemIcon';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { USER_CLASSES } from '../../constants/Configuration';
+import GameObjectRenderer from '../../service/GameObjectRenderer';
 
 @singleton()
 @injectable()
@@ -96,8 +97,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
 
-    constructor(private readonly communicator: ServerCommunicatorService,
+    constructor(
+        private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
+        private readonly renderer: GameObjectRenderer,
         // @ts-ignore
         @inject(delay(() => Lobby)) private readonly lobby: Lobby,
         // @ts-ignore
@@ -244,37 +247,37 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateBooty(): void {
         const bt: UnitBooty = this.state.userState.unit.booty;
-        this.unitBooty.value = `Coins: ${bt.coins}<br>
-                                Ruby: ${bt.ruby || 0}<br>
+        this.unitBooty.value = `${this.keyValue('Coins', bt.coins)}<br>
+                                ${this.keyValue('Ruby', bt.ruby || 0)}<br>
                                `;
 
     }
 
     protected updateResistance(): void {
         const res: UnitResistance = this.state.userState.unit.stats.resistance;
-        this.unitResistance.value = `Stabbing: ${res.stabbing || 0}<br>
-                                     Cutting: ${res.cutting || 0}<br>
-                                     Crushing: ${res.crushing || 0}<br>
-                                     Fire: ${res.fire || 0}<br>
-                                     Cold: ${res.cold || 0}<br>
-                                     Lightning: ${res.lightning || 0}<br>
-                                     Poison: ${res.poison || 0}<br>
-                                     Exhaustion: ${res.exhaustion || 0}<br>
-                                     ManaDrain: ${res.manaDrain || 0}<br>
-                                     Bleeding: ${res.bleeding || 0}<br>
-                                     Fear: ${res.fear || 0}<br>
-                                     Curse: ${res.curse || 0}<br>
-                                     Madness: ${res.madness || 0}<br>
+        this.unitResistance.value = `${this.keyValue('Stabbing', res.stabbing || 0)}${this.extraResist('stabbing')}<br>
+                                     ${this.keyValue('Cutting', res.cutting || 0)}${this.extraResist('cutting')}<br>
+                                     ${this.keyValue('Crushing', res.crushing || 0)}${this.extraResist('crushing')}<br>
+                                     ${this.keyValue('Fire', res.fire || 0)}${this.extraResist('fire')}<br>
+                                     ${this.keyValue('Cold', res.cold || 0)}${this.extraResist('cold')}<br>
+                                     ${this.keyValue('Lightning', res.lightning || 0)}${this.extraResist('lightning')}<br>
+                                     ${this.keyValue('Poison', res.poison || 0)}${this.extraResist('poison')}<br>
+                                     ${this.keyValue('Exhaustion', res.exhaustion || 0)}${this.extraResist('exhaustion')}<br>
+                                     ${this.keyValue('ManaDrain', res.manaDrain || 0)}${this.extraResist('manaDrain')}<br>
+                                     ${this.keyValue('Bleeding', res.bleeding || 0)}${this.extraResist('bleeding')}<br>
+                                     ${this.keyValue('Fear', res.fear || 0)}${this.extraResist('fear')}<br>
+                                     ${this.keyValue('Curse', res.curse || 0)}${this.extraResist('curse')}<br>
+                                     ${this.keyValue('Madness', res.madness || 0)}${this.extraResist('madness')}<br>
                                      `;
 
     }
 
     protected updateProgress(): void {
         const pr: UnitProgress = this.state.userState.unit.stats.progress;
-        this.unitProgress.value = `Level: ${pr.level}<br>
-                                   Exp: ${pr.experience} / ${pr.experienceNext}<br>
-                                   Base Attr Points: ${pr.baseAttributesPoints || 0}<br>
-                                   Attr Points: ${pr.attributesPoints || 0}<br>
+        this.unitProgress.value = `${this.keyValue('Level', pr.level)}<br>
+                                   ${this.keyValue('Exp', pr.experience, pr.experienceNext)}<br>
+                                   ${this.keyValue('Base Attr Points', pr.baseAttributesPoints || 0)}<br>
+                                   ${this.keyValue('Attr Points', pr.attributesPoints || 0)}<br>
                                    `;
         pr.experience >= pr.experienceNext! ? this.btnLevelUp.show() : this.btnLevelUp.hide();
     }
@@ -296,17 +299,45 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         hasAttributes ? this.btnInitiative.show() : this.btnInitiative.hide();
         hasAttributes ? this.btnLuck.show() : this.btnLuck.hide();
 
-        this.labelHealth.value = `Health: ${battr.health || 0}`;
-        this.labelStamina.value = `Stamina: ${battr.stamina || 0}`;
-        this.labelMana.value = `Mana: ${battr.mana || 0}`;
-        this.labelActionPoints.value = `Action Points: ${battr.actionPoints + Math.floor(attr.initiative / 10) || 0}`;
-        this.labelStrength.value = `Strength: ${attr.strength || 0}`;
-        this.labelPhysique.value = `Physique: ${attr.physique || 0}`;
-        this.labelAgility.value = `Agility: ${attr.agility || 0}`;
-        this.labelEndurance.value = `Endurance: ${attr.endurance || 0}`;
-        this.labelIntelligence.value = `Intelligence: ${attr.intelligence || 0}`;
-        this.labelInitiative.value = `Initiative: ${attr.initiative || 0}`;
-        this.labelLuck.value = `Luck: ${attr.luck || 0}`;
+        this.labelHealth.htmlValue = this.keyValue('Health', battr.health || 0);
+        this.labelStamina.htmlValue = this.keyValue('Stamina', battr.stamina || 0);
+        this.labelMana.htmlValue = this.keyValue('Mana', battr.mana || 0);
+        this.labelActionPoints.htmlValue =
+            this.keyValue('Action Points', battr.actionPoints) +
+            this.extraValue(Math.floor(attr.initiative / 10));
+
+        this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength || 0);
+        this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique || 0);
+        this.labelAgility.htmlValue = this.keyValue('Agility', attr.agility || 0);
+        this.labelEndurance.htmlValue = this.keyValue('Endurance', attr.endurance || 0);
+        this.labelIntelligence.htmlValue = this.keyValue('Intelligence', attr.intelligence || 0);
+        this.labelInitiative.htmlValue = this.keyValue('Initiative', attr.initiative || 0);
+        this.labelLuck.htmlValue = this.keyValue('Luck', attr.luck || 0);
+    }
+
+    protected extraResist(key: string): string {
+        const extra = Math.floor(this.state.userState.unit.stats.attributes.physique / 10);
+        const value = (this.state.userState.unit.inventory
+            .armor?.reduce((acc, a) => acc + this.totalModification(a, key), 0) || 0) + extra;
+        return this.extraValue(value);
+    }
+
+    protected extraValue(value): string {
+        if (!value) return '';
+        return value > 0 ?
+            ` <span class="light-green lighten-1">+${value}</span>` :
+            ` <span class="red lighten-1">${value}</span>`;
+    }
+
+    protected totalModification(equipment: Equipment, key: string): number {
+        if (!equipment.equipped) return 0;
+        return equipment.modification.reduce((acc, m) => acc + m.resistance?.[key] || 0, 0);
+    }
+
+    protected keyValue(key: string, value?: number, valueOf?: number): string {
+        return valueOf === undefined ?
+            `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0}` :
+            `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0} / ${valueOf}`;
     }
 
     protected objValues(obj: Object): string {

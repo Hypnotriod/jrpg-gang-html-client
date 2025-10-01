@@ -92,10 +92,6 @@ export default class GameObjectRenderer {
     }
 
     protected isZeroValueKey(header: string, key: string): boolean {
-        switch (header) {
-            case 'attributes':
-                return true;
-        }
         switch (key) {
             case 'x':
             case 'y':

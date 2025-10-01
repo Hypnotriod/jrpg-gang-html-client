@@ -33,6 +33,14 @@ export default class Label extends Component {
         this.view.textContent = value;
     }
 
+    public get htmlValue(): string {
+        return this.view.innerHTML;
+    }
+
+    public set htmlValue(value: string) {
+        this.view.innerHTML = value;
+    }
+
     public set descriptionPopup(value: ObjectDescription) {
         this._descriptionPopup = value;
     }
