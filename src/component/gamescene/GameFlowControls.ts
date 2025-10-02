@@ -127,8 +127,8 @@ export default class GameFlowControls extends GameBase {
     }
 
     public timeoutAutoNextPhase(): void {
-        if (!this.checkAutoNextPhaseConditions()) { return; }
         this.clearAutoNextPhase();
+        if (!this.checkAutoNextPhaseConditions()) { return; }
         if (this.state.userState.playerInfo.isReady) { return; }
         this.autoNextPhaseInProgress = true;
         this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), 1500);

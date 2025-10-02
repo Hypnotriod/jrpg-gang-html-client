@@ -71,6 +71,7 @@ export default class SpotCell extends Component {
         if (!this._unit) { return; }
         this._descriptionPopup.data = {
             name: this._unit.playerInfo?.nickname || this._unit.name,
+            code: this._unit.code,
             unitUid: this._unit.uid,
             state: this._unit.state,
             damage: this._unit.damage,

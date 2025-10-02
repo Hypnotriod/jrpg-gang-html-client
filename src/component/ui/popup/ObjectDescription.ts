@@ -1,9 +1,9 @@
 import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
-import TextField from '../textfield/TextField';
+import Container from '../container/Container';
 
 @injectable()
-export default class ObjectDescription extends TextField {
+export default class ObjectDescription extends Container {
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
     }
@@ -26,6 +26,16 @@ export default class ObjectDescription extends TextField {
 
     public set data(data: object) {
         const ignoreHeaders: string[] = [];
-        this.value = this.renderer.renderMain(data, ignoreHeaders) + this.renderer.render(data, ignoreHeaders);
+        const main = this.renderer.renderMain(data, ignoreHeaders);
+        const misc = this.renderer.render(data, ignoreHeaders);
+        if (!main) {
+            this.value = misc;
+        } else {
+            this.value = this.renderer.row(
+                this.renderer.column(main, 6) +
+                this.renderer.column(misc, 6)
+            );
+        }
+
     }
 }
