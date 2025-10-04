@@ -5,7 +5,7 @@ import { Unit } from '../domain/domain';
 @singleton()
 export default class GameObjectRenderer {
     public column(html: string, s: number): string {
-        return `<div class="col s${s}" style="min-width: 180px;">${html}</div>`;
+        return `<div class="col s${s}" style="width: 180px;">${html}</div>`;
     }
 
     public row(html: string): string {
