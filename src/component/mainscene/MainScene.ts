@@ -12,8 +12,10 @@ import Auth from '../auth/Auth';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import { RequestType } from '../../dto/requests';
+import GameStateService from '../../service/GameStateService';
+import { KEY_SESSION_ID } from '../../dto/responces';
 
-const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 5 * 60 * 1000;
+const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
 @injectable()
 export default class MainScene extends Component {
@@ -28,7 +30,8 @@ export default class MainScene extends Component {
     constructor(
         private readonly loaderService: ResourceLoaderService,
         private readonly sceneSwitcherService: SceneSwitcherService,
-        private readonly communicator: ServerCommunicatorService) {
+        private readonly communicator: ServerCommunicatorService,
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -62,6 +65,8 @@ export default class MainScene extends Component {
     protected initializeFocusHandler() {
         window.addEventListener('blur', (event) => {
             this.blurTimeout = window.setTimeout(() => {
+                if (!this.state.userState?.sessionId) return;
+                localStorage.removeItem(KEY_SESSION_ID);
                 this.communicator.sendMessage(RequestType.LEAVE);
                 window.location.reload();
             }, LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS);
