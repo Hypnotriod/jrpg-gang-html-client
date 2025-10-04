@@ -10,6 +10,10 @@ import Lobby from '../lobby/Lobby';
 import Login from '../login/Login';
 import Auth from '../auth/Auth';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
+import ServerCommunicatorService from '../../service/ServerCommunicatorService';
+import { RequestType } from '../../dto/requests';
+
+const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 5 * 60 * 1000;
 
 @injectable()
 export default class MainScene extends Component {
@@ -19,10 +23,12 @@ export default class MainScene extends Component {
     private configurator: UnitConfigurator;
     private gameScene: GameScene;
     private jobs: Jobs;
+    private blurTimeout: number = 0;
 
     constructor(
         private readonly loaderService: ResourceLoaderService,
-        private readonly sceneSwitcherService: SceneSwitcherService) {
+        private readonly sceneSwitcherService: SceneSwitcherService,
+        private readonly communicator: ServerCommunicatorService) {
         super();
     }
 
@@ -32,6 +38,7 @@ export default class MainScene extends Component {
             this.login.tryToAutologin();
             this.show();
         });
+        this.initializeFocusHandler();
     }
 
     protected async preloadResources(): Promise<void> {
@@ -50,5 +57,18 @@ export default class MainScene extends Component {
         this.configurator = (await Component.instantiateHighOrderComponent(UNIT_CONFIGURATOR_CONTAINER, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE, UnitConfigurator))!;
         this.gameScene = (await Component.instantiateHighOrderComponent(GAME_CONTAINER, GAME_DESIGN, GAME_STYLE, GameScene))!;
         this.jobs = (await Component.instantiateHighOrderComponent(JOBS_CONTAINER, JOBS_DESIGN, JOBS_STYLE, Jobs))!;
+    }
+
+    protected initializeFocusHandler() {
+        window.addEventListener('blur', (event) => {
+            this.blurTimeout = window.setTimeout(() => {
+                this.communicator.sendMessage(RequestType.LEAVE);
+                window.location.reload();
+            }, LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS);
+        });
+        window.addEventListener('focus', (event) => {
+            this.blurTimeout && window.clearTimeout(this.blurTimeout);
+            this.blurTimeout = 0;
+        });
     }
 }
