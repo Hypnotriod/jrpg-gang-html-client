@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -27,6 +27,12 @@ export default class SpotCell extends Component {
     protected readonly _iconFire: Container;
     @component(ICON_LIGHTING, Container)
     protected readonly _iconLighting: Container;
+    @component(ICON_HEALTH, Container)
+    protected readonly _iconHealth: Container;
+    @component(ICON_STAMINA, Container)
+    protected readonly _iconStamina: Container;
+    @component(ICON_MANA, Container)
+    protected readonly _iconMana: Container;
     @component(ICON_CURRENT, Container)
     protected readonly _iconCurrent: Container;
     @component(ICON_EFFECT, Container)
@@ -139,6 +145,9 @@ export default class SpotCell extends Component {
         this._iconCold.hide();
         this._iconFire.hide();
         this._iconLighting.hide();
+        this._iconHealth.hide();
+        this._iconStamina.hide();
+        this._iconMana.hide();
         this._iconEffect.hide();
         this._iconHit.hide();
         this._iconMissed.hide();
@@ -186,6 +195,9 @@ export default class SpotCell extends Component {
         this._unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
         this._unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
         this._unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.health) ? this._iconHealth.show() : this._iconHealth.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.mana) ? this._iconMana.show() : this._iconMana.hide();
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
         if ((this._unit.faction === GameUnitFaction.ENEMY || this._unit.faction === GameUnitFaction.PARTY) && isActive) {
             this._icon.enable();
