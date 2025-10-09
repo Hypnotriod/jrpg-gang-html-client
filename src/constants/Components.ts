@@ -19,6 +19,7 @@ export const BUTTON_CREATE_ROOM_ADVANCED: string = 'button_create_room_advanced'
 export const BUTTON_LOBBY: string = 'button_lobby';
 export const BUTTON_JOBS: string = 'button_jobs';
 export const BUTTON_LEVEL_UP: string = 'button_level_up';
+export const BUTTON_SORT: string = 'button_sort';
 export const BUTTON_CONFIGURATOR: string = 'button_configurator';
 export const BUTTON_START_GAME: string = 'button_start_game';
 export const BUTTON_NEXT_PHASE: string = 'button_next_phase';

@@ -6,6 +6,8 @@ div {
 }
 
 body {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(170, 170, 170) #00000000;
     background-color: black;
     font-size: 14px;
 }
@@ -57,30 +59,6 @@ body {
 .btn-plus:active {
     position: relative;
     top: 1px;
-}
-
-/* width */
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #00000000;
-    border-radius: 10px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: rgb(170, 170, 170);
-    border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: rgb(200, 200, 200);
-    border-radius: 10px;
 }
 
 .scrollbar-x {
