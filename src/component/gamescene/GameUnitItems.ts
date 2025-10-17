@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionType, Ammunition, GameUnit, InventoryItem, ItemType, UnitInventory } from '../../domain/domain';
+import { ActionType, Ammunition, Armor, GameUnit, InventoryItem, ItemType, UnitInventory, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -72,7 +72,17 @@ export default class GameUnitItems extends GameBase {
         }
         this.unitItems.set(data.uid!, iconItem);
         iconItem.update(data);
-        activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
+        this.checkUseCost(data) && activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
+    }
+
+    protected checkUseCost(data: InventoryItem): boolean {
+        const unit: GameUnit = this.currentActor();
+        if (!unit) return false;
+        return unit.state.actionPoints >= ((data as Weapon).useCost?.actionPoints ?? 0) &&
+            unit.state.stamina >= ((data as Weapon).useCost?.stamina ?? 0) &&
+            unit.state.mana >= ((data as Weapon).useCost?.mana ?? 0) &&
+            unit.state.health >= ((data as Weapon).useCost?.health ?? 0) &&
+            ((data as Armor).wearout ?? 0) >= ((data as Armor).durability ?? -1);
     }
 
     protected onUnitItemClick(target: ItemIcon): void {

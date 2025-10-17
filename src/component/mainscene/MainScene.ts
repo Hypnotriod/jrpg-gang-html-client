@@ -68,10 +68,12 @@ export default class MainScene extends Component {
                 if (!this.state.userState?.sessionId) return;
                 localStorage.removeItem(KEY_SESSION_ID);
                 this.communicator.sendMessage(RequestType.LEAVE);
+                this.blurTimeout = -1;
                 window.location.reload();
             }, LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS);
         });
         window.addEventListener('focus', (event) => {
+            this.blurTimeout === -1 && window.location.reload();
             this.blurTimeout && window.clearTimeout(this.blurTimeout);
             this.blurTimeout = 0;
         });
