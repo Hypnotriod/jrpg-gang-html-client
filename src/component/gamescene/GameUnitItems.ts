@@ -77,9 +77,8 @@ export default class GameUnitItems extends GameBase {
     }
 
     protected checkUseCost(data: InventoryItem): boolean {
-        if (this.state.gameState.nextPhase !== GamePhase.TAKE_ACTION || !this.isCurrentUnitTurn()) return true;
         const unit: GameUnit = this.currentActor();
-        if (!unit) return false;
+        if (!unit || unit.state.actionPoints === 0) return true;
         return unit.state.actionPoints >= ((data as Weapon).useCost?.actionPoints ?? 0) &&
             unit.state.stamina >= ((data as Weapon).useCost?.stamina ?? 0) &&
             unit.state.mana >= ((data as Weapon).useCost?.mana ?? 0) &&

@@ -414,8 +414,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             } else if (this.checkboxRepair.checked) {
                 (item.data as Equipment).wearout ? item.enable() : item.disable();
             } else {
-                [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON]
-                    .some(t => t === item.data.type) ? item.enable() : item.disable();
+                item.enable();
             }
         })
     }
