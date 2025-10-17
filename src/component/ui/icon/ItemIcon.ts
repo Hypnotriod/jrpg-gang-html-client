@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { ICON, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
+import { ICON, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
 import { Ammunition, Equipment, InventoryItem, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
@@ -19,6 +19,8 @@ export default class ItemIcon extends Component {
     protected readonly quantityLabel: Label | null;
     @component(ICON_CURRENT, Container)
     protected readonly iconCurrent: Container;
+    @component(ICON_CANT_USE, Container)
+    protected readonly iconCantUse: Container;
     @component(LABEL_ACTION_POINTS, Label)
     protected readonly actionPointsLabel: Label;
 
@@ -59,6 +61,7 @@ export default class ItemIcon extends Component {
     protected initialize(): void {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
+        this.iconCantUse?.hide();
         this.iconCurrent?.hide();
         this.actionPointsLabel?.hide();
     }
@@ -104,6 +107,14 @@ export default class ItemIcon extends Component {
 
     public unchoose(): void {
         this._icon.unchoose();
+    }
+
+    public cantUse() {
+        this.iconCantUse.show();
+    }
+
+    public canUse() {
+        this.iconCantUse.hide();
     }
 
     public get choosed(): boolean {
