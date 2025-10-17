@@ -319,7 +319,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected extraResist(key: string): string {
-        const extra = Math.floor(this.state.userState.unit.stats.attributes.physique / 10);
+        const extra = ['stabbing', 'cutting', 'crushing', 'fire', 'cold', 'lightning'].includes(key) ?
+            Math.floor(this.state.userState.unit.stats.attributes.physique / 10) : 0;
         const value = (this.state.userState.unit.inventory
             .armor?.reduce((acc, a) => acc + this.totalModification(a, key), 0) || 0) + extra;
         return this.extraValue(value);
