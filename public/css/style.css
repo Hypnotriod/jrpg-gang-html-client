@@ -122,6 +122,10 @@ body {
     border-radius: 10px;
 }
 
+.single-line {
+    white-space: nowrap;
+}
+
 span {
     padding-left: 3px;
     padding-right: 3px;
