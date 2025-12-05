@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionType, Ammunition, Armor, GamePhase, GameUnit, InventoryItem, ItemType, UnitInventory, Weapon } from '../../domain/domain';
+import { ActionType, Ammunition, Armor, GamePhase, GameUnit, InventoryItem, Item, ItemType, UnitInventory, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -28,6 +28,14 @@ export default class GameUnitItems extends GameBase {
     public destroy(): void {
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
+    }
+
+    public get chosenItem(): InventoryItem | undefined {
+        let result: InventoryItem | undefined;
+        this.unitItems.forEach(iconItem => {
+            iconItem.choosed && (result = iconItem.data);
+        });
+        return result;
     }
 
     public set objectDescription(value: ObjectDescription) {

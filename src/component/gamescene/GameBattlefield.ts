@@ -87,6 +87,7 @@ export default class GameBattlefield extends GameBase {
                 this.create(this.view, Container, { classList: ['column-container'], id });
                 const spotCell: SpotCell = SpotCell.createSpotCell(this, id)!;
                 spotCell.descriptionPopup = this._objectDescription;
+                spotCell.displayActionChance = true;
                 spotCell.x = Number(x);
                 spotCell.y = Number(y);
                 this.spots[x][y] = spotCell;

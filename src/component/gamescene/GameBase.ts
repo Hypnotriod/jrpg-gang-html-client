@@ -27,7 +27,7 @@ export default class GameBase extends Component {
         return this._state.gameState.nextPhase === GamePhase.TAKE_ACTION;
     }
 
-    protected currentActor(): GameUnit {
+    public currentActor(): GameUnit {
         return this.findUnitByUid(this._state.playerInfo?.unitUid ?? 0);
     }
 
@@ -45,7 +45,7 @@ export default class GameBase extends Component {
         return this.findUnitByUid(uid);
     }
 
-    protected isCurrentUnitTurn(): boolean {
+    public isCurrentUnitTurn(): boolean {
         const activeUnitUid = this._state.gameState.state.activeUnitsQueue[0];
         return Boolean(this._state.playerInfo?.unitUid === activeUnitUid);
     }

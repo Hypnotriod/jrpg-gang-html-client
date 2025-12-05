@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
-import { ActionResult, Cell, GameUnit, GameUnitFaction } from '../../../domain/domain';
+import { ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -10,6 +10,8 @@ import Container from '../container/Container';
 import Label from '../label/Label';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
+import GameUnitItems from '../../gamescene/GameUnitItems';
+import GameStateService from '../../../service/GameStateService';
 
 @injectable()
 export default class SpotCell extends Component {
@@ -41,10 +43,14 @@ export default class SpotCell extends Component {
     protected readonly _iconHit: Container;
     @component(ICON_MISSED, Container)
     protected readonly _iconMissed: Container;
+    @component(ICON_TARGET, Container)
+    protected readonly _iconTarget: Container;
     @component(ICON_EXPERIENCE, Container)
     protected readonly _iconExperience: Container;
     @component(LABEL_HIT_HP, Label)
     protected readonly hitHpLabel: Label;
+    @component(LABEL_HIT_CHANCE, Label)
+    protected readonly hitChanceLabel: Label;
     @component(LABEL_EXP, Label)
     protected readonly expLabel: Label;
     @component(LABEL_ID, Label)
@@ -63,7 +69,13 @@ export default class SpotCell extends Component {
     private _x: number;
     private _y: number;
 
-    constructor(private readonly actionService: ActionService) {
+    public displayActionChance: boolean = false;
+
+    constructor(
+        private readonly actionService: ActionService,
+        private readonly state: GameStateService,
+        private readonly unitItems: GameUnitItems,
+    ) {
         super();
     }
 
@@ -85,10 +97,22 @@ export default class SpotCell extends Component {
             modification: this._unit.modification,
         };
         this._descriptionPopup.show();
+
+        if (!this.displayActionChance) return;
+        const gamePhase: string = this.state.gameState.nextPhase;
+        if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
+            const actor = this.unitItems.currentActor();
+            const damage = (this.unitItems.chosenItem as Magic).damage;
+            const modification = (this.unitItems.chosenItem as Magic).modification;
+            damage && actor.faction !== this._unit.faction && this.showActionChance(this.getAttackChance(damage));
+            modification && actor.faction === this._unit.faction && this.showActionChance(this.getModificationChance(modification));
+        }
     }
 
     protected onLeave(): void {
         this._descriptionPopup.hide();
+        this._iconTarget.hide();
+        this.hitChanceLabel.hide();
     }
 
     public set descriptionPopup(value: ObjectDescription) {
@@ -151,8 +175,10 @@ export default class SpotCell extends Component {
         this._iconEffect.hide();
         this._iconHit.hide();
         this._iconMissed.hide();
+        this._iconTarget.hide();
         this._iconExperience.hide();
         this.hitHpLabel.hide();
+        this.hitChanceLabel.hide();
         this.expLabel.hide();
         this.idLabel.hide();
         this.healthBar.hide();
@@ -160,6 +186,34 @@ export default class SpotCell extends Component {
         this.manaBar.hide();
         this.actionPointsLabel.hide();
         this._iconCurrent.hide();
+    }
+
+    public showActionChance(chance: number) {
+        this.hitChanceLabel.value = `${chance}%`;
+        this._iconTarget.show();
+        this.hitChanceLabel.show();
+    }
+
+    public getAttackChance(impact: DamageImpact[]): number {
+        const actor = this.unitItems.currentActor();
+        let chance = 100;
+        if (impact[0]?.chance) {
+            chance = impact[0].chance;
+            chance += this._unit!.state.isStunned
+                ? (actor.stats.attributes.agility - actor.state.stress) - (this._unit!.stats.attributes.agility - this._unit!.state.stress)
+                : (actor.stats.attributes.agility - actor.state.stress) + this._unit!.state.stress;
+        }
+        return chance;
+    }
+
+    public getModificationChance(impact: UnitModificationImpact[]): number {
+        const actor = this.unitItems.currentActor();
+        let chance = 100;
+        if (impact[0]?.chance) {
+            chance = impact[0].chance;
+            chance += (actor.stats.attributes.intelligence - actor.state.stress);
+        }
+        return chance;
     }
 
     public updateWithCell(cell: Cell, isActive: boolean): void {
