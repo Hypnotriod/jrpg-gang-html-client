@@ -1,9 +1,12 @@
 import { injectable, singleton } from 'tsyringe';
 import { Unit } from '../domain/domain';
+import ActionService from './ActionService';
 
 @injectable()
 @singleton()
 export default class GameObjectRenderer {
+    constructor(protected readonly actionService: ActionService) { }
+
     public column(html: string, s: number): string {
         return `<div class="col s${s}" style="width: 180px;">${html}</div>`;
     }
@@ -30,10 +33,10 @@ export default class GameObjectRenderer {
             } else {
                 result += this.keyValue('experience', data.stats.progress.experience)
             }
-            result += this.keyValueColor('health', 'red', `${data.state.health} / ${data.stats.baseAttributes.health}`);
-            result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${data.stats.baseAttributes.stamina}`);
-            result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${data.stats.baseAttributes.mana}`);
-            result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${data.stats.baseAttributes.actionPoints}`);
+            result += this.keyValueColor('health', 'red', `${data.state.health} / ${this.actionService.baseAttributeTotalValue(data, 'health')}`);
+            result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${this.actionService.baseAttributeTotalValue(data, 'stamina')}`);
+            result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${this.actionService.baseAttributeTotalValue(data, 'mana')}`);
+            result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${this.actionService.baseAttributeTotalValue(data, 'actionPoints')}`);
             result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
             result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
             if (data.damage) {
@@ -42,7 +45,7 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('baseAttributes', 'state', 'progress', 'damage');
+            ignoreHeaders.push('baseAttributes', 'attributes', 'inventory', 'state', 'progress', 'damage');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -66,6 +69,21 @@ export default class GameObjectRenderer {
             result += this.keyValue('canBeSold', data.canBeSold);
         }
 
+        return result;
+    }
+
+    public renderAttributes(data: any): string {
+        let result = '';
+        if (this.isUnitData(data)) {
+            result = this.header('Attributes', 3);
+            result += this.keyValue('Strength', this.actionService.attributeTotalValue(data, 'strength'));
+            result += this.keyValue('Physique', this.actionService.attributeTotalValue(data, 'physique'));
+            result += this.keyValue('Agility', this.actionService.attributeTotalValue(data, 'agility'));
+            result += this.keyValue('Endurance', this.actionService.attributeTotalValue(data, 'endurance'));
+            result += this.keyValue('Intelligence', this.actionService.attributeTotalValue(data, 'intelligence'));
+            result += this.keyValue('Initiative', this.actionService.attributeTotalValue(data, 'initiative'));
+            result += this.keyValue('Luck', this.actionService.attributeTotalValue(data, 'luck'));
+        }
         return result;
     }
 

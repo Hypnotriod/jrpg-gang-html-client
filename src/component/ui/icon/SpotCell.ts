@@ -95,18 +95,10 @@ export default class SpotCell extends Component {
             damage: this._unit.damage,
             stats: this._unit.stats,
             modification: this._unit.modification,
+            inventory: this._unit.inventory,
         };
         this._descriptionPopup.show();
-
-        if (!this.displayActionChance) return;
-        const gamePhase: string = this.state.gameState.nextPhase;
-        if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
-            const actor = this.unitItems.currentActor();
-            const damage = (this.unitItems.chosenItem as Magic).damage;
-            const modification = (this.unitItems.chosenItem as Magic).modification;
-            damage && actor.faction !== this._unit.faction && this.showActionChance(this.getAttackChance(damage));
-            modification && actor.faction === this._unit.faction && this.showActionChance(this.getModificationChance(modification));
-        }
+        this.displayActionChance && this.showActionChance();
     }
 
     protected onLeave(): void {
@@ -188,7 +180,22 @@ export default class SpotCell extends Component {
         this._iconCurrent.hide();
     }
 
-    public showActionChance(chance: number) {
+    public showActionChance() {
+        if (!this._unit) { return; }
+        let chance = 0;
+        const gamePhase: string = this.state.gameState.nextPhase;
+        if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
+            const actor = this.unitItems.currentActor();
+            const damage = (this.unitItems.chosenItem as Magic).damage;
+            const modification = (this.unitItems.chosenItem as Magic).modification;
+            if (damage && actor.faction !== this._unit.faction) {
+                chance = this.actionService.attackChance(damage, actor, this._unit);
+            }
+            if (modification && actor.faction === this._unit.faction) {
+                chance = this.actionService.modificationChance(modification, actor);
+            }
+        }
+        if (!chance) return;
         this.hitChanceLabel.value = `${chance}%`;
         this._iconTarget.show();
         this.hitChanceLabel.show();
@@ -196,24 +203,12 @@ export default class SpotCell extends Component {
 
     public getAttackChance(impact: DamageImpact[]): number {
         const actor = this.unitItems.currentActor();
-        let chance = 100;
-        if (impact[0]?.chance) {
-            chance = impact[0].chance;
-            chance += this._unit!.state.isStunned
-                ? (actor.stats.attributes.agility - actor.state.stress) - (this._unit!.stats.attributes.agility - this._unit!.state.stress)
-                : (actor.stats.attributes.agility - actor.state.stress) + this._unit!.state.stress;
-        }
-        return chance;
+        return this.actionService.attackChance(impact, actor, this._unit!);
     }
 
     public getModificationChance(impact: UnitModificationImpact[]): number {
         const actor = this.unitItems.currentActor();
-        let chance = 100;
-        if (impact[0]?.chance) {
-            chance = impact[0].chance;
-            chance += (actor.stats.attributes.intelligence - actor.state.stress);
-        }
-        return chance;
+        return this.actionService.modificationChance(impact, actor);
     }
 
     public updateWithCell(cell: Cell, isActive: boolean): void {
