@@ -68,7 +68,7 @@ export default class ActionService {
         let chance = 100;
         if (impact[0]?.chance) {
             chance = impact[0].chance;
-            chance += target.state.isStunned
+            chance += !target.state.isStunned
                 ? (this.attributeTotalValue(unit, 'agility') - unit.state.stress) - (this.attributeTotalValue(target, 'agility') - target.state.stress)
                 : (this.attributeTotalValue(unit, 'agility') - unit.state.stress) + target.state.stress;
         }
