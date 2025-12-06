@@ -68,6 +68,7 @@ export default class SpotCell extends Component {
     private _unit: GameUnit | undefined;
     private _x: number;
     private _y: number;
+    private _hover: boolean = false;
 
     public displayActionChance: boolean = false;
 
@@ -86,6 +87,7 @@ export default class SpotCell extends Component {
     }
 
     protected onHover(): void {
+        this._hover = true;
         if (!this._unit) { return; }
         this._descriptionPopup.data = {
             name: this._unit.playerInfo?.nickname || this._unit.name,
@@ -102,6 +104,7 @@ export default class SpotCell extends Component {
     }
 
     protected onLeave(): void {
+        this._hover = false;
         this._descriptionPopup.hide();
         this._iconTarget.hide();
         this.hitChanceLabel.hide();
@@ -181,7 +184,7 @@ export default class SpotCell extends Component {
     }
 
     public showActionChance() {
-        if (!this._unit) { return; }
+        if (!this._unit || !this._hover) { return; }
         let chance = 0;
         const gamePhase: string = this.state.gameState.nextPhase;
         if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
