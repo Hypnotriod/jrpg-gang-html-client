@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { Unit } from '../domain/domain';
-import ActionService from './ActionService';
+import ActionService, { sum } from './ActionService';
 
 @injectable()
 @singleton()
@@ -33,10 +33,10 @@ export default class GameObjectRenderer {
             } else {
                 result += this.keyValue('experience', data.stats.progress.experience)
             }
-            result += this.keyValueColor('health', 'red', `${data.state.health} / ${this.actionService.baseAttributeTotalValue(data, 'health')}`);
-            result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${this.actionService.baseAttributeTotalValue(data, 'stamina')}`);
-            result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${this.actionService.baseAttributeTotalValue(data, 'mana')}`);
-            result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${this.actionService.baseAttributeTotalValue(data, 'actionPoints')}`);
+            result += this.keyValueColor('health', 'red', `${data.state.health} / ${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
+            result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
+            result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
+            result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
             result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
             result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
             if (data.damage) {
@@ -45,7 +45,7 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('baseAttributes', 'attributes', 'inventory', 'state', 'progress', 'damage');
+            ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -75,14 +75,35 @@ export default class GameObjectRenderer {
     public renderAttributes(data: any): string {
         let result = '';
         if (this.isUnitData(data)) {
-            result = this.header('Attributes', 3);
-            result += this.keyValue('Strength', this.actionService.attributeTotalValue(data, 'strength'));
-            result += this.keyValue('Physique', this.actionService.attributeTotalValue(data, 'physique'));
-            result += this.keyValue('Agility', this.actionService.attributeTotalValue(data, 'agility'));
-            result += this.keyValue('Endurance', this.actionService.attributeTotalValue(data, 'endurance'));
-            result += this.keyValue('Intelligence', this.actionService.attributeTotalValue(data, 'intelligence'));
-            result += this.keyValue('Initiative', this.actionService.attributeTotalValue(data, 'initiative'));
-            result += this.keyValue('Luck', this.actionService.attributeTotalValue(data, 'luck'));
+            result = this.header('Attributes', 1);
+            result += this.keyValueExtra('Strength', this.actionService.attributeTotalValue(data, 'strength'));
+            result += this.keyValueExtra('Physique', this.actionService.attributeTotalValue(data, 'physique'));
+            result += this.keyValueExtra('Agility', this.actionService.attributeTotalValue(data, 'agility'));
+            result += this.keyValueExtra('Endurance', this.actionService.attributeTotalValue(data, 'endurance'));
+            result += this.keyValueExtra('Intelligence', this.actionService.attributeTotalValue(data, 'intelligence'));
+            result += this.keyValueExtra('Initiative', this.actionService.attributeTotalValue(data, 'initiative'));
+            result += this.keyValueExtra('Luck', this.actionService.attributeTotalValue(data, 'luck'));
+        }
+        return result;
+    }
+
+    public renderResistance(data: any): string {
+        let result = '';
+        if (this.isUnitData(data)) {
+            result = this.header('Resistance', 1);
+            result += this.keyValueExtra('Stabbing', this.actionService.resistanceTotalValue(data, 'stabbing'));
+            result += this.keyValueExtra('Cutting', this.actionService.resistanceTotalValue(data, 'cutting'));
+            result += this.keyValueExtra('Crushing', this.actionService.resistanceTotalValue(data, 'crushing'));
+            result += this.keyValueExtra('Fire', this.actionService.resistanceTotalValue(data, 'fire'));
+            result += this.keyValueExtra('Cold', this.actionService.resistanceTotalValue(data, 'cold'));
+            result += this.keyValueExtra('Lightning', this.actionService.resistanceTotalValue(data, 'lightning'));
+            result += this.keyValueExtra('Poison', this.actionService.resistanceTotalValue(data, 'poison'));
+            result += this.keyValueExtra('Exhaustion', this.actionService.resistanceTotalValue(data, 'exhaustion'));
+            result += this.keyValueExtra('ManaDrain', this.actionService.resistanceTotalValue(data, 'manaDrain'));
+            result += this.keyValueExtra('Bleeding', this.actionService.resistanceTotalValue(data, 'bleeding'));
+            result += this.keyValueExtra('Fear', this.actionService.resistanceTotalValue(data, 'fear'));
+            result += this.keyValueExtra('Curse', this.actionService.resistanceTotalValue(data, 'curse'));
+            result += this.keyValueExtra('Madness', this.actionService.resistanceTotalValue(data, 'madness'));
         }
         return result;
     }
@@ -137,6 +158,13 @@ export default class GameObjectRenderer {
     protected keyValue(key: string, value: number | string | boolean | undefined): string {
         key = this.capitalize(key);
         return `<span class="orange-text text-lighten-1">${key}</span>: ${value}<br>`;
+    }
+
+    protected keyValueExtra(key: string, value: [number, number]): string {
+        key = this.capitalize(key);
+        return !value[1] ?
+            `<span class="orange-text text-lighten-1">${key}</span>: ${value[0]}<br>` :
+            `<span class="orange-text text-lighten-1">${key}</span>: <span class="green-text text-lighten-2">${value[0] + value[1]}</span> <br>`;
     }
 
     protected keyValueColor(key: string, colorClass: string, value: number | string | boolean | undefined): string {

@@ -27,7 +27,9 @@ export default class ObjectDescription extends Container {
     public set data(data: object) {
         const ignoreHeaders: string[] = [];
         const main = this.renderer.renderMain(data, ignoreHeaders);
-        const misc = this.renderer.renderAttributes(data) + this.renderer.render(data, ignoreHeaders);
+        const misc = this.renderer.renderAttributes(data)
+            + this.renderer.renderResistance(data)
+            + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;
         } else {
