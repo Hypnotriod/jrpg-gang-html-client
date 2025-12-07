@@ -309,20 +309,26 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.keyValue('Action Points', battr.actionPoints) +
             this.extraValue(Math.floor(attr.initiative / 10));
 
-        this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength || 0);
-        this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique || 0);
-        this.labelAgility.htmlValue = this.keyValue('Agility', attr.agility || 0);
-        this.labelEndurance.htmlValue = this.keyValue('Endurance', attr.endurance || 0);
-        this.labelIntelligence.htmlValue = this.keyValue('Intelligence', attr.intelligence || 0);
-        this.labelInitiative.htmlValue = this.keyValue('Initiative', attr.initiative || 0);
-        this.labelLuck.htmlValue = this.keyValue('Luck', attr.luck || 0);
+        this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength || 0) + this.extraAttribute('strength');
+        this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique || 0) + this.extraAttribute('physique');
+        this.labelAgility.htmlValue = this.keyValue('Agility', attr.agility || 0) + this.extraAttribute('agility');
+        this.labelEndurance.htmlValue = this.keyValue('Endurance', attr.endurance || 0) + this.extraAttribute('endurance');
+        this.labelIntelligence.htmlValue = this.keyValue('Intelligence', attr.intelligence || 0) + this.extraAttribute('intelligence');
+        this.labelInitiative.htmlValue = this.keyValue('Initiative', attr.initiative || 0) + this.extraAttribute('initiative');
+        this.labelLuck.htmlValue = this.keyValue('Luck', attr.luck || 0) + this.extraAttribute('luck');
     }
 
     protected extraResist(key: string): string {
         const extra = ['stabbing', 'cutting', 'crushing', 'fire', 'cold', 'lightning'].includes(key) ?
             Math.floor(this.state.userState.unit.stats.attributes.physique / 10) : 0;
         const value = (this.state.userState.unit.inventory
-            .armor?.reduce((acc, a) => acc + this.totalModification(a, key), 0) || 0) + extra;
+            .armor?.reduce((acc, a) => acc + this.totalResistanceModification(a, key), 0) || 0) + extra;
+        return this.extraValue(value);
+    }
+
+    protected extraAttribute(key: string): string {
+        const value = (this.state.userState.unit.inventory
+            .armor?.reduce((acc, a) => acc + this.totalAttributeModification(a, key), 0) || 0);
         return this.extraValue(value);
     }
 
@@ -333,9 +339,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             ` <span class="red lighten-1">${value}</span>`;
     }
 
-    protected totalModification(equipment: Equipment, key: string): number {
+    protected totalResistanceModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
         return equipment.modification.reduce((acc, m) => acc + m.resistance?.[key] || 0, 0);
+    }
+
+    protected totalAttributeModification(equipment: Equipment, key: string): number {
+        if (!equipment.equipped) return 0;
+        return equipment.modification.reduce((acc, m) => acc + m.attributes?.[key] || 0, 0);
     }
 
     protected keyValue(key: string, value?: number, valueOf?: number): string {
