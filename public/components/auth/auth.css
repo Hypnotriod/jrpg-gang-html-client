@@ -1,11 +1,16 @@
 .auth-wrapper {
-    background-color: darkslateblue;
+    background-color: rgb(39, 4, 88);
+    background-image: url("./assets/backgrounds/bkg-03.jpg");
+    background-blend-mode: darken;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(60, 60, 60);
     position: absolute;
-    width: 300px;
-    height: 200px;
+    width: 400px;
+    height: 260px;
     padding: 20px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 10px;
+    border-radius: 5px;
 }

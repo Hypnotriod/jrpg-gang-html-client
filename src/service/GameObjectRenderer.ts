@@ -8,7 +8,7 @@ export default class GameObjectRenderer {
     constructor(protected readonly actionService: ActionService) { }
 
     public column(html: string, s: number): string {
-        return `<div class="col s${s}" style="width: 180px;">${html}</div>`;
+        return `<div class="col s${s}" style="width: 190px;">${html}</div>`;
     }
 
     public row(html: string): string {

@@ -98,7 +98,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected update(): void {
         const isUserInRooms: boolean = this.state.isUserInRooms(this.state.rooms);
-        this.usersCountLabel.value = `Users Number: ${this.state.usersCount}`;
+        this.usersCountLabel.value = `${this.state.usersCount}⚇`;
         this.updateRooms(this.state.rooms, isUserInRooms);
         this.updateState(isUserInRooms);
         this.updateUnitInfo();

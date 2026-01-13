@@ -115,11 +115,11 @@ body {
 .item-description-popup {
     pointer-events: none;
     position: fixed;
-    background-color: rgb(95, 109, 123);
+    background-color: rgb(75, 87, 98);
     z-index: 100;
     min-height: 40px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 3px;
 }
 
 .single-line {
