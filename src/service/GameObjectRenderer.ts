@@ -45,7 +45,7 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage');
+            ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
