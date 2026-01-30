@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED, SELECT_ROOMS_CONTAINER } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
@@ -13,12 +13,15 @@ import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
+import { SCENARIO_IDS } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
 export default class Lobby extends Component implements ServerCommunicatorHandler {
     private readonly rooms: Map<number, Room> = new Map();
 
+    @component(SELECT_ROOMS_CONTAINER, Container)
+    private readonly selectRoomsSetcion: Container;
     @component(BUTTON_CREATE_ROOM_EASY, Button)
     private readonly createRoomEasyButton: Button;
     @component(BUTTON_CREATE_ROOM_ADVANCED, Button)
@@ -42,9 +45,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected initialize(): void {
         this.hide();
         this.createRoomEasyButton.disable();
-        this.createRoomEasyButton.onClick = target => this.onCreateRoom('easy-01');
+        this.createRoomEasyButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.EASY);
         this.createRoomAdvancedButton.disable();
-        this.createRoomAdvancedButton.onClick = target => this.onCreateRoom('advanced-01');
+        this.createRoomAdvancedButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.ADVANCED);
         this.configuratorButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([RequestType.LOBBY_STATUS, RequestType.ROOM_STATUS], this);
     }
@@ -131,6 +134,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
+        isUserInRooms ? this.selectRoomsSetcion.hide() : this.selectRoomsSetcion.show();
         this.createRoomEasyButton.enabled = !isUserInRooms;
         this.createRoomAdvancedButton.enabled = !isUserInRooms;
         this.configuratorButton.enabled = !isUserInRooms;

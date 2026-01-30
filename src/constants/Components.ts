@@ -9,6 +9,7 @@ export const JOBS_CONTAINER: string = 'jobs_container';
 export const JOBS_LIST_CONTAINER: string = 'jobs_list_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
+export const SELECT_ROOMS_CONTAINER: string = 'select_rooms_container';
 
 export const BUTTON_AUTH: string = 'button_auth';
 export const BUTTON_JOIN: string = 'button_join';

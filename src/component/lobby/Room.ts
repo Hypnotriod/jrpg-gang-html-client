@@ -12,6 +12,7 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
+import { SCENARIO_IDS } from '../../constants/Configuration';
 
 @injectable()
 export default class Room extends Component {
@@ -59,6 +60,15 @@ export default class Room extends Component {
             this.userConnectionStatusLabels[i + 1].value = user.isOffline ? '⚫' : '🟢';
         });
 
+        switch (roomInfo.scenarioId) {
+            case SCENARIO_IDS.EASY:
+                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_01.png';
+                break;
+            case SCENARIO_IDS.ADVANCED:
+                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_02.png';
+                break;
+        }
+
         const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
         const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
         if (isUserInRoom) {
@@ -73,8 +83,7 @@ export default class Room extends Component {
             this.leaveRoomButton.hide();
             this.joinRoomButton.enable();
         }
-        isUserHostOfRoom && this.startGameButton.show();
-        !isUserHostOfRoom && this.startGameButton.hide();
+        isUserHostOfRoom ? this.startGameButton.enable() : this.startGameButton.disable();
     }
 
     protected initialize(): void {
