@@ -110,9 +110,9 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected doJoin(): void {
-        const sessionId: string | undefined = localStorage.getItem(KEY_SESSION_ID) || undefined;
+        const sessionId: string | undefined = sessionStorage.getItem(KEY_SESSION_ID) || undefined;
         const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
-        localStorage.removeItem(KEY_SESSION_ID);
+        sessionStorage.removeItem(KEY_SESSION_ID);
         if (token) {
             this.communicator.joinWithToken(token);
             return;
@@ -129,7 +129,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.isJoining = false;
         this.updateJoinButtonState();
         if (response.status !== ResponseStatus.OK) {
-            localStorage.clear();
+            sessionStorage.clear();
             this.unsuccessJoinAttempts++;
             if (this.query.parsedQuery[KEY_IS_NEW_PLAYER] === VALUE_FALSE) {
                 this.hide();
@@ -141,7 +141,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
-        localStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
+        sessionStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
         window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
         if (this.state.userState.status === UserStatus.IN_GAME) {
             this.communicator.sendMessage(RequestType.GAME_STATE);
