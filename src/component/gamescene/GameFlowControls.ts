@@ -7,7 +7,6 @@ import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
-import Checkbox from '../ui/checkbox/Checkbox';
 import Label from '../ui/label/Label';
 import GameBase from './GameBase';
 
@@ -33,6 +32,7 @@ export default class GameFlowControls extends GameBase {
 
     private nextPhaseTimeoutId: NodeJS.Timeout;
     private nextPhaseLabelTimeoutId: NodeJS.Timeout;
+    private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
 
     constructor(
@@ -127,9 +127,15 @@ export default class GameFlowControls extends GameBase {
     }
 
     public timeoutAutoNextPhase(): void {
-        this.clearAutoNextPhase();
-        if (!this.checkAutoNextPhaseConditions()) { return; }
-        if (this.state.userState.playerInfo.isReady) { return; }
+        if (this.autoNextPhase !== this.state.gameState.nextPhase) {
+            this.clearAutoNextPhase();
+        }
+        this.autoNextPhase = this.state.gameState.nextPhase;
+        if (!this.checkAutoNextPhaseConditions() || this.state.userState.playerInfo.isReady) {
+            this.clearAutoNextPhase();
+            return;
+        }
+        if (this.autoNextPhaseInProgress) { return; }
         this.autoNextPhaseInProgress = true;
         this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), 1500);
     }
@@ -175,7 +181,7 @@ export default class GameFlowControls extends GameBase {
     protected checkAutoNextPhaseConditions(): boolean {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
         const unit: GameUnit = this.currentActor();
-        if (!unit || this.autoNextPhaseInProgress) { return false; }
+        if (!unit) { return false; }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
