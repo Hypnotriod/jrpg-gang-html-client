@@ -18,10 +18,23 @@
 .game-log {
     background-color: rgba(90, 90, 90, 0.8);
     padding: 10px;
-    max-height: 250px;
-    max-height: 242px;
-    min-height: 242px;
+    max-height: 234px;
+    min-height: 234px;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 3px;
+}
+
+.game-chat {
+    background-color: rgba(90, 90, 90, 0.8);
+    padding: 10px;
+    max-height: 189px;
+    min-height: 189px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 3px;
+}
+
+.game-chat-input {
+    margin: 0;
 }

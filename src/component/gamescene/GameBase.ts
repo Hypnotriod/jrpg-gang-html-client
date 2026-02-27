@@ -1,9 +1,11 @@
-import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../../domain/domain';
+import { ActionResult, ActionResultType, ActionType, ChatState, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../../domain/domain';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import Component from '../Component';
 
 export default class GameBase extends Component {
+    protected chatState: ChatState;
+
     constructor(
         private readonly _state: GameStateService,
         private readonly _actionService: ActionService) {
@@ -48,6 +50,10 @@ export default class GameBase extends Component {
     public isCurrentUnitTurn(): boolean {
         const activeUnitUid = this._state.gameState.state.activeUnitsQueue[0];
         return Boolean(this._state.playerInfo?.unitUid === activeUnitUid);
+    }
+
+    protected isCurrentPlayerId(playerId: string): boolean {
+        return this._state.playerInfo?.playerId === playerId;
     }
 
     protected findUnitByUid(unitUid: number): GameUnit {

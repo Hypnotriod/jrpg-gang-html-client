@@ -69,4 +69,12 @@ export default class TextInput extends Component {
         }
         return this._isValid;
     }
+
+    public get maxLength(): number {
+        return this.view.maxLength;
+    }
+
+    public set maxLength(value: number) {
+        this.view.maxLength = value;
+    }
 }

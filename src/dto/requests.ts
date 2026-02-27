@@ -27,6 +27,8 @@ export enum RequestType {
     COMPLETE_JOB = 'completeJob',
     JOBS_STATUS = 'jobsStatus',
     SWITCH_UNIT = 'switchUnit',
+    CHAT_STATE = "chatState",
+    CHAT_MESSAGE = "chatMessage",
 }
 
 export interface Request {
@@ -71,4 +73,8 @@ export interface ApplyForAJobRequestData extends RequestData {
 
 export interface SwitchUnitRequestData extends RequestData {
     class: string;
+}
+
+export interface ChatMessageRequestData extends RequestData {
+    message: string;
 }

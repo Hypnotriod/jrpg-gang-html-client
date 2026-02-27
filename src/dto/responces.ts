@@ -1,4 +1,4 @@
-import { Action, EmploymentStatus, GameEvent, GameShopStatus, GameUnit, PlayerInfo, RoomInfo, UnitBooty } from '../domain/domain';
+import { Action, ChatMessage, ChatState, EmploymentStatus, GameEvent, GameShopStatus, GameUnit, PlayerInfo, RoomInfo, UnitBooty } from '../domain/domain';
 import { RequestType } from './requests';
 
 export const KEY_SESSION_ID: string = 'sessionId';
@@ -72,10 +72,19 @@ export interface CompleteJobData {
     reward: UnitBooty;
 }
 
+export interface ChatMessageData {
+    message: ChatMessage;
+}
+
+export interface ChatStateData {
+    chat: ChatState;
+}
+
 export interface Response {
     type: RequestType;
     id?: string;
     status: ResponseStatus;
     data: LobbyStatusData | UserStateData | ShopStatusData | GameStateData | PlayerInfoData |
-    GameNextPhaseData | GameActionData | RoomStatusData | JobStatusData | CompleteJobData;
+    GameNextPhaseData | GameActionData | RoomStatusData | JobStatusData | CompleteJobData |
+    ChatMessageData | ChatStateData;
 }

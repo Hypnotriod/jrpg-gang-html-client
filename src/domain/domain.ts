@@ -414,3 +414,19 @@ export interface EmploymentStatus {
     timeLeft?: number;
     availableJobs: PlayerJob[];
 }
+
+export interface ChatMessage {
+    from: string
+    to: string
+    message: string
+    timestamp: number
+}
+
+export interface ChatParticipant {
+    nickname: string
+}
+
+export interface ChatState {
+    participants: { [key: string]: ChatParticipant }
+    messages: ChatMessage[]
+}

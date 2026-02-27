@@ -1,8 +1,8 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
-import { RequestType } from '../../dto/requests';
-import { GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
+import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_TAB_GAME_CHAT, BUTTON_TAB_GAME_LOG, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
+import { ChatMessageRequestData, RequestType } from '../../dto/requests';
+import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
@@ -17,12 +17,22 @@ import GameBooty from './GameBooty';
 import GameFlowControls from './GameFlowControls';
 import GameUnitItems from './GameUnitItems';
 import GameUnitsQueue from './GameUnitsQueue';
+import Button from '../ui/button/Button';
+import TextInput from '../ui/input/TextInput';
 
 @injectable()
 @singleton()
 export default class GameScene extends GameBase implements ServerCommunicatorHandler {
     @component(GAME_LOG, TextField)
     private readonly gameLog: TextField;
+    @component(GAME_CHAT, TextField)
+    private readonly gameChat: TextField;
+    @component(INPUT_GAME_CHAT_MESSAGE, TextInput)
+    private readonly chatMessageInput: TextInput;
+    @component(BUTTON_TAB_GAME_CHAT, Button)
+    private readonly buttonGameChat: Button;
+    @component(BUTTON_TAB_GAME_LOG, Button)
+    private readonly buttonGameLog: Button;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
     @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
@@ -52,6 +62,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             RequestType.NEXT_GAME_PHASE,
             RequestType.GAME_ACTION,
             RequestType.PLAYER_INFO,
+            RequestType.CHAT_MESSAGE,
+            RequestType.CHAT_STATE,
         ], this);
         super.initialize();
         this.hide();
@@ -61,6 +73,32 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitsQueue.objectDescription = this.objectDescription;
         this.battlefield.objectDescription = this.objectDescription;
         this.battlefield.unitItems = this.unitItems;
+        this.initGameChat();
+    }
+
+    protected initGameChat(): void {
+        this.buttonGameChat.onClick = _ => {
+            this.gameChat.show();
+            this.gameLog.hide();
+            this.chatMessageInput.show();
+            this.buttonGameChat.disable();
+            this.buttonGameLog.enable();
+        };
+        this.buttonGameLog.onClick = _ => {
+            this.gameLog.show();
+            this.gameChat.hide();
+            this.chatMessageInput.hide();
+            this.buttonGameChat.enable();
+            this.buttonGameLog.disable();
+        };
+        this.chatMessageInput.onEnter = input => {
+            this.communicator.sendMessage(RequestType.CHAT_MESSAGE, {
+                message: input.value,
+            } satisfies ChatMessageRequestData);
+            input.value = '';
+        };
+        this.chatMessageInput.maxLength = 128;
+        this.buttonGameChat.disable();
     }
 
     public handleServerResponse(response: Response): void {
@@ -69,6 +107,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
                 this.handleGameState();
+                this.communicator.sendMessage(RequestType.CHAT_STATE);
                 break;
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
@@ -83,7 +122,20 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 const status: UserStatus = (response.data as UserStateData).status;
                 this.handleUserStatus(status);
                 break;
+            case RequestType.CHAT_MESSAGE:
+                const message: ChatMessage = (response.data as ChatMessageData).message;
+                this.addChatMessage(message);
+                break;
+            case RequestType.CHAT_STATE:
+                const chatState: ChatState = (response.data as ChatStateData).chat;
+                this.handleChatState(chatState);
+                break;
         }
+    }
+
+    public override show(): void {
+        this.communicator.sendMessage(RequestType.CHAT_STATE);
+        super.show();
     }
 
     public handleConnectionLost(): void {
@@ -152,6 +204,22 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.hide();
             this.configurator.show();
         }
+    }
+
+    protected handleChatState(chatState: ChatState): void {
+        this.gameChat.value = '';
+        this.chatState = chatState;
+        this.chatState.messages.forEach(message => this.addChatMessage(message));
+    }
+
+    protected addChatMessage(message: ChatMessage): void {
+        const nickname = this.chatState.participants[message.from].nickname;
+        this.gameChat.value =
+            (this.isCurrentPlayerId(message.from) ?
+                `<span class="light-green lighten-1">${nickname}:</span><br>` :
+                `<span class="light-blue lighten-1">${nickname}:</span><br>`) +
+            message.message + '<br>' +
+            this.gameChat.value;
     }
 
     protected logAction(): void {

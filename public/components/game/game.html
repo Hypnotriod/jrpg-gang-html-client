@@ -29,8 +29,18 @@
         <div class="col s5">
             <div id="battlefield_container" class="items-container-y left"></div>
         </div>
-        <div class="col s7">
-            <div id="game_log" class="game-log white-text scrollbar-y"></div>
+        <div class="col s7" style="margin-top: -20px;">
+            <div class="center">
+                <button id="button_tab_game_chat" class="btn-small blue" style="margin-bottom: -5px;">Chat</button>
+                <button id="button_tab_game_log" class="btn-small green" style="margin-bottom: -5px;">
+                    Game Log
+                </button>
+            </div>
+            <div id="game_log" class="game-log white-text scrollbar-y hidden"></div>
+            <div id="game_chat" class="game-chat white-text scrollbar-y"></div>
+            <div class="input-field game-chat-input">
+                <input id="input_game_chat_message" type="text">
+            </div>
         </div>
     </div>
     <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin-top: -18px;">
