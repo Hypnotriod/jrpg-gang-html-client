@@ -129,6 +129,8 @@ export default class GameFlowControls extends GameBase {
     public timeoutAutoNextPhase(): void {
         if (this.autoNextPhase !== this.state.gameState.nextPhase) {
             this.clearAutoNextPhase();
+        } else {
+            return;
         }
         this.autoNextPhase = this.state.gameState.nextPhase;
         if (!this.checkAutoNextPhaseConditions() || this.state.userState.playerInfo.isReady) {
