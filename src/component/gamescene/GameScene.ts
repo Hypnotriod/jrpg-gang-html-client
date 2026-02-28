@@ -19,6 +19,7 @@ import GameUnitItems from './GameUnitItems';
 import GameUnitsQueue from './GameUnitsQueue';
 import Button from '../ui/button/Button';
 import TextInput from '../ui/input/TextInput';
+import { convert } from 'html-to-text';
 
 @injectable()
 @singleton()
@@ -218,7 +219,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             (this.isCurrentPlayerId(message.from) ?
                 `<span class="light-green lighten-1">${nickname}:</span><br>` :
                 `<span class="light-blue lighten-1">${nickname}:</span><br>`) +
-            message.message.replace(/(<([^>]+)>)/ig, '') + '<br>' +
+            convert(message.message) + '<br>' +
             this.gameChat.value;
     }
 
