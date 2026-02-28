@@ -218,7 +218,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             (this.isCurrentPlayerId(message.from) ?
                 `<span class="light-green lighten-1">${nickname}:</span><br>` :
                 `<span class="light-blue lighten-1">${nickname}:</span><br>`) +
-            message.message + '<br>' +
+            message.message.replace(/(<([^>]+)>)/ig, '') + '<br>' +
             this.gameChat.value;
     }
 

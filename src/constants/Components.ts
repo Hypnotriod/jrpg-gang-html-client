@@ -117,6 +117,7 @@ export const ICON_EFFECT: string = 'icon_effect';
 export const ICON_HIT: string = 'icon_hit';
 export const ICON_MISSED: string = 'icon_missed';
 export const ICON_TARGET: string = 'icon_target';
+export const ICON_UNREACHABLE: string = 'icon_unreachable';
 export const ICON_EXPERIENCE: string = 'icon_experience';
 
 export const UNIT_ICON: string = 'unit_icon';

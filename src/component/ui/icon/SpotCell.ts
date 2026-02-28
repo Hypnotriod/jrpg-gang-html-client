@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
-import { ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, UnitModificationImpact } from '../../../domain/domain';
+import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -45,6 +45,8 @@ export default class SpotCell extends Component {
     protected readonly _iconMissed: Container;
     @component(ICON_TARGET, Container)
     protected readonly _iconTarget: Container;
+    @component(ICON_UNREACHABLE, Container)
+    protected readonly _iconUnreachable: Container;
     @component(ICON_EXPERIENCE, Container)
     protected readonly _iconExperience: Container;
     @component(LABEL_HIT_HP, Label)
@@ -107,6 +109,7 @@ export default class SpotCell extends Component {
         this._hover = false;
         this._descriptionPopup.hide();
         this._iconTarget.hide();
+        this._iconUnreachable.hide();
         this.hitChanceLabel.hide();
     }
 
@@ -171,6 +174,7 @@ export default class SpotCell extends Component {
         this._iconHit.hide();
         this._iconMissed.hide();
         this._iconTarget.hide();
+        this._iconUnreachable.hide();
         this._iconExperience.hide();
         this.hitHpLabel.hide();
         this.hitChanceLabel.hide();
@@ -186,11 +190,14 @@ export default class SpotCell extends Component {
     public showActionChance() {
         if (!this._unit || !this._hover) { return; }
         let chance = 0;
+        let reachable = false;
         const gamePhase: string = this.state.gameState.nextPhase;
         if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
             const actor = this.unitItems.currentActor();
             const damage = (this.unitItems.chosenItem as Magic).damage;
             const modification = (this.unitItems.chosenItem as Magic).modification;
+            const range = (this.unitItems.chosenItem as Magic).range ?? { x: 0, y: 0 };
+            reachable = this.canReach(actor.position, this, range);
             if (damage && actor.faction !== this._unit.faction) {
                 chance = this.actionService.attackChance(damage, actor, this._unit);
             }
@@ -200,8 +207,9 @@ export default class SpotCell extends Component {
         }
         if (!chance) return;
         this.hitChanceLabel.value = `${chance}%`;
-        this._iconTarget.show();
-        this.hitChanceLabel.show();
+        reachable && this._iconTarget.show();
+        !reachable && this._iconUnreachable.show();
+        reachable && this.hitChanceLabel.show();
     }
 
     public getAttackChance(impact: DamageImpact[]): number {
@@ -293,5 +301,12 @@ export default class SpotCell extends Component {
         this.expLabel.value = `+${experience}XP`;
         this.expLabel.show();
         this._iconExperience.show();
+    }
+
+    protected canReach(p1: Position, p2: Position, r: ActionRange): boolean {
+        if (!r.maximumX && !r.maximumY && !r.minimumX && !r.minimumY && !r.radius) return true;
+        const minimum = Math.abs(p1.x - p2.x) >= (r.minimumX ?? 0) && Math.abs(p1.y - p2.y) >= (r.minimumY ?? 0);
+        const maximum = Math.abs(p1.x - p2.x) <= (r.maximumX ?? 0) && Math.abs(p1.y - p2.y) <= (r.maximumY ?? 0);
+        return minimum && maximum;
     }
 }

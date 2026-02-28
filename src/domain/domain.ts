@@ -416,17 +416,18 @@ export interface EmploymentStatus {
 }
 
 export interface ChatMessage {
-    from: string
-    to: string
-    message: string
-    timestamp: number
+    from: string;
+    to?: string;
+    message: string;
+    timestamp: number;
 }
 
 export interface ChatParticipant {
-    nickname: string
+    nickname: string;
+    unavailable?: boolean;
 }
 
 export interface ChatState {
-    participants: { [key: string]: ChatParticipant }
-    messages: ChatMessage[]
+    participants: { [key: string]: ChatParticipant };
+    messages: ChatMessage[];
 }
