@@ -1,8 +1,8 @@
 export const USER_CLASSES: string[] = [
-    'tank',
+    'warrior',
     'barbarian',
     'mage',
-    'rogue',
+    'ranger',
 ];
 
 export const SCENARIO_IDS = {
