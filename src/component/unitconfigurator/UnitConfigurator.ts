@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
@@ -95,9 +95,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly btnLevelUp: Button;
     @component(BUTTON_SORT, Button)
     private readonly btnSort: Button;
+    @component(BUTTON_TAB_SHOP_ALL, Button)
+    private readonly btnTabShopAll: Button;
+    @component(BUTTON_TAB_SHOP_WEAPON, Button)
+    private readonly btnTabShopWeapon: Button;
+    @component(BUTTON_TAB_SHOP_AMMUNITION, Button)
+    private readonly btnTabShopAmmunition: Button;
+    @component(BUTTON_TAB_SHOP_ARMOR, Button)
+    private readonly btnTabShopArmor: Button;
+    @component(BUTTON_TAB_SHOP_MAGIC, Button)
+    private readonly btnTabShopMagic: Button;
+    @component(BUTTON_TAB_SHOP_ITEMS, Button)
+    private readonly btnTabShopItems: Button;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
+    private shopFilter: string[] = [];
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -142,6 +155,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
 
+        this.btnTabShopAll.onClick = target => this.onShopFilterClick(target, ['armor', 'weapon', 'magic', 'disposable', 'ammunition', 'provision']);
+        this.btnTabShopWeapon.onClick = target => this.onShopFilterClick(target, ['weapon']);
+        this.btnTabShopAmmunition.onClick = target => this.onShopFilterClick(target, ['ammunition']);
+        this.btnTabShopArmor.onClick = target => this.onShopFilterClick(target, ['armor']);
+        this.btnTabShopMagic.onClick = target => this.onShopFilterClick(target, ['magic']);
+        this.btnTabShopItems.onClick = target => this.onShopFilterClick(target, ['disposable', 'provision']);
+        this.btnTabShopAll.disable();
+
         this.labelHealth.descriptionPopup = this.itemDescription;
         this.labelStamina.descriptionPopup = this.itemDescription;
         this.labelMana.descriptionPopup = this.itemDescription;
@@ -165,6 +186,17 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
         this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
         this.labelLuck.description = { Luck: 'Affects critical chance' };
+    }
+
+    protected onShopFilterClick(target: Button, filter: string[]): void {
+        this.btnTabShopAll === target ? this.btnTabShopAll.disable() : this.btnTabShopAll.enable();
+        this.btnTabShopWeapon === target ? this.btnTabShopWeapon.disable() : this.btnTabShopWeapon.enable();
+        this.btnTabShopAmmunition === target ? this.btnTabShopAmmunition.disable() : this.btnTabShopAmmunition.enable();
+        this.btnTabShopArmor === target ? this.btnTabShopArmor.disable() : this.btnTabShopArmor.enable();
+        this.btnTabShopMagic === target ? this.btnTabShopMagic.disable() : this.btnTabShopMagic.enable();
+        this.btnTabShopItems === target ? this.btnTabShopItems.disable() : this.btnTabShopItems.enable();
+        this.shopFilter = filter;
+        this.updateShopStatus(this.state.shopStatus);
     }
 
     protected goToLobby(): void {
@@ -206,13 +238,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
+        const filter = (type: string, arr?: any[]) => !this.shopFilter.length || this.shopFilter.includes(type) ? (arr ?? []) : [];
         const inventoryItems: InventoryItem[] = [
-            ...(inventory.weapon || []),
-            ...(inventory.ammunition || []),
-            ...(inventory.magic || []),
-            ...(inventory.armor || []),
-            ...(inventory.disposable || []),
-            ...(inventory.provision || []),
+            ...filter('weapon', inventory.weapon),
+            ...filter('ammunition', inventory.ammunition),
+            ...filter('magic', inventory.magic),
+            ...filter('armor', inventory.armor),
+            ...filter('disposable', inventory.disposable),
+            ...filter('provision', inventory.provision),
         ];
         inventoryItems.forEach(v => this.updateShopItem(v));
         this.shopItems.forEach((icon, uid) => {

@@ -215,10 +215,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected addChatMessage(message: ChatMessage): void {
         const nickname = this.chatState.participants[message.from].nickname;
+        const colorClass = this.isCurrentPlayerId(message.from) ? 'light-green lighten-1' : 'light-blue lighten-1';
         this.gameChat.value =
-            (this.isCurrentPlayerId(message.from) ?
-                `<span class="light-green lighten-1">${nickname}:</span><br>` :
-                `<span class="light-blue lighten-1">${nickname}:</span><br>`) +
+            `<span class="${colorClass}">${nickname}</span><br>` +
             convert(message.message) + '<br>' +
             this.gameChat.value;
     }

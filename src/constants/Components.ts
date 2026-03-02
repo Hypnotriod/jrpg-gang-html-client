@@ -31,6 +31,12 @@ export const BUTTON_ABANDON: string = 'button_abandon';
 export const BUTTON_LEAVE: string = 'button_leave';
 export const BUTTON_COMPLETE_JOB: string = 'button_complete_job';
 export const BUTTON_QUIT_JOB: string = 'button_quit_job';
+export const BUTTON_TAB_SHOP_ALL: string = 'button_tab_shop_all';
+export const BUTTON_TAB_SHOP_WEAPON: string = 'button_tab_shop_weapon';
+export const BUTTON_TAB_SHOP_AMMUNITION: string = 'button_tab_shop_ammunition';
+export const BUTTON_TAB_SHOP_ARMOR: string = 'button_tab_shop_armor';
+export const BUTTON_TAB_SHOP_MAGIC: string = 'button_tab_shop_magic';
+export const BUTTON_TAB_SHOP_ITEMS: string = 'button_tab_shop_items';
 
 export const CHECKBOX_AUTO: string = 'checkbox_auto';
 export const CHECKBOX_SELL: string = 'checkbox_sell';
