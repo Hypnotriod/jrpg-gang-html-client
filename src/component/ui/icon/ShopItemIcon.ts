@@ -26,6 +26,7 @@ export default class ShopItemIcon extends ItemIcon {
 
     public update(data: Disposable | Ammunition | Equipment): void {
         super.update(data);
-        this.priceLabel.value = `$${data.price.coins}`;
+        this.priceLabel.value = `$${data.price.coins}` +
+            (data.price.ruby ? `◇${data.price.ruby}` : '');
     }
 }

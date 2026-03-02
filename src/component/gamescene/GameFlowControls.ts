@@ -139,7 +139,15 @@ export default class GameFlowControls extends GameBase {
         }
         if (this.autoNextPhaseInProgress) { return; }
         this.autoNextPhaseInProgress = true;
-        this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), 1500);
+        let timeout = 1100;
+        if ([GamePhase.TAKE_ACTION_AI].includes(this.state.gameState.nextPhase)) {
+            timeout = 500;
+        }
+        if ([GamePhase.ACTION_COMPLETE].includes(this.state.gameState.nextPhase) &&
+            (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP].includes(this.state.gameState.unitActionResult?.action.action))) {
+            timeout = 500;
+        }
+        this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), timeout);
     }
 
     protected onNextPhase(): void {
