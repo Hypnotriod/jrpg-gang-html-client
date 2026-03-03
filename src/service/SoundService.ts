@@ -41,9 +41,17 @@ export class SoundService {
     public static play(name: SoundName, options?: { delayMs?: number }): void {
         const sound = SoundService.private[name];
         if (!SoundService.ready || !sound) return;
+        const onCanPlayThrough = () => {
+            sound.removeEventListener('canplaythrough', onCanPlayThrough);
+            sound.play();
+        }
         setTimeout(() => {
             sound.currentTime = 0;
-            sound.play();
+            if (sound.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA) {
+                sound.play();
+            } else {
+                sound.addEventListener('canplaythrough', onCanPlayThrough, false);
+            }
         }, options?.delayMs ?? 0);
     }
 }
