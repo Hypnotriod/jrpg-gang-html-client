@@ -12,6 +12,7 @@ export enum SoundName {
     STUNNED = 'stunned',
     HORN = 'horn',
     DOOR = 'door',
+    COMPLETE = 'complete',
 }
 
 export class SoundService {
@@ -32,6 +33,7 @@ export class SoundService {
         SoundService.private[SoundName.STUNNED] = new Audio('assets/sounds/stunned.mp3');
         SoundService.private[SoundName.HORN] = new Audio('assets/sounds/horn.mp3');
         SoundService.private[SoundName.DOOR] = new Audio('assets/sounds/door.mp3');
+        SoundService.private[SoundName.COMPLETE] = new Audio('assets/sounds/complete.mp3');
 
         window.document.addEventListener('mousedown', () => (SoundService.ready = true));
     }

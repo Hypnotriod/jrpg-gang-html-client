@@ -211,10 +211,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         ) {
             SoundService.play(SoundName.MOVE);
         }
-        if (this.state.gameState?.nextPhase === GamePhase.SPOT_COMPLETE ||
-            this.state.gameState?.nextPhase === GamePhase.SCENARIO_COMPLETE
+        if (this.state.gameState.nextPhase !== this.state.gameState.phase &&
+            (this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
+                this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE)
         ) {
-            SoundService.play(SoundName.BUFF);
+            SoundService.play(SoundName.COMPLETE);
         }
         if (actionType === ActionType.EQUIP || actionType === ActionType.UNEQUIP) {
             SoundService.play(SoundName.EQUIP);
