@@ -56,16 +56,13 @@ export default class GameFlowControls extends GameBase {
         this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber} / ${this.state.gameState.state.spotsTotal}`;
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
-        switch (gamePhase) {
-            case GamePhase.SCENARIO_COMPLETE:
-            case GamePhase.SPOT_COMPLETE:
-                this.leaveButton.show();
-                this.retreatButton.hide();
-                break;
-            default:
-                this.leaveButton.hide();
-                this.retreatButton.show();
-                break;
+        if ((gamePhase === GamePhase.SPOT_COMPLETE || gamePhase === GamePhase.SCENARIO_COMPLETE) &&
+            this.currentActor()?.isDead !== true) {
+            this.leaveButton.show();
+            this.retreatButton.hide();
+        } else {
+            this.leaveButton.hide();
+            this.retreatButton.show();
         }
         switch (gamePhase) {
             case GamePhase.READY_FOR_START_ROUND:
@@ -200,7 +197,7 @@ export default class GameFlowControls extends GameBase {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
         const unit: GameUnit = this.currentActor();
         if (!unit) { return false; }
-        if (this.isCurrentUnitTurn() && this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
+        if (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
             return false;
         }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||

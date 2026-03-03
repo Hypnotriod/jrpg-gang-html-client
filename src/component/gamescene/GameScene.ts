@@ -145,6 +145,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     public override show(): void {
         this.communicator.sendMessage(RequestType.CHAT_STATE);
         super.show();
+        this.unitItems.destroy();
         SoundService.play(SoundName.DOOR);
         SoundService.play(SoundName.HORN, { delayMs: 700 });
     }
@@ -155,7 +156,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public destroy(): void {
-        this.unitItems.destroy();
         this.battlefield.destroy();
         this.gameLog.value = '';
     }
@@ -200,7 +200,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             actionresult === ActionResultType.NOT_ALLOWED ||
             actionresult === ActionResultType.NOT_EUIPPED ||
             actionresult === ActionResultType.NOT_REACHABLE ||
-            actionresult === ActionResultType.NO_AMMUNITION
+            actionresult === ActionResultType.NO_AMMUNITION ||
+            actionresult === ActionResultType.NOT_EMPTY ||
+            actionresult === ActionResultType.NOT_ENOUGH_RESOURCES ||
+            actionresult === ActionResultType.NOT_ENOUGH_SLOTS ||
+            actionresult === ActionResultType.NOT_FOUND
         ) {
             SoundService.play(SoundName.DENIED);
             return;
