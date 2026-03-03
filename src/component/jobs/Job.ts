@@ -12,6 +12,7 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 export default class Job extends Component {
@@ -66,6 +67,7 @@ export default class Job extends Component {
     }
 
     protected completeJobClick(): void {
+        SoundService.play(SoundName.TREASURE);
         this.communicator.sendMessage(RequestType.COMPLETE_JOB);
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
     }

@@ -9,6 +9,7 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Label from '../ui/label/Label';
 import GameBase from './GameBase';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -46,7 +47,7 @@ export default class GameFlowControls extends GameBase {
         this.nextPhaseButton.onClick = target => this.onNextPhase();
         this.nextBattleButton.onClick = target => this.onNextPhase();
         this.waitButton.onClick = target => this.onWait();
-        this.retreatButton.onClick = target => this.onLeaveGameClick();
+        this.retreatButton.onClick = target => this.onRetreatGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
     }
@@ -144,7 +145,7 @@ export default class GameFlowControls extends GameBase {
             timeout = 500;
         }
         if ([GamePhase.ACTION_COMPLETE].includes(this.state.gameState.nextPhase) &&
-            (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP].includes(this.state.gameState.unitActionResult?.action.action))) {
+            (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP].includes(this.state.gameState.unitActionResult.action.action))) {
             timeout = 500;
         }
         this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), timeout);
@@ -183,15 +184,25 @@ export default class GameFlowControls extends GameBase {
         this.autoNextPhaseInProgress = false;
     }
 
+    protected onRetreatGameClick(): void {
+        this.communicator.sendMessage(RequestType.LEAVE_GAME);
+        this.communicator.sendMessage(RequestType.USER_STATUS);
+        SoundService.play(SoundName.DOOR);
+    }
+
     protected onLeaveGameClick(): void {
         this.communicator.sendMessage(RequestType.LEAVE_GAME);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        SoundService.play(SoundName.TREASURE);
     }
 
     protected checkAutoNextPhaseConditions(): boolean {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
         const unit: GameUnit = this.currentActor();
         if (!unit) { return false; }
+        if (this.isCurrentUnitTurn() && this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
+            return false;
+        }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {

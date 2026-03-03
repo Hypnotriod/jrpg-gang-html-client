@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_TAB_GAME_CHAT, BUTTON_TAB_GAME_LOG, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
+import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -20,6 +20,7 @@ import GameUnitsQueue from './GameUnitsQueue';
 import Button from '../ui/button/Button';
 import TextInput from '../ui/input/TextInput';
 import { convert } from 'html-to-text';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -103,7 +104,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public handleServerResponse(response: Response): void {
-        if (response.status !== ResponseStatus.OK) { return; }
+        if (response.status !== ResponseStatus.OK) {
+            SoundService.play(SoundName.DENIED);
+            return;
+        }
+        const corpsesNumber = this.state.gameState?.spot.battlefield.corpses?.length ?? 0;
         switch (response.type) {
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
@@ -132,11 +137,16 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.handleChatState(chatState);
                 break;
         }
+        if (corpsesNumber < (this.state.gameState?.spot.battlefield.corpses?.length ?? 0)) {
+            SoundService.play(SoundName.DEATH);
+        }
     }
 
     public override show(): void {
         this.communicator.sendMessage(RequestType.CHAT_STATE);
         super.show();
+        SoundService.play(SoundName.DOOR);
+        SoundService.play(SoundName.HORN, { delayMs: 700 });
     }
 
     public handleConnectionLost(): void {
@@ -163,6 +173,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         if (this.state.gameState.phase === GamePhase.SPOT_COMPLETE &&
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.destroy();
+            SoundService.play(SoundName.DOOR);
+            SoundService.play(SoundName.HORN, { delayMs: 700 });
         }
         this.updatePlayerInfoFromGameState(this.state.gameState);
         this.unitItems.update(this.activeItemTypes(this.state.gameState.nextPhase));
@@ -177,6 +189,36 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
         this.logAction();
+        this.handleGameActionSound();
+    }
+
+    private handleGameActionSound(): void {
+        const actionresult = this.state.gameState.unitActionResult?.result.result;
+        const actionType = this.state.gameState.unitActionResult?.action.action;
+        if (actionresult === ActionResultType.CANT_USE ||
+            actionresult === ActionResultType.IS_BROKEN ||
+            actionresult === ActionResultType.NOT_ALLOWED ||
+            actionresult === ActionResultType.NOT_EUIPPED ||
+            actionresult === ActionResultType.NOT_REACHABLE ||
+            actionresult === ActionResultType.NO_AMMUNITION
+        ) {
+            SoundService.play(SoundName.DENIED);
+            return;
+        }
+        if ((this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) &&
+            (actionType === ActionType.PLACE || actionType === ActionType.MOVE)
+        ) {
+            SoundService.play(SoundName.MOVE);
+        }
+        if (this.state.gameState?.nextPhase === GamePhase.SPOT_COMPLETE ||
+            this.state.gameState?.nextPhase === GamePhase.SCENARIO_COMPLETE
+        ) {
+            SoundService.play(SoundName.BUFF);
+        }
+        if (actionType === ActionType.EQUIP || actionType === ActionType.UNEQUIP) {
+            SoundService.play(SoundName.EQUIP);
+        }
     }
 
     protected handlePlayerInfo(): void {

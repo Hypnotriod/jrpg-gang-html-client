@@ -7,6 +7,7 @@ import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import ItemIcon from '../ui/icon/ItemIcon';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import GameBase from './GameBase';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -101,6 +102,7 @@ export default class GameUnitItems extends GameBase {
         ) {
             const wansntChoosed = !target.choosed && target.selected;
             this.unitItems.forEach(i => i.unchoose());
+            SoundService.play(SoundName.CLICK);
             target.choose();
             if (wansntChoosed) { return; }
         }
@@ -111,6 +113,7 @@ export default class GameUnitItems extends GameBase {
             target.data.type === ItemType.MAGIC) {
             return;
         }
+        SoundService.play(SoundName.CLICK);
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,

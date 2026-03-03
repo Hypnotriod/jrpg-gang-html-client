@@ -1,8 +1,8 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
-import { Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
+import { ActionResultData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -19,6 +19,7 @@ import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { USER_CLASSES } from '../../constants/Configuration';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @singleton()
 @injectable()
@@ -135,7 +136,13 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.hide();
         this.addHorizontalScroll(this.findChild(UNIT_ITEMS_CONTAINER)!, 78);
         this.itemDescription.hide();
-        this.communicator.subscribe([RequestType.USER_STATUS, RequestType.JOIN, RequestType.SHOP_STATUS], this);
+        this.communicator.subscribe([
+            RequestType.USER_STATUS,
+            RequestType.JOIN,
+            RequestType.SHOP_STATUS,
+            RequestType.CONFIGURATION_ACTION,
+            RequestType.SHOP_ACTION
+        ], this);
         this.lobbyButton.onClick = target => this.goToLobby();
         this.jobsButton.onClick = target => this.goToJobs();
         this.btnHealth.onClick = target => this.skillUp(ActionProperty.HEALTH);
@@ -211,8 +218,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public handleServerResponse(response: Response): void {
-        if (response.status !== ResponseStatus.OK) { return; }
+        if (response.status !== ResponseStatus.OK) {
+            SoundService.play(SoundName.DENIED);
+            return;
+        }
         switch (response.type) {
+            case RequestType.SHOP_ACTION:
+            case RequestType.CONFIGURATION_ACTION:
+                this.manageRequestedActionSound(response);
+                break;
             case RequestType.JOIN:
             case RequestType.USER_STATUS:
                 this.updateUserStatus(response.data as UserStateData);
@@ -231,6 +245,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitItems.clear();
         this.shopItems.clear();
         this.hide();
+    }
+
+    protected manageRequestedActionSound(response: Response) {
+        const action = (response.data as ActionResultData).action;
+        if ((response.data as ActionResultData).actionResult.result !== ActionResultType.ACCOMPLISHED) {
+            SoundService.play(SoundName.DENIED);
+            return;
+        }
+        if (action.action === ActionType.BUY)
+            SoundService.play(SoundName.TREASURE);
+        if (action.action === ActionType.EQUIP || action.action === ActionType.UNEQUIP)
+            SoundService.play(SoundName.EQUIP);
+        if (action.action === ActionType.REPAIR)
+            SoundService.play(SoundName.REPAIR);
+        if (action.action === ActionType.SELL)
+            SoundService.play(SoundName.TREASURE);
     }
 
     protected updateShopStatus(data: GameShopStatus): void {
@@ -442,6 +472,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected onUnitItemClick(target: ItemIcon): void {
+        SoundService.play(SoundName.CLICK);
         if (this.checkboxSell.checked) {
             this.sellItem(target);
         } else if (this.checkboxRepair.checked) {
@@ -464,7 +495,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected euipUneuipItem(target: ItemIcon): void {
-        if (target.data.type === ItemType.NONE || target.data.type === ItemType.DISPOSABLE) { return; }
+        if (target.data.type === ItemType.NONE ||
+            target.data.type === ItemType.DISPOSABLE
+            || target.data.type === ItemType.PROVISION
+        ) { return; }
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,
             itemUid: target.data.uid!,

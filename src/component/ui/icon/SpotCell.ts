@@ -12,6 +12,7 @@ import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 import GameUnitItems from '../../gamescene/GameUnitItems';
 import GameStateService from '../../../service/GameStateService';
+import { SoundName, SoundService } from '../../../service/SoundService';
 
 @injectable()
 export default class SpotCell extends Component {
@@ -71,6 +72,8 @@ export default class SpotCell extends Component {
     private _x: number;
     private _y: number;
     private _hover: boolean = false;
+
+    private stunnedSoundPlayed: boolean = false;
 
     public displayActionChance: boolean = false;
 
@@ -246,6 +249,12 @@ export default class SpotCell extends Component {
 
     public updateWithUnit(unit: GameUnit, isActive: boolean, forceDisable: boolean = false): void {
         this.hideAll();
+        if (!this.stunnedSoundPlayed && unit.state.isStunned && !forceDisable) {
+            SoundService.play(SoundName.STUNNED);
+            this.stunnedSoundPlayed = true;
+        } else if (!unit.state.isStunned) {
+            this.stunnedSoundPlayed = false;
+        }
         this.idLabel.show();
         this.idLabel.value = String(unit.uid);
         this._unit = unit;
@@ -287,12 +296,15 @@ export default class SpotCell extends Component {
         }
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         if (!this.actionService.hasEffect(result, targetUid)) {
+            SoundService.play(SoundName.MISS);
             this._iconMissed.show();
         } else if (this.actionService.hasDamage(result, targetUid)) {
+            SoundService.play(SoundName.HIT);
             this._iconHit.show();
             this.hitHpLabel.show();
             this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
         } else if (this.actionService.hasRecovery(result, targetUid)) {
+            SoundService.play(SoundName.BUFF);
             this._iconEffect.show();
         }
     }

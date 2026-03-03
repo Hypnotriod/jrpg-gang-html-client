@@ -14,6 +14,7 @@ import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import { KEY_SESSION_ID } from '../../dto/responces';
+import { SoundService } from '../../service/SoundService';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -37,6 +38,7 @@ export default class MainScene extends Component {
 
     protected initialize(): void {
         this.hide();
+        SoundService.initialize();
         this.initializeComponents().then(() => {
             this.login.tryToAutologin();
             this.show();
