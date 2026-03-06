@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED, SELECT_ROOMS_CONTAINER } from '../../constants/Components';
+import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED, SELECT_ROOMS_CONTAINER, BUTTON_CREATE_ROOM_MEDIUM } from '../../constants/Components';
 import { RoomInfo } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
@@ -24,6 +24,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly selectRoomsSetcion: Container;
     @component(BUTTON_CREATE_ROOM_EASY, Button)
     private readonly createRoomEasyButton: Button;
+    @component(BUTTON_CREATE_ROOM_MEDIUM, Button)
+    private readonly createRoomMediumButton: Button;
     @component(BUTTON_CREATE_ROOM_ADVANCED, Button)
     private readonly createRoomAdvancedButton: Button;
     @component(BUTTON_CONFIGURATOR, Button)
@@ -46,6 +48,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.hide();
         this.createRoomEasyButton.disable();
         this.createRoomEasyButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.EASY);
+        this.createRoomMediumButton.disable();
+        this.createRoomMediumButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.MEDIUM);
         this.createRoomAdvancedButton.disable();
         this.createRoomAdvancedButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.ADVANCED);
         this.configuratorButton.onClick = target => this.goToUnitConfig();
@@ -136,6 +140,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected updateState(isUserInRooms: boolean): void {
         isUserInRooms ? this.selectRoomsSetcion.hide() : this.selectRoomsSetcion.show();
         this.createRoomEasyButton.enabled = !isUserInRooms;
+        this.createRoomMediumButton.enabled = !isUserInRooms;
         this.createRoomAdvancedButton.enabled = !isUserInRooms;
         this.configuratorButton.enabled = !isUserInRooms;
     }

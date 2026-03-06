@@ -7,5 +7,6 @@ export const USER_CLASSES: string[] = [
 
 export const SCENARIO_IDS = {
     EASY: 'easy-01',
+    MEDIUM: 'medium-01',
     ADVANCED: 'advanced-01',
 }

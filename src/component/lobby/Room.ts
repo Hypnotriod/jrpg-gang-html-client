@@ -64,8 +64,11 @@ export default class Room extends Component {
             case SCENARIO_IDS.EASY:
                 (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_01.png';
                 break;
-            case SCENARIO_IDS.ADVANCED:
+            case SCENARIO_IDS.MEDIUM:
                 (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_02.png';
+                break;
+            case SCENARIO_IDS.ADVANCED:
+                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_03.png';
                 break;
         }
 
