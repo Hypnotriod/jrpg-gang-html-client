@@ -15,6 +15,16 @@ export enum SoundName {
     HORN = 'horn',
     DOOR = 'door',
     COMPLETE = 'complete',
+    BROOM = 'broom',
+    WASHING = 'washing',
+    BOOK = 'book',
+    CLOCK_TICK = 'clock_tick',
+}
+
+export const JOB_SOUND: { [key: string]: SoundName } = {
+    'job-clean-01': SoundName.BROOM,
+    'job-clean-02': SoundName.WASHING,
+    'job-library-01': SoundName.BOOK,
 }
 
 export class SoundService {
@@ -35,6 +45,10 @@ export class SoundService {
         SoundService.sounds[SoundName.HORN] = new Howl({ src: ['assets/sounds/horn.mp3'] });
         SoundService.sounds[SoundName.DOOR] = new Howl({ src: ['assets/sounds/door.mp3'] });
         SoundService.sounds[SoundName.COMPLETE] = new Howl({ src: ['assets/sounds/complete.mp3'] });
+        SoundService.sounds[SoundName.BROOM] = new Howl({ src: ['assets/sounds/broom.mp3'] });
+        SoundService.sounds[SoundName.WASHING] = new Howl({ src: ['assets/sounds/washing.mp3'] });
+        SoundService.sounds[SoundName.BOOK] = new Howl({ src: ['assets/sounds/book.mp3'] });
+        SoundService.sounds[SoundName.CLOCK_TICK] = new Howl({ src: ['assets/sounds/clock_tick.mp3'] });
     }
 
     public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; }): void {

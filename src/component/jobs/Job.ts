@@ -12,7 +12,7 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { JOB_SOUND, SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 export default class Job extends Component {
@@ -63,6 +63,7 @@ export default class Job extends Component {
         this.communicator.sendMessage(RequestType.APPLY_FOR_A_JOB, {
             code: this.config.code,
         } as ApplyForAJobRequestData);
+        SoundService.play(JOB_SOUND[this.config.code]);
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
     }
 
@@ -111,6 +112,8 @@ export default class Job extends Component {
             if (timeLeft === 0) {
                 clearInterval(this.countdownId);
                 this.communicator.sendMessage(RequestType.JOBS_STATUS);
+            } else {
+                SoundService.play(SoundName.CLOCK_TICK);
             }
         }, 1000);
     }
