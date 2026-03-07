@@ -108,7 +108,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             SoundService.play(SoundName.DENIED);
             return;
         }
-        const corpsesNumber = this.state.gameState?.spot.battlefield.corpses?.length ?? 0;
         switch (response.type) {
             case RequestType.GAME_STATE:
                 this.state.gameState = (response.data as GameStateData).gameState;
@@ -117,8 +116,12 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
+                const corpsesNumber = this.state.gameState?.spot.battlefield.corpses?.length ?? 0;
                 this.state.gameState = (response.data as GameActionData | GameNextPhaseData).actionResult;
                 this.handleGameAction();
+                if (corpsesNumber < (this.state.gameState?.spot.battlefield.corpses?.length ?? 0)) {
+                    SoundService.play(SoundName.DEATH);
+                }
                 break;
             case RequestType.PLAYER_INFO:
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
@@ -137,17 +140,16 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.handleChatState(chatState);
                 break;
         }
-        if (corpsesNumber < (this.state.gameState?.spot.battlefield.corpses?.length ?? 0)) {
-            SoundService.play(SoundName.DEATH);
-        }
     }
 
     public override show(): void {
         this.communicator.sendMessage(RequestType.CHAT_STATE);
         super.show();
         this.unitItems.destroy();
-        SoundService.play(SoundName.DOOR);
-        SoundService.play(SoundName.HORN, { delayMs: 700 });
+        if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
+            SoundService.play(SoundName.DOOR);
+            SoundService.play(SoundName.HORN, { delayMs: 700 });
+        }
     }
 
     public handleConnectionLost(): void {

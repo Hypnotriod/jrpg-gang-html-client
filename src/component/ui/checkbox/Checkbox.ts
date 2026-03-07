@@ -1,3 +1,4 @@
+import { SoundName, SoundService } from '../../../service/SoundService';
 import Component from '../../Component';
 
 export default class Checkbox extends Component {
@@ -5,6 +6,7 @@ export default class Checkbox extends Component {
 
     protected initialize(): void {
         (this.view as HTMLInputElement).onchange = (event: MouseEvent) => {
+            SoundService.play(SoundName.CLICK);
             this.onChangeCallback && this.onChangeCallback(this);
             event.stopPropagation();
         };
