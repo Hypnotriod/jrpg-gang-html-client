@@ -105,9 +105,11 @@ export default class GameBase extends Component {
         if (spotComplete.booty) {
             result.booty = spotComplete.booty;
         }
-        if (spotComplete.achievements) {
-            result.achievements = spotComplete.achievements;
-        }
+        spotComplete.achievements && Object.keys(spotComplete.achievements).forEach(key => {
+            result.achievements = result.achievements || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.achievements[this.getUnitName(unit)] = spotComplete.achievements![key];
+        });
         return result;
     }
 

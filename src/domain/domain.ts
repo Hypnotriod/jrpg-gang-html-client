@@ -429,7 +429,7 @@ export interface EndRoundResult {
 export interface SpotCompleteResult {
     experience?: { [key: number]: number };
     booty?: UnitBooty;
-    achievements?: { [key: string]: number };
+    achievements?: { [key: number]: { [key: string]: number } };
 }
 
 export interface GameEvent {
