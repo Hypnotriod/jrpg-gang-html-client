@@ -263,6 +263,7 @@ export interface QuestTrigger {
 }
 
 export interface QuestReward extends UnitBooty {
+    experience: number;
     achievements?: { [key: string]: number };
     items?: UnitInventory;
 }
