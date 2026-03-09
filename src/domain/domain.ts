@@ -216,6 +216,13 @@ export interface UnitStats {
     resistance: UnitResistance;
 }
 
+export enum UnitQuestStatus {
+    INACTIVE = 'inactive',
+    ACTIVE = 'active',
+    COMPLETED = 'completed',
+    FAILED = 'failed',
+}
+
 export interface Unit {
     uid?: number;
     code?: string;
@@ -229,6 +236,7 @@ export interface Unit {
     inventory: UnitInventory;
     slots: { [key: string]: number };
     achievements: { [key: string]: number };
+    quests: { [key: string]: UnitQuestStatus };
     position: Position;
 }
 
@@ -247,6 +255,39 @@ export interface GameShopStatus {
     items: UnitInventory;
     purchase: { [key: string]: UnitBooty };
     repair: { [key: string]: UnitBooty };
+}
+
+export interface QuestTrigger {
+    requirements?: UnitRequirements;
+    achievements?: { [key: string]: number };
+}
+
+export interface QuestReward extends UnitBooty {
+    achievements?: { [key: string]: number };
+    items?: UnitInventory;
+}
+
+export interface Quest {
+    name: string;
+    code: string;
+    reward: QuestReward;
+    activation: QuestTrigger;
+    completion: QuestTrigger;
+    description: string;
+}
+
+export interface GameQuestProgress {
+    target: number;
+    goal: number;
+}
+
+export interface GameQuestStatus extends Quest {
+    status: UnitQuestStatus;
+    progress?: { [key: string]: GameQuestProgress };
+}
+
+export interface GameQuestsStatus {
+    quests: GameQuestStatus[];
 }
 
 export enum GamePhase {
@@ -300,6 +341,9 @@ export enum ActionType {
     MOVE = 'move',
     BUY = 'buy',
     SELL = 'sell',
+    ACTIVATE = 'activate',
+    DEACTIVATE = 'deactivate',
+    COMPLETE = 'complete',
     REPAIR = 'repair',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
@@ -333,6 +377,7 @@ export interface Action {
     itemUid?: number;
     quantity?: number;
     property?: ActionProperty;
+    questCode?: string;
     position?: Position;
 }
 
@@ -363,6 +408,7 @@ export interface ActionResult {
     drop?: { [key: number]: UnitBooty };
     achievements?: { [key: string]: number };
     booty?: UnitBooty;
+    items?: UnitInventory;
     result: ActionResultType;
 }
 

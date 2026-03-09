@@ -15,6 +15,8 @@ export enum RequestType {
     USER_STATUS = 'userStatus',
     SHOP_STATUS = 'shopStatus',
     SHOP_ACTION = 'shopAction',
+    QUESTS_STATUS = 'questsStatus',
+    QUEST_ACTION = 'questAction',
     START_GAME = 'startGame',
     LEAVE_GAME = 'leaveGame',
     GAME_ACTION = 'gameAction',
