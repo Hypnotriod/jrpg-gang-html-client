@@ -71,7 +71,7 @@ export interface UnitAttributes {
 export interface UnitRequirements extends UnitAttributes {
     level?: number;
     class?: string;
-    achievements?: { [key: string]: number };
+    achievements?: UnitAchievements;
 }
 
 export interface UnitResistance extends Damage {
@@ -223,6 +223,10 @@ export enum UnitQuestStatus {
     FAILED = 'failed',
 }
 
+export type UnitAchievements = { [key: string]: number };
+
+export type UnitQuests = { [key: string]: UnitQuestStatus };
+
 export interface Unit {
     uid?: number;
     code?: string;
@@ -235,7 +239,7 @@ export interface Unit {
     modification?: UnitModificationImpact[];
     inventory: UnitInventory;
     slots: { [key: string]: number };
-    achievements: { [key: string]: number };
+    achievements: UnitAchievements;
     quests: { [key: string]: UnitQuestStatus };
     position: Position;
 }
@@ -259,12 +263,13 @@ export interface GameShopStatus {
 
 export interface QuestTrigger {
     requirements?: UnitRequirements;
-    achievements?: { [key: string]: number };
+    achievements?: UnitAchievements;
+    quests: { [key: string]: UnitQuestStatus };
 }
 
 export interface QuestReward extends UnitBooty {
     experience: number;
-    achievements?: { [key: string]: number };
+    achievements?: UnitAchievements;
     items?: UnitInventory;
 }
 
@@ -407,7 +412,8 @@ export interface ActionResult {
     temporalModification?: { [key: number]: UnitModificationImpact[] };
     experience?: { [key: number]: number };
     drop?: { [key: number]: UnitBooty };
-    achievements?: { [key: string]: number };
+    achievements?: { [key: number]: UnitAchievements };
+    quests?: { [key: string]: UnitQuestStatus };
     booty?: UnitBooty;
     items?: UnitInventory;
     result: ActionResultType;
@@ -423,13 +429,13 @@ export interface EndRoundResult {
     recovery?: { [key: number]: UnitRecovery };
     experience?: { [key: number]: number };
     drop?: { [key: number]: UnitBooty };
-    achievements?: { [key: string]: number };
+    achievements?: { [key: number]: UnitAchievements };
 }
 
 export interface SpotCompleteResult {
     experience?: { [key: number]: number };
     booty?: UnitBooty;
-    achievements?: { [key: number]: { [key: string]: number } };
+    achievements?: { [key: number]: UnitAchievements };
 }
 
 export interface GameEvent {
