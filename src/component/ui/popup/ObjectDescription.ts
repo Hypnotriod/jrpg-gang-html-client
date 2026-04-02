@@ -38,6 +38,5 @@ export default class ObjectDescription extends Container {
                 this.renderer.column(misc, 6)
             );
         }
-
     }
 }

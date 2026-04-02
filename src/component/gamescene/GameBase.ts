@@ -56,6 +56,10 @@ export default class GameBase extends Component {
         return this._state.playerInfo?.playerId === playerId;
     }
 
+    protected isCurrentPlayerUnitId(uid: number): boolean {
+        return this._state.playerInfo?.unitUid === uid;
+    }
+
     protected findUnitByUid(unitUid: number): GameUnit {
         const result: GameUnit | undefined = this._state.gameState.spot.battlefield.units?.find(
             unit => unit.uid === unitUid);
@@ -88,6 +92,11 @@ export default class GameBase extends Component {
             result.drop = result.drop || {};
             const unit = this.findUnitByUid(Number(key));
             result.drop[this.getUnitName(unit)] = endRound.drop![key];
+        });
+        endRound.achievements && Object.keys(endRound.achievements).forEach(key => {
+            result.achievements = result.achievements || {};
+            const unit = this.findUnitByUid(Number(key));
+            result.achievements[this.getUnitName(unit)] = endRound.achievements![key];
         });
         if (endRound.achievements) {
             result.achievements = endRound.achievements;
@@ -185,7 +194,12 @@ export default class GameBase extends Component {
             });
         }
         if (actionResult.achievements) {
-            result.result.achievements = actionResult.achievements;
+            const achievements = { ...actionResult.achievements };
+            result.result.achievements = {};
+            Object.keys(achievements).forEach(key => {
+                const unit = this.findUnitByUid(Number(key));
+                result.result.achievements[this.getUnitName(unit)] = achievements[key];
+            });
         }
         if (targetUnit) {
             result.action.targetUid = undefined;

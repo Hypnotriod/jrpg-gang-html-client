@@ -3,6 +3,7 @@ import GameScene from '../component/gamescene/GameScene';
 import Jobs from '../component/jobs/Jobs';
 import Lobby from '../component/lobby/Lobby';
 import Login from '../component/login/Login';
+import Quests from '../component/quests/Quests';
 import UnitConfigurator from '../component/unitconfigurator/UnitConfigurator';
 import { RequestType } from '../dto/requests';
 import { Response, ResponseStatus, UserStateData, UserStatus } from '../dto/responces';
@@ -17,6 +18,7 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         private readonly configurator: UnitConfigurator,
         private readonly login: Login,
         private readonly gameScene: GameScene,
+        private readonly quests: Quests,
         private readonly lobby: Lobby) {
         this.communicator.subscribe([RequestType.JOIN, RequestType.USER_STATUS], this);
     }
@@ -30,6 +32,7 @@ export default class SceneSwitcherService implements ServerCommunicatorHandler {
         this.gameScene.hide();
         this.lobby.hide();
         this.configurator.hide();
+        this.quests.hide();
 
         status === UserStatus.JOINED && this.configurator.show();
         status === UserStatus.AT_JOB && this.jobs.show();

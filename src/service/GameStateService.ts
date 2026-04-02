@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitBooty, UnitRequirements } from '../domain/domain';
+import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -78,6 +78,7 @@ export default class GameStateService {
         return (!required.class || required.class === unit.class) &&
             (required.level ?? 0) <= unit.stats.progress.level &&
             this.checkAchievements(required.achievements) &&
+            this.checkQuests(required.quests) &&
             required.strength <= unit.stats.attributes.strength &&
             required.physique <= unit.stats.attributes.physique &&
             required.agility <= unit.stats.attributes.agility &&
@@ -87,10 +88,17 @@ export default class GameStateService {
             required.luck <= unit.stats.attributes.luck
     }
 
-    public checkAchievements(required?: { [key: string]: number }) {
+    public checkAchievements(required?: UnitAchievements) {
         const unit = this.userState.unit;
         if (!required || !unit.achievements) return true;
-        return [...Object.keys(required)].every(k => required[k] <= unit.achievements[k]);
+        return [...Object.keys(required)].every(
+            k => required[k] < 0 ? required[k] > (unit.achievements[k] ?? 0) * -1 : required[k] <= (unit.achievements[k] ?? 0));
+    }
+
+    public checkQuests(required?: UnitQuests) {
+        const unit = this.userState.unit;
+        if (!required || !unit.quests) return true;
+        return [...Object.keys(required)].every(k => required[k] === unit.quests[k]);
     }
 
     public checkPrice(required: UnitBooty): boolean {

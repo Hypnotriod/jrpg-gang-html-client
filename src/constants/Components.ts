@@ -8,6 +8,9 @@ export const GAME_CONTAINER: string = 'game_container';
 export const JOBS_CONTAINER: string = 'jobs_container';
 export const JOBS_LIST_CONTAINER: string = 'jobs_list_container';
 
+export const QUESTS_CONTAINER: string = 'quests_container';
+export const QUESTS_LIST_CONTAINER: string = 'quests_list_container';
+
 export const ROOMS_CONTAINER: string = 'rooms_container';
 export const SELECT_ROOMS_CONTAINER: string = 'select_rooms_container';
 
@@ -20,6 +23,7 @@ export const BUTTON_CREATE_ROOM_MEDIUM: string = 'button_create_room_medium';
 export const BUTTON_CREATE_ROOM_ADVANCED: string = 'button_create_room_advanced';
 export const BUTTON_LOBBY: string = 'button_lobby';
 export const BUTTON_JOBS: string = 'button_jobs';
+export const BUTTON_QUESTS: string = 'button_quests';
 export const BUTTON_LEVEL_UP: string = 'button_level_up';
 export const BUTTON_SORT: string = 'button_sort';
 export const BUTTON_CONFIGURATOR: string = 'button_configurator';
@@ -32,6 +36,7 @@ export const BUTTON_ABANDON: string = 'button_abandon';
 export const BUTTON_LEAVE: string = 'button_leave';
 export const BUTTON_COMPLETE_JOB: string = 'button_complete_job';
 export const BUTTON_QUIT_JOB: string = 'button_quit_job';
+export const BUTTON_COMPLETE_QUEST: string = 'button_complete_quest';
 export const BUTTON_TAB_SHOP_ALL: string = 'button_tab_shop_all';
 export const BUTTON_TAB_SHOP_WEAPON: string = 'button_tab_shop_weapon';
 export const BUTTON_TAB_SHOP_AMMUNITION: string = 'button_tab_shop_ammunition';
@@ -102,6 +107,8 @@ export const MANA_BAR: string = 'mana_bar';
 
 export const ITEM_DESCRIPTION_POPUP: string = 'item_description_popup';
 export const GAME_LOG: string = 'game_log';
+
+export const ACHIEVEMENT_POPUP: string = 'achievement_popup';
 
 export const GAME_CHAT: string = 'game_chat';
 export const INPUT_GAME_CHAT_MESSAGE: string = 'input_game_chat_message';

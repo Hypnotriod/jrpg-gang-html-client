@@ -122,6 +122,18 @@ body {
     border-radius: 3px;
 }
 
+.achievement-popup {
+    pointer-events: none;
+    position: fixed;
+    background-color: rgb(75, 87, 98);
+    z-index: 1000;
+    width: 350px;
+    padding-top: 20px;
+    border-radius: 3px;
+    margin: 10px;
+    right: 0;
+}
+
 .single-line {
     white-space: nowrap;
 }

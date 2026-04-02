@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
-import { AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
-import { AUTH_DESIGN, AUTH_STYLE, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
+import { AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
+import { AUTH_DESIGN, AUTH_STYLE, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
 import Component from '../Component';
@@ -15,6 +15,7 @@ import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import { KEY_SESSION_ID } from '../../dto/responces';
 import { SoundService } from '../../service/SoundService';
+import Quests from '../quests/Quests';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -26,6 +27,7 @@ export default class MainScene extends Component {
     private configurator: UnitConfigurator;
     private gameScene: GameScene;
     private jobs: Jobs;
+    private quests: Quests;
     private blurTimeout: number = 0;
 
     constructor(
@@ -52,6 +54,7 @@ export default class MainScene extends Component {
         await this.loaderService.load(SHOP_ITEM_ICON_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(SPOT_CELL_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(JOB_DESIGN, RESOURCE_DESIGN);
+        await this.loaderService.load(QUEST_DESIGN, RESOURCE_DESIGN);
     }
 
     protected async initializeComponents(): Promise<void> {
@@ -62,6 +65,7 @@ export default class MainScene extends Component {
         this.configurator = (await Component.instantiateHighOrderComponent(UNIT_CONFIGURATOR_CONTAINER, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE, UnitConfigurator))!;
         this.gameScene = (await Component.instantiateHighOrderComponent(GAME_CONTAINER, GAME_DESIGN, GAME_STYLE, GameScene))!;
         this.jobs = (await Component.instantiateHighOrderComponent(JOBS_CONTAINER, JOBS_DESIGN, JOBS_STYLE, Jobs))!;
+        this.quests = (await Component.instantiateHighOrderComponent(QUESTS_CONTAINER, QUESTS_DESIGN, QUESTS_STYLE, Quests))!;
     }
 
     protected initializeFocusHandler() {

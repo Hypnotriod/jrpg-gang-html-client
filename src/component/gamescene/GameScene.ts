@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_TAB_GAME_CHAT, BUTTON_TAB_GAME_LOG, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { ACHIEVEMENT_POPUP, BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, BUTTON_TAB_GAME_CHAT, BUTTON_TAB_GAME_LOG, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
@@ -21,6 +21,7 @@ import Button from '../ui/button/Button';
 import TextInput from '../ui/input/TextInput';
 import { convert } from 'html-to-text';
 import { SoundName, SoundService } from '../../service/SoundService';
+import { AchievementPopup } from '../achievements/AchievementPopup';
 
 @injectable()
 @singleton()
@@ -37,6 +38,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly buttonGameLog: Button;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
+    @component(ACHIEVEMENT_POPUP, AchievementPopup)
+    private readonly achievementPopup: AchievementPopup;
     @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
     private readonly unitsQueue: GameUnitsQueue;
     @component(BOOTY_CONTAINER, GameBooty)
@@ -191,7 +194,20 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
         this.logAction();
+        this.handleAchievements();
         this.handleGameActionSound();
+    }
+
+    private handleAchievements(): void {
+        const achievements = this.state.gameState.unitActionResult?.result.achievements ??
+            this.state.gameState.endRoundResult?.achievements ??
+            this.state.gameState.spotCompleteResult?.achievements;
+        if (!achievements) return;
+        Object.keys(achievements)
+            .filter(uid => this.isCurrentPlayerUnitId(Number(uid)))
+            .forEach(uid => {
+                Object.keys(achievements[uid]).forEach(code => this.achievementPopup.pop(code));
+            })
     }
 
     private handleGameActionSound(): void {

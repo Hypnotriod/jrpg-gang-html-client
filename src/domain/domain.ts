@@ -72,6 +72,7 @@ export interface UnitRequirements extends UnitAttributes {
     level?: number;
     class?: string;
     achievements?: UnitAchievements;
+    quests?: UnitQuests;
 }
 
 export interface UnitResistance extends Damage {
@@ -279,17 +280,11 @@ export interface Quest {
     reward: QuestReward;
     activation: QuestTrigger;
     completion: QuestTrigger;
-    description: string;
-}
-
-export interface GameQuestProgress {
-    target: number;
-    goal: number;
+    description?: string;
 }
 
 export interface GameQuestStatus extends Quest {
     status: UnitQuestStatus;
-    progress?: { [key: string]: GameQuestProgress };
 }
 
 export interface GameQuestsStatus {

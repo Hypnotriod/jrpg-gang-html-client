@@ -26,3 +26,7 @@ export const GAME_STYLE: string = COMPONENTS_PATH + 'game/game.css';
 export const JOBS_DESIGN: string = COMPONENTS_PATH + 'jobs/jobs.html';
 export const JOB_DESIGN: string = COMPONENTS_PATH + 'jobs/job.html';
 export const JOBS_STYLE: string = COMPONENTS_PATH + 'jobs/jobs.css';
+
+export const QUESTS_DESIGN: string = COMPONENTS_PATH + 'quests/quests.html';
+export const QUEST_DESIGN: string = COMPONENTS_PATH + 'quests/quest.html';
+export const QUESTS_STYLE: string = COMPONENTS_PATH + 'quests/quests.css';
