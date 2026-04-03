@@ -27,37 +27,37 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
     },
     'kill-10-rats': {
         icon: 'quest-kill-10-rats',
-        tag: 'Enemy killed',
+        tag: 'Kills',
         popup: 'You killed the Rat',
     },
     'kill-10-snakes': {
         icon: 'quest-kill-10-snakes',
-        tag: 'Enemy killed',
+        tag: 'Kills',
         popup: 'You killed the Snake',
     },
     'kill-20-rats': {
         icon: 'quest-kill-20-rats',
-        tag: 'Enemy killed',
+        tag: 'Kills',
         popup: 'You killed the Rat',
     },
     'kill-30-mosquitoes': {
         icon: 'quest-kill-30-mosquitoes',
-        tag: 'Enemy killed',
+        tag: 'Kills',
         popup: 'You killed the Mosquito',
     },
     'artifact-01': {
         icon: 'quest-find-artifact-01',
-        tag: 'Artifacts found',
+        tag: 'Artifacts',
         popup: 'You found the Cursed Goblet',
     },
     'artifact-02': {
         icon: 'quest-find-artifact-02',
-        tag: 'Artifacts found',
+        tag: 'Artifacts',
         popup: 'You found the Sinister Skull',
     },
     'artifact-03': {
         icon: 'quest-find-artifact-03',
-        tag: 'Artifacts found',
+        tag: 'Artifacts',
         popup: 'You found the Seekers Book',
     },
 };
