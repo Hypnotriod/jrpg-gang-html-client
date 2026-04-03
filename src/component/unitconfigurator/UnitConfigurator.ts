@@ -524,6 +524,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected levelUp(): void {
+        SoundService.play(SoundName.LEVEL_UP);
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: ActionType.LEVEL_UP,
         } as ActionRequestData);
