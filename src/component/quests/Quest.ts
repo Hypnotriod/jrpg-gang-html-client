@@ -66,6 +66,7 @@ export default class Quest extends Component {
 
     protected completeQuestClick(): void {
         SoundService.play(SoundName.TREASURE);
+        SoundService.play(SoundName.QUEST_COMPLETE);
         this.communicator.sendMessage(RequestType.QUEST_ACTION, {
             questCode: this.status.code,
             action: ActionType.COMPLETE,
