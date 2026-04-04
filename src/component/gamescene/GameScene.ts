@@ -206,7 +206,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         Object.keys(achievements)
             .filter(uid => this.isCurrentPlayerUnitId(Number(uid)))
             .forEach(uid => {
-                Object.keys(achievements[uid]).forEach(code => this.achievementPopup.pop(code));
+                Object.keys(achievements[uid]).forEach(code => this.achievementPopup.pop(code, this.playersUnit()));
             })
     }
 

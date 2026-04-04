@@ -243,6 +243,7 @@ export interface Unit {
     achievements: UnitAchievements;
     quests: { [key: string]: UnitQuestStatus };
     position: Position;
+    description?: string;
 }
 
 export enum GameUnitFaction {

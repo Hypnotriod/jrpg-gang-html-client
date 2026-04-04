@@ -57,7 +57,7 @@ export default class GameFlowControls extends GameBase {
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
         if ((gamePhase === GamePhase.SPOT_COMPLETE || gamePhase === GamePhase.SCENARIO_COMPLETE) &&
-            this.currentActor()?.isDead !== true) {
+            this.playersUnit()?.isDead !== true) {
             this.leaveButton.show();
             this.retreatButton.hide();
         } else {
@@ -195,7 +195,7 @@ export default class GameFlowControls extends GameBase {
 
     protected checkAutoNextPhaseConditions(): boolean {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
-        const unit: GameUnit = this.currentActor();
+        const unit: GameUnit = this.playersUnit();
         if (!unit) { return false; }
         if (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
             return false;

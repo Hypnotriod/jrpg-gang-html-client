@@ -29,7 +29,7 @@ export default class GameBase extends Component {
         return this._state.gameState.nextPhase === GamePhase.TAKE_ACTION;
     }
 
-    public currentActor(): GameUnit {
+    public playersUnit(): GameUnit {
         return this.findUnitByUid(this._state.playerInfo?.unitUid ?? 0);
     }
 

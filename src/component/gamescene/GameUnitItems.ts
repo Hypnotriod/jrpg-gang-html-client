@@ -49,7 +49,7 @@ export default class GameUnitItems extends GameBase {
 
     public update(activeTypes: ItemType[]): void {
         if (!this.state.playerInfo) { return; }
-        const unit: GameUnit = this.currentActor();
+        const unit: GameUnit = this.playersUnit();
         if (!unit) { return; }
         this.updateUnitInventoryIcons(unit.inventory, activeTypes);
     }
@@ -86,7 +86,7 @@ export default class GameUnitItems extends GameBase {
     }
 
     protected checkUseCost(data: InventoryItem): boolean {
-        const unit: GameUnit = this.currentActor();
+        const unit: GameUnit = this.playersUnit();
         if (!unit || unit.state.actionPoints === 0) return true;
         return unit.state.actionPoints >= ((data as Weapon).useCost?.actionPoints ?? 0) &&
             unit.state.stamina >= ((data as Weapon).useCost?.stamina ?? 0) &&

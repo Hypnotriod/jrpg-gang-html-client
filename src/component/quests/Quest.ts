@@ -61,7 +61,6 @@ export default class Quest extends Component {
             questCode: this.status.code,
             action: ActionType.ACTIVATE,
         } as Action);
-        this.communicator.sendMessage(RequestType.QUESTS_STATUS);
     }
 
     protected completeQuestClick(): void {
@@ -71,7 +70,6 @@ export default class Quest extends Component {
             questCode: this.status.code,
             action: ActionType.COMPLETE,
         } as Action);
-        this.communicator.sendMessage(RequestType.QUESTS_STATUS);
     }
 
     public update(status: GameQuestStatus): void {

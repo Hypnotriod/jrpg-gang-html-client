@@ -28,7 +28,7 @@ export default class Quests extends Component implements ServerCommunicatorHandl
 
     protected initialize(): void {
         this.configuratorButton.onClick = target => this.goToUnitConfig();
-        this.communicator.subscribe([RequestType.QUESTS_STATUS], this);
+        this.communicator.subscribe([RequestType.QUESTS_STATUS, RequestType.QUEST_ACTION], this);
     }
 
 
@@ -46,6 +46,9 @@ export default class Quests extends Component implements ServerCommunicatorHandl
         switch (response.type) {
             case RequestType.QUESTS_STATUS:
                 this.update(response.data as QuestsStatusData);
+                break;
+            case RequestType.QUEST_ACTION:
+                this.communicator.sendMessage(RequestType.QUESTS_STATUS);
                 break;
         }
     }
