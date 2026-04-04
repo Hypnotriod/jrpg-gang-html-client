@@ -126,4 +126,10 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'You have found the Orb of Dragon King',
     },
+    'save-princess': {
+        icon: 'quest-save-princess',
+        tag: 'Artifacts',
+        target: 0,
+        popup: 'Congratulations! You have defeated the Dragon and saved the Princess!',
+    },
 };
