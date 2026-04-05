@@ -296,7 +296,6 @@ export default class SpotCell extends Component {
     }
 
     public updateWithActionResult(result: ActionResult, targetUid: number): void {
-        this.hideAll();
         if (this._unit) {
             this.idLabel.show();
             this.healthBar.show();
