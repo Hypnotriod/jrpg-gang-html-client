@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@types/howler": "^2.2.12",
+        "@types/html-to-text": "^9.0.4",
         "howler": "^2.2.4",
         "html-to-text": "^9.0.5",
         "local-storage": "^2.0.0",

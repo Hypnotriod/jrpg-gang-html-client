@@ -112,8 +112,9 @@ export const ACHIEVEMENT_POPUP: string = 'achievement_popup';
 
 export const GAME_CHAT: string = 'game_chat';
 export const INPUT_GAME_CHAT_MESSAGE: string = 'input_game_chat_message';
-export const BUTTON_TAB_GAME_CHAT: string = 'button_tab_game_chat';
-export const BUTTON_TAB_GAME_LOG: string = 'button_tab_game_log';
+
+export const LOBBY_CHAT: string = 'lobby_chat';
+export const INPUT_LOBBY_CHAT_MESSAGE: string = 'input_lobby_chat_message';
 
 export const ICON: string = 'icon';
 export const ICON_STUNNED: string = 'icon_stunned';

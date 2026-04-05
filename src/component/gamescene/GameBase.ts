@@ -76,27 +76,27 @@ export default class GameBase extends Component {
         endRound.damage && Object.keys(endRound.damage).forEach(key => {
             result.damage = result.damage || {};
             const unit = this.findUnitByUid(Number(key));
-            result.damage[this.getUnitName(unit)] = endRound.damage![key];
+            result.damage[this.getUnitName(unit)] = endRound.damage![Number(key)];
         });
         endRound.recovery && Object.keys(endRound.recovery).forEach(key => {
             result.recovery = result.recovery || {};
             const unit = this.findUnitByUid(Number(key));
-            result.recovery[this.getUnitName(unit)] = endRound.recovery![key];
+            result.recovery[this.getUnitName(unit)] = endRound.recovery![Number(key)];
         });
         endRound.experience && Object.keys(endRound.experience).forEach(key => {
             result.experience = result.experience || {};
             const unit = this.findUnitByUid(Number(key));
-            result.experience[this.getUnitName(unit)] = endRound.experience![key];
+            result.experience[this.getUnitName(unit)] = endRound.experience![Number(key)];
         });
         endRound.drop && Object.keys(endRound.drop).forEach(key => {
             result.drop = result.drop || {};
             const unit = this.findUnitByUid(Number(key));
-            result.drop[this.getUnitName(unit)] = endRound.drop![key];
+            result.drop[this.getUnitName(unit)] = endRound.drop![Number(key)];
         });
         endRound.achievements && Object.keys(endRound.achievements).forEach(key => {
             result.achievements = result.achievements || {};
             const unit = this.findUnitByUid(Number(key));
-            result.achievements[this.getUnitName(unit)] = endRound.achievements![key];
+            result.achievements[this.getUnitName(unit)] = endRound.achievements![Number(key)];
         });
         if (endRound.achievements) {
             result.achievements = endRound.achievements;
@@ -109,7 +109,7 @@ export default class GameBase extends Component {
         spotComplete.experience && Object.keys(spotComplete.experience).forEach(key => {
             result.experience = result.experience || {};
             const unit = this.findUnitByUid(Number(key));
-            result.experience[this.getUnitName(unit)] = spotComplete.experience![key];
+            result.experience[this.getUnitName(unit)] = spotComplete.experience![Number(key)];
         });
         if (spotComplete.booty) {
             result.booty = spotComplete.booty;
@@ -117,7 +117,7 @@ export default class GameBase extends Component {
         spotComplete.achievements && Object.keys(spotComplete.achievements).forEach(key => {
             result.achievements = result.achievements || {};
             const unit = this.findUnitByUid(Number(key));
-            result.achievements[this.getUnitName(unit)] = spotComplete.achievements![key];
+            result.achievements[this.getUnitName(unit)] = spotComplete.achievements![Number(key)];
         });
         return result;
     }
@@ -150,7 +150,7 @@ export default class GameBase extends Component {
             result.result.experience = {};
             Object.keys(experience).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.experience[this.getUnitName(unit)] = experience[key];
+                result.result.experience[this.getUnitName(unit)] = experience[Number(key)];
             });
         }
         if (actionResult.instantDamage) {
@@ -158,7 +158,7 @@ export default class GameBase extends Component {
             result.result.instantDamage = {};
             Object.keys(instantDamage).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.instantDamage[this.getUnitName(unit)] = instantDamage[key];
+                result.result.instantDamage[this.getUnitName(unit)] = instantDamage[Number(key)];
             });
         }
         if (actionResult.temporalDamage) {
@@ -166,7 +166,7 @@ export default class GameBase extends Component {
             result.result.temporalDamage = {};
             Object.keys(temporalDamage).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.temporalDamage[this.getUnitName(unit)] = temporalDamage[key];
+                result.result.temporalDamage[this.getUnitName(unit)] = temporalDamage[Number(key)];
             });
         }
         if (actionResult.instantRecovery) {
@@ -174,7 +174,7 @@ export default class GameBase extends Component {
             result.result.instantRecovery = {};
             Object.keys(instantRecovery).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.instantRecovery[this.getUnitName(unit)] = instantRecovery[key];
+                result.result.instantRecovery[this.getUnitName(unit)] = instantRecovery[Number(key)];
             });
         }
         if (actionResult.temporalModification) {
@@ -182,7 +182,7 @@ export default class GameBase extends Component {
             result.result.temporalModification = {};
             Object.keys(temporalModification).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.temporalModification[this.getUnitName(unit)] = temporalModification[key];
+                result.result.temporalModification[this.getUnitName(unit)] = temporalModification[Number(key)];
             });
         }
         if (actionResult.drop) {
@@ -190,7 +190,7 @@ export default class GameBase extends Component {
             result.result.drop = {};
             Object.keys(drop).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.drop[this.getUnitName(unit)] = drop[key];
+                result.result.drop[this.getUnitName(unit)] = drop[Number(key)];
             });
         }
         if (actionResult.achievements) {
@@ -198,7 +198,7 @@ export default class GameBase extends Component {
             result.result.achievements = {};
             Object.keys(achievements).forEach(key => {
                 const unit = this.findUnitByUid(Number(key));
-                result.result.achievements[this.getUnitName(unit)] = achievements[key];
+                result.result.achievements[this.getUnitName(unit)] = achievements[Number(key)];
             });
         }
         if (targetUnit) {

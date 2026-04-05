@@ -1,8 +1,10 @@
+import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CREATE_ROOM_EASY, BUTTON_CONFIGURATOR, LABEL_USERS_COUNT, ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO, BUTTON_CREATE_ROOM_ADVANCED, SELECT_ROOMS_CONTAINER, BUTTON_CREATE_ROOM_MEDIUM } from '../../constants/Components';
-import { RoomInfo } from '../../domain/domain';
-import { CreateRoomRequestData, RequestType } from '../../dto/requests';
-import { LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
+import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { SCENARIO_IDS } from '../../constants/Configuration';
+import { ChatMessage, ChatParticipant, ChatState, RoomInfo } from '../../domain/domain';
+import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
+import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -10,16 +12,15 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
+import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
+import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
-import { SCENARIO_IDS } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
 export default class Lobby extends Component implements ServerCommunicatorHandler {
-    private readonly rooms: Map<number, Room> = new Map();
-
     @component(SELECT_ROOMS_CONTAINER, Container)
     private readonly selectRoomsSetcion: Container;
     @component(BUTTON_CREATE_ROOM_EASY, Button)
@@ -35,7 +36,14 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     @component(UNIT_INFO, Container)
     private readonly unitInfo: Container;
     @component(LABEL_USERS_COUNT, Label)
-    protected readonly usersCountLabel: Label;
+    private readonly usersCountLabel: Label;
+    @component(LOBBY_CHAT, TextField)
+    private readonly chat: TextField;
+    @component(INPUT_LOBBY_CHAT_MESSAGE, TextInput)
+    private readonly chatMessageInput: TextInput;
+
+    private readonly rooms: Map<number, Room> = new Map();
+    private chatState: ChatState;
 
     constructor(private readonly communicator: ServerCommunicatorService,
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
@@ -52,7 +60,24 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.createRoomAdvancedButton.disable();
         this.createRoomAdvancedButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.ADVANCED);
         this.configuratorButton.onClick = target => this.goToUnitConfig();
-        this.communicator.subscribe([RequestType.LOBBY_STATUS, RequestType.ROOM_STATUS], this);
+        this.communicator.subscribe([
+            RequestType.LOBBY_STATUS,
+            RequestType.ROOM_STATUS,
+            RequestType.LOBBY_CHAT_MESSAGE,
+            RequestType.LOBBY_CHAT_STATE,
+            RequestType.LOBBY_CHAT_PARTICIPANT,
+        ], this);
+        this.initChat();
+    }
+
+    protected initChat(): void {
+        this.chatMessageInput.onEnter = input => {
+            this.communicator.sendMessage(RequestType.LOBBY_CHAT_MESSAGE, {
+                message: input.value,
+            } satisfies ChatMessageRequestData);
+            input.value = '';
+        };
+        this.chatMessageInput.maxLength = 128;
     }
 
     protected goToUnitConfig(): void {
@@ -63,6 +88,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     public show(): void {
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
+        this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         super.show();
     }
 
@@ -76,8 +102,39 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 if (!this.state.userState) { return; }
                 this.onRoomStatus(response.data as RoomStatusData);
                 break;
+            case RequestType.LOBBY_CHAT_MESSAGE:
+                const message: ChatMessage = (response.data as ChatMessageData).message;
+                this.addChatMessage(message);
+                break;
+            case RequestType.LOBBY_CHAT_STATE:
+                const chatState: ChatState = (response.data as ChatStateData).chat;
+                this.handleChatState(chatState);
+                break;
+            case RequestType.LOBBY_CHAT_PARTICIPANT:
+                const { playerId, participant } = (response.data as ChatParticipantData);
+                this.handleChatparticipant(playerId, participant);
+                break;
         }
+    }
 
+    protected handleChatparticipant(playerId: string, participant: ChatParticipant): void {
+        if (!this.chatState) return;
+        this.chatState.participants[playerId] = participant;
+    }
+
+    protected handleChatState(chatState: ChatState): void {
+        this.chat.value = '';
+        this.chatState = chatState;
+        this.chatState.messages.forEach(message => this.addChatMessage(message));
+    }
+
+    protected addChatMessage(message: ChatMessage): void {
+        const nickname = this.chatState.participants[message.from].nickname;
+        const colorClass = message.from == this.state.userState.playerInfo.playerId ? 'light-green lighten-1' : 'light-blue lighten-1';
+        this.chat.value =
+            `<span class="${colorClass}">${nickname}</span><br>` +
+            convert(message.message) + '<br>' +
+            this.chat.value;
     }
 
     protected onLobbyStatus(data: LobbyStatusData): void {

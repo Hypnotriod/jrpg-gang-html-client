@@ -29,8 +29,11 @@ export enum RequestType {
     COMPLETE_JOB = 'completeJob',
     JOBS_STATUS = 'jobsStatus',
     SWITCH_UNIT = 'switchUnit',
-    CHAT_STATE = "chatState",
-    CHAT_MESSAGE = "chatMessage",
+    GAME_CHAT_STATE = "gameChatState",
+    GAME_CHAT_MESSAGE = "gameChatMessage",
+    LOBBY_CHAT_STATE = "lobbyChatState",
+    LOBBY_CHAT_MESSAGE = "lobbyChatMessage",
+    LOBBY_CHAT_PARTICIPANT = "lobbyChatParticipant",
 }
 
 export interface Request {

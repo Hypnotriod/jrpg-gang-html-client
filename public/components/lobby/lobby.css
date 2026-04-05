@@ -6,7 +6,7 @@
     border-width: 1px;
     border-color: rgb(60, 60, 60);
     position: absolute;
-    width: 900px;
+    width: 1050px;
     height: 600px;
     padding: 20px;
     top: 50%;
@@ -18,4 +18,17 @@
 .rooms-container {
     max-height: 330px;
     overflow-y: auto;
+}
+
+.lobby-chat {
+    background-color: rgba(90, 90, 90, 0.8);
+    padding: 10px;
+    height: 420px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 3px;
+}
+
+.lobby-chat-input {
+    margin: 0;
 }

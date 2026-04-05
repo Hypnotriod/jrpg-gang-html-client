@@ -1,8 +1,8 @@
 <div class="game-wrapper">
     <div class="row" style="min-height: 150px;">
-        <div id="flow_controls_container" class="col s5 center-align">
+        <div id="flow_controls_container" class="col s4 center-align">
             <div class="row">
-                <div class="col s4" style="margin-top: 0;">
+                <div class="col" style="margin-top: 0;">
                     <button id="button_abandon" class="btn-small red">Abandon</button>
                     <button id="button_leave" class="btn-small">I'm Done</button>
                 </div>
@@ -26,19 +26,17 @@
         </div>
     </div>
     <div class="row" style="margin-top: -5px;">
-        <div class="col s5">
+        <div class="col">
             <div id="battlefield_container" class="items-container-y left"></div>
         </div>
-        <div class="col s7" style="margin-top: -20px;">
-            <div class="center">
-                <button id="button_tab_game_chat" class="btn-small blue" style="margin-bottom: -5px;">Chat</button>
-                <button id="button_tab_game_log" class="btn-small green" style="margin-bottom: -5px;">
-                    Game Log
-                </button>
-            </div>
-            <div id="game_log" class="game-log white-text scrollbar-y hidden"></div>
-            <div id="game_chat" class="game-chat white-text scrollbar-y"></div>
-            <div class="input-field game-chat-input">
+        <div class="col center-align" style="margin-top: -40px;">
+            <span class="orange-text">BATTLE LOG</span>
+            <div id="game_log" class="game-log white-text scrollbar-y left-align"></div>
+        </div>
+        <div class="col center-align" style="margin-top: -40px;">
+            <span class="orange-text">CHAT</span>
+            <div id="game_chat" class="game-chat white-text scrollbar-y left-align"></div>
+            <div class="input-field game-chat-input left-align">
                 <input id="input_game_chat_message" type="text">
             </div>
         </div>
