@@ -89,14 +89,14 @@ export default class ActionService {
     }
 
     public baseAttributeTotalValue(unit: Unit, fieldName: string): [number, number] {
-        let value = unit.stats.baseAttributes[fieldName] ?? 0;
+        let value = (unit.stats.baseAttributes as any)[fieldName] ?? 0;
         let extra = 0;
-        extra += (unit.modification?.reduce((acc, m) => acc + (m.baseAttributes?.[fieldName] ?? 0), 0) ?? 0);
+        extra += (unit.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
-            extra += a.modification?.reduce((acc, m) => acc + (m.baseAttributes?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
-            extra += w.modification?.reduce((acc, m) => acc + (m.baseAttributes?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         if (fieldName === 'actionPoints') {
             extra += Math.floor(unit.stats.attributes.initiative / 10)
@@ -105,27 +105,27 @@ export default class ActionService {
     }
 
     public attributeTotalValue(unit: Unit, fieldName: string): [number, number] {
-        let value = unit.stats.attributes[fieldName] ?? 0;
+        let value = (unit.stats.attributes as any)[fieldName] ?? 0;
         let extra = 0;
-        extra += (unit.modification?.reduce((acc, m) => acc + (m.attributes?.[fieldName] ?? 0), 0) ?? 0);
+        extra += (unit.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
-            extra += a.modification?.reduce((acc, m) => acc + (m.attributes?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
-            extra += w.modification?.reduce((acc, m) => acc + (m.attributes?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         return [value, extra];
     }
 
     public resistanceTotalValue(unit: Unit, fieldName: string): [number, number] {
-        let value = unit.stats.resistance[fieldName] ?? 0;
+        let value = (unit.stats.resistance as any)[fieldName] ?? 0;
         let extra = 0;
-        extra += (unit.modification?.reduce((acc, m) => acc + (m.resistance?.[fieldName] ?? 0), 0) ?? 0);
+        extra += (unit.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
-            extra += a.modification?.reduce((acc, m) => acc + (m.resistance?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
-            extra += w.modification?.reduce((acc, m) => acc + (m.resistance?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0;
         });
         extra += this.extraResist(unit, fieldName);
         return [value, extra];

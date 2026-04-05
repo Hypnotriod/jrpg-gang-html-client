@@ -49,9 +49,9 @@ export class AchievementPopup extends Component {
         }
         this.show();
         SoundService.play(SoundName.ACHIEVEMENT);
-        setTimeout(() => {
+        window.setTimeout(() => {
             this.hide();
-            setTimeout(() => {
+            window.setTimeout(() => {
                 this.queue.shift();
                 this.queue.length && this.popNext();
             }, 500);

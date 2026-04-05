@@ -117,8 +117,8 @@ export default class ItemIcon extends Component {
         this.iconCantUse.hide();
     }
 
-    public get choosed(): boolean {
-        return this._icon.choosed;
+    public get chosen(): boolean {
+        return this._icon.chosen;
     }
 
     public update(data: InventoryItem): void {

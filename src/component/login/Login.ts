@@ -149,7 +149,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     public handleConnectionLost(): void {
-        setTimeout(() => this.tryToAutologin(), 500);
+        window.setTimeout(() => this.tryToAutologin(), 500);
     }
 
     protected getClass(): string {

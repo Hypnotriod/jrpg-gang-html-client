@@ -35,7 +35,7 @@ export default class Job extends Component {
     private readonly buttonComplete: Button;
     @component(BUTTON_QUIT_JOB, Button)
     private readonly buttonQuit: Button;
-    private countdownId: NodeJS.Timeout;
+    private countdownId: number;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -106,7 +106,7 @@ export default class Job extends Component {
     protected startTimeLeftCountdown(timeLeft: number): void {
         clearInterval(this.countdownId);
         this.updateTimeLeft(timeLeft);
-        this.countdownId = setInterval(() => {
+        this.countdownId = window.setInterval(() => {
             timeLeft--;
             this.updateTimeLeft(timeLeft);
             if (timeLeft === 0) {

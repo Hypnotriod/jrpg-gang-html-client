@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -40,6 +40,8 @@ export default class SpotCell extends Component {
     protected readonly _iconCurrent: Container;
     @component(ICON_EFFECT, Container)
     protected readonly _iconEffect: Container;
+    @component(ICON_FOOD, Container)
+    protected readonly _iconFood: Container;
     @component(ICON_HIT, Container)
     protected readonly _iconHit: Container;
     @component(ICON_MISSED, Container)
@@ -73,9 +75,10 @@ export default class SpotCell extends Component {
     private _y: number;
     private _hover: boolean = false;
 
-    private stunnedSoundPlayed: boolean = false;
-
     public displayActionChance: boolean = false;
+
+    private stunnedSoundPlayed: boolean = false;
+    private actionResultTimeoutId: number;
 
     constructor(
         private readonly actionService: ActionService,
@@ -89,6 +92,7 @@ export default class SpotCell extends Component {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
         this.hideAll();
+        this.hideActionResultIcons();
     }
 
     protected onHover(): void {
@@ -174,13 +178,9 @@ export default class SpotCell extends Component {
         this._iconHealth.hide();
         this._iconStamina.hide();
         this._iconMana.hide();
-        this._iconEffect.hide();
-        this._iconHit.hide();
-        this._iconMissed.hide();
         this._iconTarget.hide();
         this._iconUnreachable.hide();
         this._iconExperience.hide();
-        this.hitHpLabel.hide();
         this.hitChanceLabel.hide();
         this.expLabel.hide();
         this.idLabel.hide();
@@ -191,11 +191,19 @@ export default class SpotCell extends Component {
         this._iconCurrent.hide();
     }
 
+    protected hideActionResultIcons(): void {
+        this._iconFood.hide();
+        this._iconMissed.hide();
+        this._iconHit.hide();
+        this._iconEffect.hide();
+        this.hitHpLabel.hide();
+    }
+
     public showActionChance() {
         if (!this._unit || !this._hover) { return; }
         let chance = 0;
         let reachable = false;
-        const gamePhase: string = this.state.gameState.nextPhase;
+        const gamePhase = this.state.gameState.nextPhase;
         if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
             const actor = this.unitItems.playersUnit();
             const damage = (this.unitItems.chosenItem as Magic).damage;
@@ -297,17 +305,32 @@ export default class SpotCell extends Component {
         }
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         if (!this.actionService.hasEffect(result, targetUid)) {
+            this.onActionResultIcon();
             SoundService.play(SoundName.MISS);
             this._iconMissed.show();
         } else if (this.actionService.hasDamage(result, targetUid)) {
+            this.onActionResultIcon();
             SoundService.play(SoundName.HIT);
             this._iconHit.show();
             this.hitHpLabel.show();
             this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
         } else if (this.actionService.hasRecovery(result, targetUid)) {
-            SoundService.play(SoundName.BUFF);
-            this._iconEffect.show();
+            this.onActionResultIcon();
+            const gamePhase = this.state.gameState.nextPhase;
+            if (gamePhase === GamePhase.SPOT_COMPLETE || gamePhase === GamePhase.SCENARIO_COMPLETE) {
+                SoundService.play(SoundName.FOOD);
+                this._iconFood.show();
+            } else {
+                SoundService.play(SoundName.BUFF);
+                this._iconEffect.show();
+            }
         }
+    }
+
+    private onActionResultIcon(): void {
+        this.hideActionResultIcons();
+        clearInterval(this.actionResultTimeoutId);
+        this.actionResultTimeoutId = window.setTimeout(() => this.hideActionResultIcons(), 1100);
     }
 
     public updateWithExperience(experience: number): void {

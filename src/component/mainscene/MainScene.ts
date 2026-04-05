@@ -70,7 +70,7 @@ export default class MainScene extends Component {
 
     protected initializeFocusHandler() {
         window.addEventListener('blur', (event) => {
-            this.blurTimeout = window.setTimeout(() => {
+            this.blurTimeout = window.window.setTimeout(() => {
                 if (!this.state.userState?.sessionId) return;
                 localStorage.removeItem(KEY_SESSION_ID);
                 this.communicator.sendMessage(RequestType.LEAVE);

@@ -22,6 +22,7 @@ export enum SoundName {
     ACHIEVEMENT = 'achievement',
     LEVEL_UP = 'level_up',
     QUEST_COMPLETE = 'quest_complete',
+    FOOD = 'food',
 }
 
 export const JOB_SOUND: { [key: string]: SoundName } = {
@@ -55,6 +56,7 @@ export class SoundService {
         SoundService.sounds[SoundName.ACHIEVEMENT] = new Howl({ src: ['assets/sounds/achievement.mp3'] });
         SoundService.sounds[SoundName.LEVEL_UP] = new Howl({ src: ['assets/sounds/level_up.mp3'] });
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
+        SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
     }
 
     public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; }): void {
@@ -62,7 +64,7 @@ export class SoundService {
         if (!sound) return;
         sound.loop(options?.loop ?? false);
         if (options?.delayMs) {
-            setTimeout(() => sound.play(), options.delayMs);
+            window.setTimeout(() => sound.play(), options.delayMs);
             return;
         }
         sound.play();

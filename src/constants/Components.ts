@@ -128,6 +128,7 @@ export const ICON_MANA: string = 'icon_mana';
 export const ICON_CURRENT: string = 'icon_current';
 export const ICON_CANT_USE: string = 'icon_cant_use';
 export const ICON_EFFECT: string = 'icon_effect';
+export const ICON_FOOD: string = 'icon_food';
 export const ICON_HIT: string = 'icon_hit';
 export const ICON_MISSED: string = 'icon_missed';
 export const ICON_TARGET: string = 'icon_target';

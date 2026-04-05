@@ -31,8 +31,8 @@ export default class GameFlowControls extends GameBase {
     @component(BUTTON_LEAVE, Button)
     private readonly leaveButton: Button;
 
-    private nextPhaseTimeoutId: NodeJS.Timeout;
-    private nextPhaseLabelTimeoutId: NodeJS.Timeout;
+    private nextPhaseTimeoutId: number;
+    private nextPhaseLabelTimeoutId: number;
     private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
 
@@ -102,7 +102,7 @@ export default class GameFlowControls extends GameBase {
                 this.gameStatusLabel.value = `${this.state.gameState.nextPhase} (${timeout})`;
                 if (this.state.gameState.phaseTimeout) {
                     this.state.gameState.phaseTimeout--;
-                    this.nextPhaseLabelTimeoutId = setTimeout(() => this.updatenextPhaseLabel(), 1000);
+                    this.nextPhaseLabelTimeoutId = window.setTimeout(() => this.updatenextPhaseLabel(), 1000);
                 }
                 break;
             default:
@@ -145,7 +145,7 @@ export default class GameFlowControls extends GameBase {
             (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP].includes(this.state.gameState.unitActionResult.action.action))) {
             timeout = 500;
         }
-        this.nextPhaseTimeoutId = setTimeout(() => this.callAutoNextPhase(), timeout);
+        this.nextPhaseTimeoutId = window.setTimeout(() => this.callAutoNextPhase(), timeout);
     }
 
     protected onNextPhase(): void {

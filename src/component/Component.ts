@@ -163,7 +163,7 @@ export default abstract class Component {
 
     protected async delay(ms?: number): Promise<void> {
         return new Promise(resolve => {
-            setTimeout(resolve, ms);
+            window.setTimeout(resolve, ms);
         });
     }
 

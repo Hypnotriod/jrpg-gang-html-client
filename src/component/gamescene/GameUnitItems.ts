@@ -34,7 +34,7 @@ export default class GameUnitItems extends GameBase {
     public get chosenItem(): InventoryItem | undefined {
         let result: InventoryItem | undefined;
         this.unitItems.forEach(iconItem => {
-            iconItem.choosed && (result = iconItem.data);
+            iconItem.chosen && (result = iconItem.data);
         });
         return result;
     }
@@ -43,8 +43,8 @@ export default class GameUnitItems extends GameBase {
         this._objectDescription = value;
     }
 
-    public getChoosedItem(): ItemIcon | undefined {
-        return [...this.unitItems.values()].find(i => i.choosed);
+    public getChosenItem(): ItemIcon | undefined {
+        return [...this.unitItems.values()].find(i => i.chosen);
     }
 
     public update(activeTypes: ItemType[]): void {
@@ -100,11 +100,11 @@ export default class GameUnitItems extends GameBase {
             target.data.type === ItemType.PROVISION ||
             target.data.type === ItemType.MAGIC
         ) {
-            const wansntChoosed = !target.choosed && target.selected;
+            const wansntChosen = !target.chosen && target.selected;
             this.unitItems.forEach(i => i.unchoose());
             SoundService.play(SoundName.CLICK);
             target.choose();
-            if (wansntChoosed) { return; }
+            if (wansntChosen) { return; }
         }
         if (!this.canDoUnitConfiguration()) { return; }
         if (target.data.type === ItemType.NONE ||

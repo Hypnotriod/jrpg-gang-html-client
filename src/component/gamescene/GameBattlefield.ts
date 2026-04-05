@@ -161,7 +161,7 @@ export default class GameBattlefield extends GameBase {
     }
 
     protected useItem(targetUid: number): void {
-        const weapon = this._unitItems.getChoosedItem();
+        const weapon = this._unitItems.getChosenItem();
         if (!weapon) { return; }
         this.communicator.sendMessage(RequestType.GAME_ACTION, {
             uid: this.state.playerInfo.unitUid,
