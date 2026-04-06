@@ -41,6 +41,11 @@ export interface QuestsStatusData {
     quests: GameQuestsStatus;
 }
 
+export interface QuestsActionData {
+    action: Action;
+    actionResult: GameEvent;
+}
+
 export interface LobbyStatusData {
     rooms: RoomInfo[];
     usersCount: number;

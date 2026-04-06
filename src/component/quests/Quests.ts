@@ -1,15 +1,16 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
-import { QuestsStatusData, Response } from '../../dto/responces';
+import { QuestsActionData, QuestsStatusData, Response, ResponseStatus } from '../../dto/responces';
 import { component } from '../decorator/decorator';
 import { BUTTON_CONFIGURATOR, QUESTS_LIST_CONTAINER } from '../../constants/Components';
 import Button from '../ui/button/Button';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import { RequestType } from '../../dto/requests';
 import Quest from './Quest';
-import { GameQuestStatus, UnitQuestStatus } from '../../domain/domain';
+import { ActionType, GameQuestStatus, UnitQuestStatus } from '../../domain/domain';
 import GameStateService from '../../service/GameStateService';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -28,7 +29,10 @@ export default class Quests extends Component implements ServerCommunicatorHandl
 
     protected initialize(): void {
         this.configuratorButton.onClick = target => this.goToUnitConfig();
-        this.communicator.subscribe([RequestType.QUESTS_STATUS, RequestType.QUEST_ACTION], this);
+        this.communicator.subscribe([
+            RequestType.QUESTS_STATUS,
+            RequestType.QUEST_ACTION
+        ], this);
     }
 
 
@@ -43,11 +47,20 @@ export default class Quests extends Component implements ServerCommunicatorHandl
     }
 
     handleServerResponse(response: Response): void {
+        if (response.status !== ResponseStatus.OK) {
+            return;
+        }
         switch (response.type) {
             case RequestType.QUESTS_STATUS:
                 this.update(response.data as QuestsStatusData);
                 break;
             case RequestType.QUEST_ACTION:
+                const data = response.data as QuestsActionData;
+                if (data.action.action === ActionType.COMPLETE) {
+                    SoundService.play(SoundName.TREASURE);
+                    SoundService.play(SoundName.QUEST_COMPLETE);
+                }
+                this.communicator.sendMessage(RequestType.USER_STATUS);
                 this.communicator.sendMessage(RequestType.QUESTS_STATUS);
                 break;
         }

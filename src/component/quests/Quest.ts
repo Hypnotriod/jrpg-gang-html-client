@@ -6,7 +6,6 @@ import { RequestType } from '../../dto/requests';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
-import { SoundName, SoundService } from '../../service/SoundService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
@@ -64,8 +63,6 @@ export default class Quest extends Component {
     }
 
     protected completeQuestClick(): void {
-        SoundService.play(SoundName.TREASURE);
-        SoundService.play(SoundName.QUEST_COMPLETE);
         this.communicator.sendMessage(RequestType.QUEST_ACTION, {
             questCode: this.status.code,
             action: ActionType.COMPLETE,
@@ -101,7 +98,7 @@ export default class Quest extends Component {
     }
 
     private patchRequirenments(requirenments?: UnitRequirements): any {
-        const r = { ...requirenments };
+        const r: any = { ...requirenments };
         if (r.achievements) {
             Object.keys(r.achievements).forEach(k => {
                 r[ACHIEVEMENTS[k]?.tag ?? k] = `${(this.state.userState.unit.achievements[k] ?? 0)} / ${r.achievements![k]}`;

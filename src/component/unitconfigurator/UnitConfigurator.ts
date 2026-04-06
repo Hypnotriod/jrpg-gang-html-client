@@ -404,7 +404,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         return this.extraValue(value);
     }
 
-    protected extraValue(value): string {
+    protected extraValue(value: number): string {
         if (!value) return '';
         return value > 0 ?
             ` <span class="light-green lighten-1">+${value}</span>` :
@@ -413,12 +413,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected totalResistanceModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
-        return equipment.modification.reduce((acc, m) => acc + m.resistance?.[key] || 0, 0);
+        return equipment.modification.reduce((acc, m) => acc + (m.resistance as any)?.[key] || 0, 0);
     }
 
     protected totalAttributeModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
-        return equipment.modification.reduce((acc, m) => acc + m.attributes?.[key] || 0, 0);
+        return equipment.modification.reduce((acc, m) => acc + (m.attributes as any)?.[key] || 0, 0);
     }
 
     protected keyValue(key: string, value?: number, valueOf?: number): string {
@@ -427,7 +427,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0} / ${valueOf}`;
     }
 
-    protected objValues(obj: Object): string {
+    protected objValues(obj: any): string {
         let result = '';
         Object.keys(obj).forEach(key => result +=
             (obj[key] instanceof Object ?
