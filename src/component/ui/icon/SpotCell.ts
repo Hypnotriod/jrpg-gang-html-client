@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -20,6 +20,8 @@ export default class SpotCell extends Component {
     protected readonly _icon: Icon;
     @component(ICON_STUNNED, Container)
     protected readonly _iconStunned: Container;
+    @component(ICON_NO_STAMINA, Container)
+    protected readonly _iconNoStamina: Container;
     @component(ICON_BLEEDING, Container)
     protected readonly _iconBleeding: Container;
     @component(ICON_POISON, Container)
@@ -170,6 +172,7 @@ export default class SpotCell extends Component {
 
     protected hideAll(): void {
         this._iconStunned.hide();
+        this._iconNoStamina.hide();
         this._iconBleeding.hide();
         this._iconPoison.hide();
         this._iconCold.hide();
@@ -268,6 +271,7 @@ export default class SpotCell extends Component {
         this.idLabel.value = String(unit.uid);
         this._unit = unit;
         this._unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
+        this._unit.state.stamina === 0 && this._unit.state.isStunned !== true && this._unit.isDead !== true ? this._iconNoStamina.show() : this._iconNoStamina.hide();
         this._unit.damage?.find(m => m.bleeding) ? this._iconBleeding.show() : this._iconBleeding.hide();
         this._unit.damage?.find(m => m.poison) ? this._iconPoison.show() : this._iconPoison.hide();
         this._unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
@@ -303,6 +307,7 @@ export default class SpotCell extends Component {
             this.manaBar.show();
         }
         this._unit?.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
+        this._unit?.state.stamina === 0 && this._unit?.state.isStunned !== true && this._unit?.isDead !== true ? this._iconNoStamina.show() : this._iconNoStamina.hide();
         if (!this.actionService.hasEffect(result, targetUid)) {
             this.onActionResultIcon();
             SoundService.play(SoundName.MISS);

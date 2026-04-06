@@ -118,6 +118,7 @@ export const INPUT_LOBBY_CHAT_MESSAGE: string = 'input_lobby_chat_message';
 
 export const ICON: string = 'icon';
 export const ICON_STUNNED: string = 'icon_stunned';
+export const ICON_NO_STAMINA: string = 'icon_no_stamina';
 export const ICON_BLEEDING: string = 'icon_bleeding';
 export const ICON_POISON: string = 'icon_poison';
 export const ICON_COLD: string = 'icon_cold';
