@@ -128,7 +128,7 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
     },
     'save-princess': {
         icon: 'quest-save-princess',
-        tag: 'Artifacts',
+        tag: 'Objectives',
         target: 0,
         popup: 'Congratulations! You have defeated the Dragon and saved the Princess!',
     },
