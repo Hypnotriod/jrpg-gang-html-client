@@ -12,6 +12,7 @@ export enum RequestType {
     LOBBY_STATUS = 'lobbyStatus',
     ROOM_STATUS = 'roomStatus',
     CONFIGURATION_ACTION = 'configuratorAction',
+    SERVER_STATUS = 'serverStatus',
     USER_STATUS = 'userStatus',
     SHOP_STATUS = 'shopStatus',
     SHOP_ACTION = 'shopAction',

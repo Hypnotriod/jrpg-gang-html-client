@@ -46,14 +46,16 @@ export interface QuestsActionData {
     actionResult: GameEvent;
 }
 
+export interface ServerStatusData {
+    usersNumber: number;
+}
+
 export interface LobbyStatusData {
     rooms: RoomInfo[];
-    usersCount: number;
 }
 
 export interface RoomStatusData {
     room: RoomInfo;
-    usersCount: number;
 }
 
 export interface GameStateData {
@@ -105,5 +107,5 @@ export interface Response {
     status: ResponseStatus;
     data: LobbyStatusData | UserStateData | ShopStatusData | GameStateData | PlayerInfoData |
     GameNextPhaseData | GameActionData | RoomStatusData | JobStatusData | CompleteJobData |
-    ChatMessageData | ChatStateData | ChatParticipantData | ActionResultData | QuestsStatusData;
+    ChatMessageData | ChatStateData | ChatParticipantData | ActionResultData | QuestsStatusData | ServerStatusData;
 }

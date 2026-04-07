@@ -4,7 +4,7 @@ import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EA
 import { SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatParticipant, ChatState, RoomInfo } from '../../domain/domain';
 import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
-import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, Response, ResponseStatus, RoomStatusData } from '../../dto/responces';
+import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -61,6 +61,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.createRoomAdvancedButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.ADVANCED);
         this.configuratorButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([
+            RequestType.SERVER_STATUS,
             RequestType.LOBBY_STATUS,
             RequestType.ROOM_STATUS,
             RequestType.LOBBY_CHAT_MESSAGE,
@@ -87,6 +88,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     public show(): void {
+        this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         super.show();
@@ -95,6 +97,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
+            case RequestType.SERVER_STATUS:
+                this.onServerStatus(response.data as ServerStatusData);
+                break;
             case RequestType.LOBBY_STATUS:
                 this.onLobbyStatus(response.data as LobbyStatusData);
                 break;
@@ -120,12 +125,14 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected handleChatparticipant(playerId: string, participant: ChatParticipant): void {
         if (!this.chatState) return;
         this.chatState.participants[playerId] = participant;
+        this.updateUsersInfo();
     }
 
     protected handleChatState(chatState: ChatState): void {
         this.chat.value = '';
         this.chatState = chatState;
         this.chatState.messages.forEach(message => this.addChatMessage(message));
+        this.updateUsersInfo();
     }
 
     protected addChatMessage(message: ChatMessage): void {
@@ -137,9 +144,13 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             this.chat.value;
     }
 
+    protected onServerStatus(data: ServerStatusData): void {
+        this.state.usersNumber = data.usersNumber;
+        this.updateUsersInfo();
+    }
+
     protected onLobbyStatus(data: LobbyStatusData): void {
         this.state.rooms = data.rooms;
-        this.state.usersCount = data.usersCount;
         this.update();
     }
 
@@ -155,16 +166,26 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
             oldRoomInfo.host = roomInfo.host;
         }
-        this.state.usersCount = data.usersCount;
         this.update();
     }
 
     protected update(): void {
         const isUserInRooms: boolean = this.state.isUserInRooms(this.state.rooms);
-        this.usersCountLabel.value = `${this.state.usersCount}⚇`;
         this.updateRooms(this.state.rooms, isUserInRooms);
         this.updateState(isUserInRooms);
         this.updateUnitInfo();
+        this.updateUsersInfo();
+    }
+
+    protected updateUsersInfo(): void {
+        if (!this.chatState) return;
+        const inLobby = Object.keys(this.chatState.participants)
+            .map(k => this.chatState.participants[k])
+            .filter(p => p.unavailable !== true)
+            .map(p => `<span class="green-text text-lighten-2">${p.nickname}</span>`);
+        this.usersCountLabel.htmlValue =
+            `<span class="orange-text text-lighten-1">Players online:</span> ${this.state.usersNumber ?? 0}<br>
+            <span class="orange-text text-lighten-1">Players in lobby:</span> ${inLobby.length} ${inLobby.join(',')}`;
     }
 
     public handleConnectionLost(): void {
