@@ -71,7 +71,7 @@ export default class ServerCommunicatorService {
         this.ws.onopen = (event: Event) => this.onOpen(event);
         this.ws.onclose = (event: Event) => this.onClose(event);
         this.ws.onmessage = (event: MessageEvent<string>) => this.onMessage(event);
-        this.ws.onerror = (event: ErrorEvent) => this.onError(event);
+        this.ws.onerror = (event: Event) => this.onError(event as ErrorEvent);
     }
 
     private onMessage(event: MessageEvent<string>): void {

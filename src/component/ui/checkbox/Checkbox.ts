@@ -5,7 +5,7 @@ export default class Checkbox extends Component {
     private onChangeCallback: ((target: Checkbox) => void) | null;
 
     protected initialize(): void {
-        (this.view as HTMLInputElement).onchange = (event: MouseEvent) => {
+        (this.view as HTMLInputElement).onchange = (event) => {
             SoundService.play(SoundName.CLICK);
             this.onChangeCallback && this.onChangeCallback(this);
             event.stopPropagation();

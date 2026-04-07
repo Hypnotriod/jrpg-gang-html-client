@@ -28,13 +28,13 @@ export default class ResourceLoaderService {
         switch (type) {
             case RESOURCE_STYLE:
             case RESOURCE_DESIGN:
-                this.resourcesMap[path] = await response.text();
+                this.resourcesMap.set(path, await response.text());
                 break;
         }
-        return this.resourcesMap[path];
+        return this.resourcesMap.get(path);
     }
 
     public get<T>(path: string): T {
-        return this.resourcesMap[path];
+        return this.resourcesMap.get(path);
     }
 }

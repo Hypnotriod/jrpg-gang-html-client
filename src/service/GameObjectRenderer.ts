@@ -122,13 +122,13 @@ export default class GameObjectRenderer {
         return Boolean(data.state && data.stats);
     }
 
-    protected renderObjects(data: Object[], ignoreHeaders: string[], header: string, depth: number): string {
+    protected renderObjects(data: any[], ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         const result = data.reduce((acc, d, i) => acc + this.renderObject(d, ignoreHeaders, `${header} #${i + 1}`, depth), '');
         return result.toString();
     }
 
-    protected renderObject(data: Object, ignoreHeaders: string[], header: string, depth: number): string {
+    protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         return this.header(header, depth) + Object.keys(data)
             .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
@@ -173,7 +173,7 @@ export default class GameObjectRenderer {
         <span class="${colorClass} lighten-1">${value}</span><br>`;
     }
 
-    protected emptyOrAllFieldsZeros(ignoreHeaders: string[], header: string, data: Object): boolean {
+    protected emptyOrAllFieldsZeros(ignoreHeaders: string[], header: string, data: any): boolean {
         return !data || Object.keys(data).every(key => !data[key] &&
             !this.isZeroValueKey(header, key) && !this.ignoreKey(ignoreHeaders, header, key));
     }

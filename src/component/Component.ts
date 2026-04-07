@@ -23,7 +23,7 @@ export default abstract class Component {
 
     private instantiateOnInit(): void {
         this.instantiateOnInitList && this.instantiateOnInitList.forEach(({ id, clazz, propertyKey }) => {
-            (this as Object)[propertyKey] = this.instantiate(id, clazz);
+            (this as any)[propertyKey] = this.instantiate(id, clazz);
         });
     }
 
