@@ -63,6 +63,7 @@ export class SoundService {
         const sound = SoundService.sounds[name];
         if (!sound) return;
         sound.loop(options?.loop ?? false);
+        sound.stop();
         if (options?.delayMs) {
             window.setTimeout(() => sound.play(), options.delayMs);
             return;

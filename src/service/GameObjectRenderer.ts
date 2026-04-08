@@ -164,7 +164,7 @@ export default class GameObjectRenderer {
         key = this.capitalize(key);
         return !value[1] ?
             `<span class="orange-text text-lighten-1">${key}</span>: ${value[0]}<br>` :
-            `<span class="orange-text text-lighten-1">${key}</span>: <span class="green-text text-lighten-2">${value[0] + value[1]}</span> <br>`;
+            `<span class="orange-text text-lighten-1">${key}</span>: <span class="${value[1] > 0 ? 'green-text' : 'red-text'} text-lighten-2">${Math.max(0, value[0] + value[1])}</span> <br>`;
     }
 
     protected keyValueColor(key: string, colorClass: string, value: number | string | boolean | undefined): string {
