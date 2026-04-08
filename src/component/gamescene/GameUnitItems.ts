@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionType, Ammunition, Armor, GamePhase, GameUnit, InventoryItem, Item, ItemType, UnitInventory, Weapon } from '../../domain/domain';
+import { ActionType, Ammunition, Armor, EquipmentSlot, GamePhase, GameUnit, InventoryItem, Item, ItemType, UnitInventory, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -59,7 +59,12 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
             ...(inventory.magic || []),
-            ...(inventory.armor || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.WEAPON) || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.HAND) || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.BODY) || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.HEAD) || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.LEG) || []),
+            ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.NECK) || []),
             ...(inventory.disposable || []),
             ...(inventory.provision || []),
         ];
