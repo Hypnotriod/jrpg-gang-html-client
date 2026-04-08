@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements } from '../domain/domain';
+import { Equipment, GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -79,13 +79,13 @@ export default class GameStateService {
             (required.level ?? 0) <= unit.stats.progress.level &&
             this.checkAchievements(required.achievements) &&
             this.checkQuests(required.quests) &&
-            required.strength <= unit.stats.attributes.strength &&
-            required.physique <= unit.stats.attributes.physique &&
-            required.agility <= unit.stats.attributes.agility &&
-            required.endurance <= unit.stats.attributes.endurance &&
-            required.intelligence <= unit.stats.attributes.intelligence &&
-            required.initiative <= unit.stats.attributes.initiative &&
-            required.luck <= unit.stats.attributes.luck
+            required.strength <= this.totalAttributeValue('strength') &&
+            required.physique <= this.totalAttributeValue('physique') &&
+            required.agility <= this.totalAttributeValue('agility') &&
+            required.endurance <= this.totalAttributeValue('endurance') &&
+            required.intelligence <= this.totalAttributeValue('intelligence') &&
+            required.initiative <= this.totalAttributeValue('initiative') &&
+            required.luck <= this.totalAttributeValue('luck');
     }
 
     public checkAchievements(required?: UnitAchievements) {
@@ -105,5 +105,16 @@ export default class GameStateService {
         const unit = this.userState.unit;
         return required.coins <= unit.booty.coins &&
             (required.ruby ?? 0) <= (unit.booty.ruby ?? 0);
+    }
+
+    public totalAttributeValue(key: string): number {
+        return (this.userState.unit.inventory
+            .armor?.reduce((acc, a) => acc + this.totalAttributeModification(a, key), 0) || 0) +
+            ((this.userState.unit.stats.attributes as any)[key] || 0);
+    }
+
+    public totalAttributeModification(equipment: Equipment, key: string): number {
+        if (!equipment.equipped) return 0;
+        return equipment.modification.reduce((acc, m) => acc + (m.attributes as any)?.[key] || 0, 0);
     }
 }

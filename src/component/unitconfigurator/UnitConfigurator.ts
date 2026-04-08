@@ -344,7 +344,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                                      ${this.keyValue('Curse', res.curse || 0)}${this.extraResist('curse')}<br>
                                      ${this.keyValue('Madness', res.madness || 0)}${this.extraResist('madness')}<br>
                                      `;
-
     }
 
     protected updateProgress(): void {
@@ -400,7 +399,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected extraAttribute(key: string): string {
         const value = (this.state.userState.unit.inventory
-            .armor?.reduce((acc, a) => acc + this.totalAttributeModification(a, key), 0) || 0);
+            .armor?.reduce((acc, a) => acc + this.state.totalAttributeModification(a, key), 0) || 0);
         return this.extraValue(value);
     }
 
@@ -414,11 +413,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected totalResistanceModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
         return equipment.modification.reduce((acc, m) => acc + (m.resistance as any)?.[key] || 0, 0);
-    }
-
-    protected totalAttributeModification(equipment: Equipment, key: string): number {
-        if (!equipment.equipped) return 0;
-        return equipment.modification.reduce((acc, m) => acc + (m.attributes as any)?.[key] || 0, 0);
     }
 
     protected keyValue(key: string, value?: number, valueOf?: number): string {
