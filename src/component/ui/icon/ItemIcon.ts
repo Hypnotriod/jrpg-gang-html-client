@@ -9,6 +9,7 @@ import Label from '../label/Label';
 import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 import Container from '../container/Container';
+import GameStateService from '../../../service/GameStateService';
 
 export default class ItemIcon extends Component {
     @component(ICON, Icon)
@@ -110,22 +111,23 @@ export default class ItemIcon extends Component {
     }
 
     public cantUse() {
-        this.iconCantUse.show();
+        this.iconCantUse?.show();
     }
 
     public canUse() {
-        this.iconCantUse.hide();
+        this.iconCantUse?.hide();
     }
 
     public get chosen(): boolean {
         return this._icon.chosen;
     }
 
-    public update(data: InventoryItem): void {
+    public update(data: InventoryItem, state: GameStateService): void {
         this._data = data;
         this.name = data.name;
         this.icon = data.code;
         (data as Equipment).equipped ? this.select() : this.unselect();
+        !state.checkRequirements((data as Equipment).requirements) ? this.cantUse() : this.canUse();
         if (!this.quantityLabel) { return; }
         if ((data as Ammunition).quantity !== undefined) {
             this.quantity = (data as Ammunition).quantity || 0;

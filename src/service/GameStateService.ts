@@ -79,13 +79,13 @@ export default class GameStateService {
             (required.level ?? 0) <= unit.stats.progress.level &&
             this.checkAchievements(required.achievements) &&
             this.checkQuests(required.quests) &&
-            required.strength <= this.totalAttributeValue('strength') &&
-            required.physique <= this.totalAttributeValue('physique') &&
-            required.agility <= this.totalAttributeValue('agility') &&
-            required.endurance <= this.totalAttributeValue('endurance') &&
-            required.intelligence <= this.totalAttributeValue('intelligence') &&
-            required.initiative <= this.totalAttributeValue('initiative') &&
-            required.luck <= this.totalAttributeValue('luck');
+            required.strength <= Math.max(this.totalAttributeValue('strength'), 0) &&
+            required.physique <= Math.max(this.totalAttributeValue('physique'), 0) &&
+            required.agility <= Math.max(this.totalAttributeValue('agility'), 0) &&
+            required.endurance <= Math.max(this.totalAttributeValue('endurance'), 0) &&
+            required.intelligence <= Math.max(this.totalAttributeValue('intelligence'), 0) &&
+            required.initiative <= Math.max(this.totalAttributeValue('initiative'), 0) &&
+            required.luck <= Math.max(this.totalAttributeValue('luck'), 0);
     }
 
     public checkAchievements(required?: UnitAchievements) {

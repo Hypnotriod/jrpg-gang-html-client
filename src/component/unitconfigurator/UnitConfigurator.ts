@@ -303,7 +303,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.shopItems.set(data.uid!, iconItem);
-        iconItem.update(data);
+        iconItem.update(data, this.state);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
     }
 
@@ -467,7 +467,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.unitItems.set(data.uid!, iconItem);
-        iconItem.update(data);
+        iconItem.update(data, this.state);
     }
 
     protected onCheckboxChange(target: Checkbox): void {

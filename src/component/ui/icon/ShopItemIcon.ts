@@ -7,6 +7,7 @@ import Component from '../../Component';
 import { component } from '../../decorator/decorator';
 import Label from '../label/Label';
 import ItemIcon from './ItemIcon';
+import GameStateService from '../../../service/GameStateService';
 
 export default class ShopItemIcon extends ItemIcon {
     @component(LABEL_PRICE, Label)
@@ -24,8 +25,8 @@ export default class ShopItemIcon extends ItemIcon {
         return iconComponent;
     }
 
-    public update(data: Disposable | Ammunition | Equipment): void {
-        super.update(data);
+    public update(data: Disposable | Ammunition | Equipment, state: GameStateService): void {
+        super.update(data, state);
         this.priceLabel.value = `$${data.price.coins}` +
             (data.price.ruby ? `◇${data.price.ruby}` : '');
     }
