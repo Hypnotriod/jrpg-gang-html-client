@@ -68,6 +68,10 @@ export default class ActionService {
                 , 0) : 0;
     }
 
+    public hasCriticalDamage(result: ActionResult, unitUid: number): boolean {
+        return result.instantDamage?.[unitUid]?.some(d => d.isCritical) ?? false;
+    }
+
     public attackChance(impact: DamageImpact[], unit: GameUnit, target: GameUnit): number {
         let chance = 100;
         if (impact[0]?.chance) {

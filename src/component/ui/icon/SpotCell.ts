@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -56,6 +56,8 @@ export default class SpotCell extends Component {
     protected readonly _iconExperience: Container;
     @component(LABEL_HIT_HP, Label)
     protected readonly hitHpLabel: Label;
+    @component(LABEL_CRITICAL_HIT, Label)
+    protected readonly hitCriticalLabel: Label;
     @component(LABEL_HIT_CHANCE, Label)
     protected readonly hitChanceLabel: Label;
     @component(LABEL_EXP, Label)
@@ -200,6 +202,7 @@ export default class SpotCell extends Component {
         this._iconHit.hide();
         this._iconEffect.hide();
         this.hitHpLabel.hide();
+        this.hitCriticalLabel.hide();
     }
 
     public showActionChance() {
@@ -318,6 +321,7 @@ export default class SpotCell extends Component {
             this._iconHit.show();
             this.hitHpLabel.show();
             this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
+            this.actionService.hasCriticalDamage(result, targetUid) && this.hitCriticalLabel.show();
         } else if (this.actionService.hasRecovery(result, targetUid)) {
             this.onActionResultIcon();
             const gamePhase = this.state.gameState.nextPhase;
