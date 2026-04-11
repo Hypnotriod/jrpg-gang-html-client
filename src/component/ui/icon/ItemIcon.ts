@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { ICON, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
+import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
 import { Ammunition, Equipment, InventoryItem, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
@@ -22,6 +22,8 @@ export default class ItemIcon extends Component {
     protected readonly iconCurrent: Container;
     @component(ICON_CANT_USE, Container)
     protected readonly iconCantUse: Container;
+    @component(ICON_BROKEN, Container)
+    protected readonly iconBroken: Container;
     @component(LABEL_ACTION_POINTS, Label)
     protected readonly actionPointsLabel: Label;
 
@@ -63,6 +65,7 @@ export default class ItemIcon extends Component {
         this._icon.onHover = t => this.onHover();
         this._icon.onLeave = t => this.onLeave();
         this.iconCantUse?.hide();
+        this.iconBroken?.hide();
         this.iconCurrent?.hide();
         this.actionPointsLabel?.hide();
     }
@@ -126,8 +129,12 @@ export default class ItemIcon extends Component {
         this._data = data;
         this.name = data.name;
         this.icon = data.code;
-        (data as Equipment).equipped ? this.select() : this.unselect();
-        !state.checkRequirements((data as Equipment).requirements) ? this.cantUse() : this.canUse();
+        const asEquipment = data as Equipment;
+        asEquipment.equipped ? this.select() : this.unselect();
+        const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
+        isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
+        isBroken && this.unselect();
+        !state.checkRequirements(asEquipment.requirements) ? this.cantUse() : this.canUse();
         if (!this.quantityLabel) { return; }
         if ((data as Ammunition).quantity !== undefined) {
             this.quantity = (data as Ammunition).quantity || 0;
