@@ -1,9 +1,12 @@
 import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import Container from '../container/Container';
+import { GameUnit } from '../../../domain/domain';
 
 @injectable()
 export default class ObjectDescription extends Container {
+    private _unit?: GameUnit;
+
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
     }
@@ -24,11 +27,18 @@ export default class ObjectDescription extends Container {
         }
     }
 
+    public set unit(value: GameUnit) {
+        this._unit = value;
+    }
+
     public set data(data: object) {
         const ignoreHeaders: string[] = [];
         const main = this.renderer.renderMain(data, ignoreHeaders);
         const misc = this.renderer.renderAttributes(data)
             + this.renderer.renderResistance(data)
+            + this.renderer.renderItemRequirements(data, this._unit)
+            + this.renderer.renderItemUseCost(data, this._unit)
+            + this.renderer.renderPrice(data)
             + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;

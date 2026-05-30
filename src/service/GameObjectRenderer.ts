@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { Unit } from '../domain/domain';
+import { GameUnit, Unit } from '../domain/domain';
 import ActionService, { sum } from './ActionService';
 
 @injectable()
@@ -46,15 +46,23 @@ export default class GameObjectRenderer {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
             ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
+        } else {
+            ignoreHeaders.push('requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
+        }
+        if (data.ammunitionKind) {
+            result += this.keyValueColor('ammo', 'purple', data.ammunitionKind);
+        }
+        if (data.kind) {
+            result += this.keyValueColor('kind', 'purple', data.kind);
         }
         if (data.slot) {
             result += this.keyValueColor('slot', 'orange', data.slot);
         }
         if (data.slotsNumber) {
-            result += this.keyValue('slotsNumber', data.slotsNumber);
+            result += this.keyValue('slots', data.slotsNumber);
         }
         if (data.wearout || data.durability) {
             result += this.keyValueColor('wearout', 'blue-grey', `${data.wearout ?? 0} / ${data.durability}`);
@@ -69,6 +77,53 @@ export default class GameObjectRenderer {
             result += this.keyValue('canBeSold', data.canBeSold);
         }
 
+        return result;
+    }
+
+    public renderPrice(data: any) {
+        let result = '';
+        if (!this.isUnitData(data)) {
+            if (data.price) {
+                result += this.renderObject(data.price, [], 'price', 3);
+            }
+            if (data.purchasePrice) {
+                result += this.renderObject(data.purchasePrice, [], 'purchasePrice', 3);
+            }
+            if (data.repairPrice) {
+                result += this.renderObject(data.repairPrice, [], 'repairPrice', 3);
+            }
+        }
+        return result;
+    }
+
+    public renderItemRequirements(data: any, unit?: GameUnit): string {
+        let result = '';
+        if (unit && data.requirements && Object.values(data.requirements).some(v => Number(v))) {
+            result = this.header('Requirements', 2);
+            result += this.keyValueRequired('strength', data.requirements, this.actionService.attributeTotalValue(unit, 'strength'));
+            result += this.keyValueRequired('physique', data.requirements, this.actionService.attributeTotalValue(unit, 'physique'));
+            result += this.keyValueRequired('agility', data.requirements, this.actionService.attributeTotalValue(unit, 'agility'));
+            result += this.keyValueRequired('endurance', data.requirements, this.actionService.attributeTotalValue(unit, 'endurance'));
+            result += this.keyValueRequired('intelligence', data.requirements, this.actionService.attributeTotalValue(unit, 'intelligence'));
+            result += this.keyValueRequired('initiative', data.requirements, this.actionService.attributeTotalValue(unit, 'initiative'));
+            result += this.keyValueRequired('luck', data.requirements, this.actionService.attributeTotalValue(unit, 'luck'));
+            result += this.keyValueRequired('level', data.requirements, [unit.stats.progress.level, 0]);
+            if (data.requirements.class) {
+                result += this.keyValue('class', data.requirements.class);
+            }
+        }
+        return result;
+    }
+
+    public renderItemUseCost(data: any, unit?: GameUnit): string {
+        let result = '';
+        if (unit && data.useCost && Object.values(data.useCost).some(v => Number(v))) {
+            result = this.header('Use Cost', 2);
+            result += this.keyValueRequired('health', data.useCost, [unit.state.health, 0]);
+            result += this.keyValueRequired('stamina', data.useCost, [unit.state.stamina, 0]);
+            result += this.keyValueRequired('mana', data.useCost, [unit.state.mana, 0]);
+            result += this.keyValueRequired('actionPoints', data.useCost, [unit.state.actionPoints || Number.MAX_SAFE_INTEGER, 0]);
+        }
         return result;
     }
 
@@ -124,6 +179,8 @@ export default class GameObjectRenderer {
 
     protected renderObjects(data: any[], ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
+        if (header === 'damage') depth = 13;
+        if (header === 'modification') depth = 23;
         const result = data.reduce((acc, d, i) => acc + this.renderObject(d, ignoreHeaders, `${header} #${i + 1}`, depth), '');
         return result.toString();
     }
@@ -145,6 +202,8 @@ export default class GameObjectRenderer {
                 return `<span class="orange lighten-1">${value}:</span><br>`;
             case 13:
                 return `<span class="red lighten-1">${value}:</span><br>`;
+            case 23:
+                return `<span class="purple lighten-1">${value}:</span><br>`;
             default:
             case 2:
                 return `<span class="light-blue lighten-1">${value}:</span><br>`;
@@ -165,6 +224,16 @@ export default class GameObjectRenderer {
         return !value[1] ?
             `<span class="orange-text text-lighten-1">${key}</span>: ${value[0]}<br>` :
             `<span class="orange-text text-lighten-1">${key}</span>: <span class="${value[1] > 0 ? 'green-text' : 'red-text'} text-lighten-2">${Math.max(0, value[0] + value[1])}</span> <br>`;
+    }
+
+    protected keyValueRequired(key: string, data: any, has: [number, number]): string {
+        const total = has[0] + has[1];
+        const value = Number(data[key]);
+        key = this.capitalize(key);
+        if (!value) return '';
+        return total >= value ?
+            `<span class="orange-text text-lighten-1">${key}</span>: ${value}<br>` :
+            `<span class="orange-text text-lighten-1">${key}</span>: <span class="red-text" text-lighten-2">${value}</span> <br>`;
     }
 
     protected keyValueColor(key: string, colorClass: string, value: number | string | boolean | undefined): string {
@@ -202,6 +271,8 @@ export default class GameObjectRenderer {
             case 'slotsNumber':
             case 'equipped':
             case 'canBeThrownAway':
+            case 'ammunitionKind':
+            case 'kind':
             case 'canBeSold':
                 return true;
         }

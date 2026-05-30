@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType, EquipmentSlot } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType, EquipmentSlot, GameUnit } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { ActionResultData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -305,6 +305,18 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.shopItems.set(data.uid!, iconItem);
         iconItem.update(data, this.state);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
+        iconItem.unit = this.unitWithMaxedState();
+    }
+
+    protected unitWithMaxedState(): GameUnit {
+        const unit = this.state.userState.unit
+        return {
+            ...unit, state: {
+                ...unit.stats.baseAttributes,
+                actionPoints: unit.state.actionPoints + Math.floor(unit.stats.attributes.initiative / 10),
+                stress: 0,
+            }
+        };
     }
 
     protected updateUserStatus(data: UserStateData): void {
@@ -468,6 +480,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         this.unitItems.set(data.uid!, iconItem);
         iconItem.update(data, this.state);
+        iconItem.unit = this.unitWithMaxedState();
     }
 
     protected onCheckboxChange(target: Checkbox): void {

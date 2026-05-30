@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Equipment, InventoryItem, Weapon } from '../../../domain/domain';
+import { Ammunition, Equipment, GameUnit, InventoryItem, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -28,6 +28,7 @@ export default class ItemIcon extends Component {
     protected readonly actionPointsLabel: Label;
 
     private _data: InventoryItem;
+    private _unit: GameUnit;
     private _descriptionPopup: ObjectDescription;
 
     public destroy(): void {
@@ -43,6 +44,14 @@ export default class ItemIcon extends Component {
             { design: resourceLoader.get(ITEM_ICON_DESIGN), classList: ['item-icon-warpper'] })!;
         iconComponent.icon = icon;
         return iconComponent;
+    }
+
+    public set unit(value: GameUnit) {
+        this._unit = value;
+    }
+
+    public get unit(): GameUnit {
+        return this._unit;
     }
 
     public set icon(value: string) {
@@ -72,6 +81,7 @@ export default class ItemIcon extends Component {
 
     protected onHover(): void {
         if (!this._descriptionPopup || !this._data) { return; }
+        this._descriptionPopup.unit = this._unit;
         this._descriptionPopup.data = this._data;
         this._descriptionPopup.show();
     }
