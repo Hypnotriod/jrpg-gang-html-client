@@ -47,7 +47,7 @@ export default class GameObjectRenderer {
             }
             ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
         } else {
-            ignoreHeaders.push('requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice');
+            ignoreHeaders.push('requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -66,6 +66,9 @@ export default class GameObjectRenderer {
         }
         if (data.wearout || data.durability) {
             result += this.keyValueColor('wearout', 'blue-grey', `${data.wearout ?? 0} / ${data.durability}`);
+        }
+        if (data.quantity) {
+            result += this.keyValue('quantity', data.quantity);
         }
         if (data.equipped) {
             result += this.keyValue('equipped', data.equipped);
@@ -269,6 +272,7 @@ export default class GameObjectRenderer {
             case 'slot':
             case 'description':
             case 'slotsNumber':
+            case 'quantity':
             case 'equipped':
             case 'canBeThrownAway':
             case 'ammunitionKind':
