@@ -15,6 +15,7 @@ export const ROOMS_CONTAINER: string = 'rooms_container';
 export const SELECT_ROOMS_CONTAINER: string = 'select_rooms_container';
 
 export const BUTTON_AUTH: string = 'button_auth';
+export const BUTTON_AUTH_GUEST: string = 'button_auth_guest';
 export const BUTTON_JOIN: string = 'button_join';
 export const BUTTON_JOIN_ROOM: string = 'button_join_room';
 export const BUTTON_LEAVE_ROOM: string = 'button_leave_room';
@@ -49,6 +50,7 @@ export const CHECKBOX_SELL: string = 'checkbox_sell';
 export const CHECKBOX_REPAIR: string = 'checkbox_repair';
 
 export const INPUT_USER_NAME: string = 'input_user_name';
+export const INPUT_LABEL_USER_NAME: string = 'input_label_user_name';
 
 export const LABEL_ERROR: string = 'label_error';
 export const LABEL_NAME: string = 'label_name';

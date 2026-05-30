@@ -86,7 +86,7 @@ export default abstract class Component {
     }
 
     public show(): void {
-        this._view.style.display = this.display || 'block';
+        this._view.style.display = this.display || 'block'
     }
 
     public hide(): void {

@@ -3,6 +3,7 @@ import { RequestType } from './requests';
 
 export const KEY_SESSION_ID: string = 'sessionId';
 export const KEY_IS_NEW_PLAYER: string = 'isNewPlayer';
+export const KEY_IS_GUEST: string = 'isGuest';
 export const KEY_TOKEN: string = 'token';
 export const VALUE_TRUE: string = 'true';
 export const VALUE_FALSE: string = 'false';

@@ -1,6 +1,7 @@
 {
     "gameServerWsUrl": "${GAME_SERVER_WS_URL}",
     "authUrl": "${AUTH_URL}",
+    "authGuestUrl": "${AUTH_GUEST_URL}",
     "configurationUrl": "${CONFIGURATION_URL}",
     "version": "${VERSION}"
 }

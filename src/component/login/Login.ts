@@ -1,10 +1,10 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
-import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
+import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_LABEL_USER_NAME, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
 import { USER_CLASSES } from '../../constants/Configuration';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
-import { KEY_IS_NEW_PLAYER, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
+import { KEY_IS_NEW_PLAYER, KEY_IS_GUEST, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import QueryService from '../../service/QueryService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -15,17 +15,21 @@ import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 import Auth from '../auth/Auth';
+import ItemIcon from '../ui/icon/ItemIcon';
+import { InventoryItem } from '../../domain/domain';
 
 @injectable()
 @singleton()
 export default class Login extends Component implements ServerCommunicatorHandler {
     @component(INPUT_USER_NAME, TextInput)
     private readonly userNameInput: TextInput;
+    @component(INPUT_LABEL_USER_NAME, TextInput)
+    private readonly userNameInputLabel: Label;
     @component(LABEL_ERROR, Label)
     private readonly errorLabel: Label;
     @component(BUTTON_JOIN, Button)
     private readonly joinButton: Button;
-    private readonly icons: Icon[] = [];
+    private readonly icons: ItemIcon[] = [];
     private isJoining: boolean = false;
     private unsuccessJoinAttempts: number = 0;
 
@@ -39,25 +43,39 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected initialize(): void {
+        const isGuest = Boolean(this.query.parsedQuery[KEY_IS_GUEST]);
+        if (isGuest) {
+            sessionStorage.setItem(KEY_IS_GUEST, String(isGuest));
+        }
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
-        this.userNameInput.onInput = target => this.updateJoinButtonState();
+        if (isGuest) {
+            this.userNameInput.value = "Guest";
+            this.userNameInput.disable();
+            this.userNameInputLabel.disable();
+            this.userNameInput.hide();
+            this.userNameInputLabel.hide();
+        } else {
+            this.userNameInput.onInput = target => this.updateJoinButtonState();
+        }
         this.errorLabel.hide();
 
         this.joinButton.onClick = target => this.onJoinClick();
         this.joinButton.disable();
 
-        USER_CLASSES.forEach(clazz =>
-            this.icons.push(Icon.createIcon(clazz, this, ICONS_CONTAINER)!));
-        this.icons.forEach(icon => {
+        USER_CLASSES.forEach(clazz => {
+            const icon = ItemIcon.createItemIcon(clazz, this, ICONS_CONTAINER)!;
             icon.onClick = target => this.onClassIconClick(target);
+            icon.update({ name: clazz, code: clazz } as InventoryItem, this.state);
+            this.icons.push(icon);
         });
         this.icons[0].select();
         this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
+        this.updateJoinButtonState();
     }
 
-    protected onClassIconClick(target: Icon): void {
+    protected onClassIconClick(target: ItemIcon): void {
         this.icons.forEach(icon => icon.unselect());
         target.select();
         this.updateJoinButtonState();

@@ -43,6 +43,14 @@ export default class TextInput extends Component {
         this.view.value = value;
     }
 
+    public disable(): void {
+        this._view.setAttribute('disabled', 'disabled');
+    }
+
+    public enable(): void {
+        this._view.removeAttribute('disabled');
+    }
+
     public set onEnter(callback: (target: TextInput) => void) {
         this.onEnterPressCallback = callback;
     }

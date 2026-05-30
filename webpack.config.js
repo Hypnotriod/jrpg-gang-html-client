@@ -37,6 +37,14 @@ module.exports = (env) => ({
                 test: /app-config\.json$/,
                 loader: 'string-replace-loader',
                 options: {
+                    search: '${AUTH_GUEST_URL}',
+                    replace: env.authGuestUrl,
+                }
+            },
+            {
+                test: /app-config\.json$/,
+                loader: 'string-replace-loader',
+                options: {
                     search: '${VERSION}',
                     replace: env.version,
                 }
