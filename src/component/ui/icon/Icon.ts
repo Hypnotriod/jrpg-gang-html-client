@@ -1,4 +1,5 @@
 import Component from '../../Component';
+import ObjectDescription from '../popup/ObjectDescription';
 
 export default class Icon extends Component {
     private onClickCallback: ((target: Icon) => void) | null;
@@ -8,6 +9,25 @@ export default class Icon extends Component {
     private _selected: boolean = false;
     private _chosen: boolean = false;
     private _icon: string;
+    private _descriptionPopup?: ObjectDescription;
+    private _description: object;
+
+
+    public set descriptionPopup(value: ObjectDescription) {
+        this._descriptionPopup = value;
+    }
+
+    public get descriptionPopup(): ObjectDescription | undefined {
+        return this._descriptionPopup;
+    }
+
+    public set description(value: object) {
+        this._description = value;
+    }
+
+    public get description(): object {
+        return this._description;
+    }
 
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
@@ -16,9 +36,14 @@ export default class Icon extends Component {
         };
         this.view.onmouseover = (event: MouseEvent) => {
             this.onHoverCallback?.(this);
+            if (!this._descriptionPopup || !this._description) { return; }
+            this._descriptionPopup.data = this._description;
+            this._descriptionPopup.show();
         };
         this.view.onmouseleave = (event: MouseEvent) => {
             this.onLeaveCallback?.(this);
+            if (!this._descriptionPopup || !this._description) { return; }
+            this._descriptionPopup.hide();
         };
         this.view.classList.add('unselected');
     }

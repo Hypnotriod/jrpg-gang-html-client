@@ -7,8 +7,8 @@ export const USER_CLASSES: string[] = [
     'ranger',
 ];
 
-export const BASE_UNIT_DESCRIPTIONS: any[] = [
-    {
+export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
+    warrior: {
         name: "Warrior",
         code: "warrior",
         description: "A disciplined fighter from the noble elite, a master of sword and shield. They bears the bitter memory of sieges and broken banners, standing immovable while empires rot around his feet.",
@@ -43,7 +43,7 @@ export const BASE_UNIT_DESCRIPTIONS: any[] = [
             madness: 2
         },
     },
-    {
+    barbarian: {
         name: "Barbarian",
         code: "barbarian",
         description: "A hulking brute from the frozen wastes, wielding axe and fury in equal measure. Scarred and relentless, they walks like a storm — each swing a funeral bell for fallen keeps; his laughter tastes of iron and frost.",
@@ -78,7 +78,7 @@ export const BASE_UNIT_DESCRIPTIONS: any[] = [
             madness: 0
         },
     },
-    {
+    ranger: {
         name: "Ranger",
         code: "ranger",
         description: "A swift archer of the wilds, deadly with bow and blade. Haunted by hollowed woods and moonlit tracks, they slip like smoke between ruined trees, each arrow a clean, whispered verdict against the dark.",
@@ -113,7 +113,7 @@ export const BASE_UNIT_DESCRIPTIONS: any[] = [
             madness: 0
         },
     },
-    {
+    mage: {
         name: "Mage",
         code: "mage",
         description: "A scholarly sorcerer wielding arcane forces, bending magic to their will. Keeper of ash-black tomes and forbidden runes, they trade warmth for insight and call cold stars down into mortal flesh to learn what nightmares whisper.",
@@ -148,7 +148,7 @@ export const BASE_UNIT_DESCRIPTIONS: any[] = [
             madness: 5
         }
     },
-]
+};
 
 export const SCENARIO_IDS = {
     EASY: 'easy-01',

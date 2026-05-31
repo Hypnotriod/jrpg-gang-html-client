@@ -17,7 +17,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
-import { USER_CLASSES } from '../../constants/Configuration';
+import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configuration';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
@@ -190,6 +190,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelIntelligence.descriptionPopup = this.itemDescription;
         this.labelInitiative.descriptionPopup = this.itemDescription;
         this.labelLuck.descriptionPopup = this.itemDescription;
+        this.unitIcon.descriptionPopup = this.itemDescription;
 
         this.labelHealth.description = { Health: 'The hit points a unit can take before dying' };
         this.labelStamina.description = { Stamina: 'A weapon may require stamina points to perform an action' };
@@ -326,9 +327,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateUserStatus(data: UserStateData): void {
         this.state.userState = data;
-        this.unitIcon.icon = this.state.userState.playerInfo.class;
+        const clazz = this.state.userState.playerInfo.class;
+        this.unitIcon.icon = clazz;
+        this.unitIcon.description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
-        this.labelClass.value = this.state.userState.playerInfo.class;
+        this.labelClass.value = clazz;
         this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
         this.updateBooty();
         this.updateResistance();
