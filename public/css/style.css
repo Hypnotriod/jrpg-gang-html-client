@@ -115,7 +115,8 @@ body {
 .item-description-popup {
     pointer-events: none;
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    overflow: hidden;
+    background-color: rgb(40, 51, 61);
     z-index: 100;
     min-height: 40px;
     padding: 10px;

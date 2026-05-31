@@ -17,13 +17,14 @@ export default class ObjectDescription extends Container {
     }
 
     protected updatepositionOnMouseMove(e: MouseEvent): void {
-        this.leftPx = window.innerWidth / 2 > e.clientX ? e.clientX + 32 : e.clientX - this.width - 32;
-        this.topPx = window.innerHeight / 2 > e.clientY ? e.clientY : e.clientY - this.height;
-        if (this.topPx + this.height > window.innerHeight) {
-            this.topPx = window.innerHeight - this.height;
-        }
-        if (this.topPx < 0) {
-            this.topPx = 0;
+        this.leftPx = 0;
+        this.topPx = 0;
+        this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
+        this.topPx = (window.innerHeight - this.height) / 2;
+        if (e.clientY - this.height > this.topPx) {
+            this.topPx = e.clientY - this.height;
+        } else if (e.clientY < this.topPx) {
+            this.topPx = e.clientY;
         }
     }
 

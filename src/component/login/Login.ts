@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
-import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_LABEL_USER_NAME, INPUT_USER_NAME, LABEL_ERROR } from '../../constants/Components';
-import { USER_CLASSES } from '../../constants/Configuration';
+import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_LABEL_USER_NAME, INPUT_USER_NAME, ITEM_DESCRIPTION_POPUP, LABEL_ERROR } from '../../constants/Components';
+import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configuration';
 import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
 import { KEY_IS_NEW_PLAYER, KEY_IS_GUEST, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
@@ -11,12 +11,12 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
-import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 import Auth from '../auth/Auth';
 import ItemIcon from '../ui/icon/ItemIcon';
 import { InventoryItem } from '../../domain/domain';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @injectable()
 @singleton()
@@ -29,6 +29,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
     private readonly errorLabel: Label;
     @component(BUTTON_JOIN, Button)
     private readonly joinButton: Button;
+    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    private readonly objectDescription: ObjectDescription;
     private readonly icons: ItemIcon[] = [];
     private isJoining: boolean = false;
     private unsuccessJoinAttempts: number = 0;
@@ -62,10 +64,12 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.joinButton.onClick = target => this.onJoinClick();
         this.joinButton.disable();
 
-        USER_CLASSES.forEach(clazz => {
+        this.objectDescription.hide();
+        USER_CLASSES.forEach((clazz, n) => {
             const icon = ItemIcon.createItemIcon(clazz, this, ICONS_CONTAINER)!;
             icon.onClick = target => this.onClassIconClick(target);
-            icon.update({ name: clazz, code: clazz } as InventoryItem, this.state);
+            icon.update(BASE_UNIT_DESCRIPTIONS[n] as unknown as InventoryItem, this.state);
+            icon.descriptionPopup = this.objectDescription;
             this.icons.push(icon);
         });
         this.icons[0].select();
