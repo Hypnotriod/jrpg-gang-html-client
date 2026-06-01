@@ -6,6 +6,7 @@ export interface PlayerInfo {
     unitUid?: number;
     isOffline?: boolean;
     isReady?: boolean;
+    isGuest?: boolean;
 }
 
 export interface RoomInfo {

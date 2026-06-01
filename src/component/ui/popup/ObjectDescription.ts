@@ -2,10 +2,13 @@ import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import Container from '../container/Container';
 import { GameUnit } from '../../../domain/domain';
+import { SoundName, SoundService } from '../../../service/SoundService';
 
 @injectable()
 export default class ObjectDescription extends Container {
     private _unit?: GameUnit;
+    private _active: boolean = true;
+    private _shown: boolean = false;
 
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
@@ -14,6 +17,28 @@ export default class ObjectDescription extends Container {
     protected initialize(): void {
         super.initialize();
         window.addEventListener('mousemove', e => this.updatepositionOnMouseMove(e));
+        window.addEventListener("keydown", event => {
+            if (event.key === 'i') {
+                this._active = !this._active;
+                SoundService.play(SoundName.CLICK);
+            }
+            if (!this._active) {
+                super.hide();
+            } else if (this._shown) {
+                this.show();
+            }
+        });
+    }
+
+    public override show(): void {
+        this._shown = true;
+        if (!this._active) return;
+        super.show();
+    }
+
+    public override hide(): void {
+        this._shown = false;
+        super.hide();
     }
 
     protected updatepositionOnMouseMove(e: MouseEvent): void {

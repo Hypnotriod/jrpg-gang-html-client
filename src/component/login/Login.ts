@@ -46,9 +46,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected initialize(): void {
         const isGuest = Boolean(this.query.parsedQuery[KEY_IS_GUEST]);
-        if (isGuest) {
-            sessionStorage.setItem(KEY_IS_GUEST, String(isGuest));
-        }
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
         if (isGuest) {
             this.userNameInput.value = "Guest";
