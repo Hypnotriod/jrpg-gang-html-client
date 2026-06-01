@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><title>JRPG Gang</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,user-scalable=no"><style>.lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }</style><script>var contentWidth = 900;
+        var contentHeight = 700;
+        function resizeViewport() {
+            var scale = (screen.width / screen.height < contentWidth / contentHeight) ?
+                screen.width / contentWidth : screen.height / contentHeight;
+            document.querySelector('meta[name="viewport"]').setAttribute(
+                'content', 'width=' + contentWidth + ', minimum-scale=' + scale + ', maximum-scale=' + scale);
+        }
+        window.onresize = resizeViewport;
+        resizeViewport();</script><link rel="stylesheet" href="./css/style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script><script defer="defer" src="main.min-ba808e9bd6b652ba69ae.js"></script></head><body><div class="lds-dual-ring"></div><div id="main_scene_container" class="main-scene-container"></div></body></html>

@@ -1,0 +1,15 @@
+*.vsix
+*.code-workspace
+*.pem
+/.vscode/
+/src/
+/template/
+/public/
+/node_modules/
+README.md
+preview-01.jpg
+package.json
+package-lock.json
+tsconfig.json
+tslint.json
+webpack.config.js

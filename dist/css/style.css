@@ -1,0 +1,168 @@
+html,
+body,
+div {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(170, 170, 170) #00000000;
+    background-color: black;
+    font-size: 14px;
+}
+
+.main-scene-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.hidden {
+    display: none;
+}
+
+.selection-icon {
+    background-color: aliceblue;
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 74px;
+    height: 74px;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 3px;
+}
+
+.selection-icon:disabled {
+    background-color: gray;
+}
+
+.btn-plus {
+    background-color: darkcyan;
+    border-radius: 3px;
+    border: 0;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 2px 6px;
+    text-decoration: none;
+}
+
+.btn-plus:hover {
+    background-color: aquamarine;
+}
+
+.btn-plus:active {
+    position: relative;
+    top: 1px;
+}
+
+.scrollbar-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.scrollbar-y {
+    scrollbar-width: 2px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.unselected {
+    background-color: aliceblue;
+}
+
+.unselected:hover {
+    background-color: aquamarine;
+}
+
+.selected {
+    background-color: darkcyan;
+}
+
+.selected:hover {
+    background-color: cadetblue;
+}
+
+.chosen {
+    border: 3px solid coral;
+}
+
+.item-icon-warpper {
+    text-align: center;
+    width: 80px;
+}
+
+.items-container-x {
+    display: flex;
+    flex-direction: row;
+}
+
+.items-container-y {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-description-popup {
+    pointer-events: none;
+    position: fixed;
+    overflow: hidden;
+    max-width: 50vw;
+    background-color: rgb(40, 51, 61);
+    z-index: 100;
+    min-height: 40px;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.achievement-popup {
+    pointer-events: none;
+    position: fixed;
+    background-color: rgb(75, 87, 98);
+    z-index: 1000;
+    width: 350px;
+    padding-top: 20px;
+    border-radius: 3px;
+    margin: 10px;
+    right: 0;
+}
+
+.single-line {
+    white-space: nowrap;
+}
+
+span {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 1px;
+    border-radius: 5px;
+}
+
+.text-shadow-white {
+    text-shadow: 1px 1px #fff, -1px -1px #fff, -1px 1px #fff, 1px -1px #fff,
+        1px 0px #fff, -1px 0px #fff, 0px 1px #fff, 0px -1px #fff;
+}
+
+.text-shadow-black {
+    text-shadow: 1px 1px #000, -1px -1px #000, -1px 1px #000, 1px -1px #000,
+        1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000;
+}
+
+.text-shadow-gray {
+    text-shadow: 1px 1px #444, -1px -1px #444, -1px 1px #444, 1px -1px #444,
+        1px 0px #444, -1px 0px #444, 0px 1px #444, 0px -1px #444;
+}
+
+.no-select {
+    -webkit-user-select: none;
+    user-select: none;
+}

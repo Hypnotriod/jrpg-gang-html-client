@@ -1,0 +1,58 @@
+<div class="game-wrapper">
+    <div class="row" style="min-height: 150px;">
+        <div id="flow_controls_container" class="col s4 center-align">
+            <div class="row">
+                <div class="col" style="margin-top: 0;">
+                    <button id="button_abandon" class="btn-small red">Abandon</button>
+                    <button id="button_leave" class="btn-small">I'm Done</button>
+                </div>
+                <div class="row">
+                    <button id="button_wait" class="btn-small col s2" style="margin-right: 10px;">Wait</button>
+                    <button id="button_next_phase" class="btn-small blue">Ready</button>
+                    <button id="button_next_battle" class="btn-small darken-4 yellow">Next Battle</button>
+                    <button id="button_skip" class="btn-small purple">End Turn</button>
+                </div>
+            </div>
+            <div id="booty_container" class="items-container-y" style="margin-top: -25px;"></div>
+            <div class="col s6 left-align" style="padding: 0; margin-top: 14px;">
+                <span id="label_dungeon_state" class="white-text grey darken-2">Dungeon Level: 7</span><br>
+            </div>
+            <div class="col s6 left-align" style="padding: 0; margin-top: 14px;">
+                <span id="label_game_status" class="white-text green darken-2"></span>
+            </div>
+        </div>
+        <div class="col s7">
+            <div id="units_queue_container" class="items-container-y"></div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: -5px;">
+        <div class="col">
+            <div id="battlefield_container" class="items-container-y left"></div>
+        </div>
+        <div class="col center-align" style="margin-top: -40px;">
+            <span class="orange-text">BATTLE LOG</span>
+            <div id="game_log" class="game-log white-text scrollbar-y left-align"></div>
+        </div>
+        <div class="col center-align" style="margin-top: -40px;">
+            <span class="orange-text">CHAT</span>
+            <div id="game_chat" class="game-chat white-text scrollbar-y left-align"></div>
+            <div class="input-field game-chat-input left-align">
+                <input id="input_game_chat_message" type="text">
+            </div>
+        </div>
+    </div>
+    <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin: -3px; margin-top: -18px;">
+    </div>
+</div>
+<div id="item_description_popup" class="item-description-popup white-text"></div>
+<div id="achievement_popup" class="achievement-popup blue-grey darken-4 hidden">
+    <div class="row">
+        <div class="col s4">
+            <div id="icon" class="selection-icon"></div><br>
+        </div>
+        <div class="col s8">
+            <span id="label_description" class="white-text" style="padding: 0;">Description</span><br><br>
+            <span id="label_requirements" class="orange-text" style="padding: 0;">1 / 10</span>
+        </div>
+    </div>
+</div>
