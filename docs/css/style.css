@@ -6,9 +6,12 @@ div {
 }
 
 body {
+    background-image: url("../assets/backgrounds/bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
     scrollbar-width: thin;
     scrollbar-color: rgb(170, 170, 170) #00000000;
-    background-color: black;
+    background-color: rgb(18, 18, 18);
     font-size: 14px;
 }
 
