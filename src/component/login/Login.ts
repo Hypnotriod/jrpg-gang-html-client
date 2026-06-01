@@ -17,6 +17,7 @@ import Auth from '../auth/Auth';
 import ItemIcon from '../ui/icon/ItemIcon';
 import { InventoryItem } from '../../domain/domain';
 import ObjectDescription from '../ui/popup/ObjectDescription';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -80,6 +81,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.icons.forEach(icon => icon.unselect());
         target.select();
         this.updateJoinButtonState();
+        SoundService.play(SoundName.CLICK);
     }
 
     protected updateJoinButtonState(): void {
