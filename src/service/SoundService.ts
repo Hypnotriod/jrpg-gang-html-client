@@ -32,7 +32,15 @@ export const JOB_SOUND: { [key: string]: SoundName } = {
 }
 
 export class SoundService {
+    private static _muted: boolean = false;
     private static readonly sounds: { [Key in SoundName]?: Howl } = {};
+
+    public static get muted(): boolean {
+        return SoundService._muted;
+    }
+    public static set muted(value: boolean) {
+        SoundService._muted = value;
+    }
 
     public static initialize(): void {
         SoundService.sounds[SoundName.BUFF] = new Howl({ src: ['assets/sounds/buff.mp3'] });
@@ -57,11 +65,19 @@ export class SoundService {
         SoundService.sounds[SoundName.LEVEL_UP] = new Howl({ src: ['assets/sounds/level_up.mp3'] });
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
+
+        window.addEventListener("keydown", event => {
+            if (event.key === 'm') {
+                !SoundService._muted && SoundService.play(SoundName.CLICK);
+                SoundService._muted = !SoundService._muted;
+                !SoundService._muted && SoundService.play(SoundName.CLICK);
+            }
+        });
     }
 
     public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; }): void {
         const sound = SoundService.sounds[name];
-        if (!sound) return;
+        if (!sound || SoundService._muted) return;
         sound.loop(options?.loop ?? false);
         sound.stop();
         if (options?.delayMs) {
