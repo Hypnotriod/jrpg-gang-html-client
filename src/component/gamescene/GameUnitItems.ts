@@ -86,10 +86,10 @@ export default class GameUnitItems extends GameBase {
         }
         this.unitItems.set(data.uid!, iconItem);
         activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
+        iconItem.update(data, this.state);
         !this.checkUseCost(data) && iconItem.cantUse();
         iconItem.unit = this.playersUnit();
         this.updateUnitItemHint(iconItem, data);
-        iconItem.update(data, this.state);
     }
 
     protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
