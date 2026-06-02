@@ -304,10 +304,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.shopItems.set(data.uid!, iconItem);
-        iconItem.hint = iconItem.enabled ? 'Click to Buy' : 'Can\'t Buy';
-        iconItem.update(data, this.state);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
         iconItem.unit = this.unitWithMaxedState();
+        iconItem.hint = iconItem.enabled ? 'Click to Buy' : 'Can\'t Buy';
+        iconItem.update(data, this.state);
     }
 
     protected unitWithMaxedState(): GameUnit {
@@ -490,9 +490,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.unitItems.set(data.uid!, iconItem);
+        iconItem.unit = this.unitWithMaxedState();
         this.updateUnitItemHint(iconItem, data);
         iconItem.update(data, this.state);
-        iconItem.unit = this.unitWithMaxedState();
     }
 
     protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
