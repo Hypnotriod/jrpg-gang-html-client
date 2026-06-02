@@ -5,7 +5,6 @@ export default class Icon extends Component {
     private onClickCallback: ((target: Icon) => void) | null;
     private onHoverCallback: ((target: Icon) => void) | null;
     private onLeaveCallback: ((target: Icon) => void) | null;
-    private _enabled: boolean = true;
     private _selected: boolean = false;
     private _chosen: boolean = false;
     private _icon: string;

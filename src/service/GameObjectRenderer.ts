@@ -17,6 +17,9 @@ export default class GameObjectRenderer {
 
     public renderMain(data: any, ignoreHeaders: string[] = []): string {
         let result = '';
+        if (data.hint) {
+            result += `<b><span class="grey-text lighten-1">${data.hint}</span></b><br>`;
+        }
         if (data.code) {
             result += `<img src="./assets/icons/${data.code}.png"><br>`;
         }
@@ -278,6 +281,7 @@ export default class GameObjectRenderer {
             case 'ammunitionKind':
             case 'kind':
             case 'canBeSold':
+            case 'hint':
                 return true;
         }
         return false;

@@ -29,7 +29,20 @@ export default class ItemIcon extends Component {
 
     private _data: InventoryItem;
     private _unit: GameUnit;
+    private _hint?: string | undefined;
+    private _hover: boolean = false;
     private _descriptionPopup: ObjectDescription;
+
+    public get hint(): string | undefined {
+        return this._hint;
+    }
+
+    public set hint(value: string | undefined) {
+        this._hint = value;
+        if (this._hover) {
+            this.onHover();
+        }
+    }
 
     public destroy(): void {
         this._icon.destroy();
@@ -62,12 +75,20 @@ export default class ItemIcon extends Component {
         return this._icon.icon;
     }
 
+    public get usable(): boolean {
+        return !this.iconBroken.visible && !this.iconCantUse.visible;
+    }
+
     public override enable(): void {
         this._icon.enable();
     }
 
     public override disable(): void {
         this._icon.disable();
+    }
+
+    public get enabled(): boolean {
+        return this._icon.enabled;
     }
 
     protected initialize(): void {
@@ -80,13 +101,15 @@ export default class ItemIcon extends Component {
     }
 
     protected onHover(): void {
+        this._hover = true;
         if (!this._descriptionPopup || !this._data) { return; }
         this._descriptionPopup.unit = this._unit;
-        this._descriptionPopup.data = this._data;
+        this._descriptionPopup.data = { ...this._data, hint: this._hint };
         this._descriptionPopup.show();
     }
 
     protected onLeave(): void {
+        this._hover = false;
         if (!this._descriptionPopup || !this._data) { return; }
         this._descriptionPopup.hide();
     }
@@ -156,6 +179,9 @@ export default class ItemIcon extends Component {
         actionPoints ? this.actionPointsLabel?.show() : this.actionPointsLabel?.hide();
         if (this.actionPointsLabel) {
             this.actionPointsLabel.value = `${actionPoints}`;
+        }
+        if (this._hover) {
+            this.onHover();
         }
     }
 

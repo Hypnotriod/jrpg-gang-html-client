@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType, EquipmentSlot, GameUnit } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType, EquipmentSlot, GameUnit, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { ActionResultData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -304,6 +304,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.shopItems.set(data.uid!, iconItem);
+        iconItem.hint = iconItem.enabled ? 'Click to Buy' : 'Can\'t Buy';
         iconItem.update(data, this.state);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
         iconItem.unit = this.unitWithMaxedState();
@@ -489,8 +490,33 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.descriptionPopup = this.itemDescription;
         }
         this.unitItems.set(data.uid!, iconItem);
+        this.updateUnitItemHint(iconItem, data);
         iconItem.update(data, this.state);
         iconItem.unit = this.unitWithMaxedState();
+    }
+
+    protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
+        if (this.checkboxSell.checked) {
+            iconItem.hint = data.canBeSold ? 'Click to Sell' : 'Can\'t Sell';
+            return;
+        }
+        if (this.checkboxRepair.checked) {
+            if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR) {
+                iconItem.hint = (data as Weapon).wearout ? 'Click to Repair' : 'Can\'t Repair';
+                return;
+            }
+        }
+        if (data.type === ItemType.WEAPON ||
+            data.type === ItemType.ARMOR ||
+            data.type === ItemType.AMMUNITION) {
+            if (!iconItem.usable) {
+                iconItem.hint = 'Can\'t Use';
+            } else {
+                iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
+            }
+            return;
+        }
+        iconItem.hint = '';
     }
 
     protected onCheckboxChange(target: Checkbox): void {
@@ -522,13 +548,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             } else {
                 item.enable();
             }
+            this.updateUnitItemHint(item, item.data);
         })
     }
 
     protected euipUneuipItem(target: ItemIcon): void {
         if (target.data.type === ItemType.NONE ||
-            target.data.type === ItemType.DISPOSABLE
-            || target.data.type === ItemType.PROVISION
+            target.data.type === ItemType.DISPOSABLE ||
+            target.data.type === ItemType.PROVISION ||
+            target.data.type === ItemType.MAGIC
         ) { return; }
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: !(target.data as Ammunition).equipped ? ActionType.EQUIP : ActionType.UNEQUIP,

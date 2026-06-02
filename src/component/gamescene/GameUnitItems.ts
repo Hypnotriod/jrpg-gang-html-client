@@ -85,10 +85,31 @@ export default class GameUnitItems extends GameBase {
             iconItem.descriptionPopup = this._objectDescription;
         }
         this.unitItems.set(data.uid!, iconItem);
-        iconItem.update(data, this.state);
         activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
         !this.checkUseCost(data) && iconItem.cantUse();
         iconItem.unit = this.playersUnit();
+        this.updateUnitItemHint(iconItem, data);
+        iconItem.update(data, this.state);
+    }
+
+    protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
+        if (!iconItem.enabled) {
+            iconItem.hint = '';
+            return;
+        }
+        if (data.type !== ItemType.ARMOR && data.type !== ItemType.AMMUNITION && !iconItem.chosen) {
+            iconItem.hint = 'Click to Select';
+            return;
+        }
+        if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR || data.type === ItemType.AMMUNITION) {
+            if (!iconItem.usable) {
+                iconItem.hint = 'Can\'t Use';
+            } else {
+                iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
+            }
+            return;
+        }
+        iconItem.hint = iconItem.chosen ? 'Selected' : '';
     }
 
     protected checkUseCost(data: InventoryItem): boolean {
@@ -107,9 +128,13 @@ export default class GameUnitItems extends GameBase {
             target.data.type === ItemType.MAGIC
         ) {
             const wansntChosen = !target.chosen && target.selected;
-            this.unitItems.forEach(i => i.unchoose());
+            this.unitItems.forEach(i => {
+                i.unchoose();
+                this.updateUnitItemHint(i, i.data);
+            });
             SoundService.play(SoundName.CLICK);
             target.choose();
+            this.updateUnitItemHint(target, target.data);
             if (wansntChosen) { return; }
         }
         if (!this.canDoUnitConfiguration()) { return; }

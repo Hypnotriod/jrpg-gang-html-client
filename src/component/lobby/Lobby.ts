@@ -1,7 +1,7 @@
 import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
-import { SCENARIO_IDS } from '../../constants/Configuration';
+import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatParticipant, ChatState, RoomInfo } from '../../domain/domain';
 import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData } from '../../dto/responces';
@@ -17,6 +17,7 @@ import Label from '../ui/label/Label';
 import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @injectable()
 @singleton()
@@ -41,6 +42,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly chat: TextField;
     @component(INPUT_LOBBY_CHAT_MESSAGE, TextInput)
     private readonly chatMessageInput: TextInput;
+    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    private readonly objectDescription: ObjectDescription;
 
     private readonly rooms: Map<number, Room> = new Map();
     private chatState: ChatState;
@@ -53,6 +56,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected initialize(): void {
         this.hide();
+        this.objectDescription.hide();
+        this.unitIcon.descriptionPopup = this.objectDescription;
         this.createRoomEasyButton.disable();
         this.createRoomEasyButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.EASY);
         this.createRoomMediumButton.disable();
@@ -193,8 +198,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateUnitInfo(): void {
-        this.unitIcon.icon = this.state.userState.playerInfo.class;
+        const clazz = this.state.userState.playerInfo.class;
+        this.unitIcon.icon = clazz
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
+        this.unitIcon.description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
     }
 
     protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {
@@ -208,9 +215,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateRoom(roomInfo: RoomInfo, isUserInRooms: boolean): number {
-        const room = this.rooms.get(roomInfo.uid) || Room.createRoom(this, ROOMS_CONTAINER);
+        const room = this.rooms.get(roomInfo.uid) || Room.createRoom(this, ROOMS_CONTAINER)!;
+        room.objectDescription = this.objectDescription;
         this.rooms.set(roomInfo.uid, room!);
-        room!.update(roomInfo, isUserInRooms);
+        room.update(roomInfo, isUserInRooms);
         return roomInfo.uid;
     }
 

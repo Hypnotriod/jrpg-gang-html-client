@@ -12,7 +12,8 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
-import { SCENARIO_IDS } from '../../constants/Configuration';
+import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @injectable()
 export default class Room extends Component {
@@ -21,6 +22,7 @@ export default class Room extends Component {
     private readonly userLevelLabels: Label[] = [];
     private readonly userConnectionStatusLabels: Label[] = [];
     private readonly userIcons: Icon[] = [];
+    private _objectDescription: ObjectDescription;
 
     @component(BUTTON_JOIN_ROOM, Button)
     private readonly joinRoomButton: Button;
@@ -28,6 +30,10 @@ export default class Room extends Component {
     private readonly leaveRoomButton: Button;
     @component(BUTTON_START_GAME, Button)
     private readonly startGameButton: Button;
+
+    public set objectDescription(value: ObjectDescription) {
+        this._objectDescription = value;
+    }
 
     private roomInfo: RoomInfo;
 
@@ -46,17 +52,24 @@ export default class Room extends Component {
 
         this.userPlaceholders.forEach(p => p.hide());
 
+        const clazz = this.state.userState.playerInfo.class;
         this.userPlaceholders[0].show();
         this.userNameLabels[0].value = roomInfo.host.nickname;
         this.userLevelLabels[0].value = `Level: ${roomInfo.host.level}`;
         this.userIcons[0].icon = roomInfo.host.class;
+        this.userIcons[0].descriptionPopup = this._objectDescription;
+        this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
         this.userConnectionStatusLabels[0].value = roomInfo.host.isOffline ? '⚫' : '🟢';
 
         roomInfo.joinedUsers.forEach((user, i) => {
+            const clazz = user.class;
             this.userPlaceholders[i + 1].show();
             this.userNameLabels[i + 1].value = user.nickname;
             this.userLevelLabels[i + 1].value = `Level: ${user.level}`;
             this.userIcons[i + 1].icon = user.class;
+            this.userIcons[i + 1].descriptionPopup = this._objectDescription;
+            this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
+
             this.userConnectionStatusLabels[i + 1].value = user.isOffline ? '⚫' : '🟢';
         });
 

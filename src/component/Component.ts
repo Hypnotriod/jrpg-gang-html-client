@@ -12,6 +12,7 @@ export default abstract class Component {
     protected instantiateOnInitList: InstantiateOnInitData[];
     protected _view: HTMLElement;
     protected display: string;
+    protected _enabled: boolean = true;
 
     public init(view: HTMLElement): Component {
         this._view = view;
@@ -106,7 +107,12 @@ export default abstract class Component {
     }
 
     public set enabled(value: boolean) {
+        this._enabled = value;
         value ? this.enable() : this.disable();
+    }
+
+    public get enabled(): boolean {
+        return this._enabled;
     }
 
     public findChild(id: string): HTMLElement | null {
