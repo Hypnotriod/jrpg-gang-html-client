@@ -32,9 +32,9 @@ export default class GameObjectRenderer {
         if (this.isUnitData(data)) {
             result += this.keyValue('level', data.stats.progress.level)
             if (data.stats.progress.experienceNext) {
-                result += this.keyValue('experience', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
+                result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
             } else {
-                result += this.keyValue('experience', data.stats.progress.experience)
+                result += this.keyValue('exp', data.stats.progress.experience)
             }
             result += this.keyValueColor('health', 'red', `${data.state.health} / ${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
             result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);

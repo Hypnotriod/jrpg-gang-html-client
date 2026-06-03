@@ -295,11 +295,17 @@ export default class SpotCell extends Component {
         this.healthBar.width = this._unit.state.health / (this._unit.stats.baseAttributes.health || 1) * 64;
         this.staminaBar.width = this._unit.state.stamina / (this._unit.stats.baseAttributes.stamina || 1) * 64;
         this.manaBar.width = this._unit.state.mana / (this._unit.stats.baseAttributes.mana || 1) * 64;
+        if (this._hover) {
+            this.onHover();
+        }
     }
 
     public updateWithCorpse(corpse: GameUnit): void {
         this.hideAll();
         this._icon.icon = 'tomb';
+        if (this._hover) {
+            this.onLeave();
+        }
     }
 
     public updateWithActionResult(result: ActionResult, targetUid: number): void {

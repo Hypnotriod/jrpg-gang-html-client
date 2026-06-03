@@ -28,6 +28,6 @@ export default class ShopItemIcon extends ItemIcon {
     public update(data: Disposable | Ammunition | Equipment, state: GameStateService): void {
         super.update(data, state);
         this.priceLabel.htmlValue = `<img src="./assets/icons/coin.png" style="width: 9px;"/>${data.price.coins}` +
-            (data.price.ruby ? ` <img src="./assets/icons/ruby.png" style="width: 10px;"/>${data.price.ruby}` : '');
+            (data.price.ruby ? `<img src="./assets/icons/ruby.png" style="width: 10px;"/>${data.price.ruby}` : '');
     }
 }
