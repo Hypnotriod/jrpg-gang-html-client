@@ -108,6 +108,7 @@ export default class GameBattlefield extends GameBase {
             this.currUnit = this.currentUnit();
         }
         corpses && corpses.forEach(corpse => {
+            if (units.some(u => u.position.x === corpse.position.x && u.position.y === corpse.position.y)) return;
             this.spots[corpse.position.x][corpse.position.y].updateWithCorpse(corpse);
         });
         const isActive = this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT;
