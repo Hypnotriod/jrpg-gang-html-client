@@ -86,11 +86,11 @@ export default class GameObjectRenderer {
         return result;
     }
 
-    public renderPrice(data: any, unit?: GameUnit) {
+    public renderPrice(data: any, unit?: GameUnit, isShopItem: boolean = false) {
         let result = '';
         if (!this.isUnitData(data)) {
             if (data.price) {
-                if (unit && !this.emptyOrAllFieldsZeros([], '', data.price)) {
+                if (unit && isShopItem && !this.emptyOrAllFieldsZeros([], '', data.price)) {
                     result += this.header('Price', 3);
                     result += data.price.coins ? this.keyValueRequired('coins', data.price, [unit.booty.coins, 0]) : '';
                     result += data.price.ruby ? this.keyValueRequired('ruby', data.price, [unit.booty.ruby ?? 0, 0]) : '';
@@ -102,7 +102,13 @@ export default class GameObjectRenderer {
                 result += this.renderObject(data.purchasePrice, [], 'purchasePrice', 3);
             }
             if (data.repairPrice) {
-                result += this.renderObject(data.repairPrice, [], 'repairPrice', 3);
+                if (unit && !this.emptyOrAllFieldsZeros([], '', data.repairPrice)) {
+                    result += this.header('RepairPrice', 3);
+                    result += data.repairPrice.coins ? this.keyValueRequired('coins', data.repairPrice, [unit.booty.coins, 0]) : '';
+                    result += data.repairPrice.ruby ? this.keyValueRequired('ruby', data.repairPrice, [unit.booty.ruby ?? 0, 0]) : '';
+                } else {
+                    result += this.renderObject(data.repairPrice, [], 'repairPrice', 3);
+                }
             }
         }
         return result;

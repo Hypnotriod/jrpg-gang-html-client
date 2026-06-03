@@ -9,7 +9,7 @@ export default class ObjectDescription extends Container {
     private _unit?: GameUnit;
     private _active: boolean = true;
     private _shown: boolean = false;
-    private _testPurchasePrice: boolean = false;
+    private _isShopItem: boolean = false;
 
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
@@ -54,11 +54,11 @@ export default class ObjectDescription extends Container {
         }
     }
 
-    public get testPurchasePrice(): boolean {
-        return this._testPurchasePrice;
+    public get isShopItem(): boolean {
+        return this._isShopItem;
     }
-    public set testPurchasePrice(value: boolean) {
-        this._testPurchasePrice = value;
+    public set isShopItem(value: boolean) {
+        this._isShopItem = value;
     }
 
     public set unit(value: GameUnit | undefined) {
@@ -76,7 +76,7 @@ export default class ObjectDescription extends Container {
             + this.renderer.renderResistance(data)
             + this.renderer.renderItemRequirements(data, this._unit)
             + this.renderer.renderItemUseCost(data, this._unit)
-            + this.renderer.renderPrice(data, this._testPurchasePrice ? this._unit : undefined)
+            + this.renderer.renderPrice(data, this._unit, this._isShopItem)
             + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;

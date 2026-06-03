@@ -32,13 +32,13 @@ export default class ItemIcon extends Component {
     private _hint?: string | undefined;
     private _hover: boolean = false;
     private _descriptionPopup: ObjectDescription;
-    private _testPurchasePrice: boolean = false;
+    private _isShopItem: boolean = false;
 
-    public get testPurchasePrice(): boolean {
-        return this._testPurchasePrice;
+    public get isShopItem(): boolean {
+        return this._isShopItem;
     }
-    public set testPurchasePrice(value: boolean) {
-        this._testPurchasePrice = value;
+    public set isShopItem(value: boolean) {
+        this._isShopItem = value;
     }
 
     public get hint(): string | undefined {
@@ -111,7 +111,7 @@ export default class ItemIcon extends Component {
     protected onHover(): void {
         this._hover = true;
         if (!this._descriptionPopup || !this._data) { return; }
-        this._descriptionPopup.testPurchasePrice = this._testPurchasePrice;
+        this._descriptionPopup.isShopItem = this._isShopItem;
         this._descriptionPopup.unit = this._unit;
         this._descriptionPopup.data = { ...this._data, hint: this._hint };
         this._descriptionPopup.show();
