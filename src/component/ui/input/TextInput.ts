@@ -13,6 +13,7 @@ export default class TextInput extends Component {
             this.onInputCallback && this.onInputCallback(this);
         };
         this.view.onkeydown = (event: KeyboardEvent) => {
+            event.stopPropagation();
             if (event.key === Key.Enter && this.onEnterPressCallback) {
                 this.onEnterPressCallback(this);
             }
