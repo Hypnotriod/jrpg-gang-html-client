@@ -86,11 +86,17 @@ export default class GameObjectRenderer {
         return result;
     }
 
-    public renderPrice(data: any) {
+    public renderPrice(data: any, unit?: GameUnit) {
         let result = '';
         if (!this.isUnitData(data)) {
             if (data.price) {
-                result += this.renderObject(data.price, [], 'price', 3);
+                if (unit && !this.emptyOrAllFieldsZeros([], '', data.price)) {
+                    result += this.header('Price', 3);
+                    result += data.price.coins ? this.keyValueRequired('coins', data.price, [unit.booty.coins, 0]) : '';
+                    result += data.price.ruby ? this.keyValueRequired('ruby', data.price, [unit.booty.ruby ?? 0, 0]) : '';
+                } else {
+                    result += this.renderObject(data.price, [], 'price', 3);
+                }
             }
             if (data.purchasePrice) {
                 result += this.renderObject(data.purchasePrice, [], 'purchasePrice', 3);
@@ -105,7 +111,7 @@ export default class GameObjectRenderer {
     public renderItemRequirements(data: any, unit?: GameUnit): string {
         let result = '';
         if (unit && data.requirements && Object.values(data.requirements).some(v => Number(v))) {
-            result = this.header('Requirements', 2);
+            result += this.header('Requirements', 2);
             result += this.keyValueRequired('strength', data.requirements, this.actionService.attributeTotalValue(unit, 'strength'));
             result += this.keyValueRequired('physique', data.requirements, this.actionService.attributeTotalValue(unit, 'physique'));
             result += this.keyValueRequired('agility', data.requirements, this.actionService.attributeTotalValue(unit, 'agility'));
@@ -124,7 +130,7 @@ export default class GameObjectRenderer {
     public renderItemUseCost(data: any, unit?: GameUnit): string {
         let result = '';
         if (unit && data.useCost && Object.values(data.useCost).some(v => Number(v))) {
-            result = this.header('Use Cost', 2);
+            result += this.header('Use Cost', 2);
             result += this.keyValueRequired('health', data.useCost, [unit.state.health, 0]);
             result += this.keyValueRequired('stamina', data.useCost, [unit.state.stamina, 0]);
             result += this.keyValueRequired('mana', data.useCost, [unit.state.mana, 0]);
@@ -136,7 +142,7 @@ export default class GameObjectRenderer {
     public renderAttributes(data: any): string {
         let result = '';
         if (this.isUnitData(data)) {
-            result = this.header('Attributes', 1);
+            result += this.header('Attributes', 1);
             result += this.keyValueExtra('Strength', this.actionService.attributeTotalValue(data, 'strength'));
             result += this.keyValueExtra('Physique', this.actionService.attributeTotalValue(data, 'physique'));
             result += this.keyValueExtra('Agility', this.actionService.attributeTotalValue(data, 'agility'));
@@ -151,7 +157,7 @@ export default class GameObjectRenderer {
     public renderResistance(data: any): string {
         let result = '';
         if (this.isUnitData(data)) {
-            result = this.header('Resistance', 1);
+            result += this.header('Resistance', 1);
             result += this.keyValueExtra('Stabbing', this.actionService.resistanceTotalValue(data, 'stabbing'));
             result += this.keyValueExtra('Cutting', this.actionService.resistanceTotalValue(data, 'cutting'));
             result += this.keyValueExtra('Crushing', this.actionService.resistanceTotalValue(data, 'crushing'));

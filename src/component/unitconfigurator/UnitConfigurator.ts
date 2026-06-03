@@ -302,6 +302,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem = ShopItemIcon.createShopItemIcon(data.code, this, SHOP_ITEMS_CONTAINER)!;
             iconItem.onClick = target => this.onShopItemClick(target);
             iconItem.descriptionPopup = this.itemDescription;
+            iconItem.testPurchasePrice = true;
         }
         this.shopItems.set(data.uid!, iconItem);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();

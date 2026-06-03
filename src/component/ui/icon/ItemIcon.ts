@@ -32,6 +32,14 @@ export default class ItemIcon extends Component {
     private _hint?: string | undefined;
     private _hover: boolean = false;
     private _descriptionPopup: ObjectDescription;
+    private _testPurchasePrice: boolean = false;
+
+    public get testPurchasePrice(): boolean {
+        return this._testPurchasePrice;
+    }
+    public set testPurchasePrice(value: boolean) {
+        this._testPurchasePrice = value;
+    }
 
     public get hint(): string | undefined {
         return this._hint;
@@ -103,6 +111,7 @@ export default class ItemIcon extends Component {
     protected onHover(): void {
         this._hover = true;
         if (!this._descriptionPopup || !this._data) { return; }
+        this._descriptionPopup.testPurchasePrice = this._testPurchasePrice;
         this._descriptionPopup.unit = this._unit;
         this._descriptionPopup.data = { ...this._data, hint: this._hint };
         this._descriptionPopup.show();

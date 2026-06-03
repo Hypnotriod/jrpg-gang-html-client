@@ -9,6 +9,7 @@ export default class ObjectDescription extends Container {
     private _unit?: GameUnit;
     private _active: boolean = true;
     private _shown: boolean = false;
+    private _testPurchasePrice: boolean = false;
 
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
@@ -53,8 +54,19 @@ export default class ObjectDescription extends Container {
         }
     }
 
-    public set unit(value: GameUnit) {
+    public get testPurchasePrice(): boolean {
+        return this._testPurchasePrice;
+    }
+    public set testPurchasePrice(value: boolean) {
+        this._testPurchasePrice = value;
+    }
+
+    public set unit(value: GameUnit | undefined) {
         this._unit = value;
+    }
+
+    public get unit(): GameUnit | undefined {
+        return this._unit;
     }
 
     public set data(data: object) {
@@ -64,7 +76,7 @@ export default class ObjectDescription extends Container {
             + this.renderer.renderResistance(data)
             + this.renderer.renderItemRequirements(data, this._unit)
             + this.renderer.renderItemUseCost(data, this._unit)
-            + this.renderer.renderPrice(data)
+            + this.renderer.renderPrice(data, this._testPurchasePrice ? this._unit : undefined)
             + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;
