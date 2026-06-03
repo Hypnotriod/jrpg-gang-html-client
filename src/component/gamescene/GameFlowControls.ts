@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, CHECKBOX_AUTO, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE, LABEL_DUNGEON_NAME } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -16,6 +16,8 @@ import { SoundName, SoundService } from '../../service/SoundService';
 export default class GameFlowControls extends GameBase {
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
+    @component(LABEL_DUNGEON_NAME, Label)
+    private readonly dungeonNameLabel: Label;
     @component(LABEL_DUNGEON_STATE, Label)
     private readonly dungeonStateLabel: Label;
     @component(BUTTON_NEXT_PHASE, Button)
@@ -53,6 +55,7 @@ export default class GameFlowControls extends GameBase {
     }
 
     public update(): void {
+        this.dungeonNameLabel.value = this.state.gameState.spot.name;
         this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber} / ${this.state.gameState.state.spotsTotal}`;
         this.updatenextPhaseLabel();
         const gamePhase: string = this.state.gameState.nextPhase;
@@ -99,7 +102,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.SCENARIO_COMPLETE:
                 let timeout: number = this.state.gameState.phaseTimeout || 0;
                 timeout = Math.max(timeout - 2, 0);
-                this.gameStatusLabel.value = `${this.state.gameState.nextPhase} (${timeout})`;
+                this.gameStatusLabel.htmlValue = `${this.state.gameState.nextPhase} <img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${timeout}`;
                 if (this.state.gameState.phaseTimeout) {
                     this.state.gameState.phaseTimeout--;
                     this.nextPhaseLabelTimeoutId = window.setTimeout(() => this.updatenextPhaseLabel(), 1000);

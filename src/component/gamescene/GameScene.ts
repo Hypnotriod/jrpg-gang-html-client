@@ -1,6 +1,6 @@
 import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
-import { ACHIEVEMENT_POPUP, BATTLEFIELD_CONTAINER, BOOTY_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { ACHIEVEMENT_POPUP, BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
@@ -12,12 +12,12 @@ import { SoundName, SoundService } from '../../service/SoundService';
 import { AchievementPopup } from '../achievements/AchievementPopup';
 import { component } from '../decorator/decorator';
 import TextInput from '../ui/input/TextInput';
+import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import GameBase from './GameBase';
 import GameBattlefield from './GameBattlefield';
-import GameBooty from './GameBooty';
 import GameFlowControls from './GameFlowControls';
 import GameUnitItems from './GameUnitItems';
 import GameUnitsQueue from './GameUnitsQueue';
@@ -37,14 +37,16 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly achievementPopup: AchievementPopup;
     @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
     private readonly unitsQueue: GameUnitsQueue;
-    @component(BOOTY_CONTAINER, GameBooty)
-    private readonly booty: GameBooty;
     @component(UNIT_ITEMS_CONTAINER, GameUnitItems)
     private readonly unitItems: GameUnitItems;
     @component(FLOW_CONTROLS_CONTAINER, GameFlowControls)
     private readonly flowControls: GameFlowControls;
     @component(BATTLEFIELD_CONTAINER, GameBattlefield)
     private readonly battlefield: GameBattlefield;
+    @component(LABEL_LOOT_COINS, Label)
+    protected readonly coinsLabel: Label;
+    @component(LABEL_LOOT_RUBIES, Label)
+    protected readonly rubiesLabel: Label;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -150,7 +152,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitItems.update(this.activeItemTypes(this.state.gameState.phase));
         this.battlefield.updateBattleField();
         this.unitsQueue.updateUnitsQueue();
-        this.booty.update();
+        this.updateBooty();
         this.flowControls.update();
     }
 
@@ -170,12 +172,17 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.battlefield.updateActionTargets();
             this.battlefield.updateWithExperience();
         }
-        this.booty.update();
+        this.updateBooty();
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
         this.logAction();
         this.handleAchievements();
         this.handleGameActionSound();
+    }
+
+    protected updateBooty(): void {
+        this.coinsLabel.value = String(this.state.gameState.state.booty.coins);
+        this.rubiesLabel.value = String(this.state.gameState.state.booty.ruby ?? 0);
     }
 
     private handleAchievements(): void {

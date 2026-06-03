@@ -96,7 +96,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
-        super.show();
     }
 
     public handleServerResponse(response: Response): void {
@@ -106,6 +105,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 this.onServerStatus(response.data as ServerStatusData);
                 break;
             case RequestType.LOBBY_STATUS:
+                super.show();
                 this.onLobbyStatus(response.data as LobbyStatusData);
                 break;
             case RequestType.ROOM_STATUS:

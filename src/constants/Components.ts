@@ -57,6 +57,7 @@ export const LABEL_NAME: string = 'label_name';
 export const LABEL_PRICE: string = 'label_price';
 export const LABEL_QUANTITY: string = 'label_quantity';
 export const LABEL_GAME_STATUS: string = 'label_game_status';
+export const LABEL_DUNGEON_NAME: string = 'label_dungeon_name';
 export const LABEL_DUNGEON_STATE: string = 'label_dungeon_state';
 export const LABEL_HIT_HP: string = 'label_hit_hp';
 export const LABEL_CRITICAL_HIT: string = 'label_critical_hit';
@@ -70,6 +71,9 @@ export const LABEL_REQUIREMENTS: string = 'label_requirements';
 export const LABEL_REWARD: string = 'label_reward';
 export const LABEL_TIME: string = 'label_time';
 export const LABEL_CLASS: string = 'label_class';
+
+export const LABEL_LOOT_COINS: string = 'label_loot_coins';
+export const LABEL_LOOT_RUBIES: string = 'label_loot_rubies';
 
 export const LABEL_HEALTH: string = 'label_health';
 export const BUTTON_HEALTH: string = 'button_health';
