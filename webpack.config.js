@@ -5,8 +5,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = (env) => ({
     entry: './src/index.ts',
-    devtool: 'inline-source-map',
-    mode: 'development',
     module: {
         rules: [
             {
@@ -75,15 +73,4 @@ module.exports = (env) => ({
         filename: 'main.min-[fullhash].js',
         path: path.resolve(__dirname, 'dist'),
     },
-    devServer: {
-        static: {
-            directory: path.resolve(__dirname, 'dist'),
-        },
-        compress: true,
-        port: 9000,
-        devMiddleware: {
-            writeToDisk: true,
-            mimeTypes: { css: 'text/css' },
-        }
-    }
 });
