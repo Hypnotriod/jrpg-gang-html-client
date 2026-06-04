@@ -340,8 +340,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateClassSelectionButtons(): void {
         const playerInfo = this.state.userState.playerInfo;
-        playerInfo.isGuest ? this.btnUnitPrevious.disable() : this.btnUnitPrevious.enable();
-        playerInfo.isGuest ? this.btnUnitNext.disable() : this.btnUnitNext.enable();
     }
 
     protected updateBooty(): void {
