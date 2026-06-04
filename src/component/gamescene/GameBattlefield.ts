@@ -9,6 +9,7 @@ import SpotCell from '../ui/icon/SpotCell';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import GameBase from './GameBase';
 import GameUnitItems from './GameUnitItems';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -22,7 +23,7 @@ export default class GameBattlefield extends GameBase {
 
     private _objectDescription: ObjectDescription;
     private _unitItems: GameUnitItems;
-
+    private deathSoundPlayed: boolean = false;
     private currUnit: GameUnit | null = null;
     private spots: SpotCell[][];
 
@@ -75,6 +76,11 @@ export default class GameBattlefield extends GameBase {
         !this.spots && this.initBattlefield();
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
+        const unut = this.playersUnit();
+        if (unut?.isDead === true && !this.deathSoundPlayed) {
+            this.deathSoundPlayed = true;
+            SoundService.play(SoundName.GAME_OVER);
+        }
     }
 
     protected initBattlefield(): void {
@@ -95,6 +101,7 @@ export default class GameBattlefield extends GameBase {
             }
         }
         this.communicator.sendMessage(RequestType.PLAYER_INFO);
+        this.deathSoundPlayed = false;
     }
 
     protected updateBattleFieldUnits(): void {
@@ -136,6 +143,8 @@ export default class GameBattlefield extends GameBase {
     }
 
     protected onSpotCellClick(target: SpotCell): void {
+        const unut = this.playersUnit();
+        if (!unut || unut.isDead) return;
         if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.placeUnit({ x: target.x, y: target.y });
         } else if (this.canUseItem() && target.unit) {

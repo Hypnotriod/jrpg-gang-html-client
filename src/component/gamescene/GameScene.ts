@@ -186,14 +186,15 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     private handleAchievements(): void {
+        const unit = this.playersUnit();
         const achievements = this.state.gameState.unitActionResult?.result.achievements ??
             this.state.gameState.endRoundResult?.achievements ??
             this.state.gameState.spotCompleteResult?.achievements;
-        if (!achievements) return;
+        if (!achievements || !unit) return;
         Object.keys(achievements)
             .filter(uid => this.isCurrentPlayerUnitId(Number(uid)))
             .forEach(uid => {
-                Object.keys(achievements[Number(uid)]).forEach(code => this.achievementPopup.pop(code, this.playersUnit()));
+                Object.keys(achievements[Number(uid)]).forEach(code => this.achievementPopup.pop(code, unit));
             })
     }
 
@@ -239,6 +240,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected activeItemTypes(phase: GamePhase): ItemType[] {
+        const unit = this.playersUnit();
+        if (!unit || unit.isDead) return [];
         if (phase === GamePhase.PREPARE_UNIT) {
             return [ItemType.AMMUNITION, ItemType.ARMOR, ItemType.WEAPON];
         }

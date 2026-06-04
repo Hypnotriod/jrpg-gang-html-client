@@ -12,6 +12,7 @@ export enum SoundName {
     TREASURE = 'treasure',
     REPAIR = 'repair',
     STUNNED = 'stunned',
+    GAME_OVER = 'game_over',
     HORN = 'horn',
     DOOR = 'door',
     COMPLETE = 'complete',
@@ -63,6 +64,7 @@ export class SoundService {
         SoundService.sounds[SoundName.TREASURE] = new Howl({ src: ['assets/sounds/treasure.mp3'] });
         SoundService.sounds[SoundName.REPAIR] = new Howl({ src: ['assets/sounds/repair.mp3'] });
         SoundService.sounds[SoundName.STUNNED] = new Howl({ src: ['assets/sounds/stunned.mp3'] });
+        SoundService.sounds[SoundName.GAME_OVER] = new Howl({ src: ['assets/sounds/game_over.mp3'] });
         SoundService.sounds[SoundName.HORN] = new Howl({ src: ['assets/sounds/horn.mp3'] });
         SoundService.sounds[SoundName.DOOR] = new Howl({ src: ['assets/sounds/door.mp3'] });
         SoundService.sounds[SoundName.COMPLETE] = new Howl({ src: ['assets/sounds/complete.mp3'] });

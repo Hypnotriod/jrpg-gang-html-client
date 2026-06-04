@@ -58,9 +58,18 @@ export default class GameFlowControls extends GameBase {
         this.dungeonNameLabel.value = this.state.gameState.spot.name;
         this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber} / ${this.state.gameState.state.spotsTotal}`;
         this.updatenextPhaseLabel();
+        const unit = this.playersUnit();
+        if (!unit || unit.isDead) {
+            this.retreatButton.show();
+            this.skipButton.hide();
+            this.waitButton.hide();
+            this.leaveButton.hide();
+            this.nextPhaseButton.hide();
+            this.nextBattleButton.hide();
+            return;
+        }
         const gamePhase: string = this.state.gameState.nextPhase;
-        if ((gamePhase === GamePhase.SPOT_COMPLETE || gamePhase === GamePhase.SCENARIO_COMPLETE) &&
-            this.playersUnit()?.isDead !== true) {
+        if ((gamePhase === GamePhase.SPOT_COMPLETE || gamePhase === GamePhase.SCENARIO_COMPLETE)) {
             this.leaveButton.show();
             this.retreatButton.hide();
         } else {
@@ -198,14 +207,14 @@ export default class GameFlowControls extends GameBase {
 
     protected checkAutoNextPhaseConditions(): boolean {
         if (this.state.gameState.spot.battlefield.units?.every(unit => unit.isDead)) { return false; }
-        const unit: GameUnit = this.playersUnit();
-        if (!unit) { return false; }
+        const unit = this.playersUnit();
+        if (!unit || unit.isDead) { return false; }
         if (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
             return false;
         }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
-            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) && !unit.isDead) {
+            this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT)) {
             return false;
         }
         return true;

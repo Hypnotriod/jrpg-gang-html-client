@@ -212,6 +212,7 @@ export default class SpotCell extends Component {
         const gamePhase = this.state.gameState.nextPhase;
         if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
             const actor = this.unitItems.playersUnit();
+            if (!actor || actor.isDead) return;
             const damage = (this.unitItems.chosenItem as Magic).damage;
             const modification = (this.unitItems.chosenItem as Magic).modification;
             const range = (this.unitItems.chosenItem as Magic).range ?? { x: 0, y: 0 };
@@ -231,12 +232,12 @@ export default class SpotCell extends Component {
     }
 
     public getAttackChance(impact: DamageImpact[]): number {
-        const actor = this.unitItems.playersUnit();
+        const actor = this.unitItems.playersUnit()!;
         return this.actionService.attackChance(impact, actor, this._unit!);
     }
 
     public getModificationChance(impact: UnitModificationImpact[]): number {
-        const actor = this.unitItems.playersUnit();
+        const actor = this.unitItems.playersUnit()!;
         return this.actionService.modificationChance(impact, actor);
     }
 

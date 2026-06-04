@@ -28,7 +28,7 @@ export default class ItemIcon extends Component {
     protected readonly actionPointsLabel: Label;
 
     private _data: InventoryItem;
-    private _unit: GameUnit;
+    private _unit: GameUnit | undefined;
     private _hint?: string | undefined;
     private _hover: boolean = false;
     private _descriptionPopup: ObjectDescription;
@@ -67,11 +67,11 @@ export default class ItemIcon extends Component {
         return iconComponent;
     }
 
-    public set unit(value: GameUnit) {
+    public set unit(value: GameUnit | undefined) {
         this._unit = value;
     }
 
-    public get unit(): GameUnit {
+    public get unit(): GameUnit | undefined {
         return this._unit;
     }
 
