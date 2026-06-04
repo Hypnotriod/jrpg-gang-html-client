@@ -395,20 +395,20 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         hasAttributes ? this.btnInitiative.show() : this.btnInitiative.hide();
         hasAttributes ? this.btnLuck.show() : this.btnLuck.hide();
 
-        this.labelHealth.htmlValue = this.keyValue('Health', battr.health || 0);
-        this.labelStamina.htmlValue = this.keyValue('Stamina', battr.stamina || 0);
-        this.labelMana.htmlValue = this.keyValue('Mana', battr.mana || 0);
+        this.labelHealth.htmlValue = this.keyValue('Health', battr.health ?? 0) + this.extraBaseAttribute('health');
+        this.labelStamina.htmlValue = this.keyValue('Stamina', battr.stamina ?? 0) + this.extraBaseAttribute('stamina');
+        this.labelMana.htmlValue = this.keyValue('Mana', battr.mana ?? 0) + this.extraBaseAttribute('mana');
         this.labelActionPoints.htmlValue =
             this.keyValue('Action Points', battr.actionPoints) +
             this.extraValue(Math.floor(attr.initiative / 10));
 
-        this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength || 0) + this.extraAttribute('strength');
-        this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique || 0) + this.extraAttribute('physique');
-        this.labelAgility.htmlValue = this.keyValue('Agility', attr.agility || 0) + this.extraAttribute('agility');
-        this.labelEndurance.htmlValue = this.keyValue('Endurance', attr.endurance || 0) + this.extraAttribute('endurance');
-        this.labelIntelligence.htmlValue = this.keyValue('Intelligence', attr.intelligence || 0) + this.extraAttribute('intelligence');
-        this.labelInitiative.htmlValue = this.keyValue('Initiative', attr.initiative || 0) + this.extraAttribute('initiative');
-        this.labelLuck.htmlValue = this.keyValue('Luck', attr.luck || 0) + this.extraAttribute('luck');
+        this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength ?? 0) + this.extraAttribute('strength');
+        this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique ?? 0) + this.extraAttribute('physique');
+        this.labelAgility.htmlValue = this.keyValue('Agility', attr.agility ?? 0) + this.extraAttribute('agility');
+        this.labelEndurance.htmlValue = this.keyValue('Endurance', attr.endurance ?? 0) + this.extraAttribute('endurance');
+        this.labelIntelligence.htmlValue = this.keyValue('Intelligence', attr.intelligence ?? 0) + this.extraAttribute('intelligence');
+        this.labelInitiative.htmlValue = this.keyValue('Initiative', attr.initiative ?? 0) + this.extraAttribute('initiative');
+        this.labelLuck.htmlValue = this.keyValue('Luck', attr.luck ?? 0) + this.extraAttribute('luck');
     }
 
     protected extraResist(key: string): string {
@@ -416,6 +416,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             Math.floor(this.state.userState.unit.stats.attributes.physique / 10) : 0;
         const value = (this.state.userState.unit.inventory
             .armor?.reduce((acc, a) => acc + this.totalResistanceModification(a, key), 0) || 0) + extra;
+        return this.extraValue(value);
+    }
+
+    protected extraBaseAttribute(key: string): string {
+        const value = (this.state.userState.unit.inventory
+            .armor?.reduce((acc, a) => acc + this.state.totalBaseAttributeModification(a, key), 0) || 0);
         return this.extraValue(value);
     }
 

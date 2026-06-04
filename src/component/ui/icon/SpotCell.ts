@@ -293,9 +293,12 @@ export default class SpotCell extends Component {
         this.healthBar.show();
         this.staminaBar.show();
         this.manaBar.show();
-        this.healthBar.width = this._unit.state.health / (this._unit.stats.baseAttributes.health || 1) * 64;
-        this.staminaBar.width = this._unit.state.stamina / (this._unit.stats.baseAttributes.stamina || 1) * 64;
-        this.manaBar.width = this._unit.state.mana / (this._unit.stats.baseAttributes.mana || 1) * 64;
+        const healthTotal = this.actionService.baseAttributeTotalValue(unit, 'health').reduce((acc, v) => acc + v, 0);
+        const staminaTotal = this.actionService.baseAttributeTotalValue(unit, 'stamina').reduce((acc, v) => acc + v, 0);
+        const manaTotal = this.actionService.baseAttributeTotalValue(unit, 'mana').reduce((acc, v) => acc + v, 0);
+        this.healthBar.width = Math.min(this._unit.state.health / (healthTotal || 1) * 64, 64);
+        this.staminaBar.width = Math.min(this._unit.state.stamina / (staminaTotal || 1) * 64, 64);
+        this.manaBar.width = Math.min(this._unit.state.mana / (manaTotal || 1) * 64, 64);
         if (this._hover) {
             this.onHover();
         }

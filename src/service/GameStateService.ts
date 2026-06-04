@@ -107,6 +107,17 @@ export default class GameStateService {
             (required.ruby ?? 0) <= (unit.booty.ruby ?? 0);
     }
 
+    public totalBaseAttributeValue(key: string): number {
+        return (this.userState.unit.inventory
+            .armor?.reduce((acc, a) => acc + this.totalBaseAttributeModification(a, key), 0) || 0) +
+            ((this.userState.unit.stats.attributes as any)[key] || 0);
+    }
+
+    public totalBaseAttributeModification(equipment: Equipment, key: string): number {
+        if (!equipment.equipped) return 0;
+        return equipment.modification.reduce((acc, m) => acc + (m.baseAttributes as any)?.[key] || 0, 0);
+    }
+
     public totalAttributeValue(key: string): number {
         return (this.userState.unit.inventory
             .armor?.reduce((acc, a) => acc + this.totalAttributeModification(a, key), 0) || 0) +
