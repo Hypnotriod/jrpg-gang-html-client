@@ -65,6 +65,7 @@ export default class Job extends Component {
         } as ApplyForAJobRequestData);
         SoundService.play(JOB_SOUND[this.config.code]);
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
+        (this.view.parentNode as HTMLElement)?.scrollTo(0, 0);
     }
 
     protected completeJobClick(): void {
@@ -112,6 +113,7 @@ export default class Job extends Component {
             if (timeLeft === 0) {
                 clearInterval(this.countdownId);
                 this.communicator.sendMessage(RequestType.JOBS_STATUS);
+                SoundService.play(SoundName.BELL);
             } else {
                 SoundService.play(SoundName.CLOCK_TICK);
             }

@@ -18,7 +18,12 @@ export enum SoundName {
     BROOM = 'broom',
     WASHING = 'washing',
     BOOK = 'book',
+    CHINKEN_HUNTING = 'chinken_hunting',
+    PROSPECTING = 'prospecting',
+    ARM_WRESTLING = 'arm_wrestling',
+    DICE_ROLLING = 'dice_rolling',
     CLOCK_TICK = 'clock_tick',
+    BELL = 'bell',
     ACHIEVEMENT = 'achievement',
     LEVEL_UP = 'level_up',
     QUEST_COMPLETE = 'quest_complete',
@@ -29,6 +34,10 @@ export const JOB_SOUND: { [key: string]: SoundName } = {
     'job-clean-01': SoundName.BROOM,
     'job-clean-02': SoundName.WASHING,
     'job-library-01': SoundName.BOOK,
+    'job-chicken-chase-01': SoundName.CHINKEN_HUNTING,
+    'job-mining-01': SoundName.PROSPECTING,
+    'job-arm-wrestling-01': SoundName.ARM_WRESTLING,
+    'job-dice-rolling-01': SoundName.DICE_ROLLING,
 }
 
 export class SoundService {
@@ -60,7 +69,12 @@ export class SoundService {
         SoundService.sounds[SoundName.BROOM] = new Howl({ src: ['assets/sounds/broom.mp3'] });
         SoundService.sounds[SoundName.WASHING] = new Howl({ src: ['assets/sounds/washing.mp3'] });
         SoundService.sounds[SoundName.BOOK] = new Howl({ src: ['assets/sounds/book.mp3'] });
+        SoundService.sounds[SoundName.CHINKEN_HUNTING] = new Howl({ src: ['assets/sounds/chinken_hunting.mp3'] });
+        SoundService.sounds[SoundName.PROSPECTING] = new Howl({ src: ['assets/sounds/prospecting.mp3'] });
+        SoundService.sounds[SoundName.ARM_WRESTLING] = new Howl({ src: ['assets/sounds/arm_wrestling.mp3'] });
+        SoundService.sounds[SoundName.DICE_ROLLING] = new Howl({ src: ['assets/sounds/dice_rolling.mp3'] });
         SoundService.sounds[SoundName.CLOCK_TICK] = new Howl({ src: ['assets/sounds/clock_tick.mp3'] });
+        SoundService.sounds[SoundName.BELL] = new Howl({ src: ['assets/sounds/bell.mp3'] });
         SoundService.sounds[SoundName.ACHIEVEMENT] = new Howl({ src: ['assets/sounds/achievement.mp3'] });
         SoundService.sounds[SoundName.LEVEL_UP] = new Howl({ src: ['assets/sounds/level_up.mp3'] });
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
