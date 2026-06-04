@@ -46,7 +46,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
     barbarian: {
         name: "Barbarian",
         code: "barbarian",
-        description: "A hulking brute from the frozen wastes, wielding axe and fury in equal measure. Scarred and relentless, they walks like a storm — each swing a funeral bell for fallen keeps; his laughter tastes of iron and frost.",
+        description: "A hulking brute from the frozen wastes, wielding axe and fury in equal measure. Scarred and relentless, they walks like a storm, each swing a funeral bell for fallen keeps; his laughter tastes of iron and frost.",
         baseAttributes: {
             health: 80,
             stamina: 80,
