@@ -30,11 +30,29 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'Congratulations! You have completed the Dragon\'s Lair!',
     },
+    'kill-5-slimes': {
+        icon: 'quest-kill-5-slimes',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the Slime',
+    },
+    'kill-10-slimes': {
+        icon: 'quest-kill-10-slimes',
+        tag: 'Kills',
+        target: 10,
+        popup: 'You have killed the Slime',
+    },
     'kill-10-rats': {
         icon: 'quest-kill-10-rats',
         tag: 'Kills',
         target: 10,
         popup: 'You have killed the Rat',
+    },
+    'kill-10-toads': {
+        icon: 'quest-kill-10-toads',
+        tag: 'Kills',
+        target: 10,
+        popup: 'You have killed the Toad',
     },
     'kill-10-snakes': {
         icon: 'quest-kill-10-snakes',
