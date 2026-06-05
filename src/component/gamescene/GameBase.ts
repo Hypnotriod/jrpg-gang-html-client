@@ -41,9 +41,9 @@ export default class GameBase extends Component {
         return (this._state.gameState.spot.battlefield.units ?? []).length === this.allActors().length;
     }
 
-    protected currentUnit(): GameUnit | null {
+    protected currentUnit(): GameUnit | undefined {
         const uid: number = this._state.gameState.state.activeUnitsQueue[0];
-        if (!uid) { return null; }
+        if (!uid) { return undefined; }
         return this.findUnitByUid(uid);
     }
 
@@ -60,7 +60,7 @@ export default class GameBase extends Component {
         return this._state.playerInfo?.unitUid === uid;
     }
 
-    protected findUnitByUid(unitUid: number): GameUnit {
+    protected findUnitByUid(unitUid: number): GameUnit | undefined {
         const result: GameUnit | undefined = this._state.gameState.spot.battlefield.units?.find(
             unit => unit.uid === unitUid);
         return result || this._state.gameState.spot.battlefield.corpses?.find(
@@ -75,27 +75,27 @@ export default class GameBase extends Component {
         const result: any = {};
         endRound.damage && Object.keys(endRound.damage).forEach(key => {
             result.damage = result.damage || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.damage[this.getUnitName(unit)] = endRound.damage![Number(key)];
         });
         endRound.recovery && Object.keys(endRound.recovery).forEach(key => {
             result.recovery = result.recovery || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.recovery[this.getUnitName(unit)] = endRound.recovery![Number(key)];
         });
         endRound.experience && Object.keys(endRound.experience).forEach(key => {
             result.experience = result.experience || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.experience[this.getUnitName(unit)] = endRound.experience![Number(key)];
         });
         endRound.drop && Object.keys(endRound.drop).forEach(key => {
             result.drop = result.drop || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.drop[this.getUnitName(unit)] = endRound.drop![Number(key)];
         });
         endRound.achievements && Object.keys(endRound.achievements).forEach(key => {
             result.achievements = result.achievements || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.achievements[this.getUnitName(unit)] = endRound.achievements![Number(key)];
         });
         if (endRound.achievements) {
@@ -108,7 +108,7 @@ export default class GameBase extends Component {
         const result: any = {};
         spotComplete.experience && Object.keys(spotComplete.experience).forEach(key => {
             result.experience = result.experience || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.experience[this.getUnitName(unit)] = spotComplete.experience![Number(key)];
         });
         if (spotComplete.booty) {
@@ -116,7 +116,7 @@ export default class GameBase extends Component {
         }
         spotComplete.achievements && Object.keys(spotComplete.achievements).forEach(key => {
             result.achievements = result.achievements || {};
-            const unit = this.findUnitByUid(Number(key));
+            const unit = this.findUnitByUid(Number(key))!;
             result.achievements[this.getUnitName(unit)] = spotComplete.achievements![Number(key)];
         });
         return result;
@@ -136,7 +136,7 @@ export default class GameBase extends Component {
                 result.result.result = 'no effect!';
             }
         }
-        const actorUnit = this.findUnitByUid(action.action.uid!);
+        const actorUnit = this.findUnitByUid(action.action.uid!)!;
         const targetUnit = this.findUnitByUid(action.action.targetUid!);
         if (action.action.itemUid) {
             const actorItem = this.findItemInInventory(actorUnit.inventory, action.action.itemUid);
@@ -149,7 +149,7 @@ export default class GameBase extends Component {
             const experience = { ...actionResult.experience };
             result.result.experience = {};
             Object.keys(experience).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.experience[this.getUnitName(unit)] = experience[Number(key)];
             });
         }
@@ -157,7 +157,7 @@ export default class GameBase extends Component {
             const instantDamage = { ...actionResult.instantDamage };
             result.result.instantDamage = {};
             Object.keys(instantDamage).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.instantDamage[this.getUnitName(unit)] = instantDamage[Number(key)];
             });
         }
@@ -165,7 +165,7 @@ export default class GameBase extends Component {
             const temporalDamage = { ...actionResult.temporalDamage };
             result.result.temporalDamage = {};
             Object.keys(temporalDamage).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.temporalDamage[this.getUnitName(unit)] = temporalDamage[Number(key)];
             });
         }
@@ -173,7 +173,7 @@ export default class GameBase extends Component {
             const instantRecovery = { ...actionResult.instantRecovery };
             result.result.instantRecovery = {};
             Object.keys(instantRecovery).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.instantRecovery[this.getUnitName(unit)] = instantRecovery[Number(key)];
             });
         }
@@ -181,7 +181,7 @@ export default class GameBase extends Component {
             const temporalModification = { ...actionResult.temporalModification };
             result.result.temporalModification = {};
             Object.keys(temporalModification).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.temporalModification[this.getUnitName(unit)] = temporalModification[Number(key)];
             });
         }
@@ -189,7 +189,7 @@ export default class GameBase extends Component {
             const drop = { ...actionResult.drop };
             result.result.drop = {};
             Object.keys(drop).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.drop[this.getUnitName(unit)] = drop[Number(key)];
             });
         }
@@ -197,7 +197,7 @@ export default class GameBase extends Component {
             const achievements = { ...actionResult.achievements };
             result.result.achievements = {};
             Object.keys(achievements).forEach(key => {
-                const unit = this.findUnitByUid(Number(key));
+                const unit = this.findUnitByUid(Number(key))!;
                 result.result.achievements[this.getUnitName(unit)] = achievements[Number(key)];
             });
         }

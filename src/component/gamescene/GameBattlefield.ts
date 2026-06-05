@@ -49,7 +49,7 @@ export default class GameBattlefield extends GameBase {
         if (unitActionResult?.result.result !== ActionResultType.ACCOMPLISHED) { return; }
         const targets: number[] = this.actionService.targets(unitActionResult.result);
         targets.forEach(targetUid => {
-            const unit: GameUnit = this.findUnitByUid(targetUid);
+            const unit: GameUnit = this.findUnitByUid(targetUid)!;
             this.spots[unit.position.x][unit.position.y].updateWithActionResult(unitActionResult.result, targetUid);
         })
     }
@@ -57,17 +57,19 @@ export default class GameBattlefield extends GameBase {
     public updateWithExperience(): void {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
         const endRoundResult: EndRoundResult | undefined = this.state.gameState.endRoundResult;
+        const spotCompleteResult: EndRoundResult | undefined = this.state.gameState.spotCompleteResult;
         if (unitActionResult?.result.result === ActionResultType.ACCOMPLISHED && unitActionResult.result.experience) {
             this.updateSpotsWithExperience(unitActionResult.result.experience);
         }
         endRoundResult?.experience && this.updateSpotsWithExperience(endRoundResult.experience);
+        spotCompleteResult?.experience && this.updateSpotsWithExperience(spotCompleteResult.experience);
     }
 
     protected updateSpotsWithExperience(experience: { [key: number]: number }): void {
         Object.keys(experience).forEach(key => {
             const uid: number = Number(key);
             const exp: number = experience[uid];
-            const unit: GameUnit = this.findUnitByUid(uid);
+            const unit: GameUnit = this.findUnitByUid(uid)!;
             this.spots[unit.position.x][unit.position.y].updateWithExperience(exp);
         });
     }
@@ -76,8 +78,8 @@ export default class GameBattlefield extends GameBase {
         !this.spots && this.initBattlefield();
         this.updateBattlefieldCells();
         this.updateBattleFieldUnits();
-        const unut = this.playersUnit();
-        if (unut?.isDead === true && !this.deathSoundPlayed) {
+        const unit = this.playersUnit();
+        if (unit?.isDead === true && !this.deathSoundPlayed) {
             this.deathSoundPlayed = true;
             SoundService.play(SoundName.GAME_OVER);
         }
@@ -101,7 +103,9 @@ export default class GameBattlefield extends GameBase {
             }
         }
         this.communicator.sendMessage(RequestType.PLAYER_INFO);
-        this.deathSoundPlayed = false;
+        if (this.state.gameState.state.spotNumber === 1) {
+            this.deathSoundPlayed = false;
+        }
     }
 
     protected updateBattleFieldUnits(): void {
@@ -110,13 +114,13 @@ export default class GameBattlefield extends GameBase {
         if (this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE &&
             (this.state.gameState.phase === GamePhase.TAKE_ACTION ||
                 this.state.gameState.phase === GamePhase.TAKE_ACTION_AI)) {
-            this.currUnit = this.currUnit ? this.findUnitByUid(this.currUnit.uid!) : this.currUnit;
+            this.currUnit = this.currUnit ? this.findUnitByUid(this.currUnit.uid!)! : this.currUnit;
         } else {
-            this.currUnit = this.currentUnit();
+            this.currUnit = this.currentUnit()!;
         }
         corpses && corpses.forEach(corpse => {
             if (units.some(u => u.position.x === corpse.position.x && u.position.y === corpse.position.y)) return;
-            this.spots[corpse.position.x][corpse.position.y].updateWithCorpse(corpse);
+            this.spots[corpse.position.x]?.[corpse.position.y]?.updateWithCorpse(corpse);
         });
         const isActive = this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT;
         units.forEach(unit => {

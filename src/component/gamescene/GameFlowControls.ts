@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE, LABEL_DUNGEON_NAME } from '../../constants/Components';
+import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE, LABEL_DUNGEON_NAME, LABEL_USERS_IN_GAME } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -18,6 +18,8 @@ export default class GameFlowControls extends GameBase {
     private readonly gameStatusLabel: Label;
     @component(LABEL_DUNGEON_NAME, Label)
     private readonly dungeonNameLabel: Label;
+    @component(LABEL_USERS_IN_GAME, Label)
+    private readonly usersInGameLabel: Label;
     @component(LABEL_DUNGEON_STATE, Label)
     private readonly dungeonStateLabel: Label;
     @component(BUTTON_NEXT_PHASE, Button)
@@ -37,6 +39,7 @@ export default class GameFlowControls extends GameBase {
     private nextPhaseLabelTimeoutId: number;
     private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
+    private usersInGame: number = 0;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -58,6 +61,7 @@ export default class GameFlowControls extends GameBase {
         this.dungeonNameLabel.value = this.state.gameState.spot.name;
         this.dungeonStateLabel.value = `Dungeon Level: ${this.state.gameState.state.spotNumber} / ${this.state.gameState.state.spotsTotal}`;
         this.updatenextPhaseLabel();
+        this.updateusersInGame();
         const unit = this.playersUnit();
         if (!unit || unit.isDead) {
             this.retreatButton.show();
@@ -99,6 +103,21 @@ export default class GameFlowControls extends GameBase {
                     this.waitButton.show() : this.waitButton.hide();
                 break;
         }
+    }
+
+    protected updateusersInGame(): void {
+        if (this.usersInGame > this.state.gameState.players.length) {
+            SoundService.play(SoundName.DOOR);
+        }
+        this.usersInGame = this.state.gameState.players.length;
+        this.usersInGameLabel.htmlValue =
+            this.state.gameState.players.map(p => {
+                const unit = this.findUnitByUid(p.unitUid!);
+                if (!unit || unit.isDead) {
+                    return `<span class="grey-text text-lighten-2">${p.nickname}</span>`;
+                }
+                return `<span class="green-text text-lighten-2">${p.nickname}</span>`;
+            }).join(', ');
     }
 
     protected updatenextPhaseLabel(): void {

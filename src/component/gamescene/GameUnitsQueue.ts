@@ -24,15 +24,15 @@ export default class GameUnitsQueue extends GameBase {
     public updateUnitsQueue(): void {
         this.removeAllChildren();
         const activeUnits: GameUnit[] = this.state.gameState.state.activeUnitsQueue
-            .map(unitUid => this.findUnitByUid(unitUid));
+            .map(unitUid => this.findUnitByUid(unitUid)).filter(u => u !== undefined);
         activeUnits.forEach(unit => this.updateUnitInQueue(unit, true));
         const inactiveUnits = this.state.gameState.state.inactiveUnits
             .map(unitUid => this.findUnitByUid(unitUid))
-            .filter(u => !u.isDead);
+            .filter(u => u && !u.isDead);
         const inactiveUnitsInOrder = [
-            ...inactiveUnits.filter(u => !u.state.isStunned),
-            ...inactiveUnits.filter(u => u.state.isStunned),
-        ];
+            ...inactiveUnits.filter(u => u && !u.state.isStunned),
+            ...inactiveUnits.filter(u => u && u.state.isStunned),
+        ] as GameUnit[];
         inactiveUnitsInOrder.forEach(unit => this.updateUnitInQueue(unit, false));
     }
 

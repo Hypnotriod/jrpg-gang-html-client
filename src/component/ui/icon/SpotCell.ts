@@ -201,6 +201,8 @@ export default class SpotCell extends Component {
         this._iconMissed.hide();
         this._iconHit.hide();
         this._iconEffect.hide();
+        this._iconExperience.hide();
+        this.expLabel.hide();
         this.hitHpLabel.hide();
         this.hitCriticalLabel.hide();
     }
@@ -352,6 +354,7 @@ export default class SpotCell extends Component {
     }
 
     public updateWithExperience(experience: number): void {
+        this.onActionResultIcon();
         this.expLabel.value = `+${experience}XP`;
         this.expLabel.show();
         this._iconExperience.show();

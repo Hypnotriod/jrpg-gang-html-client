@@ -65,6 +65,7 @@ export const LABEL_HIT_CHANCE: string = 'label_hit_chance';
 export const LABEL_EXP: string = 'label_exp';
 export const LABEL_ID: string = 'label_id';
 export const LABEL_USERS_COUNT: string = 'label_users_count';
+export const LABEL_USERS_IN_GAME: string = 'label_users_in_game';
 export const LABEL_HEADER: string = 'label_header';
 export const LABEL_DESCRIPTION: string = 'label_description';
 export const LABEL_REQUIREMENTS: string = 'label_requirements';

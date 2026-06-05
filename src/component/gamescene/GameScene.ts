@@ -279,7 +279,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected logAction(): void {
         if (this.state.gameState.unitActionResult) {
-            const unit: GameUnit = this.findUnitByUid(this.state.gameState.unitActionResult.action.uid!);
+            const unit: GameUnit = this.findUnitByUid(this.state.gameState.unitActionResult.action.uid!)!;
             const name: string = this.getUnitName(unit);
             this.gameLog.value =
                 this.renderer.header(name, 2) + '<br>' +
