@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -46,6 +46,16 @@ export default class SpotCell extends Component {
     protected readonly _iconFood: Container;
     @component(ICON_HIT, Container)
     protected readonly _iconHit: Container;
+    @component(ICON_HIT_COLD, Container)
+    protected readonly _iconHitCold: Container;
+    @component(ICON_HIT_FIRE, Container)
+    protected readonly _iconHitFire: Container;
+    @component(ICON_HIT_LIGHTING, Container)
+    protected readonly _iconHitLighting: Container;
+    @component(ICON_HIT_POISON, Container)
+    protected readonly _iconHitPoison: Container;
+    @component(ICON_HIT_DRAIN, Container)
+    protected readonly _iconHitDrain: Container;
     @component(ICON_MISSED, Container)
     protected readonly _iconMissed: Container;
     @component(ICON_TARGET, Container)
@@ -200,6 +210,11 @@ export default class SpotCell extends Component {
         this._iconFood.hide();
         this._iconMissed.hide();
         this._iconHit.hide();
+        this._iconHitCold.hide();
+        this._iconHitFire.hide();
+        this._iconHitLighting.hide();
+        this._iconHitPoison.hide();
+        this._iconHitDrain.hide();
         this._iconEffect.hide();
         this._iconExperience.hide();
         this.expLabel.hide();
@@ -330,7 +345,25 @@ export default class SpotCell extends Component {
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
             SoundService.play(SoundName.HIT);
-            this._iconHit.show();
+            const physicaldamage = this.actionService.physicalInstantDamage(result, targetUid);
+            const withFire = result.instantDamage?.[targetUid]?.some(d => d.fire);
+            const withCold = result.instantDamage?.[targetUid]?.some(d => d.cold);
+            const withLighting = result.instantDamage?.[targetUid]?.some(d => d.lightning);
+            const withPoison = result.instantDamage?.[targetUid]?.some(d => d.poison);
+            const withDrain = result.instantDamage?.[targetUid]?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain);
+            if (withFire) {
+                this._iconHitFire.show();
+            } else if (withCold) {
+                this._iconHitCold.show();
+            } else if (withLighting) {
+                this._iconHitLighting.show();
+            } else if (withPoison) {
+                this._iconHitPoison.show();
+            } else if (withDrain && !physicaldamage) {
+                this._iconHitDrain.show();
+            } else {
+                this._iconHit.show();
+            }
             this.hitHpLabel.show();
             this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
             this.actionService.hasCriticalDamage(result, targetUid) && this.hitCriticalLabel.show();
