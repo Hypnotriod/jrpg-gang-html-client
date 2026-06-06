@@ -141,11 +141,12 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected addChatMessage(message: ChatMessage): void {
+        const date = new Date(message.timestamp);
         const nickname = this.chatState.participants[message.from].nickname;
         const colorClass = message.from == this.state.userState.playerInfo.playerId ? 'light-green lighten-1' : 'light-blue lighten-1';
         this.chat.value =
-            `<span class="${colorClass}">${nickname}</span><br>` +
-            convert(message.message) + '<br>' +
+            `<span class="${colorClass}" style="font-size: 13px;">${nickname}</span><span class="grey-text" style="font-size: 11px;">${date.toLocaleTimeString()}</span><br>` +
+            `<span style="font-size: 13px;">${convert(message.message)}<br>` +
             this.chat.value;
     }
 

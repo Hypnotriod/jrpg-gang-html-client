@@ -1,6 +1,6 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_SORT, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, UnitModification, Action, ActionResultType, EquipmentSlot, GameUnit, Weapon } from '../../domain/domain';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { ActionResultData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -97,8 +97,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly checkboxRepair: Checkbox;
     @component(BUTTON_LEVEL_UP, Button)
     private readonly btnLevelUp: Button;
-    @component(BUTTON_SORT, Button)
-    private readonly btnSort: Button;
     @component(BUTTON_TAB_SHOP_ALL, Button)
     private readonly btnTabShopAll: Button;
     @component(BUTTON_TAB_SHOP_WEAPON, Button)
@@ -160,7 +158,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.btnInitiative.onClick = target => this.skillUp(ActionProperty.INITIATIVE);
         this.btnLuck.onClick = target => this.skillUp(ActionProperty.LUCK);
         this.btnLevelUp.onClick = target => this.levelUp();
-        this.btnSort.onClick = target => this.show();
         this.btnUnitPrevious.onClick = target => this.previousUnit();
         this.btnUnitNext.onClick = target => this.nextUnit();
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
@@ -472,6 +469,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             ...(inventory.disposable || []),
             ...(inventory.provision || []),
         ];
+        if (inventoryItems.length !== this.unitItems.size) {
+            this.unitItems.forEach(item => item.destroy());
+            this.unitItems.clear();
+        }
         inventoryItems.forEach(v => this.updateUnitItem(v));
         this.unitItems.forEach((icon, uid) => {
             if (!inventoryItems.find(i => i.uid === uid)) {

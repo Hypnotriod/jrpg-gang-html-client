@@ -269,10 +269,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected addChatMessage(message: ChatMessage): void {
+        const date = new Date(message.timestamp);
         const nickname = this.chatState.participants[message.from].nickname;
         const colorClass = this.isCurrentPlayerId(message.from) ? 'light-green lighten-1' : 'light-blue lighten-1';
         this.chat.value =
-            `<span class="${colorClass}">${nickname}</span><br>` +
+            `<span class="${colorClass}" >${nickname}</span><span class="grey-text" style="font-size: 13px;">${date.toLocaleTimeString()}</span><br>` +
             convert(message.message) + '<br>' +
             this.chat.value;
     }
