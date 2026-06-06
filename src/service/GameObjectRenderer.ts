@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { GameUnit, Unit } from '../domain/domain';
+import { GameUnit, Item, Unit, UnitInventory } from '../domain/domain';
 import ActionService, { sum } from './ActionService';
 
 @injectable()
@@ -30,6 +30,7 @@ export default class GameObjectRenderer {
             result += data.description + '<br>';
         }
         if (this.isUnitData(data)) {
+            result += this.renderInventoryIcons(data.inventory);
             result += this.keyValue('level', data.stats.progress.level)
             if (data.stats.progress.experienceNext) {
                 result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
@@ -84,6 +85,17 @@ export default class GameObjectRenderer {
         }
 
         return result;
+    }
+
+    protected renderInventoryIcons(inventory: UnitInventory): string {
+        return [
+            ...(inventory.weapon || []),
+            ...(inventory.ammunition || []),
+            ...(inventory.magic || []),
+            ...(inventory.armor || []),
+            ...(inventory.disposable || []),
+            ...(inventory.provision || []),
+        ].map(i => `<img src="./assets/icons/${i.code}.png" style="width: 24px; vertical-align: middle;"/>`).join('') + '<br>';
     }
 
     public renderPrice(data: any, unit?: GameUnit, isShopItem: boolean = false) {
