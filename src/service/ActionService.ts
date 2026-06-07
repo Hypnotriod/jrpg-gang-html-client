@@ -54,18 +54,22 @@ export default class ActionService {
             !this.nullOrEmptyArray(result.temporalDamage && result.temporalDamage[unitUid]) && !!result.temporalDamage![unitUid].find(d => d.isCriticalMiss);
     }
 
-    public physicalInstantDamage(result: ActionResult, unitUid: number): number {
+    public physicalInstantDamageOnTarget(result: ActionResult, unitUid: number): number {
         return result.instantDamage && result.instantDamage[unitUid] ?
-            result.instantDamage[unitUid].reduce((acc, d) => acc +
-                (d.bleeding || 0) +
-                (d.cold || 0) +
-                (d.crushing || 0) +
-                (d.cutting || 0) +
-                (d.fire || 0) +
-                (d.lightning || 0) +
-                (d.poison || 0) +
-                (d.stabbing || 0)
-                , 0) : 0;
+            this.physicalDamage(result.instantDamage[unitUid]) : 0;
+    }
+
+    public physicalDamage(damage: DamageImpact[], instant: boolean = true): number {
+        return damage.filter(d => !instant || !d.duration).reduce((acc, d) => acc +
+            (d.bleeding || 0) +
+            (d.cold || 0) +
+            (d.crushing || 0) +
+            (d.cutting || 0) +
+            (d.fire || 0) +
+            (d.lightning || 0) +
+            (d.poison || 0) +
+            (d.stabbing || 0)
+            , 0);
     }
 
     public hasCriticalDamage(result: ActionResult, unitUid: number): boolean {

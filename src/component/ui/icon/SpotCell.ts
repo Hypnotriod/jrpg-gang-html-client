@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
-import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Magic, Position, UnitModificationImpact } from '../../../domain/domain';
+import { ActionRange, ActionResult, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, Magic, Position, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -329,7 +329,7 @@ export default class SpotCell extends Component {
         }
     }
 
-    public updateWithActionResult(result: ActionResult, targetUid: number): void {
+    public updateWithActionResult(result: ActionResult, item: Item, targetUid: number): void {
         if (this._unit) {
             this.idLabel.show();
             this.healthBar.show();
@@ -345,7 +345,9 @@ export default class SpotCell extends Component {
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
             SoundService.play(SoundName.HIT);
-            const physicaldamage = this.actionService.physicalInstantDamage(result, targetUid);
+            const impact: DamageImpact[] | undefined = (item as Weapon).damage;
+            const itemPhysicalDamage = impact ? this.actionService.physicalDamage(impact) : 0;
+            const physicalDamage = this.actionService.physicalInstantDamageOnTarget(result, targetUid);
             const withFire = result.instantDamage?.[targetUid]?.some(d => d.fire);
             const withCold = result.instantDamage?.[targetUid]?.some(d => d.cold);
             const withLighting = result.instantDamage?.[targetUid]?.some(d => d.lightning);
@@ -359,13 +361,13 @@ export default class SpotCell extends Component {
                 this._iconHitLighting.show();
             } else if (withPoison) {
                 this._iconHitPoison.show();
-            } else if (withDrain && !physicaldamage) {
+            } else if (withDrain && !itemPhysicalDamage) {
                 this._iconHitDrain.show();
             } else {
                 this._iconHit.show();
             }
             this.hitHpLabel.show();
-            this.hitHpLabel.value = this.actionService.physicalInstantDamage(result, targetUid) + 'HP';
+            this.hitHpLabel.value = physicalDamage || itemPhysicalDamage ? `${physicalDamage}HP` : '';
             this.actionService.hasCriticalDamage(result, targetUid) && this.hitCriticalLabel.show();
         } else if (this.actionService.hasRecovery(result, targetUid)) {
             this.onActionResultIcon();
