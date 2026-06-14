@@ -13,6 +13,7 @@ import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
 import { JOB_SOUND, SoundName, SoundService } from '../../service/SoundService';
+import GameStateService from '../../service/GameStateService';
 
 @injectable()
 export default class Job extends Component {
@@ -39,7 +40,8 @@ export default class Job extends Component {
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
-        private readonly renderer: GameObjectRenderer) {
+        private readonly renderer: GameObjectRenderer,
+        private readonly state: GameStateService) {
         super();
     }
 
@@ -85,7 +87,7 @@ export default class Job extends Component {
         this.labelHeader.value = config.name;
         this.labelDescription.value = config.description!;
         this.labelReward.value = this.renderer.render(config.reward || {});
-        this.labelRequirements.value = this.renderer.render(config.requirements || {});
+        this.labelRequirements.value = this.renderer.renderRequirements(config.requirements || {}, this.state.userState.unit);
         if (employment.currentJob?.code === config.code) {
             if (employment.isInProgress) {
                 this.startTimeLeftCountdown(Math.ceil(employment.timeLeft!));

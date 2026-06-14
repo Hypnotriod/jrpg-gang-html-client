@@ -78,11 +78,11 @@ export default class Quest extends Component {
         if (status.status === UnitQuestStatus.INACTIVE) {
             this.buttonApply.show();
             this.buttonComplete.hide();
-            this.labelRequirements.value = this.renderer.render(this.patchRequirenments(status.activation.requirements));
+            this.labelRequirements.value = this.renderer.renderRequirements(this.patchRequirenments(status.activation.requirements), this.state.userState.unit);
         } else if (status.status === UnitQuestStatus.ACTIVE) {
             this.buttonApply.hide();
             this.buttonComplete.show();
-            this.labelRequirements.value = this.renderer.render(this.patchRequirenments(status.completion.requirements));
+            this.labelRequirements.value = this.renderer.renderRequirements(this.patchRequirenments(status.completion.requirements), this.state.userState.unit);
         } else {
             this.buttonApply.hide();
             this.buttonComplete.hide();

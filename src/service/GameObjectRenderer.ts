@@ -145,6 +145,24 @@ export default class GameObjectRenderer {
         return result;
     }
 
+    public renderRequirements(requirements: any, unit?: GameUnit): string {
+        let result = '';
+        if (unit && requirements && Object.values(requirements).some(v => Number(v))) {
+            result += this.keyValueRequired('strength', requirements, this.actionService.attributeTotalValue(unit, 'strength'));
+            result += this.keyValueRequired('physique', requirements, this.actionService.attributeTotalValue(unit, 'physique'));
+            result += this.keyValueRequired('agility', requirements, this.actionService.attributeTotalValue(unit, 'agility'));
+            result += this.keyValueRequired('endurance', requirements, this.actionService.attributeTotalValue(unit, 'endurance'));
+            result += this.keyValueRequired('intelligence', requirements, this.actionService.attributeTotalValue(unit, 'intelligence'));
+            result += this.keyValueRequired('initiative', requirements, this.actionService.attributeTotalValue(unit, 'initiative'));
+            result += this.keyValueRequired('luck', requirements, this.actionService.attributeTotalValue(unit, 'luck'));
+            result += this.keyValueRequired('level', requirements, [unit.stats.progress.level, 0]);
+            if (requirements.class) {
+                result += this.keyValue('class', requirements.class);
+            }
+        }
+        return result;
+    }
+
     public renderItemUseCost(data: any, unit?: GameUnit): string {
         let result = '';
         if (unit && data.useCost && Object.values(data.useCost).some(v => Number(v))) {
