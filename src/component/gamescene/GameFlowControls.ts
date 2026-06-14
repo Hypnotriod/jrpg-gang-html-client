@@ -113,10 +113,12 @@ export default class GameFlowControls extends GameBase {
         this.usersInGameLabel.htmlValue =
             this.state.gameState.players.map(p => {
                 const unit = this.findUnitByUid(p.unitUid!);
+                const online = p.isOffline ?
+                    '<img src="./assets/icons/offline.png" style="height: 12px;"/>' : '<img src="./assets/icons/online.png" style="height: 12px;"/>';
                 if (!unit || unit.isDead) {
-                    return `<span class="grey-text text-lighten-2">${p.nickname}</span>`;
+                    return `<span class="grey-text text-lighten-2">${online} ${p.nickname}</span>`;
                 }
-                return `<span class="green-text text-lighten-2">${p.nickname}</span>`;
+                return `<span class="green-text text-lighten-2">${online} ${p.nickname}</span>`;
             }).join(', ');
     }
 
@@ -130,15 +132,38 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.SCENARIO_COMPLETE:
                 let timeout: number = this.state.gameState.phaseTimeout || 0;
                 timeout = Math.max(timeout - 2, 0);
-                this.gameStatusLabel.htmlValue = `${this.state.gameState.nextPhase} <img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${timeout}`;
+                this.gameStatusLabel.htmlValue = `${this.nextPhaseDescription()} <img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${timeout}`;
                 if (this.state.gameState.phaseTimeout) {
                     this.state.gameState.phaseTimeout--;
                     this.nextPhaseLabelTimeoutId = window.setTimeout(() => this.updatenextPhaseLabel(), 1000);
                 }
                 break;
             default:
-                this.gameStatusLabel.value = `${this.state.gameState.nextPhase}`;
+                this.gameStatusLabel.value = `${this.nextPhaseDescription()}`;
                 break;
+        }
+    }
+
+    protected nextPhaseDescription(): string {
+        switch (this.state.gameState.nextPhase) {
+            case GamePhase.PREPARE_UNIT:
+                return 'Prepare for the battle';
+            case GamePhase.ACTION_COMPLETE:
+                return 'Action complete';
+            case GamePhase.TAKE_ACTION:
+                return this.isCurrentUnitTurn() ? 'Take your action' : 'Wait for the player\'s action';
+            case GamePhase.TAKE_ACTION_AI:
+                return 'Wait for monster\'s action';
+            case GamePhase.READY_FOR_START_ROUND:
+                return 'Next round';
+            case GamePhase.SPOT_COMPLETE:
+                return 'The room is clear';
+            case GamePhase.SCENARIO_COMPLETE:
+                return 'The dungeon is clear';
+            case GamePhase.RETREAT_ACTION:
+                return 'Unit is running away';
+            case GamePhase.BEFORE_SPOT_COMPLETE:
+                return 'All monsters are defeated';
         }
     }
 

@@ -59,7 +59,8 @@ export default class Room extends Component {
         this.userIcons[0].icon = roomInfo.host.class;
         this.userIcons[0].descriptionPopup = this._objectDescription;
         this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
-        this.userConnectionStatusLabels[0].value = roomInfo.host.isOffline ? '⚫' : '🟢';
+        this.userConnectionStatusLabels[0].htmlValue = roomInfo.host.isOffline ?
+            '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
 
         roomInfo.joinedUsers.forEach((user, i) => {
             const clazz = user.class;
@@ -70,7 +71,8 @@ export default class Room extends Component {
             this.userIcons[i + 1].descriptionPopup = this._objectDescription;
             this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
 
-            this.userConnectionStatusLabels[i + 1].value = user.isOffline ? '⚫' : '🟢';
+            this.userConnectionStatusLabels[i + 1].htmlValue = user.isOffline ?
+                '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
         });
 
         switch (roomInfo.scenarioId) {
