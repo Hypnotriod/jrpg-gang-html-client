@@ -349,8 +349,8 @@ export default class SpotCell extends Component {
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
             SoundService.play(SoundName.HIT);
-            const weaponImpact: DamageImpact[] | undefined = (item as Weapon).damage;
-            const ammoImpact: DamageImpact[] | undefined = ammo?.damage;
+            const weaponImpact: DamageImpact[] | undefined = (item as Weapon).damage?.filter(d => !d.duration);
+            const ammoImpact: DamageImpact[] | undefined = ammo?.damage?.filter(d => !d.duration);
             const itemPhysicalDamage =
                 (weaponImpact ? this.actionService.physicalDamage(weaponImpact) : 0) +
                 (ammoImpact ? this.actionService.physicalDamage(ammoImpact) : 0);

@@ -157,7 +157,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.READY_FOR_START_ROUND:
                 return 'Next round';
             case GamePhase.SPOT_COMPLETE:
-                return 'The room is clear';
+                return 'Prepare for the next battle or leave';
             case GamePhase.SCENARIO_COMPLETE:
                 return 'The dungeon is clear';
             case GamePhase.RETREAT_ACTION:
