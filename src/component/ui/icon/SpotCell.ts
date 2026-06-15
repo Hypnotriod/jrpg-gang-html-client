@@ -333,7 +333,7 @@ export default class SpotCell extends Component {
         }
     }
 
-    public updateWithActionResult(result: ActionResult, item: Item, ammo: Ammunition | undefined, targetUid: number): void {
+    public updateWithActionResult(result: ActionResult, targetUid: number, item?: Item, ammo?: Ammunition,): void {
         if (this._unit) {
             this.idLabel.show();
             this.healthBar.show();
@@ -349,19 +349,18 @@ export default class SpotCell extends Component {
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
             SoundService.play(SoundName.HIT);
-            const weaponImpact: DamageImpact[] | undefined = (item as Weapon).damage?.filter(d => !d.duration);
+            const weaponImpact: DamageImpact[] | undefined = (item as Weapon | undefined)?.damage?.filter(d => !d.duration);
             const ammoImpact: DamageImpact[] | undefined = ammo?.damage?.filter(d => !d.duration);
             const itemPhysicalDamage =
                 (weaponImpact ? this.actionService.physicalDamage(weaponImpact) : 0) +
                 (ammoImpact ? this.actionService.physicalDamage(ammoImpact) : 0);
+            const impact = (weaponImpact ?? ammoImpact ?? result.instantDamage?.[targetUid] ?? result.temporalDamage?.[targetUid]);
             const actualPhysicalDamage = this.actionService.physicalInstantDamageOnTarget(result, targetUid);
-            const withFire = weaponImpact?.some(d => d.fire) || ammoImpact?.some(d => d.fire);
-            const withCold = weaponImpact?.some(d => d.cold) || ammoImpact?.some(d => d.cold);
-            const withLighting = weaponImpact?.some(d => d.lightning) || ammoImpact?.some(d => d.lightning);
-            const withPoison = weaponImpact?.some(d => d.poison) || ammoImpact?.some(d => d.poison);
-            const withDrain =
-                weaponImpact?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain) ??
-                ammoImpact?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain);
+            const withFire = impact?.some(d => d.fire);
+            const withCold = impact?.some(d => d.cold);
+            const withLighting = impact?.some(d => d.lightning);
+            const withPoison = impact?.some(d => d.poison);
+            const withDrain = impact?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain);
             if (withFire) {
                 this._iconHitFire.show();
             } else if (withCold) {
