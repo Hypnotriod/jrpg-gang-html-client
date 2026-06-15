@@ -348,30 +348,35 @@ export default class SpotCell extends Component {
             this._iconMissed.show();
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
-            SoundService.play(SoundName.HIT);
             const weaponImpact: DamageImpact[] | undefined = (item as Weapon | undefined)?.damage?.filter(d => !d.duration);
             const ammoImpact: DamageImpact[] | undefined = ammo?.damage?.filter(d => !d.duration);
             const itemPhysicalDamage =
                 (weaponImpact ? this.actionService.physicalDamage(weaponImpact) : 0) +
                 (ammoImpact ? this.actionService.physicalDamage(ammoImpact) : 0);
-            const impact = (weaponImpact ?? ammoImpact ?? result.instantDamage?.[targetUid] ?? result.temporalDamage?.[targetUid]);
+            const impact = [...(weaponImpact ?? []), ...(ammoImpact ?? []), ...(result.instantDamage?.[targetUid] ?? []), ...(result.temporalDamage?.[targetUid] ?? [])];
             const actualPhysicalDamage = this.actionService.physicalInstantDamageOnTarget(result, targetUid);
             const withFire = impact?.some(d => d.fire);
             const withCold = impact?.some(d => d.cold);
-            const withLighting = impact?.some(d => d.lightning);
+            const withLightning = impact?.some(d => d.lightning);
             const withPoison = impact?.some(d => d.poison);
             const withDrain = impact?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain);
             if (withFire) {
+                SoundService.play(SoundName.FIREBALL);
                 this._iconHitFire.show();
             } else if (withCold) {
+                SoundService.play(SoundName.ICE);
                 this._iconHitCold.show();
-            } else if (withLighting) {
+            } else if (withLightning) {
+                SoundService.play(SoundName.LIGHTNING);
                 this._iconHitLighting.show();
             } else if (withPoison) {
+                SoundService.play(SoundName.POISON);
                 this._iconHitPoison.show();
             } else if (withDrain && !itemPhysicalDamage) {
+                SoundService.play(SoundName.DEBUFF);
                 this._iconHitDrain.show();
             } else {
+                SoundService.play(SoundName.HIT);
                 this._iconHit.show();
             }
             this.hitHpLabel.show();

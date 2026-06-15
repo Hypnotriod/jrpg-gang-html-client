@@ -8,6 +8,11 @@ export enum SoundName {
     EQUIP = 'equip',
     HIT = 'hit',
     MISS = 'miss',
+    FIREBALL = 'fireball',
+    LIGHTNING = 'lightning',
+    ICE = 'ice',
+    POISON = 'poison',
+    DEBUFF = 'debuff',
     MOVE = 'move',
     TREASURE = 'treasure',
     REPAIR = 'repair',
@@ -29,6 +34,7 @@ export enum SoundName {
     LEVEL_UP = 'level_up',
     QUEST_COMPLETE = 'quest_complete',
     FOOD = 'food',
+    PAGE_TURN = 'page_turn',
 }
 
 export const JOB_SOUND: { [key: string]: SoundName } = {
@@ -60,6 +66,11 @@ export class SoundService {
         SoundService.sounds[SoundName.EQUIP] = new Howl({ src: ['assets/sounds/equip.mp3'] });
         SoundService.sounds[SoundName.HIT] = new Howl({ src: ['assets/sounds/hit.mp3'] });
         SoundService.sounds[SoundName.MISS] = new Howl({ src: ['assets/sounds/miss.mp3'] });
+        SoundService.sounds[SoundName.FIREBALL] = new Howl({ src: ['assets/sounds/fireball.mp3'] });
+        SoundService.sounds[SoundName.LIGHTNING] = new Howl({ src: ['assets/sounds/lightning.mp3'] });
+        SoundService.sounds[SoundName.ICE] = new Howl({ src: ['assets/sounds/ice.mp3'] });
+        SoundService.sounds[SoundName.POISON] = new Howl({ src: ['assets/sounds/poison.mp3'] });
+        SoundService.sounds[SoundName.DEBUFF] = new Howl({ src: ['assets/sounds/debuff.mp3'] });
         SoundService.sounds[SoundName.MOVE] = new Howl({ src: ['assets/sounds/move.mp3'] });
         SoundService.sounds[SoundName.TREASURE] = new Howl({ src: ['assets/sounds/treasure.mp3'] });
         SoundService.sounds[SoundName.REPAIR] = new Howl({ src: ['assets/sounds/repair.mp3'] });
@@ -81,6 +92,7 @@ export class SoundService {
         SoundService.sounds[SoundName.LEVEL_UP] = new Howl({ src: ['assets/sounds/level_up.mp3'] });
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
+        SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
 
         window.addEventListener("keydown", event => {
             if (event.key === 'm') {

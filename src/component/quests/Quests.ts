@@ -60,6 +60,9 @@ export default class Quests extends Component implements ServerCommunicatorHandl
                     SoundService.play(SoundName.TREASURE);
                     SoundService.play(SoundName.QUEST_COMPLETE);
                 }
+                if (data.action.action === ActionType.ACTIVATE) {
+                    SoundService.play(SoundName.PAGE_TURN);
+                }
                 this.communicator.sendMessage(RequestType.USER_STATUS);
                 this.communicator.sendMessage(RequestType.QUESTS_STATUS);
                 break;
