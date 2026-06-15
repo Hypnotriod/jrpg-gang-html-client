@@ -145,7 +145,7 @@ export default class GameObjectRenderer {
         return result;
     }
 
-    public renderRequirements(requirements: any, unit?: GameUnit): string {
+    public renderApplicationRequirements(requirements: any, unit?: GameUnit): string {
         let result = '';
         if (unit && requirements && Object.values(requirements).some(v => Number(v))) {
             result += this.keyValueRequired('strength', requirements, this.actionService.attributeTotalValue(unit, 'strength'));

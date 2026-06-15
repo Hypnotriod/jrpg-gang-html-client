@@ -87,7 +87,7 @@ export default class Job extends Component {
         this.labelHeader.value = config.name;
         this.labelDescription.value = config.description!;
         this.labelReward.value = this.renderer.render(config.reward || {});
-        this.labelRequirements.value = this.renderer.renderRequirements(config.requirements || {}, this.state.userState.unit);
+        this.labelRequirements.value = this.renderer.renderApplicationRequirements(config.requirements || {}, this.state.userState.unit);
         if (employment.currentJob?.code === config.code) {
             if (employment.isInProgress) {
                 this.startTimeLeftCountdown(Math.ceil(employment.timeLeft!));
