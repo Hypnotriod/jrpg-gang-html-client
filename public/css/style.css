@@ -37,6 +37,20 @@ body {
     border-radius: 3px;
 }
 
+.selection-icon-56 {
+    background-color: aliceblue;
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    cursor: pointer;
+    width: 56px;
+    height: 56px;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 3px;
+}
+
 .selection-icon:disabled {
     background-color: gray;
 }
@@ -98,6 +112,11 @@ body {
 .item-icon-warpper {
     text-align: center;
     width: 80px;
+}
+
+.item-icon-warpper-small {
+    text-align: center;
+    width: 60px;
 }
 
 .items-container-x {

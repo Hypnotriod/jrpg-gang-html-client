@@ -1,6 +1,6 @@
 import { container, injectable } from 'tsyringe';
 import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN } from '../../../constants/Components';
-import { SPOT_CELL_DESIGN } from '../../../constants/Resources';
+import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, Magic, Position, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
@@ -92,6 +92,7 @@ export default class SpotCell extends Component {
     private _hover: boolean = false;
 
     public displayActionChance: boolean = false;
+    public barWidth: number = 64;
 
     private stunnedSoundPlayed: boolean = false;
     private actionResultTimeoutId: number;
@@ -181,6 +182,14 @@ export default class SpotCell extends Component {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
         const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
             { design: resourceLoader.get(SPOT_CELL_DESIGN), classList: ['item-icon-warpper'] })!;
+        return iconComponent;
+    }
+
+    public static createQueueSpotCell(parent: Component, containerOrContainerId: HTMLElement | string): SpotCell | null {
+        const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
+        const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
+            { design: resourceLoader.get(SPOT_CELL_QEUE_DESIGN), classList: ['item-icon-warpper-small'] })!;
+        iconComponent.barWidth = 44;
         return iconComponent;
     }
 
@@ -317,9 +326,9 @@ export default class SpotCell extends Component {
         const healthTotal = this.actionService.baseAttributeTotalValue(unit, 'health').reduce((acc, v) => acc + v, 0);
         const staminaTotal = this.actionService.baseAttributeTotalValue(unit, 'stamina').reduce((acc, v) => acc + v, 0);
         const manaTotal = this.actionService.baseAttributeTotalValue(unit, 'mana').reduce((acc, v) => acc + v, 0);
-        this.healthBar.width = Math.min(this._unit.state.health / (healthTotal || 1) * 64, 64);
-        this.staminaBar.width = Math.min(this._unit.state.stamina / (staminaTotal || 1) * 64, 64);
-        this.manaBar.width = Math.min(this._unit.state.mana / (manaTotal || 1) * 64, 64);
+        this.healthBar.width = Math.min(this._unit.state.health / (healthTotal || 1) * this.barWidth, this.barWidth);
+        this.staminaBar.width = Math.min(this._unit.state.stamina / (staminaTotal || 1) * this.barWidth, this.barWidth);
+        this.manaBar.width = Math.min(this._unit.state.mana / (manaTotal || 1) * this.barWidth, this.barWidth);
         if (this._hover) {
             this.onHover();
         }
