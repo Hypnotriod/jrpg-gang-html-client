@@ -153,7 +153,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.TAKE_ACTION:
                 return this.isCurrentUnitTurn() ? 'Take your action' : 'Wait for the player\'s action';
             case GamePhase.TAKE_ACTION_AI:
-                return 'Wait for monster\'s action';
+                return 'Wait for the monster\'s action';
             case GamePhase.READY_FOR_START_ROUND:
                 return 'Next round';
             case GamePhase.SPOT_COMPLETE:

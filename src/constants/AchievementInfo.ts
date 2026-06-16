@@ -144,6 +144,18 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'You have found the Orb of Dragon King',
     },
+    'kill-grim-reaper': {
+        icon: 'quest-kill-grim-reaper',
+        tag: 'Objectives',
+        target: 0,
+        popup: 'You have defeated the Grim Reaper!',
+    },
+    'kill-hydra': {
+        icon: 'quest-kill-hydra',
+        tag: 'Objectives',
+        target: 0,
+        popup: 'You have defeated the Hydra!',
+    },
     'save-princess': {
         icon: 'quest-save-princess',
         tag: 'Objectives',
