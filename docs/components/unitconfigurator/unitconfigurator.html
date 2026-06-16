@@ -60,6 +60,13 @@
             <span id="unit_resistance" class="white-text" style="padding: 0;"></span>
         </div>
         <div style="margin: 10px;">
+            <span class="orange-text lighten-3">
+                <img src="./assets/icons/sword-02.png"
+                    style="vertical-align: middle; padding-bottom: 4px; width: 24px;" />
+                <b>SHOP</b>
+                <img src="./assets/icons/shield-02.png"
+                    style="vertical-align: middle; padding-bottom: 4px; width: 24px;" />
+            </span>
             <button id="button_tab_shop_all" class="btn-small green"
                 style="padding: 4px; line-height: 0; max-height: 20px;">all</button>
             <button id="button_tab_shop_weapon" class="btn-small purple"
@@ -73,19 +80,25 @@
             <button id="button_tab_shop_items" class="btn-small purple"
                 style="padding: 4px; line-height: 0; max-height: 20px;">items</button>
         </div>
-        <div style="height: 328px;">
+        <div style="height: 335px;">
             <div id="shop_items_container" class="items-container-y col s6 scrollbar-y"
                 style="max-height: 324px; padding: 0;"></div>
         </div>
-        <label class="white-text">
+        <span class="green-text lighten-3">
+            <img src="./assets/icons/backpack.png" style="vertical-align: middle; padding-bottom: 4px;" />
+            <b>INVENTORY</b>
+        </span>
+        <label class="white-text" style="padding-left: 20px;">
             <input id="checkbox_sell" type="checkbox" />
-            <span style="padding-left: 24px;">Sell <img src="./assets/icons/sell-item.png" style="vertical-align: middle; padding-bottom: 4px;"/></span>&nbsp;&nbsp;&nbsp;
+            <span style="padding-left: 24px;">Sell <img src="./assets/icons/sell-item.png"
+                    style="vertical-align: middle; padding-bottom: 4px;" /></span>&nbsp;&nbsp;&nbsp;
         </label>
         <label class="white-text">
             <input id="checkbox_repair" type="checkbox" />
-            <span style="padding-left: 24px;">Repair<img src="./assets/icons/repair-item.png" style="vertical-align: middle; padding-bottom: 4px;"/></span>
+            <span style="padding-left: 24px;">Repair<img src="./assets/icons/repair-item.png"
+                    style="vertical-align: middle; padding-bottom: 4px;" /></span>
         </label>
     </div>
-    <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin: -3px; margin-top: -7px;"></div>
+    <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin: -3px; margin-top: -20px;"></div>
 </div>
 <div id="item_description_popup" class="item-description-popup white-text"></div>
