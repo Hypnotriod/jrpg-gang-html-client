@@ -75,10 +75,12 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitsQueue.objectDescription = this.objectDescription;
         this.battlefield.objectDescription = this.objectDescription;
         this.battlefield.unitItems = this.unitItems;
+        this.gameLog.autoScroll = true;
         this.initChat();
     }
 
     protected initChat(): void {
+        this.chat.autoScroll = true;
         this.chatMessageInput.onEnter = input => {
             this.communicator.sendMessage(RequestType.GAME_CHAT_MESSAGE, {
                 message: input.value,
@@ -272,32 +274,38 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         const date = new Date(message.timestamp);
         const nickname = this.chatState.participants[message.from].nickname;
         const colorClass = this.isCurrentPlayerId(message.from) ? 'light-green lighten-1' : 'light-blue lighten-1';
-        this.chat.value =
+        this.chat.value +=
             `<span class="${colorClass}" >${nickname}</span><span class="grey-text" style="font-size: 13px;">${date.toLocaleTimeString()}</span><br>` +
-            convert(message.message) + '<br>' +
-            this.chat.value;
+            convert(message.message) + '<br>';
     }
 
     protected logAction(): void {
+        const head = '<div style="font-size: 12px;">';
         if (this.state.gameState.unitActionResult) {
             const unit: GameUnit = this.findUnitByUid(this.state.gameState.unitActionResult.action.uid!)!;
             const name: string = this.getUnitName(unit);
-            this.gameLog.value =
-                this.renderer.header(name, 2) + '<br>' +
+            this.gameLog.value +=
+                (this.gameLog.value === '' ? '' : '<hr>') +
+                head +
+                this.renderer.header(name, 33) +
                 this.renderer.render(this.distinguishUnitActionResult(this.state.gameState.unitActionResult)) +
-                '--------------------<br>' + this.gameLog.value;
+                '</div>';
         }
         if (this.state.gameState.endRoundResult) {
-            this.gameLog.value =
-                this.renderer.header('End Round result', 2) + '<br>' +
+            this.gameLog.value +=
+                head +
+                (this.gameLog.value === '' ? '' : '<hr>') +
+                this.renderer.header('End Round result', 33) +
                 this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult)) +
-                '--------------------<br>' + this.gameLog.value;
+                '</div>';
         }
         if (this.state.gameState.spotCompleteResult) {
-            this.gameLog.value =
-                this.renderer.header('End Battle result', 2) + '<br>' +
+            this.gameLog.value +=
+                head +
+                (this.gameLog.value === '' ? '' : '<hr>') +
+                this.renderer.header('End Battle result', 33) +
                 this.renderer.render(this.distinguishSpotCompleteResultResult(this.state.gameState.spotCompleteResult)) +
-                '--------------------<br>' + this.gameLog.value;
+                '</div>';
         }
     }
 

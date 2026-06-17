@@ -252,6 +252,8 @@ export default class GameObjectRenderer {
                 return `<span class="red lighten-1">${value}:</span><br>`;
             case 23:
                 return `<span class="purple lighten-1">${value}:</span><br>`;
+            case 33:
+                return `<span class="grey darken-1">${value}:</span><br>`;
             default:
             case 2:
                 return `<span class="light-blue lighten-1">${value}:</span><br>`;

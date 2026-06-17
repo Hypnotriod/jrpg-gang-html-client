@@ -77,6 +77,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected initChat(): void {
+        this.chat.autoScroll = true;
         this.chatMessageInput.onEnter = input => {
             this.communicator.sendMessage(RequestType.LOBBY_CHAT_MESSAGE, {
                 message: input.value,
@@ -144,10 +145,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         const date = new Date(message.timestamp);
         const nickname = this.chatState.participants[message.from].nickname;
         const colorClass = message.from == this.state.userState.playerInfo.playerId ? 'light-green lighten-1' : 'light-blue lighten-1';
-        this.chat.value =
+        this.chat.value +=
             `<span class="${colorClass}" style="font-size: 13px;">${nickname}</span><span class="grey-text" style="font-size: 11px;">${date.toLocaleTimeString()}</span><br>` +
-            `<span style="font-size: 13px;">${convert(message.message)}<br>` +
-            this.chat.value;
+            `<span style="font-size: 13px;">${convert(message.message)}<br>`;
     }
 
     protected onServerStatus(data: ServerStatusData): void {
