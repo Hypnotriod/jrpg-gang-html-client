@@ -21,6 +21,7 @@ import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configurat
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
+import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
 
 @singleton()
 @injectable()
@@ -109,6 +110,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly btnTabShopMagic: Button;
     @component(BUTTON_TAB_SHOP_ITEMS, Button)
     private readonly btnTabShopItems: Button;
+    @component('shop_item_popup', ShopItemPopup)
+    private readonly shopItemPopup: ShopItemPopup;
+    @component('popup_shadow', Container)
+    private readonly popupShadow: Container;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
@@ -195,6 +200,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
         this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
         this.labelLuck.description = { Luck: 'Affects critical chance' };
+
+        this.shopItemPopup.shadow = this.popupShadow;
+        this.shopItemPopup.descriptionPopup = this.itemDescription;
     }
 
     protected onShopFilterClick(target: Button, filter: string[]): void {
@@ -588,11 +596,17 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected sellItem(target: ItemIcon): void {
-        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
-            action: ActionType.SELL,
-            itemUid: target.data.uid!,
-        } as ActionRequestData);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.shopItemPopup.mode = ShopItemPopupMode.SELL;
+        this.shopItemPopup.item = target.data;
+        this.shopItemPopup.show();
+        this.shopItemPopup.onYes = (quantity) => {
+            this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+                action: ActionType.SELL,
+                itemUid: target.data.uid!,
+                quantity,
+            } as ActionRequestData);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+        };
     }
 
     protected repairItem(target: ItemIcon): void {
@@ -605,12 +619,18 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected onShopItemClick(target: ItemIcon): void {
-        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
-            action: ActionType.BUY,
-            itemUid: target.data.uid!,
-        } as ActionRequestData);
-        this.communicator.sendMessage(RequestType.SHOP_STATUS);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.shopItemPopup.mode = ShopItemPopupMode.BUY;
+        this.shopItemPopup.item = target.data;
+        this.shopItemPopup.show();
+        this.shopItemPopup.onYes = (quantity) => {
+            this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+                action: ActionType.BUY,
+                itemUid: target.data.uid!,
+                quantity,
+            } as ActionRequestData);
+            this.communicator.sendMessage(RequestType.SHOP_STATUS);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+        }
     }
 
     protected previousUnit(): void {
@@ -618,6 +638,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SWITCH_UNIT, {
             class: USER_CLASSES[n],
         } as SwitchUnitRequestData);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
@@ -626,6 +647,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SWITCH_UNIT, {
             class: USER_CLASSES[n],
         } as SwitchUnitRequestData);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 }

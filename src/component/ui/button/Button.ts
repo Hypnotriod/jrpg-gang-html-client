@@ -7,7 +7,7 @@ export default class Button extends Component {
     protected initialize(): void {
         this.view.onclick = (event: MouseEvent) => {
             SoundService.play(SoundName.CLICK);
-            this.onClickCallback && this.onClickCallback(this);
+            this.onClickCallback?.(this);
             event.stopPropagation();
         };
     }
