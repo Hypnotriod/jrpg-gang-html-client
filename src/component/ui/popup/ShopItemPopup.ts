@@ -54,7 +54,7 @@ export class ShopItemPopup extends Container {
             this.quantity = this.quantitySlider.value
             this.quantityLabel.value = `x${this.quantity}`;
             this.item = this._item;
-            SoundService.play(SoundName.CLICK);
+            SoundService.play(SoundName.CLICK, { rate: 0.05 });
         }
         this.noButton.onClick = () => {
             this.hide();

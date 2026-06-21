@@ -103,9 +103,10 @@ export class SoundService {
         });
     }
 
-    public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; }): void {
+    public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; rate?: number}): void {
         const sound = SoundService.sounds[name];
         if (!sound || SoundService._muted) return;
+        if (sound.playing() && (options?.rate ?? 0) > sound.seek()) return;
         sound.loop(options?.loop ?? false);
         sound.stop();
         if (options?.delayMs) {
