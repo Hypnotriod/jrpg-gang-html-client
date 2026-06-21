@@ -279,7 +279,7 @@ export default class GameObjectRenderer {
             `<span class="orange-text text-lighten-1">${key}</span>: <span class="${value[1] > 0 ? 'green-text' : 'red-text'} text-lighten-2">${Math.max(0, value[0] + value[1])}</span> <br>`;
     }
 
-    protected keyValueRequired(key: string, data: any, has: [number, number]): string {
+    public keyValueRequired(key: string, data: any, has: [number, number]): string {
         const total = has[0] + has[1];
         const value = Number(data[key]);
         key = this.capitalize(key);

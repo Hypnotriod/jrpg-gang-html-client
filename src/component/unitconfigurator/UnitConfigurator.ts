@@ -610,12 +610,17 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected repairItem(target: ItemIcon): void {
-        this.communicator.sendMessage(RequestType.SHOP_ACTION, {
-            action: ActionType.REPAIR,
-            itemUid: target.data.uid!,
-        } as ActionRequestData);
-        this.communicator.sendMessage(RequestType.SHOP_STATUS);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.shopItemPopup.mode = ShopItemPopupMode.REPAIR;
+        this.shopItemPopup.item = target.data;
+        this.shopItemPopup.show();
+        this.shopItemPopup.onYes = () => {
+            this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+                action: ActionType.REPAIR,
+                itemUid: target.data.uid!,
+            } as ActionRequestData);
+            this.communicator.sendMessage(RequestType.SHOP_STATUS);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+        };
     }
 
     protected onShopItemClick(target: ItemIcon): void {

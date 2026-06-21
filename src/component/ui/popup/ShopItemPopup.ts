@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { ICON, LABEL_DESCRIPTION } from '../../../constants/Components';
+import { ICON, LABEL_DESCRIPTION, LABEL_PRICE, LABEL_QUANTITY } from '../../../constants/Components';
 import { Disposable, InventoryItem, ItemType, UnitBooty } from '../../../domain/domain';
 import GameStateService from '../../../service/GameStateService';
 import { component } from '../../decorator/decorator';
@@ -15,6 +15,7 @@ import GameObjectRenderer from '../../../service/GameObjectRenderer';
 export enum ShopItemPopupMode {
     BUY,
     SELL,
+    REPAIR,
 }
 
 @injectable()
@@ -23,9 +24,9 @@ export class ShopItemPopup extends Container {
     protected readonly icon: Icon;
     @component(LABEL_DESCRIPTION, Label)
     protected readonly labelDescription: Label;
-    @component('label_price', Label)
+    @component(LABEL_PRICE, Label)
     protected readonly priceLabel: Label;
-    @component('label_quantity', Label)
+    @component(LABEL_QUANTITY, Label)
     protected readonly quantityLabel: Label;
     @component('slider_quantity', HSlider)
     protected readonly quantitySlider: HSlider;
@@ -110,6 +111,7 @@ export class ShopItemPopup extends Container {
         this.icon.description = value;
         this._item = value;
         this.icon.icon = this._item.code;
+        const booty = this.state.userState.unit.booty;
         if (this._item.type === ItemType.ARMOR ||
             this._item.type === ItemType.MAGIC ||
             this._item.type === ItemType.WEAPON) {
@@ -119,21 +121,38 @@ export class ShopItemPopup extends Container {
             this.quantitySlider.show();
             this.quantityLabel.show();
         }
-        this.labelDescription.htmlValue =
-            this._mode === ShopItemPopupMode.BUY ?
-                `Buy<span class="green-text lighten-4">${this._item.name}</span>?` :
-                `Sell<span class="green-text lighten-4">${this._item.name}</span>?`;
-        const price: UnitBooty =
-            this.mode === ShopItemPopupMode.BUY ?
-                {
-                    coins: this._item.price.coins * this.quantity,
-                    ruby: (this._item.price.ruby ?? 0) * this.quantity
-                } :
-                {
-                    coins: (this._item as any).purchasePrice.coins * this.quantity,
-                    ruby: ((this._item as any).purchasePrice.ruby ?? 0) * this.quantity
-                };
-        this.priceLabel.htmlValue = this.renderer.render(price);
+        let price: UnitBooty;
+        if (this._mode === ShopItemPopupMode.BUY) {
+            this.labelDescription.htmlValue = `Buy<span class="green-text lighten-4">${this._item.name}</span>?`;
+            price = {
+                coins: this._item.price.coins * this.quantity,
+                ruby: (this._item.price.ruby ?? 0) * this.quantity
+            };
+        } else if (this._mode === ShopItemPopupMode.SELL) {
+            this.labelDescription.htmlValue = `Sell<span class="green-text lighten-4">${this._item.name}</span>?`;
+            price = {
+                coins: (this._item as any).purchasePrice.coins * this.quantity,
+                ruby: ((this._item as any).purchasePrice.ruby ?? 0) * this.quantity
+            };
+        } else {
+            this.labelDescription.htmlValue = `Repair<span class="green-text lighten-4">${this._item.name}</span>?`;
+            price = {
+                coins: (this._item as any).repairPrice.coins,
+                ruby: ((this._item as any).repairPrice.ruby ?? 0)
+            };
+        }
+        if (this._mode === ShopItemPopupMode.SELL) {
+            this.priceLabel.htmlValue = this.renderer.render(price);
+        } else {
+            this.priceLabel.htmlValue =
+                (price.coins ? this.renderer.keyValueRequired('coins', price, [booty.coins, 0]) : '') +
+                (price.ruby ? this.renderer.keyValueRequired('ruby', price, [booty.ruby ?? 0, 0]) : '');
+        }
+        if (this._mode === ShopItemPopupMode.REPAIR && (price.coins > booty.coins || (price.ruby ?? 0) > (booty.ruby ?? 0))) {
+            this.yesButton.disable();
+        } else {
+            this.yesButton.enable();
+        }
     }
 
     public get mode(): ShopItemPopupMode {
