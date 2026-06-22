@@ -18,7 +18,7 @@ export default class GameObjectRenderer {
     public renderMain(data: any, ignoreHeaders: string[] = []): string {
         let result = '';
         if (data.hint) {
-            result += `<b><span class="grey-text lighten-1">${data.hint}</span></b><br>`;
+            result += `<b><span class="grey-text lighten-1" style="font-size: 13px;">${data.hint}</span></b><br>`;
         }
         if (data.code) {
             result += `<img src="./assets/icons/${data.code}.png"><br>`;
