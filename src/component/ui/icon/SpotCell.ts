@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
-import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, Magic, Position, UnitModificationImpact, Weapon } from '../../../domain/domain';
+import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -90,12 +90,24 @@ export default class SpotCell extends Component {
     private _x: number;
     private _y: number;
     private _hover: boolean = false;
+    private _hint?: string | undefined;
 
     public displayActionChance: boolean = false;
     public barWidth: number = 64;
 
     private stunnedSoundPlayed: boolean = false;
     private actionResultTimeoutId: number;
+
+    public get hint(): string | undefined {
+        return this._hint;
+    }
+
+    public set hint(value: string | undefined) {
+        this._hint = value;
+        if (this._hover) {
+            this.onHover();
+        }
+    }
 
     constructor(
         private readonly actionService: ActionService,
@@ -115,6 +127,7 @@ export default class SpotCell extends Component {
     protected onHover(): void {
         this._hover = true;
         if (!this._unit) { return; }
+        this.displayActionChance && this.showActionChance();
         this._descriptionPopup.data = {
             name: this._unit.playerInfo?.nickname || this._unit.name,
             code: this._unit.code,
@@ -125,9 +138,9 @@ export default class SpotCell extends Component {
             modification: this._unit.modification,
             inventory: this._unit.inventory,
             description: this._unit.description,
+            hint: this._hint,
         };
         this._descriptionPopup.show();
-        this.displayActionChance && this.showActionChance();
     }
 
     protected onLeave(): void {
@@ -235,22 +248,52 @@ export default class SpotCell extends Component {
     }
 
     public showActionChance() {
+        this._hint = undefined;
         if (!this._unit || !this._hover) { return; }
         let chance = 0;
         let reachable = false;
         const gamePhase = this.state.gameState.nextPhase;
-        if (this.unitItems.chosenItem && this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION) {
-            const actor = this.unitItems.playersUnit();
-            if (!actor || actor.isDead) return;
-            const damage = (this.unitItems.chosenItem as Magic).damage;
-            const modification = (this.unitItems.chosenItem as Magic).modification;
-            const range = (this.unitItems.chosenItem as Magic).range ?? { x: 0, y: 0 };
-            reachable = this.canReach(actor.position, this, range);
-            if (damage && actor.faction !== this._unit.faction) {
-                chance = this.actionService.attackChance(damage, actor, this._unit);
-            }
-            if (modification && actor.faction === this._unit.faction) {
-                chance = this.actionService.modificationChance(modification, actor);
+        const chosenItem = this.unitItems.chosenItem;
+        if (this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION || gamePhase === GamePhase.SPOT_COMPLETE) {
+            if (!chosenItem) {
+                this._hint = 'No item selected';
+            } else {
+                const actor = this.unitItems.playersUnit();
+                if (!actor || actor.isDead) return;
+                const damage = (chosenItem as Magic).damage;
+                const modification = (chosenItem as Magic).modification;
+                const recovery = (chosenItem as Provision).recovery;
+                const range = (chosenItem as Magic).range ?? { x: 0, y: 0 };
+                const useCost = (chosenItem as Magic).useCost;
+                reachable = this.canReach(actor.position, this, range);
+                if (!reachable) {
+                    this._hint = 'Can\'t reach';
+                }
+                if (damage && actor.faction !== this._unit.faction) {
+                    chance = this.actionService.attackChance(damage, actor, this._unit);
+                    this._hint = 'Click to attack';
+                    if (chosenItem.type === ItemType.WEAPON) {
+                        const weapon = chosenItem as Weapon;
+                        if (!weapon.equipped) {
+                            this._hint = 'Not equipped';
+                        } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped)) {
+                            this._hint = 'No ammunition';
+                        }
+                    }
+                }
+                if (modification && actor.faction === this._unit.faction) {
+                    chance = this.actionService.modificationChance(modification, actor);
+                    this._hint = 'Click to use';
+                }
+                if (recovery) {
+                    this._hint = 'Click to consume';
+                }
+                if (actor.state.stamina < (useCost?.stamina ?? 0)) {
+                    this._hint = 'No stamina';
+                }
+                if (actor.state.mana < (useCost?.mana ?? 0)) {
+                    this._hint = 'No mana';
+                }
             }
         }
         if (!chance) return;
