@@ -143,6 +143,9 @@ body {
     z-index: 2000;
     min-height: 40px;
     padding: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
     border-radius: 3px;
 }
 
@@ -153,6 +156,9 @@ body {
     z-index: 1000;
     width: 350px;
     padding-top: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
     border-radius: 3px;
     margin: 10px;
     right: 0;
@@ -175,6 +181,9 @@ body {
     padding-top: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
     border-radius: 5px;
     top: 50%;
     left: 50%;
