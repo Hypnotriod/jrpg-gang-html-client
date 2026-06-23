@@ -36,10 +36,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitIcon: Icon;
     @component(UNIT_INFO, Container)
     private readonly unitInfo: Container;
-    @component(UNIT_BOOTY, Container)
-    private readonly unitBooty: Container;
-    @component(UNIT_PROGRESS, Container)
-    private readonly unitProgress: Container;
+    @component(UNIT_BOOTY, Label)
+    private readonly unitBooty: Label;
+    @component(UNIT_PROGRESS, Label)
+    private readonly unitProgress: Label;
     @component(BUTTON_HEALTH, Button)
     private readonly btnHealth: Button;
     @component(BUTTON_STAMINA, Button)
@@ -88,8 +88,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly labelInitiative: Label;
     @component(LABEL_LUCK, Label)
     private readonly labelLuck: Label;
-    @component(UNIT_RESISTANCE, Container)
-    private readonly unitResistance: Container;
+    @component(UNIT_RESISTANCE, Label)
+    private readonly unitResistance: Label;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly itemDescription: ObjectDescription;
     @component(CHECKBOX_SELL, Checkbox)
@@ -188,6 +188,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelInitiative.descriptionPopup = this.itemDescription;
         this.labelLuck.descriptionPopup = this.itemDescription;
         this.unitIcon.descriptionPopup = this.itemDescription;
+        this.unitBooty.descriptionPopup = this.itemDescription;
+        this.unitProgress.descriptionPopup = this.itemDescription;
+        this.unitResistance.descriptionPopup = this.itemDescription;
 
         this.labelHealth.description = { Health: 'The hit points a unit can take before dying' };
         this.labelStamina.description = { Stamina: 'A weapon may require stamina points to perform an action' };
@@ -200,6 +203,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
         this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
         this.labelLuck.description = { Luck: 'Affects critical chance' };
+        this.unitBooty.description = { Booty: 'Unit coins and rubies' };
+        this.unitProgress.description = { Progress: 'Unit level, experience and attribute points' };
+        this.unitResistance.description = { Resistance: 'Unit resistance' };
 
         this.shopItemPopup.shadow = this.popupShadow;
         this.shopItemPopup.descriptionPopup = this.itemDescription;
@@ -349,15 +355,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateBooty(): void {
         const bt: UnitBooty = this.state.userState.unit.booty;
-        this.unitBooty.value = `${this.keyValue('Coins', bt.coins)}<br>
-                                ${this.keyValue('Ruby', bt.ruby || 0)}<br>
+        this.unitBooty.htmlValue = `${this.keyValueIcon('Coins', 'coin', bt.coins)}<br>
+                                ${this.keyValueIcon('Ruby', 'ruby', bt.ruby)}<br>
                                `;
 
     }
 
     protected updateResistance(): void {
         const res: UnitResistance = this.state.userState.unit.stats.resistance;
-        this.unitResistance.value = `${this.keyValue('Stabbing', res.stabbing || 0)}${this.extraResist('stabbing')}<br>
+        this.unitResistance.htmlValue = `${this.keyValue('Stabbing', res.stabbing || 0)}${this.extraResist('stabbing')}<br>
                                      ${this.keyValue('Cutting', res.cutting || 0)}${this.extraResist('cutting')}<br>
                                      ${this.keyValue('Crushing', res.crushing || 0)}${this.extraResist('crushing')}<br>
                                      ${this.keyValue('Fire', res.fire || 0)}${this.extraResist('fire')}<br>
@@ -375,7 +381,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateProgress(): void {
         const pr: UnitProgress = this.state.userState.unit.stats.progress;
-        this.unitProgress.value = `${this.keyValue('Level', pr.level)}<br>
+        this.unitProgress.htmlValue = `${this.keyValue('Level', pr.level)}<br>
                                    ${this.keyValue('Exp', pr.experience, pr.experienceNext)}<br>
                                    ${this.keyValue('Base Attr Points', pr.baseAttributesPoints || 0)}<br>
                                    ${this.keyValue('Attr Points', pr.attributesPoints || 0)}<br>
@@ -452,6 +458,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         return valueOf === undefined ?
             `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0}` :
             `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0} / ${valueOf}`;
+    }
+
+    protected keyValueIcon(key: string, icon: string, value?: number): string {
+        return `<span class="orange-text text-lighten-1" style="padding: 0;">
+            <img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" />
+            ${key}</span> ${value || 0}`;
     }
 
     protected objValues(obj: any): string {

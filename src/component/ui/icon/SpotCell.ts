@@ -282,7 +282,7 @@ export default class SpotCell extends Component {
                         const weapon = chosenItem as Weapon;
                         if (!weapon.equipped) {
                             this._hint = 'Not equipped';
-                        } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped)) {
+                        } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped && a.kind === weapon.ammunitionKind)) {
                             this._hint = 'No ammunition';
                         }
                     }

@@ -235,8 +235,19 @@ export default class GameObjectRenderer {
 
     protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
+        data = this.patchDeviation(data);
         return this.header(header, depth) + Object.keys(data)
             .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
+    }
+
+    protected patchDeviation(data: any): any {
+        if (!data.deviation) return data;
+        return Object.keys(data).reduce((acc, k) => {
+            if (['chance', 'duration', 'deviation'].some(v => v === k)) {
+                return { ...acc, [k]: data[k] };
+            }
+            return ({ ...acc, [k]: `${data[k]}-${data[k] + data.deviation}` });
+        }, {});
     }
 
     public header(value: string, depth: number): string {
@@ -329,6 +340,7 @@ export default class GameObjectRenderer {
             case 'kind':
             case 'canBeSold':
             case 'hint':
+            case 'deviation':
                 return true;
         }
         return false;
