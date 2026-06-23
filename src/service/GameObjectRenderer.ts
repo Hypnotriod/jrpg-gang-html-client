@@ -280,6 +280,12 @@ export default class GameObjectRenderer {
         return `<span class="orange-text text-lighten-1">${key}</span>: ${value}<br>`;
     }
 
+    public keyValueIcon(key: string, icon: string, value?: number): string {
+        return `<span class="orange-text text-lighten-1" style="padding: 0;">
+            <img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" />
+            ${key}</span> ${value || 0}`;
+    }
+
     protected keyValueExtra(key: string, value: [number, number]): string {
         key = this.capitalize(key);
         return !value[1] ?

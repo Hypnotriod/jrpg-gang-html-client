@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE, LABEL_DUNGEON_NAME, LABEL_USERS_IN_GAME } from '../../constants/Components';
-import { ActionType, GamePhase, GameUnit, PlayerInfo } from '../../domain/domain';
+import { ActionType, GamePhase, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';

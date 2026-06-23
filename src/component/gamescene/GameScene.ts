@@ -21,6 +21,7 @@ import GameBattlefield from './GameBattlefield';
 import GameFlowControls from './GameFlowControls';
 import GameUnitItems from './GameUnitItems';
 import GameUnitsQueue from './GameUnitsQueue';
+import { DungeonLootPopup } from '../ui/popup/DungeonLootPopup';
 
 @injectable()
 @singleton()
@@ -47,6 +48,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected readonly coinsLabel: Label;
     @component(LABEL_LOOT_RUBIES, Label)
     protected readonly rubiesLabel: Label;
+    @component('dungeon_loot_popup', DungeonLootPopup)
+    private readonly dungeonLootPopup: DungeonLootPopup;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -147,6 +150,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     public destroy(): void {
         this.battlefield.destroy();
         this.gameLog.value = '';
+        this.dungeonLootPopup.hide();
     }
 
     protected handleGameState(): void {
@@ -164,6 +168,12 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.destroy();
             SoundService.play(SoundName.DOOR);
             SoundService.play(SoundName.HORN, { delayMs: 700 });
+        }
+        if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE) &&
+            this.state.gameState.spotCompleteResult?.booty) {
+            this.dungeonLootPopup.booty = this.state.gameState.spotCompleteResult.booty;
+            this.dungeonLootPopup.show();
         }
         this.updatePlayerInfoFromGameState(this.state.gameState);
         this.unitItems.update(this.activeItemTypes(this.state.gameState.nextPhase));
