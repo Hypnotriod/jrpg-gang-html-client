@@ -2,7 +2,7 @@ import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_ALL, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
-import { ActionResultData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
+import { ActionResultData, KEY_IS_INSTRUCTIONS_SHOWN, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -22,6 +22,7 @@ import GameObjectRenderer from '../../service/GameObjectRenderer';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
+import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 
 @singleton()
 @injectable()
@@ -112,6 +113,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly btnTabShopItems: Button;
     @component('shop_item_popup', ShopItemPopup)
     private readonly shopItemPopup: ShopItemPopup;
+    @component('instructions_popup', InstructionsPopup)
+    private readonly instructionsPopup: InstructionsPopup;
     @component('popup_shadow', Container)
     private readonly popupShadow: Container;
 
@@ -135,6 +138,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        if (!sessionStorage.getItem(KEY_IS_INSTRUCTIONS_SHOWN)) {
+            this.instructionsPopup.show();
+            this.instructionsPopup.onHide = () => sessionStorage.setItem(KEY_IS_INSTRUCTIONS_SHOWN, 'true');
+        }
         super.show();
     }
 
@@ -207,6 +214,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitProgress.description = { Progress: 'Unit level, experience and attribute points' };
         this.unitResistance.description = { Resistance: 'Unit resistance' };
 
+        this.instructionsPopup.shadow = this.popupShadow;
         this.shopItemPopup.shadow = this.popupShadow;
         this.shopItemPopup.descriptionPopup = this.itemDescription;
     }

@@ -18,7 +18,6 @@ export class DungeonLootPopup extends Container {
         super();
     }
 
-
     protected initialize(): void {
     }
 
