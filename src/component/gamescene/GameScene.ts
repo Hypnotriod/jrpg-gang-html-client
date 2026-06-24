@@ -22,6 +22,8 @@ import GameFlowControls from './GameFlowControls';
 import GameUnitItems from './GameUnitItems';
 import GameUnitsQueue from './GameUnitsQueue';
 import { DungeonLootPopup } from '../ui/popup/DungeonLootPopup';
+import { LeaveDungeonPopup } from '../ui/popup/LeaveDungeonPopup';
+import Container from '../ui/container/Container';
 
 @injectable()
 @singleton()
@@ -50,6 +52,10 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected readonly rubiesLabel: Label;
     @component('dungeon_loot_popup', DungeonLootPopup)
     private readonly dungeonLootPopup: DungeonLootPopup;
+    @component('leave_dungeon_popup', LeaveDungeonPopup)
+    private readonly leaveDungeonPopup: LeaveDungeonPopup;
+    @component('popup_shadow', Container)
+    private readonly popupShadow: Container;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -79,6 +85,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.battlefield.objectDescription = this.objectDescription;
         this.battlefield.unitItems = this.unitItems;
         this.gameLog.autoScroll = true;
+        this.leaveDungeonPopup.shadow = this.popupShadow;
+        this.flowControls.onLeave = () => this.onLeaveGame();
+        this.flowControls.onRetreate = () => this.onRetreatGame();
         this.initChat();
     }
 
@@ -91,6 +100,30 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             input.value = '';
         };
         this.chatMessageInput.maxLength = 128;
+    }
+
+    protected onRetreatGame(): void {
+        this.leaveDungeonPopup.booty = undefined;
+        this.leaveDungeonPopup.show();
+        this.leaveDungeonPopup.onYes = () => {
+            this.communicator.sendMessage(RequestType.LEAVE_GAME);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+            SoundService.play(SoundName.DOOR);
+        }
+    }
+
+    protected onLeaveGame(): void {
+        this.leaveDungeonPopup.booty = {
+            coins: Math.round(this.state.gameState.state.booty.coins / this.allActors().length),
+            ruby: Math.round((this.state.gameState.state.booty.ruby ?? 0) / this.allActors().length),
+        };
+        this.leaveDungeonPopup.show();
+        this.leaveDungeonPopup.onYes = () => {
+            this.communicator.sendMessage(RequestType.LEAVE_GAME);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+            SoundService.play(SoundName.DOOR);
+            SoundService.play(SoundName.TREASURE);
+        }
     }
 
     public handleServerResponse(response: Response): void {
@@ -141,7 +174,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             SoundService.play(SoundName.BATTLE_START, { delayMs: 400 });
         }
         SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
-        SoundService.stop(SoundName.DRONE_MAIN);
+        SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
     }
 
     public handleConnectionLost(): void {

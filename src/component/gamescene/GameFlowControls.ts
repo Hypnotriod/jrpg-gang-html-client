@@ -1,15 +1,15 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_LEAVE, BUTTON_NEXT_PHASE, BUTTON_ABANDON, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, BUTTON_NEXT_BATTLE, LABEL_DUNGEON_NAME, LABEL_USERS_IN_GAME } from '../../constants/Components';
+import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
 import { ActionType, GamePhase, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
+import { SoundName, SoundService } from '../../service/SoundService';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Label from '../ui/label/Label';
 import GameBase from './GameBase';
-import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -35,11 +35,22 @@ export default class GameFlowControls extends GameBase {
     @component(BUTTON_LEAVE, Button)
     private readonly leaveButton: Button;
 
+    private onRetreateCallback?: () => void;
+    private onLeaveCallback?: () => void;
+
     private nextPhaseTimeoutId: number;
     private nextPhaseLabelTimeoutId: number;
     private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
     private usersInGame: number = 0;
+
+    public set onRetreate(value: (() => void)) {
+        this.onRetreateCallback = value;
+    }
+
+    public set onLeave(value: (() => void)) {
+        this.onLeaveCallback = value;
+    }
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -238,16 +249,11 @@ export default class GameFlowControls extends GameBase {
     }
 
     protected onRetreatGameClick(): void {
-        this.communicator.sendMessage(RequestType.LEAVE_GAME);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
-        SoundService.play(SoundName.DOOR);
+        this.onRetreateCallback?.();
     }
 
     protected onLeaveGameClick(): void {
-        this.communicator.sendMessage(RequestType.LEAVE_GAME);
-        this.communicator.sendMessage(RequestType.USER_STATUS);
-        SoundService.play(SoundName.DOOR);
-        SoundService.play(SoundName.TREASURE);
+        this.onLeaveCallback?.();
     }
 
     protected checkAutoNextPhaseConditions(): boolean {

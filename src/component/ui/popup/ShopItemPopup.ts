@@ -20,6 +20,8 @@ export enum ShopItemPopupMode {
 
 @injectable()
 export class ShopItemPopup extends Container {
+    private static MAX_ITEMS: number = 30;
+
     @component(ICON, Icon)
     protected readonly icon: Icon;
     @component(LABEL_DESCRIPTION, Label)
@@ -77,8 +79,8 @@ export class ShopItemPopup extends Container {
             };
             this.quantitySlider.max = Math.floor(
                 Math.min(
-                    price.coins ? booty.coins / price.coins : 50,
-                    price.ruby ? (booty.ruby ?? 0) / price.ruby : 50,
+                    price.coins ? booty.coins / price.coins : ShopItemPopup.MAX_ITEMS,
+                    price.ruby ? (booty.ruby ?? 0) / price.ruby : ShopItemPopup.MAX_ITEMS,
                 )
             );
         } else if (this._item.type === ItemType.DISPOSABLE ||

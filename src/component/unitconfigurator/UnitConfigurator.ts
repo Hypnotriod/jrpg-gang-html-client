@@ -144,7 +144,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         super.show();
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
-        SoundService.stop(SoundName.DRONE_CAVE);
+        SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
     }
 
     protected initialize(): void {

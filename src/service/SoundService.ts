@@ -110,7 +110,13 @@ export class SoundService {
         });
     }
 
-    public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; rate?: number, skipIfPlaying?: boolean }): void {
+    public static play(name: SoundName, options?: {
+        delayMs?: number,
+        loop?: boolean;
+        rate?: number,
+        skipIfPlaying?: boolean,
+        volume?: number
+    }): void {
         const sound = SoundService.sounds[name];
         if (!sound) return;
         if (sound.playing() && ((options?.rate ?? 0) > sound.seek() || options?.skipIfPlaying)) return;
@@ -120,12 +126,18 @@ export class SoundService {
             window.setTimeout(() => sound.play(), options.delayMs);
             return;
         }
+        sound.volume(options?.volume ?? 1);
         sound.play();
     }
 
     public static stop(name: SoundName, options?: { fade?: number }): void {
         const sound = SoundService.sounds[name];
         if (!sound || !sound.seek()) return;
-        sound.stop();
+        if (options?.fade) {
+            sound.fade(1, 0, options.fade);
+            window.setTimeout(() => sound.stop(), options.fade * 1000);
+        } else {
+            sound.stop();
+        }
     }
 }

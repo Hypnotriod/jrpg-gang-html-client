@@ -202,7 +202,7 @@ export default class SpotCell extends Component {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
         const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
             { design: resourceLoader.get(SPOT_CELL_QEUE_DESIGN), classList: ['item-icon-warpper-small'] })!;
-        iconComponent.barWidth = 44;
+        iconComponent.barWidth = 45;
         return iconComponent;
     }
 
