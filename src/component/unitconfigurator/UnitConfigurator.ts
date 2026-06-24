@@ -143,6 +143,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.instructionsPopup.onHide = () => sessionStorage.setItem(KEY_IS_INSTRUCTIONS_SHOWN, 'true');
         }
         super.show();
+        SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
+        SoundService.stop(SoundName.DRONE_CAVE);
     }
 
     protected initialize(): void {

@@ -19,6 +19,7 @@ export enum SoundName {
     STUNNED = 'stunned',
     GAME_OVER = 'game_over',
     HORN = 'horn',
+    BATTLE_START = 'battle_start',
     DOOR = 'door',
     COMPLETE = 'complete',
     BROOM = 'broom',
@@ -35,6 +36,8 @@ export enum SoundName {
     QUEST_COMPLETE = 'quest_complete',
     FOOD = 'food',
     PAGE_TURN = 'page_turn',
+    DRONE_MAIN = 'drone_main',
+    DRONE_CAVE = 'drone_cave',
 }
 
 export const JOB_SOUND: { [key: string]: SoundName } = {
@@ -54,8 +57,10 @@ export class SoundService {
     public static get muted(): boolean {
         return SoundService._muted;
     }
+
     public static set muted(value: boolean) {
         SoundService._muted = value;
+        Object.values(SoundService.sounds).forEach(s => s.volume(value ? 0 : 1));
     }
 
     public static initialize(): void {
@@ -77,6 +82,7 @@ export class SoundService {
         SoundService.sounds[SoundName.STUNNED] = new Howl({ src: ['assets/sounds/stunned.mp3'] });
         SoundService.sounds[SoundName.GAME_OVER] = new Howl({ src: ['assets/sounds/game_over.mp3'] });
         SoundService.sounds[SoundName.HORN] = new Howl({ src: ['assets/sounds/horn.mp3'] });
+        SoundService.sounds[SoundName.BATTLE_START] = new Howl({ src: ['assets/sounds/battle_start.mp3'] });
         SoundService.sounds[SoundName.DOOR] = new Howl({ src: ['assets/sounds/door.mp3'] });
         SoundService.sounds[SoundName.COMPLETE] = new Howl({ src: ['assets/sounds/complete.mp3'] });
         SoundService.sounds[SoundName.BROOM] = new Howl({ src: ['assets/sounds/broom.mp3'] });
@@ -93,20 +99,21 @@ export class SoundService {
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
         SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
+        SoundService.sounds[SoundName.DRONE_MAIN] = new Howl({ src: ['assets/sounds/drone_main.mp3'] });
+        SoundService.sounds[SoundName.DRONE_CAVE] = new Howl({ src: ['assets/sounds/drone_cave.mp3'] });
 
         window.addEventListener("keydown", event => {
             if (event.key === 'm') {
-                !SoundService._muted && SoundService.play(SoundName.CLICK);
-                SoundService._muted = !SoundService._muted;
-                !SoundService._muted && SoundService.play(SoundName.CLICK);
+                SoundService.play(SoundName.CLICK);
+                SoundService.muted = !SoundService.muted;
             }
         });
     }
 
-    public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; rate?: number}): void {
+    public static play(name: SoundName, options?: { delayMs?: number, loop?: boolean; rate?: number, skipIfPlaying?: boolean }): void {
         const sound = SoundService.sounds[name];
-        if (!sound || SoundService._muted) return;
-        if (sound.playing() && (options?.rate ?? 0) > sound.seek()) return;
+        if (!sound) return;
+        if (sound.playing() && ((options?.rate ?? 0) > sound.seek() || options?.skipIfPlaying)) return;
         sound.loop(options?.loop ?? false);
         sound.stop();
         if (options?.delayMs) {
@@ -114,5 +121,11 @@ export class SoundService {
             return;
         }
         sound.play();
+    }
+
+    public static stop(name: SoundName, options?: { fade?: number }): void {
+        const sound = SoundService.sounds[name];
+        if (!sound || !sound.seek()) return;
+        sound.stop();
     }
 }

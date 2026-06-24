@@ -10,6 +10,7 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Job from './Job';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -39,6 +40,7 @@ export default class Jobs extends Component implements ServerCommunicatorHandler
     public show(): void {
         super.show();
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
+        SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
     }
 
     handleServerResponse(response: Response): void {

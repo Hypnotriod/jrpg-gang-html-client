@@ -138,8 +138,10 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitItems.destroy();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
             SoundService.play(SoundName.DOOR);
-            SoundService.play(SoundName.HORN, { delayMs: 700 });
+            SoundService.play(SoundName.BATTLE_START, { delayMs: 400 });
         }
+        SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
+        SoundService.stop(SoundName.DRONE_MAIN);
     }
 
     public handleConnectionLost(): void {
@@ -167,7 +169,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.destroy();
             SoundService.play(SoundName.DOOR);
-            SoundService.play(SoundName.HORN, { delayMs: 700 });
+            SoundService.play(SoundName.BATTLE_START, { delayMs: 700 });
         }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE) &&

@@ -246,6 +246,7 @@ export default class GameFlowControls extends GameBase {
     protected onLeaveGameClick(): void {
         this.communicator.sendMessage(RequestType.LEAVE_GAME);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        SoundService.play(SoundName.DOOR);
         SoundService.play(SoundName.TREASURE);
     }
 
