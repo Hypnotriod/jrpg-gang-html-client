@@ -39,7 +39,7 @@ export default class GameFlowControls extends GameBase {
     private onLeaveCallback?: () => void;
 
     private nextPhaseTimeoutId: number;
-    private nextPhaseLabelTimerTickId: number = -1;
+    private nextPhaseTickerId: number = -1;
     private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
     private usersInGame: number = 0;
@@ -148,14 +148,14 @@ export default class GameFlowControls extends GameBase {
                 }
                 if (this.state.gameState.phaseTimeout) {
                     this.state.gameState.phaseTimeout--;
-                    if (this.nextPhaseLabelTimerTickId === -1) {
-                        clearTimeout(this.nextPhaseLabelTimerTickId);
-                        this.nextPhaseLabelTimerTickId = window.setInterval(() => this.updatenextPhaseLabel(true), 1000);
+                    if (this.nextPhaseTickerId === -1) {
+                        clearTimeout(this.nextPhaseTickerId);
+                        this.nextPhaseTickerId = window.setInterval(() => this.updatenextPhaseLabel(true), 1000);
                     }
                 }
                 break;
             default:
-                this.resetTimeout();
+                this.resetnextPhaseTicker();
                 this.gameStatusLabel.value = `${this.nextPhaseDescription()}`;
                 break;
         }
@@ -197,9 +197,9 @@ export default class GameFlowControls extends GameBase {
         show && battleComplete ? this.nextBattleButton.show() : this.nextBattleButton.hide();
     }
 
-    public resetTimeout(): void {
-        clearTimeout(this.nextPhaseLabelTimerTickId);
-        this.nextPhaseLabelTimerTickId = -1;
+    public resetnextPhaseTicker(): void {
+        clearTimeout(this.nextPhaseTickerId);
+        this.nextPhaseTickerId = -1;
         SoundService.stop(SoundName.CLOCK_TICK);
     }
 

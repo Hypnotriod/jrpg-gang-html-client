@@ -193,7 +193,7 @@ body {
 .leave-dungeon-popup {
     position: fixed;
     background-color: rgb(75, 87, 98);
-    z-index: 200;
+    z-index: 1000;
     width: 310px;
     padding-top: 10px;
     padding-left: 5px;
