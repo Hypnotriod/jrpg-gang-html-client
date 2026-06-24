@@ -186,6 +186,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.battlefield.destroy();
         this.gameLog.value = '';
         this.dungeonLootPopup.hide();
+        this.leaveDungeonPopup.hide();
+        this.flowControls.resetTimeout();
     }
 
     protected handleGameState(): void {
