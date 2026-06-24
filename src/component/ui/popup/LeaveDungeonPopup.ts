@@ -57,13 +57,13 @@ export class LeaveDungeonPopup extends Container {
 
     public set booty(value: UnitBooty | undefined) {
         if (value) {
-            this.labelDescription.value = 'Take your share and leave the Dungeon?';
+            this.labelDescription.value = 'Take your share and leave?';
             this.labelBooty.htmlValue =
                 this.renderer.keyValueIcon('coins', 'coin', value.coins) +
                 (value.ruby ? ('<br>' + this.renderer.keyValueIcon('ruby', 'ruby', value.ruby)) : '');
         } else {
             this.labelDescription.value = 'Abandon the Dungeon?';
-            this.labelBooty.htmlValue = 'No loot for you!';
+            this.labelBooty.htmlValue = 'All the loot will be lost';
         }
     }
 }
