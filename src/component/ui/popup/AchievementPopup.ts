@@ -1,12 +1,12 @@
 import { injectable } from 'tsyringe';
-import { ACHIEVEMENTS } from '../../constants/AchievementInfo';
-import { ICON, LABEL_DESCRIPTION, LABEL_REQUIREMENTS } from '../../constants/Components';
-import { GameUnit } from '../../domain/domain';
-import { SoundName, SoundService } from '../../service/SoundService';
-import Component from '../Component';
-import { component } from '../decorator/decorator';
-import Icon from '../ui/icon/Icon';
-import Label from '../ui/label/Label';
+import { ACHIEVEMENTS } from '../../../constants/AchievementInfo';
+import { ICON, LABEL_DESCRIPTION, LABEL_REQUIREMENTS } from '../../../constants/Components';
+import { GameUnit } from '../../../domain/domain';
+import { SoundName, SoundService } from '../../../service/SoundService';
+import Component from '../../Component';
+import { component } from '../../decorator/decorator';
+import Icon from '../icon/Icon';
+import Label from '../label/Label';
 
 @injectable()
 export class AchievementPopup extends Component {

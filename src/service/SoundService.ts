@@ -111,7 +111,7 @@ export class SoundService {
     }
 
     public static play(name: SoundName, options?: {
-        delayMs?: number,
+        delay?: number,
         loop?: boolean;
         rate?: number,
         skipIfPlaying?: boolean,
@@ -122,8 +122,8 @@ export class SoundService {
         if (sound.playing() && ((options?.rate ?? 0) > sound.seek() || options?.skipIfPlaying)) return;
         sound.loop(options?.loop ?? false);
         sound.stop();
-        if (options?.delayMs) {
-            window.setTimeout(() => sound.play(), options.delayMs);
+        if (options?.delay) {
+            window.setTimeout(() => sound.play(), options.delay * 1000);
             return;
         }
         sound.volume(options?.volume ?? 1);

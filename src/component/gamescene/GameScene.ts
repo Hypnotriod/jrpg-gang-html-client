@@ -9,7 +9,7 @@ import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import { SoundName, SoundService } from '../../service/SoundService';
-import { AchievementPopup } from '../achievements/AchievementPopup';
+import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import { component } from '../decorator/decorator';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
@@ -122,7 +122,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.communicator.sendMessage(RequestType.LEAVE_GAME);
             this.communicator.sendMessage(RequestType.USER_STATUS);
             SoundService.play(SoundName.DOOR);
-            SoundService.play(SoundName.TREASURE);
+            SoundService.play(SoundName.TREASURE, { delay: 0.2 });
         }
     }
 
@@ -171,7 +171,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.unitItems.destroy();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
             SoundService.play(SoundName.DOOR);
-            SoundService.play(SoundName.BATTLE_START, { delayMs: 400 });
+            SoundService.play(SoundName.BATTLE_START, { delay: 0.4 });
         }
         SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
@@ -204,7 +204,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
             this.destroy();
             SoundService.play(SoundName.DOOR);
-            SoundService.play(SoundName.BATTLE_START, { delayMs: 700 });
+            SoundService.play(SoundName.BATTLE_START, { delay: 0.7 });
         }
         if ((this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE ||
             this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE) &&
@@ -250,6 +250,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private handleGameActionSound(): void {
         const actionresult = this.state.gameState.unitActionResult?.result.result;
         const actionType = this.state.gameState.unitActionResult?.action.action;
+        if (this.state.gameState.unitActionResult?.result.drop ||
+            this.state.gameState.endRoundResult?.drop
+        ) {
+            SoundService.play(SoundName.TREASURE, { delay: 0.2 });
+        }
         if (actionresult === ActionResultType.CANT_USE ||
             actionresult === ActionResultType.IS_BROKEN ||
             actionresult === ActionResultType.NOT_ALLOWED ||
