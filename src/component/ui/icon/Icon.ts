@@ -84,9 +84,19 @@ export default class Icon extends Component {
         this.view.classList.remove('selected');
         this.view.classList.add('unselected');
     }
-
+    
     public get selected(): boolean {
         return this._selected;
+    }
+    
+    public activate(): void {
+        this.view.classList.add('active');
+        this.view.classList.remove('unselected');
+    }
+    
+    public deactivate(): void {
+        this.view.classList.remove('active');
+        this.view.classList.add('unselected');
     }
 
     public choose(): void {

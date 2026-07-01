@@ -229,6 +229,7 @@ export default class SpotCell extends Component {
         this.manaBar.hide();
         this.actionPointsLabel.hide();
         this._iconCurrent.hide();
+        this._icon.deactivate();
     }
 
     protected hideActionResultIcons(): void {
@@ -330,11 +331,13 @@ export default class SpotCell extends Component {
         this.actionPointsLabel.value = String(actionPoints);
         actionPoints ? this.actionPointsLabel.show() : this.actionPointsLabel.hide();
         this._iconCurrent.show();
+        this._icon.activate();
     }
 
     public unchoose(): void {
         this.actionPointsLabel.hide();
         this._iconCurrent.hide();
+        this._icon.deactivate();
     }
 
     public updateWithUnit(unit: GameUnit, isActive: boolean, forceDisable: boolean = false): void {
