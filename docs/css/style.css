@@ -90,7 +90,10 @@ body {
 }
 
 .unselected {
+    border: solid 3px transparent;
     background-color: aliceblue;
+    padding: 3px;
+    padding-left: 2px;
 }
 
 .unselected:hover {
@@ -98,15 +101,29 @@ body {
 }
 
 .selected {
+    border: solid 3px transparent;
     background-color: darkcyan;
+    padding: 3px;
+    padding-left: 2px;
 }
 
 .selected:hover {
     background-color: cadetblue;
 }
 
+.active {
+    border: solid 3px transparent;
+    background-color: rgb(236, 188, 235);
+    padding: 3px;
+    padding-left: 2px;
+}
+
+.active:hover {
+    background-color: rgb(246, 210, 245);
+}
+
 .chosen {
-    border: 3px solid coral;
+    border: 3px solid rgb(255, 132, 32);
 }
 
 .item-icon-warpper {
