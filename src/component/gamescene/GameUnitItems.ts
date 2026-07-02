@@ -103,7 +103,7 @@ export default class GameUnitItems extends GameBase {
         }
         if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR || data.type === ItemType.AMMUNITION) {
             if (!iconItem.usable) {
-                iconItem.hint = 'Can\'t Use';
+                iconItem.hint = '<span class="red-text">Can\'t Use</span>';
             } else {
                 iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
             }

@@ -328,7 +328,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.shopItems.set(data.uid!, iconItem);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
         iconItem.unit = this.unitWithMaxedState();
-        iconItem.hint = iconItem.enabled ? 'Click to Buy' : 'Can\'t Buy';
+        iconItem.hint = iconItem.enabled ? 'Click to Buy' : '<span class="red-text lighten-1">Can\'t Buy</span>';
         iconItem.update(data, this.state);
     }
 
@@ -533,20 +533,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
         if (this.checkboxSell.checked) {
-            iconItem.hint = data.canBeSold ? 'Click to Sell' : 'Can\'t Sell';
+            iconItem.hint = data.canBeSold ? 'Click to Sell' : '<span class="red-text lighten-1">Can\'t Sell</span>';
             return;
         }
         if (this.checkboxRepair.checked) {
             if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR) {
-                iconItem.hint = (data as Weapon).wearout ? 'Click to Repair' : 'Can\'t Repair';
-                return;
+                iconItem.hint = (data as Weapon).wearout ? 'Click to Repair' : '<span class="red-text lighten-1">Can\'t Repair</span>';
+            } else {
+                iconItem.hint = '';
             }
+            return;
         }
         if (data.type === ItemType.WEAPON ||
             data.type === ItemType.ARMOR ||
             data.type === ItemType.AMMUNITION) {
             if (!iconItem.usable) {
-                iconItem.hint = 'Can\'t Use';
+                iconItem.hint = '<span class="red-text lighten-1">Can\'t Use</span>';
             } else {
                 iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
             }

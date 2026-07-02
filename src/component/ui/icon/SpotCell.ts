@@ -202,7 +202,7 @@ export default class SpotCell extends Component {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
         const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
             { design: resourceLoader.get(SPOT_CELL_QEUE_DESIGN), classList: ['item-icon-warpper-small'] })!;
-        iconComponent.barWidth = 45;
+        iconComponent.barWidth = 46;
         return iconComponent;
     }
 
@@ -257,16 +257,16 @@ export default class SpotCell extends Component {
         const chosenItem = this.unitItems.chosenItem;
         const hintRequirenments = (actor: GameUnit, useCost?: UnitBaseAttributes) => {
             if (actor.state.stamina < (useCost?.stamina ?? 0)) {
-                this._hint = 'Not enough stamina';
+                this._hint = '<span class="red-text lighten-1">Not enough stamina</span>';
             } else if (actor.state.mana < (useCost?.mana ?? 0)) {
-                this._hint = 'Not enough mana';
+                this._hint = '<span class="red-text lighten-1">Not enough mana</span>';
             } else if (actor.state.actionPoints < (useCost?.actionPoints ?? 0)) {
-                this._hint = 'Not enough action points';
+                this._hint = '<span class="red-text lighten-1">Not enough action points</span>';
             }
         }
         if (this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION || gamePhase === GamePhase.SPOT_COMPLETE) {
             if (!chosenItem) {
-                this._hint = 'No item selected';
+                this._hint = '<span class="red-text lighten-1">No item selected</span>';
             } else {
                 const actor = this.unitItems.playersUnit();
                 if (!actor || actor.isDead) return;
@@ -278,20 +278,20 @@ export default class SpotCell extends Component {
                 reachable = this.canReach(actor.position, this, range);
                 if (damage && actor.faction !== this._unit.faction) {
                     chance = this.actionService.attackChance(damage, actor, this._unit);
-                    this._hint = !reachable ? 'Can\'t reach' : 'Click to attack';
+                    this._hint = !reachable ? '<span class="red-text lighten-1">Can\'t reach</span>' : 'Click to attack';
                     if (chosenItem.type === ItemType.WEAPON) {
                         const weapon = chosenItem as Weapon;
                         if (!weapon.equipped) {
-                            this._hint = 'Not equipped';
+                            this._hint = '<span class="red-text lighten-1">Not equipped</span>';
                         } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped && a.kind === weapon.ammunitionKind)) {
-                            this._hint = 'No ammunition';
+                            this._hint = '<span class="red-text lighten-1">No ammunition</span>';
                         }
                     }
                     hintRequirenments(actor, useCost);
                 }
                 if (modification && actor.faction === this._unit.faction) {
                     chance = this.actionService.modificationChance(modification, actor);
-                    this._hint = !reachable ? 'Can\'t reach' : 'Click to use';
+                    this._hint = !reachable ? '<span class="red-text lighten-1">Can\'t reach</span>' : 'Click to use';
                     hintRequirenments(actor, useCost);
                 }
                 if (recovery && gamePhase === GamePhase.SPOT_COMPLETE) {
