@@ -538,7 +538,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         if (this.checkboxRepair.checked) {
             if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR) {
-                iconItem.hint = (data as Weapon).wearout ? 'Click to Repair' : '<span class="red-text lighten-1">Can\'t Repair</span>';
+                iconItem.hint = (data as Weapon).wearout ? 'Click to Repair' : '';
             } else {
                 iconItem.hint = '';
             }
