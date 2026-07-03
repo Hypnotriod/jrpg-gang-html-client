@@ -151,6 +151,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             case RequestType.PLAYER_INFO:
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
                 this.handlePlayerInfo();
+                this.updateGamePhaseInfo();
                 break;
             case RequestType.USER_STATUS:
                 const status: UserStatus = (response.data as UserStateData).status;
@@ -240,24 +241,30 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected updateGamePhaseInfo(): void {
         const infoIcon = '<img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 4px;" />';
+        if (this.playersUnit()?.isDead) {
+            this.gamePhaseInfoLabel.htmlValue = `${infoIcon} You have been defeated.<br>
+                No loot can be claimed. Press <span class="red-text">ABANDON</span> to return to the hub.`;
+            return;
+        }
         switch (this.state.gameState.nextPhase) {
             case GamePhase.PREPARE_UNIT:
-                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle<br>
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle.<br>
                 Place your Character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
                 break;
             case GamePhase.SPOT_COMPLETE:
-                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle<br>
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle.<br>
                 Press <span class="green-text">I'M DONE</span> if you want to take your share and leave the dungeon.<br>
                 Otherwise, consume the provision to restore. Press <span class="orange-text">NEXT BATTLE</span> to get ready for more.`;
                 break;
             case GamePhase.SCENARIO_COMPLETE:
-                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over<br>
-                Press <span class="green-text">I'M DONE</span> to take your share and leave the party.`;
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over!<br>
+                Congratulations! You have reached the end of the dungeon!<br>
+                Press <span class="green-text">I'M DONE</span> to take your share and leave the dungeon.`;
                 break;
             default:
-                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle<br>
-                Move the Character (4 AP). Select a weapon/magic/disposable and attack the enemy.<br> 
-                Select a disposable/magic to recover/buff yourself or an ally. Equip the appropriate gear.`;
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is taking turns.<br>
+                Character movement costs 4 action points. Select a weapon/magic/disposable to attack the enemy.<br> 
+                Select a disposable/magic to recover/buff yourself or an ally. Changing gear costs no action points.`;
                 break;
         }
     }

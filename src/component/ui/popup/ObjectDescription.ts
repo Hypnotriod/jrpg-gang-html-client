@@ -80,6 +80,8 @@ export default class ObjectDescription extends Container {
             + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;
+        } else if (!misc) {
+            this.value = main;
         } else {
             this.value = this.renderer.row(
                 this.renderer.column(main, 6) +

@@ -126,21 +126,28 @@ export default class SpotCell extends Component {
 
     protected onHover(): void {
         this._hover = true;
-        if (!this._unit) { return; }
-        this.displayActionChance && this.showActionChance();
-        this._descriptionPopup.data = {
-            name: this._unit.playerInfo?.nickname || this._unit.name,
-            code: this._unit.code,
-            unitUid: this._unit.uid,
-            state: this._unit.state,
-            damage: this._unit.damage,
-            stats: this._unit.stats,
-            modification: this._unit.modification,
-            inventory: this._unit.inventory,
-            description: this._unit.description,
-            hint: this._hint,
-        };
-        this._descriptionPopup.show();
+        if (this._unit) {
+            this.displayActionChance && this.showActionChance();
+            this._descriptionPopup.data = {
+                name: this._unit.playerInfo?.nickname || this._unit.name,
+                code: this._unit.code,
+                unitUid: this._unit.uid,
+                state: this._unit.state,
+                damage: this._unit.damage,
+                stats: this._unit.stats,
+                modification: this._unit.modification,
+                inventory: this._unit.inventory,
+                description: this._unit.description,
+                hint: this._hint,
+            };
+            this._descriptionPopup.show();
+            return;
+        }
+        if (this._icon.enabled) {
+            this._descriptionPopup.data = { hint: 'Click to move here' };
+            this._descriptionPopup.show();
+            return;
+        }
     }
 
     protected onLeave(): void {

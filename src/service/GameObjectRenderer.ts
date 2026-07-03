@@ -70,7 +70,11 @@ export default class GameObjectRenderer {
             result += this.keyValue('slots', data.slotsNumber);
         }
         if (data.wearout || data.durability) {
-            result += this.keyValueColor('wearout', 'blue-grey', `${data.wearout ?? 0} / ${data.durability}`);
+            if ((data.wearout ?? 0) >= data.durability) {
+                result += this.keyValueColor('wearout', 'blue-grey', `<span class="red-text darken-3">${data.wearout ?? 0}</span>/ ${data.durability}`);
+            } else {
+                result += this.keyValueColor('wearout', 'blue-grey', `${data.wearout ?? 0} / ${data.durability}`);
+            }
         }
         if (data.quantity) {
             result += this.keyValue('quantity', data.quantity);

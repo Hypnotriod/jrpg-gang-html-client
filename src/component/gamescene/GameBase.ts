@@ -63,7 +63,7 @@ export default class GameBase extends Component {
     protected findUnitByUid(unitUid: number): GameUnit | undefined {
         const result: GameUnit | undefined = this._state.gameState.spot.battlefield.units?.find(
             unit => unit.uid === unitUid);
-        return result || this._state.gameState.spot.battlefield.corpses?.find(
+        return result ?? this._state.gameState.spot.battlefield.corpses?.find(
             unit => unit.uid === unitUid)!;
     }
 
