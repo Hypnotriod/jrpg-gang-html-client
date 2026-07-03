@@ -39,6 +39,10 @@ export default abstract class Component {
         return this._view;
     }
 
+    public click(): void {
+        this.view.click();
+    }
+
     public static async instantiateHighOrderComponent<T extends Component>(
         id: string, designPath: string, stylePath: string, clazz: new (...args: any) => T): Promise<T | null> {
         const loaderService: ResourceLoaderService = container.resolve(ResourceLoaderService);

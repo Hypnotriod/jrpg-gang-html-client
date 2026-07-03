@@ -18,7 +18,8 @@ export default class GameObjectRenderer {
     public renderMain(data: any, ignoreHeaders: string[] = []): string {
         let result = '';
         if (data.hint) {
-            result += `<b><span class="grey-text lighten-1" style="font-size: 13px;">${data.hint}</span></b><br>`;
+            const hint = data.hint[0] === '!' ? data.hint.slice(1) : data.hint;
+            result += `<b><img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 3px;" /><span class="${data.hint[0] === '!' ? 'red-text' : 'orange-text'} lighten-1" style="font-size: 13px;">${hint}</span></b><br>`;
         }
         if (data.code) {
             result += `<img src="./assets/icons/${data.code}.png"><br>`;
@@ -236,8 +237,14 @@ export default class GameObjectRenderer {
     protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         data = this.patchDeviation(data);
+        data = this.patchChance(data);
         return this.header(header, depth) + Object.keys(data)
             .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
+    }
+
+    protected patchChance(data: any): any {
+        if (!data.chance) return data;
+        return { ...data, chance: `${data.chance}%` };
     }
 
     protected patchDeviation(data: any): any {

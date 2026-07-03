@@ -56,6 +56,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly leaveDungeonPopup: LeaveDungeonPopup;
     @component('popup_shadow', Container)
     private readonly popupShadow: Container;
+    @component('label_game_phase_info', Label)
+    private readonly gamePhaseInfoLabel: Label;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -196,6 +198,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.battlefield.updateBattleField();
         this.unitsQueue.updateUnitsQueue();
         this.updateBooty();
+        this.updateGamePhaseInfo();
         this.flowControls.update();
     }
 
@@ -222,6 +225,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.battlefield.updateWithExperience();
         }
         this.updateBooty();
+        this.updateGamePhaseInfo();
         this.flowControls.update();
         this.flowControls.timeoutAutoNextPhase();
         this.logAction();
@@ -232,6 +236,30 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected updateBooty(): void {
         this.coinsLabel.value = String(this.state.gameState.state.booty.coins);
         this.rubiesLabel.value = String(this.state.gameState.state.booty.ruby ?? 0);
+    }
+
+    protected updateGamePhaseInfo(): void {
+        const infoIcon = '<img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 4px;" />';
+        switch (this.state.gameState.nextPhase) {
+            case GamePhase.PREPARE_UNIT:
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle<br>
+                Place your Character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
+                break;
+            case GamePhase.SPOT_COMPLETE:
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle<br>
+                Press <span class="green-text">I'M DONE</span> if you want to take your share and leave the dungeon.<br>
+                Otherwise, consume the provision to restore. Press <span class="orange-text">NEXT BATTLE</span> to get ready for more.`;
+                break;
+            case GamePhase.SCENARIO_COMPLETE:
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over<br>
+                Press <span class="green-text">I'M DONE</span> to take your share and leave the party.`;
+                break;
+            default:
+                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle<br>
+                Move the Character (4 AP). Select a weapon/magic/disposable and attack the enemy.<br> 
+                Select a disposable/magic to recover/buff yourself or an ally. Equip the appropriate gear.`;
+                break;
+        }
     }
 
     private handleAchievements(): void {

@@ -23,6 +23,7 @@ import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
+import { compareItemsByName } from '../../utils/utils';
 
 @singleton()
 @injectable()
@@ -99,8 +100,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly checkboxRepair: Checkbox;
     @component(BUTTON_LEVEL_UP, Button)
     private readonly btnLevelUp: Button;
-    @component(BUTTON_TAB_SHOP_ALL, Button)
-    private readonly btnTabShopAll: Button;
     @component(BUTTON_TAB_SHOP_WEAPON, Button)
     private readonly btnTabShopWeapon: Button;
     @component(BUTTON_TAB_SHOP_AMMUNITION, Button)
@@ -177,13 +176,13 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
 
-        this.btnTabShopAll.onClick = target => this.onShopFilterClick(target, ['armor', 'weapon', 'magic', 'disposable', 'ammunition', 'provision']);
         this.btnTabShopWeapon.onClick = target => this.onShopFilterClick(target, ['weapon']);
         this.btnTabShopAmmunition.onClick = target => this.onShopFilterClick(target, ['ammunition']);
         this.btnTabShopArmor.onClick = target => this.onShopFilterClick(target, ['armor']);
         this.btnTabShopMagic.onClick = target => this.onShopFilterClick(target, ['magic']);
         this.btnTabShopItems.onClick = target => this.onShopFilterClick(target, ['disposable', 'provision']);
-        this.btnTabShopAll.disable();
+        this.shopFilter = ['disposable', 'provision'];
+        this.btnTabShopItems.disable();
 
         this.labelHealth.descriptionPopup = this.itemDescription;
         this.labelStamina.descriptionPopup = this.itemDescription;
@@ -201,7 +200,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitProgress.descriptionPopup = this.itemDescription;
         this.unitResistance.descriptionPopup = this.itemDescription;
 
-        this.labelHealth.description = { Health: 'The hit points a unit can take before dying' };
+        this.labelHealth.description = { Health: 'The hit points the Character can take before dying' };
         this.labelStamina.description = { Stamina: 'A weapon may require stamina points to perform an action' };
         this.labelMana.description = { Mana: 'A weapon or spell may require mana points to perform an action' };
         this.labelActionPoints.description = { ActionPoints: 'A weapon, spell, or disposable item may require action points to perform an action' };
@@ -212,9 +211,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
         this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
         this.labelLuck.description = { Luck: 'Affects critical chance' };
-        this.unitBooty.description = { Booty: 'Unit coins and rubies' };
-        this.unitProgress.description = { Progress: 'Unit level, experience and attribute points' };
-        this.unitResistance.description = { Resistance: 'Unit resistance' };
+        this.unitBooty.description = { Booty: 'Character coins and rubies' };
+        this.unitProgress.description = { Progress: 'Character level, experience and attribute points' };
+        this.unitResistance.description = { Resistance: 'Character resistance' };
 
         this.instructionsPopup.shadow = this.popupShadow;
         this.shopItemPopup.shadow = this.popupShadow;
@@ -222,7 +221,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected onShopFilterClick(target: Button, filter: string[]): void {
-        this.btnTabShopAll === target ? this.btnTabShopAll.disable() : this.btnTabShopAll.enable();
         this.btnTabShopWeapon === target ? this.btnTabShopWeapon.disable() : this.btnTabShopWeapon.enable();
         this.btnTabShopAmmunition === target ? this.btnTabShopAmmunition.disable() : this.btnTabShopAmmunition.enable();
         this.btnTabShopArmor === target ? this.btnTabShopArmor.disable() : this.btnTabShopArmor.enable();
@@ -328,7 +326,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.shopItems.set(data.uid!, iconItem);
         this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
         iconItem.unit = this.unitWithMaxedState();
-        iconItem.hint = iconItem.enabled ? 'Click to Buy' : '<span class="red-text lighten-1">Can\'t Buy</span>';
+        iconItem.hint = iconItem.enabled ? 'Click to Buy' : '!Can\'t Buy';
         iconItem.update(data, this.state);
     }
 
@@ -496,8 +494,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.HEAD) || []),
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.LEG) || []),
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.NECK) || []),
-            ...(inventory.disposable || []),
-            ...(inventory.provision || []),
+            ...(inventory.disposable || []).sort(compareItemsByName),
+            ...(inventory.provision || []).sort(compareItemsByName),
         ];
         if (inventoryItems.length !== this.unitItems.size) {
             this.unitItems.forEach(item => item.destroy());
@@ -533,7 +531,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateUnitItemHint(iconItem: ItemIcon, data: InventoryItem): void {
         if (this.checkboxSell.checked) {
-            iconItem.hint = data.canBeSold ? 'Click to Sell' : '<span class="red-text lighten-1">Can\'t Sell</span>';
+            iconItem.hint = data.canBeSold ? 'Click to Sell' : '!Can\'t Sell';
             return;
         }
         if (this.checkboxRepair.checked) {
@@ -548,7 +546,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             data.type === ItemType.ARMOR ||
             data.type === ItemType.AMMUNITION) {
             if (!iconItem.usable) {
-                iconItem.hint = '<span class="red-text lighten-1">Can\'t Use</span>';
+                iconItem.hint = '!Can\'t Use';
             } else {
                 iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
             }

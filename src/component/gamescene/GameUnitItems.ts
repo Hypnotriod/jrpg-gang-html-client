@@ -8,6 +8,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import GameBase from './GameBase';
 import { SoundName, SoundService } from '../../service/SoundService';
+import { compareItemsByName } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -65,8 +66,8 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.HEAD) || []),
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.LEG) || []),
             ...(inventory.armor?.filter(a => a.slot === EquipmentSlot.NECK) || []),
-            ...(inventory.disposable || []),
-            ...(inventory.provision || []),
+            ...(inventory.disposable || []).sort(compareItemsByName),
+            ...(inventory.provision || []).sort(compareItemsByName),
         ];
         inventoryItems.forEach(v => this.updateUnitItem(v, activeTypes));
         this.unitItems.forEach((icon, uid) => {
@@ -103,7 +104,7 @@ export default class GameUnitItems extends GameBase {
         }
         if (data.type === ItemType.WEAPON || data.type === ItemType.ARMOR || data.type === ItemType.AMMUNITION) {
             if (!iconItem.usable) {
-                iconItem.hint = '<span class="red-text">Can\'t Use</span>';
+                iconItem.hint = '!Can\'t Use';
             } else {
                 iconItem.hint = (data as Weapon).equipped ? 'Click to Unequip' : 'Click to Euip';
             }

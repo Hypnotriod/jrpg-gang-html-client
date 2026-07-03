@@ -257,16 +257,16 @@ export default class SpotCell extends Component {
         const chosenItem = this.unitItems.chosenItem;
         const hintRequirenments = (actor: GameUnit, useCost?: UnitBaseAttributes) => {
             if (actor.state.stamina < (useCost?.stamina ?? 0)) {
-                this._hint = '<span class="red-text lighten-1">Not enough stamina</span>';
+                this._hint = '!Not enough stamina';
             } else if (actor.state.mana < (useCost?.mana ?? 0)) {
-                this._hint = '<span class="red-text lighten-1">Not enough mana</span>';
+                this._hint = '!Not enough mana';
             } else if (actor.state.actionPoints < (useCost?.actionPoints ?? 0)) {
-                this._hint = '<span class="red-text lighten-1">Not enough action points</span>';
+                this._hint = '!Not enough action points';
             }
         }
         if (this.unitItems.isCurrentUnitTurn() && gamePhase === GamePhase.TAKE_ACTION || gamePhase === GamePhase.SPOT_COMPLETE) {
             if (!chosenItem) {
-                this._hint = '<span class="red-text lighten-1">No item selected</span>';
+                this._hint = '!No item selected';
             } else {
                 const actor = this.unitItems.playersUnit();
                 if (!actor || actor.isDead) return;
@@ -278,20 +278,20 @@ export default class SpotCell extends Component {
                 reachable = this.canReach(actor.position, this, range);
                 if (damage && actor.faction !== this._unit.faction) {
                     chance = this.actionService.attackChance(damage, actor, this._unit);
-                    this._hint = !reachable ? '<span class="red-text lighten-1">Can\'t reach</span>' : 'Click to attack';
+                    this._hint = !reachable ? '!Can\'t reach' : 'Click to attack';
                     if (chosenItem.type === ItemType.WEAPON) {
                         const weapon = chosenItem as Weapon;
                         if (!weapon.equipped) {
-                            this._hint = '<span class="red-text lighten-1">Not equipped</span>';
+                            this._hint = '!Not equipped';
                         } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped && a.kind === weapon.ammunitionKind)) {
-                            this._hint = '<span class="red-text lighten-1">No ammunition</span>';
+                            this._hint = '!No ammunition';
                         }
                     }
                     hintRequirenments(actor, useCost);
                 }
                 if (modification && actor.faction === this._unit.faction) {
                     chance = this.actionService.modificationChance(modification, actor);
-                    this._hint = !reachable ? '<span class="red-text lighten-1">Can\'t reach</span>' : 'Click to use';
+                    this._hint = !reachable ? '!Can\'t reach' : 'Click to use';
                     hintRequirenments(actor, useCost);
                 }
                 if (recovery && gamePhase === GamePhase.SPOT_COMPLETE) {
