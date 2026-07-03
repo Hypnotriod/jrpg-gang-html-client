@@ -10,6 +10,7 @@ export default class ObjectDescription extends Container {
     private _active: boolean = true;
     private _shown: boolean = false;
     private _isShopItem: boolean = false;
+    private _e?: MouseEvent;
 
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
@@ -17,7 +18,7 @@ export default class ObjectDescription extends Container {
 
     protected initialize(): void {
         super.initialize();
-        window.addEventListener('mousemove', e => this.updatepositionOnMouseMove(e));
+        window.addEventListener('mousemove', e => this.updatePositionOnMouseMove(e));
         window.addEventListener("keydown", event => {
             if (event.key === 'i') {
                 this._active = !this._active;
@@ -42,7 +43,10 @@ export default class ObjectDescription extends Container {
         super.hide();
     }
 
-    protected updatepositionOnMouseMove(e: MouseEvent): void {
+    protected updatePositionOnMouseMove(e: MouseEvent | undefined = undefined): void {
+        this._e = e ?? this._e;
+        e = this._e;
+        if (!e) { return; }
         this.leftPx = 0;
         this.topPx = 0;
         this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
@@ -57,6 +61,7 @@ export default class ObjectDescription extends Container {
     public get isShopItem(): boolean {
         return this._isShopItem;
     }
+
     public set isShopItem(value: boolean) {
         this._isShopItem = value;
     }
@@ -88,5 +93,6 @@ export default class ObjectDescription extends Container {
                 this.renderer.column(misc, 6)
             );
         }
+        this.updatePositionOnMouseMove();
     }
 }
