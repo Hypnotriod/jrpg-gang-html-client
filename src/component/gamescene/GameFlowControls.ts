@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
-import { ActionType, GamePhase, PlayerInfo } from '../../domain/domain';
+import { ActionType, GamePhase, GameUnitFaction, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -167,9 +167,9 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.ACTION_COMPLETE:
                 return 'Action complete';
             case GamePhase.TAKE_ACTION:
-                return this.isCurrentUnitTurn() ? 'Take your action' : 'Wait for the player\'s action';
+                return this.isCurrentUnitTurn() ? 'Take your action' : 'Wait for the player action';
             case GamePhase.TAKE_ACTION_AI:
-                return 'Wait for the monster\'s action';
+                return this.currentUnit()?.faction === GameUnitFaction.PARTY ? 'Wait for the mercenary action' : 'Wait for the monster action';
             case GamePhase.READY_FOR_START_ROUND:
                 return 'Next round';
             case GamePhase.SPOT_COMPLETE:

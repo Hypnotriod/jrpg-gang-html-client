@@ -1,4 +1,4 @@
-import { ActionResult, ActionResultType, ActionType, ChatState, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../../domain/domain';
+import { ActionResult, ActionResultType, ActionType, ChatState, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Item, SpotCompleteResult, UnitInventory } from '../../domain/domain';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import Component from '../Component';
@@ -34,10 +34,10 @@ export default class GameBase extends Component {
     }
 
     protected allActors(): GameUnit[] {
-        return this._state.gameState.spot.battlefield.units?.filter(unit => Boolean(unit.playerInfo)) ?? [];
+        return this._state.gameState.spot.battlefield.units?.filter(unit => Boolean(unit.faction === GameUnitFaction.PARTY)) ?? [];
     }
 
-    protected allEnemyIsDefeated(): boolean {
+    protected allEnemiesAreDefeated(): boolean {
         return (this._state.gameState.spot.battlefield.units ?? []).length === this.allActors().length;
     }
 

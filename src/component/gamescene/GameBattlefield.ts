@@ -140,7 +140,7 @@ export default class GameBattlefield extends GameBase {
         const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
         const isActive =
             (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION &&
-                this.isCurrentUnitTurn() && !this.allEnemyIsDefeated() ||
+                this.isCurrentUnitTurn() && !this.allEnemiesAreDefeated() ||
                 this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT);
         for (const x in matrix) {
             for (const y in matrix[x]) {
