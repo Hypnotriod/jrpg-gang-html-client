@@ -168,6 +168,15 @@ export default class GameObjectRenderer {
         return result;
     }
 
+    public renderApplicationPrice(price: any, unit?: GameUnit) {
+        let result = '';
+        if (unit && price && Object.values(price).some(v => Number(v))) {
+            result += price.coins ? this.keyValueRequired('coins', price, [unit.booty.coins, 0]) : '';
+            result += price.ruby ? this.keyValueRequired('ruby', price, [unit.booty.ruby ?? 0, 0]) : '';
+        }
+        return result;
+    }
+
     public renderItemUseCost(data: any, unit?: GameUnit): string {
         let result = '';
         if (unit && data.useCost && Object.values(data.useCost).some(v => Number(v))) {

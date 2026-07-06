@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
-import { AUTH_DESIGN, AUTH_STYLE, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
+import { AUTH_DESIGN, AUTH_STYLE, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, MERCENARY_DESIGN, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
 import Component from '../Component';
@@ -50,6 +50,7 @@ export default class MainScene extends Component {
 
     protected async preloadResources(): Promise<void> {
         await this.loaderService.load(ROOM_DESIGN, RESOURCE_DESIGN);
+        await this.loaderService.load(MERCENARY_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(ITEM_ICON_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(SHOP_ITEM_ICON_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(SPOT_CELL_DESIGN, RESOURCE_DESIGN);

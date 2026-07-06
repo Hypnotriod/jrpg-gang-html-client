@@ -2,9 +2,9 @@ import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
-import { ChatMessage, ChatParticipant, ChatState, RoomInfo } from '../../domain/domain';
-import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
-import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData } from '../../dto/responces';
+import { ChatMessage, ChatParticipant, ChatState, MercenariesStatus, RoomInfo } from '../../domain/domain';
+import { ChatMessageRequestData, CreateRoomRequestData, GameRoomHireMercenaryRequestData, RequestType } from '../../dto/requests';
+import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -18,6 +18,8 @@ import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Room from './Room';
 import ObjectDescription from '../ui/popup/ObjectDescription';
+import { SoundName, SoundService } from '../../service/SoundService';
+import MercenariesPopup from './MercenariesPopup';
 
 @injectable()
 @singleton()
@@ -44,6 +46,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly chatMessageInput: TextInput;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
+    @component('popup_shadow', Container)
+    private readonly popupShadow: Container;
+    @component('mercenaries_popup', MercenariesPopup)
+    private readonly mercenariesPopup: MercenariesPopup;
 
     private readonly rooms: Map<number, Room> = new Map();
     private chatState: ChatState;
@@ -69,11 +75,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             RequestType.SERVER_STATUS,
             RequestType.LOBBY_STATUS,
             RequestType.ROOM_STATUS,
+            RequestType.MERCENARIES_STATUS,
+            RequestType.HIRE_MERCENARY,
             RequestType.LOBBY_CHAT_MESSAGE,
             RequestType.LOBBY_CHAT_STATE,
             RequestType.LOBBY_CHAT_PARTICIPANT,
         ], this);
         this.initChat();
+        this.mercenariesPopup.shadow = this.popupShadow;
+        this.mercenariesPopup.descriptionPopup = this.objectDescription;
     }
 
     protected initChat(): void {
@@ -95,8 +105,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     public show(): void {
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
-        this.communicator.sendMessage(RequestType.LOBBY_STATUS);
+        this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
+        this.communicator.sendMessage(RequestType.LOBBY_STATUS);
+        SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
     }
 
     public handleServerResponse(response: Response): void {
@@ -108,6 +120,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             case RequestType.LOBBY_STATUS:
                 super.show();
                 this.onLobbyStatus(response.data as LobbyStatusData);
+                break;
+            case RequestType.MERCENARIES_STATUS:
+                this.onMercenariesStatus(response.data as MercenariesStatusData);
+                break;
+            case RequestType.HIRE_MERCENARY:
+                this.onRoomStatus(response.data as RoomStatusData);
+                this.communicator.sendMessage(RequestType.USER_STATUS);
+                this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
+                SoundService.play(SoundName.TREASURE);
                 break;
             case RequestType.ROOM_STATUS:
                 if (!this.state.userState) { return; }
@@ -160,6 +181,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.update();
     }
 
+    protected onMercenariesStatus(data: MercenariesStatusData): void {
+        this.mercenariesPopup.update(data.mercenaries.mercenaries);
+    }
+
     protected onRoomStatus(data: RoomStatusData): void {
         const roomInfo: RoomInfo = data.room;
         this.state.rooms = this.state.rooms || [roomInfo];
@@ -170,6 +195,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             this.state.rooms.push(roomInfo);
         } else {
             oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
+            oldRoomInfo.mercenaries = roomInfo.mercenaries;
             oldRoomInfo.host = roomInfo.host;
         }
         this.update();
@@ -220,6 +246,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         room.objectDescription = this.objectDescription;
         this.rooms.set(roomInfo.uid, room!);
         room.update(roomInfo, isUserInRooms);
+        room.onHireMercenary((roomUid) => this.onHireMercenary(roomUid));
         return roomInfo.uid;
     }
 
@@ -236,5 +263,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             capacity: 4,
             scenarioId, // todo: make room creation dialog
         } as CreateRoomRequestData);
+    }
+
+    protected onHireMercenary(roomUid: number): void {
+        this.mercenariesPopup.show();
+        this.mercenariesPopup.roomUid = roomUid;
     }
 }

@@ -23,6 +23,7 @@ export default class Room extends Component {
     private readonly userConnectionStatusLabels: Label[] = [];
     private readonly userIcons: Icon[] = [];
     private _objectDescription: ObjectDescription;
+    private _hireMercenaryCallback?: (roomUid: number) => void;
 
     @component(BUTTON_JOIN_ROOM, Button)
     private readonly joinRoomButton: Button;
@@ -30,6 +31,12 @@ export default class Room extends Component {
     private readonly leaveRoomButton: Button;
     @component(BUTTON_START_GAME, Button)
     private readonly startGameButton: Button;
+    @component('hire_mercenary_placeholder', Container)
+    private readonly hireMercenaryPlaceholder: Container;
+    @component('button_hire_mercenary', Button)
+    private readonly hireMercenaryButton: Button;
+    @component('mercenary_icon', Icon)
+    private readonly mercenaryIcon: Icon;
 
     public set objectDescription(value: ObjectDescription) {
         this._objectDescription = value;
@@ -56,22 +63,22 @@ export default class Room extends Component {
         this.userPlaceholders[0].show();
         this.userNameLabels[0].value = roomInfo.host.nickname;
         this.userLevelLabels[0].value = `Level: ${roomInfo.host.level}`;
-        this.userIcons[0].icon = roomInfo.host.class;
+        this.userIcons[0].icon = roomInfo.host.code;
         this.userIcons[0].descriptionPopup = this._objectDescription;
-        this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
+        this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[roomInfo.host.code]?.description };
         this.userConnectionStatusLabels[0].htmlValue = roomInfo.host.isOffline ?
             '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
 
-        roomInfo.joinedUsers.forEach((user, i) => {
+        [...roomInfo.joinedUsers, ...roomInfo.mercenaries].forEach((user, i) => {
             const clazz = user.class;
             this.userPlaceholders[i + 1].show();
             this.userNameLabels[i + 1].value = user.nickname;
             this.userLevelLabels[i + 1].value = `Level: ${user.level}`;
-            this.userIcons[i + 1].icon = user.class;
+            this.userIcons[i + 1].icon = user.code;
             this.userIcons[i + 1].descriptionPopup = this._objectDescription;
-            this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
+            this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[user.code]?.description };
 
-            this.userConnectionStatusLabels[i + 1].htmlValue = user.isOffline ?
+            this.userConnectionStatusLabels[i + 1].htmlValue = !user.playerId ? '' : user.isOffline ?
                 '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
         });
 
@@ -102,6 +109,12 @@ export default class Room extends Component {
             this.joinRoomButton.enable();
         }
         isUserHostOfRoom ? this.startGameButton.enable() : this.startGameButton.disable();
+
+        if (!isUserHostOfRoom || roomInfo.mercenaries.length || roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.capacity - 1) {
+            this.hireMercenaryPlaceholder.hide();
+        } else {
+            this.hireMercenaryPlaceholder.show();
+        }
     }
 
     protected initialize(): void {
@@ -115,9 +128,18 @@ export default class Room extends Component {
             this.userPlaceholders[i - 1].hide();
         }
 
+        this.mercenaryIcon.icon = 'person';
+
+        this.hireMercenaryButton.onClick = target => this._hireMercenaryCallback?.(this.roomInfo.uid);
+        this.mercenaryIcon.onClick = target => this._hireMercenaryCallback?.(this.roomInfo.uid);
+
         this.joinRoomButton.onClick = target => this.doJoinRoom();
         this.leaveRoomButton.onClick = target => this.doLeaveRoom();
         this.startGameButton.onClick = target => this.doStartGame();
+    }
+
+    public onHireMercenary(callback: (roomUid: number) => void): void {
+        this._hireMercenaryCallback = callback;
     }
 
     public doStartGame(): void {

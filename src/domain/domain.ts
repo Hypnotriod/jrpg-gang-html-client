@@ -2,6 +2,7 @@ export interface PlayerInfo {
     playerId: string;
     nickname: string;
     class: string;
+    code: string;
     level: number;
     unitUid?: number;
     isOffline?: boolean;
@@ -13,8 +14,9 @@ export interface RoomInfo {
     uid: number;
     capacity: number;
     scenarioId: string;
-    joinedUsers: PlayerInfo[];
     host: PlayerInfo;
+    joinedUsers: PlayerInfo[];
+    mercenaries: PlayerInfo[];
     inactive?: boolean;
 }
 
@@ -256,6 +258,15 @@ export interface GameUnit extends Unit {
     faction: GameUnitFaction;
     playerInfo?: PlayerInfo;
     isDead?: boolean;
+}
+
+export interface Mercenary extends Unit {
+    price?: UnitBooty;
+    requirements?: UnitRequirements;
+}
+
+export interface MercenariesStatus {
+    mercenaries: Mercenary[];
 }
 
 export interface GameShopStatus {

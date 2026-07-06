@@ -101,7 +101,8 @@ export default class GameStateService {
         return [...Object.keys(required)].every(k => required[k] === unit.quests[k]);
     }
 
-    public checkPrice(required: UnitBooty): boolean {
+    public checkPrice(required?: UnitBooty): boolean {
+        if (!required) return true;
         const unit = this.userState.unit;
         return required.coins <= unit.booty.coins &&
             (required.ruby ?? 0) <= (unit.booty.ruby ?? 0);

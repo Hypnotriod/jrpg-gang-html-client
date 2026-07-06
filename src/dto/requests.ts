@@ -8,8 +8,10 @@ export enum RequestType {
     ENTER_LOBBY = 'enterLobby',
     EXIT_LOBBY = 'exitLobby',
     JOIN_ROOM = 'joinRoom',
+    HIRE_MERCENARY = 'hireMercenary',
     LEAVE_ROOM = 'leaveRoom',
     LOBBY_STATUS = 'lobbyStatus',
+    MERCENARIES_STATUS = 'mercenariesStatus',
     ROOM_STATUS = 'roomStatus',
     CONFIGURATION_ACTION = 'configuratorAction',
     SERVER_STATUS = 'serverStatus',
@@ -79,6 +81,10 @@ export interface ApplyForAJobRequestData extends RequestData {
 
 export interface SwitchUnitRequestData extends RequestData {
     class: string;
+}
+
+export interface GameRoomHireMercenaryRequestData extends RequestData {
+    code: string;
 }
 
 export interface ChatMessageRequestData extends RequestData {
