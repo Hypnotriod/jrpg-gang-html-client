@@ -263,8 +263,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             default:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is taking turns.<br>
-                Character movement costs 4 action points. Select a weapon/magic/disposable to attack the enemy.<br> 
-                Select a disposable/magic to recover/buff yourself or an ally. Changing gear costs no action points.`;
+                Character movement costs<span class="orange-text">4</span>action points. Select a<span class="red-text">weapon</span>/<span class="purple-text">magic</span>/<span class="green-text">disposable</span>to attack the enemy.<br> 
+                Select a<span class="green-text">disposable</span>/<span class="purple-text">magic</span>to recover/buff yourself or an ally. Changing gear costs<span class="orange-text">no</span>action points.`;
                 break;
         }
     }

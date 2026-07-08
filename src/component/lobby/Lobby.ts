@@ -1,10 +1,10 @@
 import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
-import { ChatMessage, ChatParticipant, ChatState, MercenariesStatus, RoomInfo } from '../../domain/domain';
-import { ChatMessageRequestData, CreateRoomRequestData, GameRoomHireMercenaryRequestData, RequestType } from '../../dto/requests';
-import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData } from '../../dto/responces';
+import { ChatMessage, ChatParticipant, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
+import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
+import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -50,6 +50,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly popupShadow: Container;
     @component('mercenaries_popup', MercenariesPopup)
     private readonly mercenariesPopup: MercenariesPopup;
+    @component(UNIT_BOOTY, Label)
+    private readonly unitBooty: Label;
 
     private readonly rooms: Map<number, Room> = new Map();
     private chatState: ChatState;
@@ -75,6 +77,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             RequestType.SERVER_STATUS,
             RequestType.LOBBY_STATUS,
             RequestType.ROOM_STATUS,
+            RequestType.USER_STATUS,
             RequestType.MERCENARIES_STATUS,
             RequestType.HIRE_MERCENARY,
             RequestType.LOBBY_CHAT_MESSAGE,
@@ -120,6 +123,11 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             case RequestType.LOBBY_STATUS:
                 super.show();
                 this.onLobbyStatus(response.data as LobbyStatusData);
+                this.updateBooty();
+                break;
+            case RequestType.USER_STATUS:
+                this.state.userState = response.data as UserStateData;
+                this.updateBooty();
                 break;
             case RequestType.MERCENARIES_STATUS:
                 this.onMercenariesStatus(response.data as MercenariesStatusData);
@@ -147,6 +155,16 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 this.handleChatparticipant(playerId, participant);
                 break;
         }
+    }
+
+    protected updateBooty(): void {
+        const bt: UnitBooty = this.state.userState.unit.booty;
+        this.unitBooty.htmlValue = `${this.keyValueIcon('coin', bt.coins)}
+                                    ${this.keyValueIcon('ruby', bt.ruby)}<br>`;
+    }
+
+    protected keyValueIcon(icon: string, value?: number): string {
+        return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" /> ${value || 0}`;
     }
 
     protected handleChatparticipant(playerId: string, participant: ChatParticipant): void {

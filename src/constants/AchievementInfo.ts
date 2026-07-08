@@ -8,7 +8,7 @@ export interface AchievementInfo {
 export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
     'first-blood': {
         icon: 'dungeon-01',
-        tag: '',
+        tag: 'objectives',
         target: 0,
         popup: 'Congratulations! You have completed your first dungeon level!',
     },

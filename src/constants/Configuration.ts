@@ -152,10 +152,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
         name: "Villager",
         code: "villager-01",
         class: "opportunist",
-        booty: {},
-        achievements: {},
-        quests: {},
-        description: "Sed aut iste aut est sunt. Numquam ut inventore quia aut accusamus officiis. Qui sit assumenda et exercitationem. Assumenda quos ipsa odio magni aut. Libero dolores est possimus voluptate cum laboriosam laudantium.",
+        description: "Once a simple villager, he now wanders the shadowed roads with a nameless hunger for danger. The harvest moon revealed a restless spirit beneath his weathered skin as he answers the call of ruined keeps and blood-soaked bargains.",
         stats: {
             progress: {
                 level: 1
@@ -189,35 +186,89 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
                 curse: 0,
                 madness: 0
             }
-        },
-        inventory: {
-            descriptor: [
-                {
-                    code: "fist-01"
-                },
-                {
-                    code: "sword-01",
-                    equipped: true
-                },
-                {
-                    code: "rag-armor-01",
-                    equipped: true
-                }
-            ]
-        },
-        slots: {
-            head: 1,
-            neck: 1,
-            body: 1,
-            hand: 2,
-            leg: 2,
-            weapon: 2
-        },
-        requirements: {
-            level: 1
-        },
-        price: {
-            coins: 50
+        }
+    },
+    "soldier-01": {
+        name: "Soldier",
+        code: "soldier-01",
+        class: "opportunist",
+        description: "A once-proud royal guard, now scarred and soured by endless nights hunting infernal horrors. His blade still remembers the discipline of the king's service, but his eyes hold the cold resolve of one who has stared into the abyss and refused to blink.",
+        stats: {
+            progress: {
+                level: 5
+            },
+            baseAttributes: {
+                health: 120,
+                stamina: 100,
+                actionPoints: 10
+            },
+            attributes: {
+                strength: 10,
+                physique: 10,
+                agility: 7,
+                endurance: 12,
+                intelligence: 4,
+                initiative: 4,
+                luck: 5
+            },
+            resistance: {
+                stabbing: 5,
+                cutting: 5,
+                crushing: 5,
+                fire: 0,
+                cold: 0,
+                lightning: 0,
+                poison: 0,
+                exhaustion: 3,
+                manaDrain: 0,
+                bleeding: 3,
+                fear: 5,
+                curse: 2,
+                madness: 2
+            }
+        }
+    },
+    "knight-01": {
+        name: "Knight",
+        code: "knight-01",
+        class: "opportunist",
+        booty: {},
+        achievements: {},
+        quests: {},
+        description: "Once the princess's personal guard, now a haunted avenger burdened by failure and fire. His oath has turned to bitter steel, and he stalks the shadows seeking the Dragon's blood and the salvation of his own damned soul.",
+        stats: {
+            progress: {
+                level: 10
+            },
+            baseAttributes: {
+                health: 180,
+                stamina: 150,
+                actionPoints: 9
+            },
+            attributes: {
+                strength: 15,
+                physique: 15,
+                agility: 12,
+                endurance: 16,
+                intelligence: 9,
+                initiative: 11,
+                luck: 5
+            },
+            resistance: {
+                stabbing: 7,
+                cutting: 7,
+                crushing: 7,
+                fire: 4,
+                cold: 4,
+                lightning: 4,
+                poison: 4,
+                exhaustion: 7,
+                manaDrain: 0,
+                bleeding: 7,
+                fear: 10,
+                curse: 10,
+                madness: 10
+            }
         }
     }
 };
