@@ -246,7 +246,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
                 actionPoints: 9
             },
             attributes: {
-                strength: 15,
+                strength: 18,
                 physique: 15,
                 agility: 12,
                 endurance: 16,
