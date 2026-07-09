@@ -1,7 +1,12 @@
 <div class="lobby-wrapper">
-    <div class="row">
-        <span id="label_users_count" class="white-text left">Users Number: 0</span>
+    <div class="row grey-text">
         <button id="button_configurator" class="btn s12 purple right">⇐ Back</button>
+        <b><img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 4px;" />
+            Gather your party or<span class="blue-text">JOIN</span>in and start the adventure. You can<span
+                class="purple-text">HIRE</span>a
+            mercenary to aid you on your journey.
+        </b><br>
+        <span id="label_users_count" class="white-text" style="padding: 0;">Users Number: 0</span>
     </div>
     <div class="row">
         <div class="col s9">
@@ -39,8 +44,11 @@
 </div>
 <div id="popup_shadow" class="popup-shadow hidden"></div>
 <div id="mercenaries_popup" class="mercenaries-popup white-text hidden">
-    <div class="row">
+    <div class="row grey-text">
         <button id="button_close" class="btn purple right">⇐ Back</button>
+        <b><img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 4px;" />
+            Hire a mercenary. No refunds.
+        </b>
     </div>
     <div id="mercenaries_container" class="mercenaries-container scrollbar-y"></div>
 </div>
