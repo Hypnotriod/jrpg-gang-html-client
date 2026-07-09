@@ -16,7 +16,7 @@
 }
 
 .rooms-container {
-    max-height: 300px;
+    max-height: 280px;
     overflow-y: auto;
 }
 

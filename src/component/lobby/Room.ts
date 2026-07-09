@@ -31,6 +31,8 @@ export default class Room extends Component {
     private readonly leaveRoomButton: Button;
     @component(BUTTON_START_GAME, Button)
     private readonly startGameButton: Button;
+    @component('dungeon_label', Label)
+    private readonly dungeonLabel: Label;
     @component('hire_mercenary_placeholder', Container)
     private readonly hireMercenaryPlaceholder: Container;
     @component('button_hire_mercenary', Button)
@@ -85,12 +87,15 @@ export default class Room extends Component {
         switch (roomInfo.scenarioId) {
             case SCENARIO_IDS.EASY:
                 (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_01.png';
+                this.dungeonLabel.htmlValue = '<span class="blue-text lighten-2">Forgotten Ruins</span>';
                 break;
             case SCENARIO_IDS.MEDIUM:
                 (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_02.png';
+                this.dungeonLabel.htmlValue = '<span class="green-text lighten-2">Cursed Swamp</span>';
                 break;
             case SCENARIO_IDS.ADVANCED:
                 (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_03.png';
+                this.dungeonLabel.htmlValue = '<span class="red-text lighten-2">Dragon\'s Lair</span>';
                 break;
         }
 

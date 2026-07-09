@@ -1,6 +1,6 @@
 import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, SELECT_ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatParticipant, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
 import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
@@ -24,8 +24,8 @@ import MercenariesPopup from './MercenariesPopup';
 @injectable()
 @singleton()
 export default class Lobby extends Component implements ServerCommunicatorHandler {
-    @component(SELECT_ROOMS_CONTAINER, Container)
-    private readonly selectRoomsSetcion: Container;
+    @component(ROOMS_CONTAINER, Container)
+    private readonly roomsContainer: Container;
     @component(BUTTON_CREATE_ROOM_EASY, Button)
     private readonly createRoomEasyButton: Button;
     @component(BUTTON_CREATE_ROOM_MEDIUM, Button)
@@ -77,6 +77,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             RequestType.SERVER_STATUS,
             RequestType.LOBBY_STATUS,
             RequestType.ROOM_STATUS,
+            RequestType.JOIN_ROOM,
             RequestType.USER_STATUS,
             RequestType.MERCENARIES_STATUS,
             RequestType.HIRE_MERCENARY,
@@ -141,6 +142,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             case RequestType.ROOM_STATUS:
                 if (!this.state.userState) { return; }
                 this.onRoomStatus(response.data as RoomStatusData);
+                break;
+            case RequestType.JOIN_ROOM:
+                this.roomsContainer.scrollTo({ top: 0 });
                 break;
             case RequestType.LOBBY_CHAT_MESSAGE:
                 const message: ChatMessage = (response.data as ChatMessageData).message;
@@ -250,6 +254,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateRooms(roomInfos: RoomInfo[], isUserInRooms: boolean): void {
+        if (isUserInRooms) {
+            this.rooms.forEach((room, uid) => {
+                room.destroy();
+                this.rooms.delete(uid);
+            });
+            const playerId = this.state.userState.playerInfo.playerId;
+            const roomInInfo = roomInfos.find(r => r.host.playerId === playerId || r.joinedUsers.some(u => u.playerId === playerId))!;
+            roomInfos = [roomInInfo, ...roomInfos.filter(r => r !== roomInInfo)];
+        }
         const roomIds: number[] = roomInfos.map(roomInfo => this.updateRoom(roomInfo, isUserInRooms));
         this.rooms.forEach((room, uid) => {
             if (!roomIds.includes(uid)) {
@@ -269,7 +282,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
-        isUserInRooms ? this.selectRoomsSetcion.hide() : this.selectRoomsSetcion.show();
         this.createRoomEasyButton.enabled = !isUserInRooms;
         this.createRoomMediumButton.enabled = !isUserInRooms;
         this.createRoomAdvancedButton.enabled = !isUserInRooms;
@@ -277,6 +289,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected onCreateRoom(scenarioId: string): void {
+        this.roomsContainer.scrollTo({ top: 0 });
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
             capacity: 4,
             scenarioId, // todo: make room creation dialog

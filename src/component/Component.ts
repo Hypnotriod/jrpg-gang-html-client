@@ -171,6 +171,10 @@ export default abstract class Component {
         this.view.style.height = value + 'px';
     }
 
+    public scrollTo(options: ScrollToOptions): void {
+        this.view.scrollTo(options);
+    }
+
     protected async delay(ms?: number): Promise<void> {
         return new Promise(resolve => {
             window.setTimeout(resolve, ms);
