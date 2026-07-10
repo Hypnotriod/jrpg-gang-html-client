@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Equipment, GameUnit, InventoryItem, Weapon } from '../../../domain/domain';
+import { Ammunition, Equipment, EquipmentSlot, GameUnit, InventoryItem, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -22,6 +22,8 @@ export default class ItemIcon extends Component {
     protected readonly iconCurrent: Container;
     @component(ICON_CANT_USE, Container)
     protected readonly iconCantUse: Container;
+    @component('icon_slot', Container)
+    protected readonly iconSlot: Container;
     @component(ICON_BROKEN, Container)
     protected readonly iconBroken: Container;
     @component(LABEL_ACTION_POINTS, Label)
@@ -176,7 +178,18 @@ export default class ItemIcon extends Component {
         const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
         isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
         isBroken && this.unselect();
-        !state.checkRequirements(asEquipment.requirements) ? this.cantUse() : this.canUse();
+        const cantuse = !state.checkRequirements(asEquipment.requirements);
+        cantuse ? this.cantUse() : this.canUse();
+        if (!cantuse && asEquipment.equipped) {
+            let slot = String(asEquipment.slot || EquipmentSlot.WEAPON);
+            if (asEquipment.slotsNumber > 1 && slot === String(EquipmentSlot.WEAPON)) {
+                slot = `${EquipmentSlot.WEAPON}-2`;
+            }
+            (this.iconSlot?.view as HTMLImageElement).src = `./assets/icons/slot-${slot}.png`;
+            this.iconSlot?.show();
+        } else {
+            this.iconSlot?.hide();
+        }
         if (!this.quantityLabel) { return; }
         if ((data as Ammunition).quantity !== undefined) {
             this.quantity = (data as Ammunition).quantity || 0;
