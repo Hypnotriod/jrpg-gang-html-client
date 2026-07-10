@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Equipment, EquipmentSlot, GameUnit, InventoryItem, Weapon } from '../../../domain/domain';
+import { Ammunition, Equipment, EquipmentSlot, GameUnit, InventoryItem, ItemType, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -138,7 +138,7 @@ export default class ItemIcon extends Component {
     }
 
     public select(): void {
-        this._icon.select();
+        this._icon.select(this.chosenEquipped());
     }
 
     public unselect(): void {
@@ -150,7 +150,7 @@ export default class ItemIcon extends Component {
     }
 
     public choose(): void {
-        this._icon.choose();
+        this._icon.choose(this.chosenEquipped());
     }
 
     public unchoose(): void {
@@ -169,6 +169,13 @@ export default class ItemIcon extends Component {
         return this._icon.chosen;
     }
 
+    private chosenEquipped(): boolean {
+        return this.data?.type === ItemType.MAGIC ||
+            this.data?.type === ItemType.DISPOSABLE ||
+            this.data?.type === ItemType.PROVISION ||
+            (this.data as Equipment)?.equipped;
+    }
+
     public update(data: InventoryItem, state: GameStateService): void {
         this._data = data;
         this.name = data.name;
@@ -181,7 +188,7 @@ export default class ItemIcon extends Component {
         const cantuse = !state.checkRequirements(asEquipment.requirements);
         cantuse ? this.cantUse() : this.canUse();
         if (!cantuse && asEquipment.equipped) {
-            let slot = String(asEquipment.slot || EquipmentSlot.WEAPON);
+            let slot = String(asEquipment.slot || 'ammo');
             if (asEquipment.slotsNumber > 1 && slot === String(EquipmentSlot.WEAPON)) {
                 slot = `${EquipmentSlot.WEAPON}-2`;
             }
