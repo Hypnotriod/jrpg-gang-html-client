@@ -80,13 +80,13 @@ export default class GameObjectRenderer {
             result += this.keyValue('quantity', data.quantity);
         }
         if (data.equipped) {
-            result += this.keyValue('equipped', data.equipped);
+            result += this.keyValue('equipped', data.equipped ? 'yes' : 'no');
         }
         if (data.canBeThrownAway) {
-            result += this.keyValue('canBeThrownAway', data.canBeThrownAway);
+            result += this.keyValue('canBeThrownAway', data.canBeThrownAway ? 'yes' : 'no');
         }
         if (data.canBeSold) {
-            result += this.keyValue('canBeSold', data.canBeSold);
+            result += this.keyValue('canBeSold', data.canBeSold ? 'yes' : 'no');
         }
 
         return result;
@@ -250,6 +250,8 @@ export default class GameObjectRenderer {
     protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         data = this.patchDeviation(data);
+        data = this.patchDuration(data);
+        data = this.patchTrueFalse(data);
         data = this.patchChance(data);
         return this.header(header, depth) + Object.keys(data)
             .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
@@ -258,6 +260,18 @@ export default class GameObjectRenderer {
     protected patchChance(data: any): any {
         if (!data.chance) return data;
         return { ...data, chance: `${data.chance}%` };
+    }
+
+    protected patchDuration(data: any): any {
+        if (!data.duration) return data;
+        return { ...data, duration: `${data.duration} ${data.duration === 1 ? 'round' : 'rounds'}` };
+    }
+
+    protected patchTrueFalse(data: any): any {
+        return Object.keys(data).reduce((acc, k) => ({
+            ...acc,
+            [k]: (String(data[k]) === 'true' ? 'yes' : data[k]),
+        }), {});
     }
 
     protected patchDeviation(data: any): any {
