@@ -126,6 +126,14 @@ body {
     border: 3px solid rgb(255, 132, 32);
 }
 
+.chosen-equipped {
+    background-color: rgb(145, 73, 197) !important;
+}
+
+.chosen-equipped:hover {
+    background-color: rgb(166, 111, 205) !important;
+}
+
 .item-icon-warpper {
     text-align: center;
     width: 80px;
