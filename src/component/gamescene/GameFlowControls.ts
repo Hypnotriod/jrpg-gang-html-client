@@ -163,7 +163,7 @@ export default class GameFlowControls extends GameBase {
     protected nextPhaseDescription(): string {
         switch (this.state.gameState.nextPhase) {
             case GamePhase.PREPARE_UNIT:
-                return 'Prepare for the battle';
+                return this.state.playerInfo?.isReady ? 'Wait for another player' : 'Prepare for the battle';
             case GamePhase.ACTION_COMPLETE:
                 return 'Action complete';
             case GamePhase.TAKE_ACTION:
@@ -173,7 +173,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.READY_FOR_START_ROUND:
                 return 'Next round';
             case GamePhase.SPOT_COMPLETE:
-                return 'Prepare for the next battle or leave';
+                return this.state.playerInfo?.isReady ? 'Wait for another player' : 'Prepare for the next battle or leave';
             case GamePhase.SCENARIO_COMPLETE:
                 return 'The dungeon is clear';
             case GamePhase.RETREAT_ACTION:
