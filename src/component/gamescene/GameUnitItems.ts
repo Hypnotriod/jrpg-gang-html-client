@@ -134,7 +134,7 @@ export default class GameUnitItems extends GameBase {
                 this.updateUnitItemHint(i, i.data);
             });
             SoundService.play(SoundName.CLICK);
-            target.choose();
+            target.choose(this.state);
             this.updateUnitItemHint(target, target.data);
             if (wansntChosen) { return; }
         }

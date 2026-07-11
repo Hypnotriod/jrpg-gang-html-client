@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
-import { Ammunition, Equipment, EquipmentSlot, GameUnit, InventoryItem, ItemType, Weapon } from '../../../domain/domain';
+import { Ammunition, Equipment, EquipmentSlot, GamePhase, GameUnit, InventoryItem, ItemType, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -137,8 +137,8 @@ export default class ItemIcon extends Component {
         return this._descriptionPopup;
     }
 
-    public select(): void {
-        this._icon.select(this.chosenEquipped());
+    public select(state?: GameStateService): void {
+        this._icon.select(this.chosenEquipped(state));
     }
 
     public unselect(): void {
@@ -149,8 +149,8 @@ export default class ItemIcon extends Component {
         return this._icon.selected;
     }
 
-    public choose(): void {
-        this._icon.choose(this.chosenEquipped());
+    public choose(state?: GameStateService): void {
+        this._icon.choose(this.chosenEquipped(state));
     }
 
     public unchoose(): void {
@@ -169,7 +169,11 @@ export default class ItemIcon extends Component {
         return this._icon.chosen;
     }
 
-    private chosenEquipped(): boolean {
+    private chosenEquipped(state?: GameStateService): boolean {
+        const nextPhase = state?.gameState?.nextPhase;
+        if (nextPhase === GamePhase.PREPARE_UNIT || nextPhase === GamePhase.SPOT_COMPLETE || nextPhase === GamePhase.SCENARIO_COMPLETE) {
+            return false;
+        }
         return this.data?.type === ItemType.MAGIC ||
             this.data?.type === ItemType.DISPOSABLE ||
             this.data?.type === ItemType.PROVISION ||
@@ -181,7 +185,7 @@ export default class ItemIcon extends Component {
         this.name = data.name;
         this.icon = data.code;
         const asEquipment = data as Equipment;
-        asEquipment.equipped ? this.select() : this.unselect();
+        asEquipment.equipped ? this.select(state) : this.unselect();
         const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
         isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
         isBroken && this.unselect();

@@ -72,11 +72,11 @@ export default class Icon extends Component {
     }
 
     public select(equipped: boolean = false): void {
-        if (this._selected || !this._enabled) { return; }
+        if (!this._enabled) { return; }
         this._selected = true;
         this.view.classList.add('selected');
         this.view.classList.remove('unselected');
-        equipped && this.chosen && this.view.classList.add('chosen-equipped');
+        (equipped && this.chosen) ? this.view.classList.add('chosen-equipped') : this.view.classList.remove('chosen-equipped');
     }
 
     public unselect(): void {
@@ -102,7 +102,7 @@ export default class Icon extends Component {
     }
 
     public choose(equipped: boolean = false): void {
-        if (this._chosen || !this._enabled) { return; }
+        if (!this._enabled) { return; }
         this._chosen = true;
         this.view.classList.add('chosen');
         equipped && this.view.classList.add('chosen-equipped');
