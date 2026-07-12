@@ -335,7 +335,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         return {
             ...unit, state: {
                 ...unit.stats.baseAttributes,
-                actionPoints: unit.state.actionPoints + Math.floor(unit.stats.attributes.initiative / 10),
+                actionPoints: unit.stats.baseAttributes.actionPoints +
+                    Math.floor((unit.stats.attributes.initiative + this.extraAttributeValue('initiative')) / 10),
                 stress: 0,
             }
         };
