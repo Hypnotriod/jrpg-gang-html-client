@@ -280,7 +280,7 @@ export default class GameObjectRenderer {
             if (['chance', 'duration', 'deviation'].some(v => v === k)) {
                 return { ...acc, [k]: data[k] };
             }
-            return ({ ...acc, [k]: `${data[k]}-${data[k] + data.deviation}` });
+            return ({ ...acc, [k]: data[k] ? `${data[k]}-${data[k] + data.deviation}` : data[k] });
         }, {});
     }
 

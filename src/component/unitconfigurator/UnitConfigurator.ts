@@ -417,7 +417,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelMana.htmlValue = this.keyValue('Mana', battr.mana ?? 0) + this.extraBaseAttribute('mana');
         this.labelActionPoints.htmlValue =
             this.keyValue('Action Points', battr.actionPoints) +
-            this.extraValue(Math.floor(attr.initiative / 10));
+            this.extraValue(Math.floor((attr.initiative + this.extraAttributeValue('initiative')) / 10));
 
         this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength ?? 0) + this.extraAttribute('strength');
         this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique ?? 0) + this.extraAttribute('physique');
@@ -436,15 +436,23 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         return this.extraValue(value);
     }
 
-    protected extraBaseAttribute(key: string): string {
-        const value = (this.state.userState.unit.inventory
+    protected extraBaseAttributeValue(key: string): number {
+        return (this.state.userState.unit.inventory
             .armor?.reduce((acc, a) => acc + this.state.totalBaseAttributeModification(a, key), 0) || 0);
+    }
+
+    protected extraBaseAttribute(key: string): string {
+        const value = this.extraBaseAttributeValue(key);
         return this.extraValue(value);
     }
 
-    protected extraAttribute(key: string): string {
-        const value = (this.state.userState.unit.inventory
+    protected extraAttributeValue(key: string): number {
+        return (this.state.userState.unit.inventory
             .armor?.reduce((acc, a) => acc + this.state.totalAttributeModification(a, key), 0) || 0);
+    }
+
+    protected extraAttribute(key: string): string {
+        const value = this.extraAttributeValue(key);
         return this.extraValue(value);
     }
 
