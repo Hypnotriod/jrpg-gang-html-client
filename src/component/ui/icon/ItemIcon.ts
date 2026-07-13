@@ -171,6 +171,7 @@ export default class ItemIcon extends Component {
 
     private chosenEquipped(state?: GameStateService): boolean {
         const nextPhase = state?.gameState?.nextPhase;
+        if (nextPhase === GamePhase.SPOT_COMPLETE && this.data?.type === ItemType.PROVISION) return true;
         if (nextPhase === GamePhase.PREPARE_UNIT || nextPhase === GamePhase.SPOT_COMPLETE || nextPhase === GamePhase.SCENARIO_COMPLETE) {
             return false;
         }
