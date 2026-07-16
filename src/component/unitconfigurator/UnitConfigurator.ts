@@ -1,8 +1,8 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
-import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon } from '../../domain/domain';
+import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon, UnitQuestStatus } from '../../domain/domain';
 import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
-import { ActionResultData, KEY_IS_INSTRUCTIONS_SHOWN, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
+import { ActionResultData, KEY_IS_INSTRUCTIONS_SHOWN, QuestsStatusData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -116,6 +116,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly instructionsPopup: InstructionsPopup;
     @component('popup_shadow', Container)
     private readonly popupShadow: Container;
+    @component('new_quests_icon', Container)
+    private readonly newQuestsIcon: Container;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
@@ -137,6 +139,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.communicator.sendMessage(RequestType.QUESTS_STATUS);
         if (!sessionStorage.getItem(KEY_IS_INSTRUCTIONS_SHOWN)) {
             this.instructionsPopup.show();
             this.instructionsPopup.onHide = () => sessionStorage.setItem(KEY_IS_INSTRUCTIONS_SHOWN, 'true');
@@ -155,7 +158,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             RequestType.JOIN,
             RequestType.SHOP_STATUS,
             RequestType.CONFIGURATION_ACTION,
-            RequestType.SHOP_ACTION
+            RequestType.SHOP_ACTION,
+            RequestType.QUESTS_STATUS
         ], this);
         this.lobbyButton.onClick = target => this.goToLobby();
         this.jobsButton.onClick = target => this.goToJobs();
@@ -218,6 +222,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.instructionsPopup.shadow = this.popupShadow;
         this.shopItemPopup.shadow = this.popupShadow;
         this.shopItemPopup.descriptionPopup = this.itemDescription;
+
+        this.newQuestsIcon.hide();
     }
 
     protected onShopFilterClick(target: Button, filter: string[]): void {
@@ -265,7 +271,19 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                 this.state.shopStatus = (response.data as ShopStatusData).shop;
                 this.updateShopStatus(this.state.shopStatus);
                 break;
+            case RequestType.QUESTS_STATUS:
+                this.updateNewQuestsIcon(response.data as QuestsStatusData);
+                break;
         }
+    }
+
+    protected updateNewQuestsIcon(questsStatus: QuestsStatusData): void {
+        questsStatus.quests.quests.some(quest => {
+            if (quest.status === UnitQuestStatus.COMPLETED || quest.status === UnitQuestStatus.FAILED) return false;
+            return (quest.status === UnitQuestStatus.ACTIVE) ?
+                this.state.checkRequirements(quest.completion.requirements) :
+                this.state.checkRequirements(quest.activation.requirements);
+        }) ? this.newQuestsIcon.show() : this.newQuestsIcon.hide();
     }
 
     public handleConnectionLost(): void {
@@ -622,6 +640,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             action: ActionType.LEVEL_UP,
         } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        this.communicator.sendMessage(RequestType.QUESTS_STATUS);
     }
 
     protected sellItem(target: ItemIcon): void {
