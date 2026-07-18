@@ -94,13 +94,19 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         icon: 'quest-kill-10-goblins',
         tag: 'Kills',
         target: 10,
-        popup: 'You have killed the Goblin',
+        popup: 'You have killed the Nasty Goblin',
     },
     'kill-10-daemons': {
         icon: 'quest-kill-10-daemons',
         tag: 'Kills',
         target: 10,
         popup: 'You have killed the Daemon',
+    },
+    'kill-5-trolls': {
+        icon: 'quest-kill-5-trolls',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the North Troll',
     },
     'artifact-01': {
         icon: 'quest-find-artifact-01',
