@@ -56,6 +56,7 @@ export default class GameUnitItems extends GameBase {
     }
 
     private updateUnitInventoryIcons(inventory: UnitInventory, activeTypes: ItemType[]): void {
+        const needToChooseDefaultWeapon = this.unitItems.size === 0;
         const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
@@ -76,6 +77,13 @@ export default class GameUnitItems extends GameBase {
                 this.unitItems.delete(uid);
             }
         });
+        if (!needToChooseDefaultWeapon) return;
+        for (const w of (inventory.weapon ?? [])) {
+            if (w.equipped) {
+                this.unitItems.get(w.uid!)?.choose(this.state);
+                break;
+            }
+        }
     }
 
     protected updateUnitItem(data: InventoryItem, activeTypes: ItemType[]): void {
