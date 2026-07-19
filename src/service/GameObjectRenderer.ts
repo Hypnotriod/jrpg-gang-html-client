@@ -276,6 +276,15 @@ export default class GameObjectRenderer {
 
     protected patchDeviation(data: any): any {
         if (!data.deviation) return data;
+        if (data.baseAttributes) {
+            !this.emptyOrAllFieldsZeros([], 'baseAttributes', data) && (data.baseAttributes.deviation = data.deviation);
+            !this.emptyOrAllFieldsZeros([], 'attributes', data) && (data.attributes.deviation = data.deviation);
+            !this.emptyOrAllFieldsZeros([], 'resistance', data) && (data.resistance.deviation = data.deviation);
+            !this.emptyOrAllFieldsZeros([], 'damage', data) && (data.damage.deviation = data.deviation);
+            !this.emptyOrAllFieldsZeros([], 'recovery', data) && (data.recovery.deviation = data.deviation);
+            delete data.deviation;
+            return data;
+        }
         return Object.keys(data).reduce((acc, k) => {
             if (['chance', 'duration', 'deviation'].some(v => v === k)) {
                 return { ...acc, [k]: data[k] };
@@ -347,8 +356,8 @@ export default class GameObjectRenderer {
     }
 
     protected emptyOrAllFieldsZeros(ignoreHeaders: string[], header: string, data: any): boolean {
-        return !data || Object.keys(data).every(key => !data[key] &&
-            !this.isZeroValueKey(header, key) && !this.ignoreKey(ignoreHeaders, header, key));
+        return !data || Object.keys(data).every(key =>
+            (!data[key] && !this.isZeroValueKey(header, key)) || this.ignoreKey(ignoreHeaders, header, key));
     }
 
     protected isZeroValueKey(header: string, key: string): boolean {
