@@ -88,6 +88,22 @@ export default class GameBattlefield extends GameBase {
         }
     }
 
+    public updateUnitsTurnOrder(): void {
+        if (!this.spots) return;
+        const unitsQueue = this.state.gameState.state.activeUnitsQueue;
+        for (let x = 0; x < this.spots.length; x++) {
+            for (let y = 0; y < this.spots[x].length; y++) {
+                const cell = this.spots[x][y];
+                const unit = this.spots[x][y].unit;
+                if (!unit) {
+                    cell.updateWithTurnOrder(0);
+                } else {
+                    cell.updateWithTurnOrder(unitsQueue.indexOf(unit.uid!) + 1);
+                }
+            }
+        }
+    }
+
     protected initBattlefield(): void {
         const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
         this.spots = [];

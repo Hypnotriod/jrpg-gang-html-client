@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_ID, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -74,8 +74,8 @@ export default class SpotCell extends Component {
     protected readonly hitChanceLabel: Label;
     @component(LABEL_EXP, Label)
     protected readonly expLabel: Label;
-    @component(LABEL_ID, Label)
-    protected readonly idLabel: Label;
+    @component(LABEL_TURN_ORDER, Label)
+    protected readonly turnOrderLabel: Label;
     @component(LABEL_ACTION_POINTS, Label)
     protected readonly actionPointsLabel: Label;
     @component(HEALTH_BAR, Container)
@@ -230,7 +230,7 @@ export default class SpotCell extends Component {
         this._iconExperience.hide();
         this.hitChanceLabel.hide();
         this.expLabel.hide();
-        this.idLabel.hide();
+        this.turnOrderLabel.hide();
         this.healthBar.hide();
         this.staminaBar.hide();
         this.manaBar.hide();
@@ -355,8 +355,6 @@ export default class SpotCell extends Component {
         } else if (!unit.state.isStunned) {
             this.stunnedSoundPlayed = false;
         }
-        this.idLabel.show();
-        this.idLabel.value = String(unit.uid);
         this._unit = unit;
         this._unit.state.isStunned ? this._iconStunned.show() : this._iconStunned.hide();
         this._unit.state.stamina === 0 && this._unit.state.isStunned !== true && this._unit.isDead !== true ? this._iconNoStamina.show() : this._iconNoStamina.hide();
@@ -389,6 +387,11 @@ export default class SpotCell extends Component {
         }
     }
 
+    public updateWithTurnOrder(order: number): void {
+        this.turnOrderLabel.value = String(order);
+        order ? this.turnOrderLabel.show() : this.turnOrderLabel.hide();
+    }
+
     public updateWithCorpse(corpse: GameUnit): void {
         this.hideAll();
         this._icon.icon = 'tomb';
@@ -399,7 +402,7 @@ export default class SpotCell extends Component {
 
     public updateWithActionResult(result: ActionResult, targetUid: number, item?: Item, ammo?: Ammunition,): void {
         if (this._unit) {
-            this.idLabel.show();
+            this.turnOrderLabel.show();
             this.healthBar.show();
             this.staminaBar.show();
             this.manaBar.show();

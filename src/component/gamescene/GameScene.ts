@@ -166,6 +166,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.handleChatState(chatState);
                 break;
         }
+        this.battlefield.updateUnitsTurnOrder();
     }
 
     public override show(): void {
