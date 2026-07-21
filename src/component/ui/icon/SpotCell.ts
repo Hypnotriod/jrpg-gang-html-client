@@ -462,6 +462,14 @@ export default class SpotCell extends Component {
         }
     }
 
+    public onUnitLeft(): void {
+        this.hideActionResultIcons();
+        const icon = this.icon;
+        this.icon = 'door-open';
+        clearInterval(this.actionResultTimeoutId);
+        this.actionResultTimeoutId = window.setTimeout(() => (this.icon = icon), 800);
+    }
+
     private onActionResultIcon(): void {
         this.hideActionResultIcons();
         clearInterval(this.actionResultTimeoutId);

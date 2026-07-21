@@ -26,6 +26,7 @@ export default class GameBattlefield extends GameBase {
     private deathSoundPlayed: boolean = false;
     private currUnit: GameUnit | null = null;
     private spots: SpotCell[][];
+    private lastPlayers: GameUnit[] = [];
 
     public destroy(): void {
         for (const x in this.spots) {
@@ -34,6 +35,7 @@ export default class GameBattlefield extends GameBase {
             }
         }
         (this.spots as SpotCell[][] | undefined) = undefined;
+        this.lastPlayers = [];
     }
 
     public set objectDescription(value: ObjectDescription) {
@@ -150,6 +152,14 @@ export default class GameBattlefield extends GameBase {
             }
             isActive && spot.showActionChance();
         });
+        const players = [...units.filter(p => p.playerInfo), ...(corpses?.filter(p => p.playerInfo) ?? [])];
+        if (players.length < this.lastPlayers.length) {
+            const leftPlayer = this.lastPlayers.find(p1 => !players.some(p2 => p2.uid === p1.uid));
+            if (leftPlayer && !leftPlayer.isDead) {
+                this.spots[leftPlayer.position.x][leftPlayer.position.y].onUnitLeft();
+            }
+        }
+        this.lastPlayers = players;
     }
 
     protected updateBattlefieldCells(): void {
