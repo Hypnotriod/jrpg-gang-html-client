@@ -42,7 +42,6 @@ export default class GameFlowControls extends GameBase {
     private nextPhaseTickerId: number = -1;
     private autoNextPhase: GamePhase = GamePhase.SCENARIO_COMPLETE;
     private autoNextPhaseInProgress: boolean = false;
-    private usersInGame: number = 0;
 
     public set onRetreate(value: (() => void)) {
         this.onRetreateCallback = value;
@@ -117,10 +116,6 @@ export default class GameFlowControls extends GameBase {
     }
 
     protected updateusersInGame(): void {
-        if (this.usersInGame > this.state.gameState.players.length) {
-            SoundService.play(SoundName.DOOR);
-        }
-        this.usersInGame = this.state.gameState.players.length;
         this.usersInGameLabel.htmlValue =
             this.state.gameState.players.map(p => {
                 const unit = this.findUnitByUid(p.unitUid!);

@@ -464,6 +464,7 @@ export default class SpotCell extends Component {
 
     public onUnitLeft(): void {
         this.hideActionResultIcons();
+        SoundService.play(SoundName.DOOR);
         const icon = this.icon;
         this.icon = 'door-open';
         clearInterval(this.actionResultTimeoutId);
