@@ -2,7 +2,7 @@ import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_LABEL_USER_NAME, INPUT_USER_NAME, ITEM_DESCRIPTION_POPUP, LABEL_ERROR } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configuration';
-import { USER_NAME_REGEXP } from '../../constants/RegularExpressions';
+import { USER_NAME_MAX_LENGTH, USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
 import { KEY_IS_NEW_PLAYER, KEY_IS_GUEST, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -48,6 +48,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     protected initialize(): void {
         const isGuest = Boolean(this.query.parsedQuery[KEY_IS_GUEST]);
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
+        this.userNameInput.maxLength = USER_NAME_MAX_LENGTH;
         if (isGuest) {
             this.userNameInput.value = "Guest";
             this.userNameInput.disable();
@@ -55,7 +56,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             this.userNameInput.hide();
             this.userNameInputLabel.hide();
         } else {
-            this.userNameInput.onInput = target => this.updateJoinButtonState();
+            this.userNameInput.onInput = target => this.onUserNameInput();
         }
         this.errorLabel.hide();
 
@@ -74,21 +75,27 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
-        this.updateJoinButtonState();
+        this.onUserNameInput();
     }
 
     protected onClassIconClick(target: ItemIcon): void {
         this.icons.forEach(icon => icon.unselect());
         target.select();
-        this.updateJoinButtonState();
+        this.onUserNameInput();
         SoundService.play(SoundName.CLICK);
     }
 
-    protected updateJoinButtonState(): void {
+    protected onUserNameInput(): void {
         if (this.userNameInput.isValid && this.userNameInput.value !== '' && !this.isJoining) {
             this.joinButton.enable();
         } else {
             this.joinButton.disable();
+        }
+        if (!this.userNameInput.isValid) {
+            this.errorLabel.show();
+            this.errorLabel.value = 'Latin letters, numbers, dashes, underscores, 4 characters min.'
+        } else {
+            this.errorLabel.hide();
         }
     }
 
@@ -105,7 +112,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     protected onJoinClick(): void {
         this.isJoining = true;
         this.errorLabel.hide();
-        this.updateJoinButtonState();
+        this.onUserNameInput();
         this.updatePlayerInfoAndJoin();
     }
 
@@ -122,7 +129,6 @@ export default class Login extends Component implements ServerCommunicatorHandle
             this.errorLabel.show();
             this.errorLabel.value = 'A user with this nickname already exists';
             this.isJoining = false;
-            this.updateJoinButtonState();
             return;
         }
         if (response.status === ResponseStatus.OK) {
@@ -148,7 +154,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public handleServerResponse(response: Response): void {
         this.isJoining = false;
-        this.updateJoinButtonState();
+        this.onUserNameInput();
         if (response.status !== ResponseStatus.OK) {
             sessionStorage.clear();
             this.unsuccessJoinAttempts++;
