@@ -76,6 +76,10 @@ export default class ActionService {
         return result.instantDamage?.[unitUid]?.some(d => d.isCritical) ?? false;
     }
 
+    public hasCriticalMissDamage(result: ActionResult, unitUid: number): boolean {
+        return result.instantDamage?.[unitUid]?.some(d => d.isCriticalMiss) ?? false;
+    }
+
     public attackChance(impact: DamageImpact[], unit: GameUnit, target: GameUnit): number {
         let chance = 100;
         if (impact[0]?.chance) {

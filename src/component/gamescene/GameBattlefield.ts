@@ -149,6 +149,9 @@ export default class GameBattlefield extends GameBase {
             spot.updateWithUnit(unit, isActive);
             if (this.currUnit && this.currUnit.uid === unit.uid && this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT) {
                 spot.choose(this.currUnit.state.actionPoints);
+                if (this.state.gameState.nextPhase === GamePhase.RETREAT_ACTION) {
+                    spot.onRetreat();
+                }
             }
             isActive && spot.showActionChance();
         });
