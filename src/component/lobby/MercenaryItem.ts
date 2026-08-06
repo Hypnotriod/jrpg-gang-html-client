@@ -62,13 +62,17 @@ export default class MercenaryItem extends Component {
     public update(mercenary: Mercenary): void {
         this.data = mercenary;
         this.icon.icon = mercenary.code!;
+        this.icon.description = mercenary;
         this.icon.description = {
             description: mercenary.description,
             code: mercenary.code,
             level: mercenary.stats.progress.level,
-            baseAttributes: mercenary.stats.baseAttributes,
-            attributes: mercenary.stats.attributes,
-            resistance: mercenary.stats.resistance,
+            inventory: mercenary.inventory,
+            stats: {
+                baseAttributes: mercenary.stats.baseAttributes,
+                attributes: mercenary.stats.attributes,
+                resistance: mercenary.stats.resistance,
+            }
         };
         this.labelHeader.value = mercenary.name;
         this.labelDescription.value = mercenary.description!;

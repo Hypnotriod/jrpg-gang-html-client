@@ -31,7 +31,7 @@ export default class GameObjectRenderer {
             result += data.description + '<br>';
         }
         if (this.isUnitData(data)) {
-            if (data.inventory) {
+            if (!this.emptyOrAllFieldsZeros([], '', data.inventory)) {
                 result += this.renderInventoryIcons(data.inventory);
             }
             if (data.stats.progress) {
