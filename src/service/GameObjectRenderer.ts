@@ -31,19 +31,30 @@ export default class GameObjectRenderer {
             result += data.description + '<br>';
         }
         if (this.isUnitData(data)) {
-            result += this.renderInventoryIcons(data.inventory);
-            result += this.keyValue('level', data.stats.progress.level)
-            if (data.stats.progress.experienceNext) {
-                result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
-            } else {
-                result += this.keyValue('exp', data.stats.progress.experience)
+            if (data.inventory) {
+                result += this.renderInventoryIcons(data.inventory);
             }
-            result += this.keyValueColor('health', 'red', `${data.state.health} / ${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
-            result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
-            result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
-            result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
-            result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
-            result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
+            if (data.stats.progress) {
+                result += this.keyValue('level', data.stats.progress.level)
+                if (data.stats.progress.experienceNext) {
+                    result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
+                } else {
+                    result += this.keyValue('exp', data.stats.progress.experience)
+                }
+            }
+            if (data.state) {
+                result += this.keyValueColor('health', 'red', `${data.state.health} / ${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
+                result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
+                result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
+                result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
+                result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
+                result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
+            } else {
+                result += this.keyValueColor('health', 'red', `${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
+                result += this.keyValueColor('stamina', 'green', `${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
+                result += this.keyValueColor('mana', 'blue', `${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
+                result += this.keyValueColor('action points', 'orange', `${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
+            }
             if (data.damage) {
                 result += this.renderObjects(data.damage, [], 'damage', 13);
             }
@@ -236,7 +247,7 @@ export default class GameObjectRenderer {
     }
 
     protected isUnitData(data: any): data is Unit {
-        return Boolean(data.state && data.stats);
+        return Boolean(data.stats);
     }
 
     protected renderObjects(data: any[], ignoreHeaders: string[], header: string, depth: number): string {

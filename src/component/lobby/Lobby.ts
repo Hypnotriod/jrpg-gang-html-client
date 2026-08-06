@@ -282,9 +282,10 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
+        const firstBlood = Boolean(this.state.userState.unit.achievements['first-blood']);
         this.createRoomEasyButton.enabled = !isUserInRooms;
-        this.createRoomMediumButton.enabled = !isUserInRooms;
-        this.createRoomAdvancedButton.enabled = !isUserInRooms;
+        this.createRoomMediumButton.enabled = !isUserInRooms && firstBlood;
+        this.createRoomAdvancedButton.enabled = !isUserInRooms && firstBlood;
         this.configuratorButton.enabled = !isUserInRooms;
     }
 
