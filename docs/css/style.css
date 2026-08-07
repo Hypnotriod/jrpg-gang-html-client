@@ -180,6 +180,7 @@ body {
     background-color: rgb(75, 87, 98);
     z-index: 1000;
     width: 350px;
+    top: 24px;
     padding-top: 20px;
     border-style: solid;
     border-width: 1px;
