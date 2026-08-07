@@ -2,12 +2,13 @@ import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import Container from '../container/Container';
 import { GameUnit } from '../../../domain/domain';
-import { SoundName, SoundService } from '../../../service/SoundService';
 
 @injectable()
 export default class ObjectDescription extends Container {
+    private static _active: boolean = true;
+    private static popups: ObjectDescription[] = [];
+
     private _unit?: GameUnit;
-    private _active: boolean = true;
     private _shown: boolean = false;
     private _isShopItem: boolean = false;
     private _e?: MouseEvent;
@@ -16,25 +17,32 @@ export default class ObjectDescription extends Container {
         super();
     }
 
+    public static get active(): boolean {
+        return ObjectDescription._active;
+    }
+
+    public static set active(value: boolean) {
+        ObjectDescription._active = value;
+        ObjectDescription.popups.forEach(p => p.onActiveToggle());
+    }
+
     protected initialize(): void {
+        ObjectDescription.popups.push(this);
         super.initialize();
         window.addEventListener('mousemove', e => this.updatePositionOnMouseMove(e));
-        window.addEventListener("keydown", event => {
-            if (event.key === 'i') {
-                this._active = !this._active;
-                SoundService.play(SoundName.CLICK);
-            }
-            if (!this._active) {
-                super.hide();
-            } else if (this._shown) {
-                this.show();
-            }
-        });
+    }
+
+    protected onActiveToggle(): void {
+        if (!ObjectDescription._active) {
+            super.hide();
+        } else if (this._shown) {
+            this.show();
+        }
     }
 
     public override show(): void {
         this._shown = true;
-        if (!this._active) return;
+        if (!ObjectDescription._active) return;
         super.show();
     }
 

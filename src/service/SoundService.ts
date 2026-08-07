@@ -101,13 +101,6 @@ export class SoundService {
         SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
         SoundService.sounds[SoundName.DRONE_MAIN] = new Howl({ src: ['assets/sounds/drone_main.mp3'] });
         SoundService.sounds[SoundName.DRONE_CAVE] = new Howl({ src: ['assets/sounds/drone_cave.mp3'] });
-
-        window.addEventListener("keydown", event => {
-            if (event.key === 'm') {
-                SoundService.play(SoundName.CLICK);
-                SoundService.muted = !SoundService.muted;
-            }
-        });
     }
 
     public static play(name: SoundName, options?: {
@@ -126,7 +119,7 @@ export class SoundService {
             window.setTimeout(() => sound.play(), options.delay * 1000);
             return;
         }
-        sound.volume(options?.volume ?? 1);
+        sound.volume(SoundService._muted ? 0 : (options?.volume ?? 1));
         sound.play();
     }
 

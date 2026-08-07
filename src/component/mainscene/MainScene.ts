@@ -14,13 +14,21 @@ import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import { KEY_SESSION_ID } from '../../dto/responces';
-import { SoundService } from '../../service/SoundService';
+import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
+import { component } from '../decorator/decorator';
+import Checkbox from '../ui/checkbox/Checkbox';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
 @injectable()
 export default class MainScene extends Component {
+    @component('checkbox_sound', Checkbox)
+    private readonly checkboxSound: Checkbox;
+    @component('checkbox_info', Checkbox)
+    private readonly checkboxInfo: Checkbox;
+
     private login: Login;
     private auth: Auth;
     private lobby: Lobby;
@@ -46,6 +54,35 @@ export default class MainScene extends Component {
             this.show();
         });
         this.initializeFocusHandler();
+        this.checkboxSound.checked = localStorage.getItem('sound') !== 'false';
+        this.checkboxInfo.checked = localStorage.getItem('info') !== 'false';
+        SoundService.muted = !this.checkboxSound.checked;
+        ObjectDescription.active = this.checkboxInfo.checked;
+
+        window.addEventListener('keydown', event => {
+            if (event.key === 's') {
+                this.toggleSoundMute();
+                this.checkboxSound.checked = !SoundService.muted;
+            }
+            if (event.key === 'i') {
+                this.toggleInfoPopup();
+                this.checkboxInfo.checked = ObjectDescription.active;
+            }
+        });
+        this.checkboxSound.onChange = target => this.toggleSoundMute();
+        this.checkboxInfo.onChange = target => this.toggleInfoPopup();
+    }
+
+    protected toggleSoundMute(): void {
+        SoundService.play(SoundName.CLICK);
+        SoundService.muted = !SoundService.muted;
+        localStorage.setItem('sound', String(!SoundService.muted));
+    }
+
+    protected toggleInfoPopup(): void {
+        SoundService.play(SoundName.CLICK);
+        ObjectDescription.active = !ObjectDescription.active;
+        localStorage.setItem('info', String(ObjectDescription.active));
     }
 
     protected async preloadResources(): Promise<void> {
