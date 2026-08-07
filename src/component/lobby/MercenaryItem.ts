@@ -69,6 +69,9 @@ export default class MercenaryItem extends Component {
             level: mercenary.stats.progress.level,
             inventory: mercenary.inventory,
             stats: {
+                progress: {
+                    level: mercenary.stats.progress.level,
+                },
                 baseAttributes: mercenary.stats.baseAttributes,
                 attributes: mercenary.stats.attributes,
                 resistance: mercenary.stats.resistance,

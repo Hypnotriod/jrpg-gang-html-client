@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { GameUnit, Item, Unit, UnitInventory } from '../domain/domain';
+import { GameUnit, Unit, UnitInventory, Weapon } from '../domain/domain';
 import ActionService, { sum } from './ActionService';
 
 @injectable()
@@ -36,10 +36,12 @@ export default class GameObjectRenderer {
             }
             if (data.stats.progress) {
                 result += this.keyValue('level', data.stats.progress.level)
-                if (data.stats.progress.experienceNext) {
-                    result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
-                } else {
-                    result += this.keyValue('exp', data.stats.progress.experience)
+                if (data.stats.progress.experience) {
+                    if (data.stats.progress.experienceNext) {
+                        result += this.keyValue('exp', `${data.stats.progress.experience} / ${data.stats.progress.experienceNext}`);
+                    } else {
+                        result += this.keyValue('exp', data.stats.progress.experience)
+                    }
                 }
             }
             if (data.state) {
@@ -48,7 +50,7 @@ export default class GameObjectRenderer {
                 result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
                 result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
                 result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
-                result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned) : '';
+                result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned ? 'yes' : 'no') : '';
             } else {
                 result += this.keyValueColor('health', 'red', `${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);
                 result += this.keyValueColor('stamina', 'green', `${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
@@ -111,7 +113,11 @@ export default class GameObjectRenderer {
             ...(inventory.armor || []),
             ...(inventory.disposable || []),
             ...(inventory.provision || []),
-        ].map(i => `<img src="./assets/icons/${i.code}.png" style="width: 24px; vertical-align: middle;"/>`).join('') + '<br>';
+        ].map(i =>
+            (i as Weapon).equipped ?
+                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 24px; vertical-align: middle; background-color: #2b494e; border-radius: 2px;"/>` :
+                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 24px; vertical-align: middle;"/>`
+        ).join('') + '<br>';
     }
 
     public renderPrice(data: any, unit?: GameUnit, isShopItem: boolean = false) {
