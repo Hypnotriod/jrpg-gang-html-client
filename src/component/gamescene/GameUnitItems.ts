@@ -56,6 +56,7 @@ export default class GameUnitItems extends GameBase {
     }
 
     private updateUnitInventoryIcons(inventory: UnitInventory, activeTypes: ItemType[]): void {
+        const unit = this.playersUnit();
         const needToChooseDefaultWeapon = this.unitItems.size === 0;
         const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
@@ -70,6 +71,7 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.disposable || []).sort(compareItemsByName),
             ...(inventory.provision || []).sort(compareItemsByName),
         ];
+        unit && (this.state.userState.unit = unit);
         inventoryItems.forEach(v => this.updateUnitItem(v, activeTypes));
         this.unitItems.forEach((icon, uid) => {
             if (!inventoryItems.find(i => i.uid === uid)) {
