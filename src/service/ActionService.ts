@@ -8,6 +8,10 @@ export function sum(arr: number[]): number {
 @singleton()
 @injectable()
 export default class ActionService {
+    public readonly FULL_CHANCE = 100;
+    public readonly MAX_CHANCE = 95;
+    public readonly MIN_CHANCE = 1;
+
     public successfull(result: ActionResult): boolean {
         return !!result.instantDamage ||
             !!result.instantRecovery ||
@@ -81,23 +85,23 @@ export default class ActionService {
     }
 
     public attackChance(impact: DamageImpact[], unit: GameUnit, target: GameUnit): number {
-        let chance = 100;
+        let chance = this.MAX_CHANCE;
         if (impact[0]?.chance) {
             chance = impact[0].chance;
             chance += !target.state.isStunned
                 ? (sum(this.attributeTotalValue(unit, 'agility')) - unit.state.stress) - (sum(this.attributeTotalValue(target, 'agility')) - target.state.stress)
                 : sum(this.attributeTotalValue(unit, 'agility')) + target.state.stress;
         }
-        return Math.max(1, Math.min(100, chance));
+        return Math.max(this.MIN_CHANCE, Math.min(this.MAX_CHANCE, chance));
     }
 
     public modificationChance(impact: UnitModificationImpact[], unit: GameUnit): number {
-        let chance = 100;
+        let chance = this.FULL_CHANCE;
         if (impact[0]?.chance) {
             chance = impact[0].chance;
             chance += sum(this.attributeTotalValue(unit, 'intelligence')) - unit.state.stress;
         }
-        return Math.max(1, Math.min(100, chance));
+        return Math.max(this.MIN_CHANCE, Math.min(this.FULL_CHANCE, chance));
     }
 
     public baseAttributeTotalValue(unit: Unit, fieldName: string): [number, number] {
