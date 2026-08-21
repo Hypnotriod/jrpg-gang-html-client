@@ -278,11 +278,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateNewQuestsIcon(questsStatus: QuestsStatusData): void {
+        const unit = this.state.userState.unit;
         questsStatus.quests.quests.some(quest => {
             if (quest.status === UnitQuestStatus.COMPLETED || quest.status === UnitQuestStatus.FAILED) return false;
             return (quest.status === UnitQuestStatus.ACTIVE) ?
-                this.state.checkRequirements(quest.completion.requirements) :
-                this.state.checkRequirements(quest.activation.requirements);
+                this.state.checkRequirements(unit, quest.completion.requirements) :
+                this.state.checkRequirements(unit, quest.activation.requirements);
         }) ? this.newQuestsIcon.show() : this.newQuestsIcon.hide();
     }
 
@@ -334,6 +335,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected updateShopItem(data: InventoryItem): void {
+        const unit = this.state.userState.unit;
         let iconItem = this.shopItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ShopItemIcon.createShopItemIcon(data.code, this, SHOP_ITEMS_CONTAINER)!;
@@ -342,7 +344,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             iconItem.isShopItem = true;
         }
         this.shopItems.set(data.uid!, iconItem);
-        this.state.checkPrice(data.price) ? iconItem.enable() : iconItem.disable();
+        this.state.checkPrice(unit, data.price) ? iconItem.enable() : iconItem.disable();
         iconItem.unit = this.unitWithMaxedState();
         iconItem.hint = iconItem.enabled ? 'Click to Buy' : '!Can\'t Buy';
         iconItem.update(data, this.state);

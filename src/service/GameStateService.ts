@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Equipment, GameEvent, GameShopStatus, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements } from '../domain/domain';
+import { Equipment, GameEvent, GameShopStatus, GameUnit, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -72,46 +72,42 @@ export default class GameStateService {
         return roomInfo.host.nickname === this.userState.playerInfo.nickname;
     }
 
-    public checkRequirements(required?: UnitRequirements) {
+    public checkRequirements(unit: GameUnit, required?: UnitRequirements) {
         if (!required) return true;
-        const unit = this.userState.unit;
         return (!required.class || required.class === unit.class) &&
             (required.level ?? 0) <= unit.stats.progress.level &&
-            this.checkAchievements(required.achievements) &&
-            this.checkQuests(required.quests) &&
-            required.strength <= Math.max(this.totalAttributeValue('strength'), 0) &&
-            required.physique <= Math.max(this.totalAttributeValue('physique'), 0) &&
-            required.agility <= Math.max(this.totalAttributeValue('agility'), 0) &&
-            required.endurance <= Math.max(this.totalAttributeValue('endurance'), 0) &&
-            required.intelligence <= Math.max(this.totalAttributeValue('intelligence'), 0) &&
-            required.initiative <= Math.max(this.totalAttributeValue('initiative'), 0) &&
-            required.luck <= Math.max(this.totalAttributeValue('luck'), 0);
+            this.checkAchievements(unit, required.achievements) &&
+            this.checkQuests(unit, required.quests) &&
+            required.strength <= Math.max(this.totalAttributeValue(unit, 'strength'), 0) &&
+            required.physique <= Math.max(this.totalAttributeValue(unit, 'physique'), 0) &&
+            required.agility <= Math.max(this.totalAttributeValue(unit, 'agility'), 0) &&
+            required.endurance <= Math.max(this.totalAttributeValue(unit, 'endurance'), 0) &&
+            required.intelligence <= Math.max(this.totalAttributeValue(unit, 'intelligence'), 0) &&
+            required.initiative <= Math.max(this.totalAttributeValue(unit, 'initiative'), 0) &&
+            required.luck <= Math.max(this.totalAttributeValue(unit, 'luck'), 0);
     }
 
-    public checkAchievements(required?: UnitAchievements) {
-        const unit = this.userState.unit;
+    public checkAchievements(unit: GameUnit, required?: UnitAchievements) {
         if (!required || !unit.achievements) return true;
         return [...Object.keys(required)].every(
             k => required[k] < 0 ? required[k] > (unit.achievements[k] ?? 0) * -1 : required[k] <= (unit.achievements[k] ?? 0));
     }
 
-    public checkQuests(required?: UnitQuests) {
-        const unit = this.userState.unit;
+    public checkQuests(unit: GameUnit, required?: UnitQuests) {
         if (!required || !unit.quests) return true;
         return [...Object.keys(required)].every(k => required[k] === unit.quests[k]);
     }
 
-    public checkPrice(required?: UnitBooty): boolean {
+    public checkPrice(unit: GameUnit, required?: UnitBooty): boolean {
         if (!required) return true;
-        const unit = this.userState.unit;
         return required.coins <= unit.booty.coins &&
             (required.ruby ?? 0) <= (unit.booty.ruby ?? 0);
     }
 
-    public totalBaseAttributeValue(key: string): number {
-        return (this.userState.unit.inventory
+    public totalBaseAttributeValue(unit: GameUnit, key: string): number {
+        return (unit.inventory
             .armor?.reduce((acc, a) => acc + this.totalBaseAttributeModification(a, key), 0) || 0) +
-            ((this.userState.unit.stats.attributes as any)[key] || 0);
+            ((unit.stats.attributes as any)[key] || 0);
     }
 
     public totalBaseAttributeModification(equipment: Equipment, key: string): number {
@@ -119,10 +115,10 @@ export default class GameStateService {
         return equipment.modification.reduce((acc, m) => acc + (m.baseAttributes as any)?.[key] || 0, 0);
     }
 
-    public totalAttributeValue(key: string): number {
-        return (this.userState.unit.inventory
+    public totalAttributeValue(unit: GameUnit, key: string): number {
+        return (unit.inventory
             .armor?.reduce((acc, a) => acc + this.totalAttributeModification(a, key), 0) || 0) +
-            ((this.userState.unit.stats.attributes as any)[key] || 0);
+            ((unit.stats.attributes as any)[key] || 0);
     }
 
     public totalAttributeModification(equipment: Equipment, key: string): number {

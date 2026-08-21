@@ -56,7 +56,7 @@ export default class GameUnitItems extends GameBase {
     }
 
     private updateUnitInventoryIcons(inventory: UnitInventory, activeTypes: ItemType[]): void {
-        const unit = this.playersUnit();
+        const unit = this.playersUnit()!;
         const needToChooseDefaultWeapon = this.unitItems.size === 0;
         const inventoryItems: InventoryItem[] = [
             ...(inventory.weapon || []),
@@ -71,8 +71,7 @@ export default class GameUnitItems extends GameBase {
             ...(inventory.disposable || []).sort(compareItemsByName),
             ...(inventory.provision || []).sort(compareItemsByName),
         ];
-        unit && (this.state.userState.unit = unit);
-        inventoryItems.forEach(v => this.updateUnitItem(v, activeTypes));
+        inventoryItems.forEach(v => this.updateUnitItem(v, activeTypes, unit));
         this.unitItems.forEach((icon, uid) => {
             if (!inventoryItems.find(i => i.uid === uid)) {
                 icon.destroy();
@@ -88,18 +87,18 @@ export default class GameUnitItems extends GameBase {
         }
     }
 
-    protected updateUnitItem(data: InventoryItem, activeTypes: ItemType[]): void {
+    protected updateUnitItem(data: InventoryItem, activeTypes: ItemType[], unit: GameUnit): void {
         let iconItem = this.unitItems.get(data.uid!);
         if (!iconItem) {
             iconItem = ItemIcon.createItemIcon(data.code, this)!;
             iconItem.onClick = target => this.onUnitItemClick(target);
             iconItem.descriptionPopup = this._objectDescription;
         }
+        iconItem.unit = unit;
         this.unitItems.set(data.uid!, iconItem);
         activeTypes.some(t => t === data.type) ? iconItem.enable() : iconItem.disable();
         iconItem.update(data, this.state);
         !this.checkUseCost(data) && iconItem.cantUse();
-        iconItem.unit = this.playersUnit();
         this.updateUnitItemHint(iconItem, data);
     }
 

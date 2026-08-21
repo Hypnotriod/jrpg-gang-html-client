@@ -185,12 +185,13 @@ export default class ItemIcon extends Component {
         this._data = data;
         this.name = data.name;
         this.icon = data.code;
+        const unit = this.unit ?? state.userState?.unit;
         const asEquipment = data as Equipment;
         asEquipment.equipped ? this.select(state) : this.unselect();
         const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
         isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
         isBroken && this.unselect();
-        const cantuse = !state.checkRequirements(asEquipment.requirements);
+        const cantuse = !unit ? false : !state.checkRequirements(unit, asEquipment.requirements);
         cantuse ? this.cantUse() : this.canUse();
         if (!cantuse && asEquipment.equipped) {
             let slot = String(asEquipment.slot || 'ammo');

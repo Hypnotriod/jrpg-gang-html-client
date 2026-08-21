@@ -80,10 +80,11 @@ export default class Quests extends Component implements ServerCommunicatorHandl
     }
 
     protected createQuest(status: GameQuestStatus): Quest {
+        const unit = this.state.userState.unit;
         const quest: Quest = Quest.createQuest(this, QUESTS_LIST_CONTAINER)!;
         quest.update(status);
-        quest.canApply = this.state.checkRequirements(status.activation.requirements);
-        quest.canComplete = this.state.checkRequirements(status.completion.requirements);
+        quest.canApply = this.state.checkRequirements(unit, status.activation.requirements);
+        quest.canComplete = this.state.checkRequirements(unit, status.completion.requirements);
         return quest;
     }
 

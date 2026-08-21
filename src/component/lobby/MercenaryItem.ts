@@ -60,6 +60,7 @@ export default class MercenaryItem extends Component {
     }
 
     public update(mercenary: Mercenary): void {
+        const unit = this.state.userState.unit;
         this.data = mercenary;
         this.icon.icon = mercenary.code!;
         this.icon.description = mercenary;
@@ -82,7 +83,7 @@ export default class MercenaryItem extends Component {
         this.labelRequirements.value = this.renderer.renderApplicationRequirements(mercenary.requirements || {}, this.state.userState.unit);
         this.labelPrice.value = this.renderer.renderApplicationPrice(mercenary.price ?? {}, this.state.userState.unit);
 
-        if (this.state.checkRequirements(mercenary.requirements) && this.state.checkPrice(mercenary.price)) {
+        if (this.state.checkRequirements(unit, mercenary.requirements) && this.state.checkPrice(unit, mercenary.price)) {
             this.buttonHire.enable();
         } else {
             this.buttonHire.disable();
