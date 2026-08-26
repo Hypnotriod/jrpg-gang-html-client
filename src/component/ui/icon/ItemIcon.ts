@@ -159,6 +159,7 @@ export default class ItemIcon extends Component {
 
     public cantUse() {
         this.iconCantUse?.show();
+        this.iconSlot?.hide();
     }
 
     public canUse() {
@@ -191,7 +192,7 @@ export default class ItemIcon extends Component {
         const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
         isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
         isBroken && this.unselect();
-        const cantuse = !unit ? false : !state.checkRequirements(unit, asEquipment.requirements);
+        const cantuse = !unit ? false : !state.checkRequirements(unit, asEquipment.requirements) || !state.checkUseCost(unit, data);
         cantuse ? this.cantUse() : this.canUse();
         if (!cantuse && asEquipment.equipped) {
             let slot = String(asEquipment.slot || 'ammo');
