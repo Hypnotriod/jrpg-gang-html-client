@@ -293,12 +293,12 @@ export default class GameObjectRenderer {
 
     protected patchDeviation(data: any): any {
         if (!data.deviation) return data;
-        if (data.baseAttributes) {
-            !this.emptyOrAllFieldsZeros([], 'baseAttributes', data) && (data.baseAttributes.deviation = data.deviation);
-            !this.emptyOrAllFieldsZeros([], 'attributes', data) && (data.attributes.deviation = data.deviation);
-            !this.emptyOrAllFieldsZeros([], 'resistance', data) && (data.resistance.deviation = data.deviation);
-            !this.emptyOrAllFieldsZeros([], 'damage', data) && (data.damage.deviation = data.deviation);
-            !this.emptyOrAllFieldsZeros([], 'recovery', data) && (data.recovery.deviation = data.deviation);
+        if (data.baseAttributes || data.attributes || data.resistance || data.damage || data.recovery) {
+            data.baseAttributes && (data.baseAttributes.deviation = data.deviation);
+            data.attributes && (data.attributes.deviation = data.deviation);
+            data.resistance && (data.resistance.deviation = data.deviation);
+            data.damage && (data.damage.deviation = data.deviation);
+            data.recovery && (data.recovery.deviation = data.deviation);
             delete data.deviation;
             return data;
         }
