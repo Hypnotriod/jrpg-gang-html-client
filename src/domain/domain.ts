@@ -30,7 +30,7 @@ export interface UnitState {
     stamina: number;
     mana: number;
     actionPoints: number;
-    stress: number;
+    stress?: number;
     isStunned?: boolean;
     waitingOrder?: number;
 }
@@ -139,8 +139,8 @@ export interface Equipment extends Item {
     durability: number;
     slot: EquipmentSlot;
     slotsNumber: number;
-    equipped: boolean;
-    requirements: UnitRequirements;
+    equipped?: boolean;
+    requirements?: UnitRequirements;
     modification: UnitModification[];
 }
 
@@ -157,14 +157,16 @@ export interface Weapon extends Equipment {
     range: ActionRange;
     useCost: UnitBaseAttributes;
     damage: DamageImpact[];
+    spread?: Position[];
 }
 
 export interface Magic extends Item {
-    requirements: UnitRequirements;
+    requirements?: UnitRequirements;
     range: ActionRange;
     useCost: UnitBaseAttributes;
     damage?: DamageImpact[];
     modification?: UnitModificationImpact[];
+    spread?: Position[];
 }
 
 export interface Armor extends Equipment {
@@ -175,6 +177,7 @@ export interface Disposable extends Item {
     range: ActionRange;
     damage?: DamageImpact[];
     modification?: UnitModificationImpact[];
+    spread?: Position[];
 }
 
 export interface Ammunition extends Item {

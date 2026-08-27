@@ -49,7 +49,7 @@ export default class GameObjectRenderer {
                 result += this.keyValueColor('stamina', 'green', `${data.state.stamina} / ${sum(this.actionService.baseAttributeTotalValue(data, 'stamina'))}`);
                 result += this.keyValueColor('mana', 'blue', `${data.state.mana} / ${sum(this.actionService.baseAttributeTotalValue(data, 'mana'))}`);
                 result += this.keyValueColor('action points', 'orange', `${data.state.actionPoints} / ${sum(this.actionService.baseAttributeTotalValue(data, 'actionPoints'))}`);
-                result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress}`);
+                result += this.keyValueColor('stress', 'blue-grey', `${data.state.stress ?? 0}`);
                 result += data.state.isStunned ? this.keyValue('stunned', data.state.isStunned ? 'yes' : 'no') : '';
             } else {
                 result += this.keyValueColor('health', 'red', `${sum(this.actionService.baseAttributeTotalValue(data, 'health'))}`);

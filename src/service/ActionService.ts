@@ -89,8 +89,8 @@ export default class ActionService {
         if (impact[0]?.chance) {
             chance = impact[0].chance;
             chance += !target.state.isStunned
-                ? (sum(this.attributeTotalValue(unit, 'agility')) - unit.state.stress) - (sum(this.attributeTotalValue(target, 'agility')) - target.state.stress)
-                : sum(this.attributeTotalValue(unit, 'agility')) + target.state.stress;
+                ? (sum(this.attributeTotalValue(unit, 'agility')) - (unit.state.stress ?? 0)) - (sum(this.attributeTotalValue(target, 'agility')) - (unit.state.stress ?? 0))
+                : sum(this.attributeTotalValue(unit, 'agility')) + (unit.state.stress ?? 0);
         }
         return Math.max(this.MIN_CHANCE, Math.min(this.MAX_CHANCE, chance));
     }
@@ -99,7 +99,7 @@ export default class ActionService {
         let chance = this.FULL_CHANCE;
         if (impact[0]?.chance) {
             chance = impact[0].chance;
-            chance += sum(this.attributeTotalValue(unit, 'intelligence')) - unit.state.stress;
+            chance += sum(this.attributeTotalValue(unit, 'intelligence')) - (unit.state.stress ?? 0);
         }
         return Math.max(this.MIN_CHANCE, Math.min(this.FULL_CHANCE, chance));
     }

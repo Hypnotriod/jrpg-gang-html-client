@@ -179,7 +179,7 @@ export default class ItemIcon extends Component {
         return this.data?.type === ItemType.MAGIC ||
             this.data?.type === ItemType.DISPOSABLE ||
             this.data?.type === ItemType.PROVISION ||
-            (this.data as Equipment)?.equipped;
+            ((this.data as Equipment)?.equipped ?? false);
     }
 
     public update(data: InventoryItem, state: GameStateService): void {
