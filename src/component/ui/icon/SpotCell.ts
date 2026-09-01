@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -24,6 +24,8 @@ export default class SpotCell extends Component {
     protected readonly _iconNoStamina: Container;
     @component(ICON_STRESSED, Container)
     protected readonly _iconStressed: Container;
+    @component(ICON_READY, Container)
+    protected readonly _iconReady: Container;
     @component(ICON_BLEEDING, Container)
     protected readonly _iconBleeding: Container;
     @component(ICON_POISON, Container)
@@ -221,6 +223,7 @@ export default class SpotCell extends Component {
         this._iconStunned.hide();
         this._iconNoStamina.hide();
         this._iconStressed.hide();
+        this._iconReady.hide();
         this._iconBleeding.hide();
         this._iconPoison.hide();
         this._iconCold.hide();
@@ -256,6 +259,7 @@ export default class SpotCell extends Component {
         this._iconEffect.hide();
         this._iconExperience.hide();
         this._iconStressed.hide();
+        this._iconReady.hide();
         this.expLabel.hide();
         this.hitHpLabel.hide();
         this.hitCriticalLabel.hide();
@@ -392,6 +396,10 @@ export default class SpotCell extends Component {
         if (this._hover) {
             this.onHover();
         }
+    }
+
+    public updateReady(isReady: boolean) {
+        isReady ? this._iconReady.show() : this._iconReady.hide();
     }
 
     public onRetreat(): void {

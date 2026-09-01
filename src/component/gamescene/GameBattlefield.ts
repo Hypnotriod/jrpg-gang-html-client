@@ -147,6 +147,11 @@ export default class GameBattlefield extends GameBase {
         units.forEach(unit => {
             const spot: SpotCell = this.spots[unit.position.x][unit.position.y];
             spot.updateWithUnit(unit, isActive);
+            if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT ||
+                this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE
+            ) {
+                spot.updateReady(unit.playerInfo?.isReady === true);
+            }
             if (this.currUnit && this.currUnit.uid === unit.uid && this.state.gameState.nextPhase !== GamePhase.PREPARE_UNIT) {
                 spot.choose(this.currUnit.state.actionPoints);
                 if (this.state.gameState.nextPhase === GamePhase.RETREAT_ACTION) {

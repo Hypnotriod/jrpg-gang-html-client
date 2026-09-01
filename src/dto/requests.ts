@@ -1,4 +1,4 @@
-import { Action, ActionType, Position } from '../domain/domain';
+import { Action } from '../domain/domain';
 
 export enum RequestType {
     JOIN = 'join',
