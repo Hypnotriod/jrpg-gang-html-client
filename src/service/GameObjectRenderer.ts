@@ -260,7 +260,8 @@ export default class GameObjectRenderer {
         if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         if (header === 'damage') depth = 13;
         if (header === 'modification') depth = 23;
-        const result = data.reduce((acc, d, i) => acc + this.renderObject(d, ignoreHeaders, `${header} #${i + 1}`, depth), '');
+        const result = data.reduce((acc, d, i) => acc + '<div class="objects-block">' +
+            this.renderObject(d, ignoreHeaders, `${header}` + (data.length > 1 ? ` ${i + 1}` : ''), depth) + '</div>', '');
         return result.toString();
     }
 

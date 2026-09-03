@@ -20,6 +20,16 @@ body {
     height: 100vh;
 }
 
+.objects-block {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-left: -3px;
+    padding-left: 2px;
+    padding-top: 2px;
+    background-color: #2b494e;
+    border-radius: 3px;
+}
+
 .hidden {
     display: none;
 }
