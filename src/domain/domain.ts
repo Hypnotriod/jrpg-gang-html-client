@@ -17,6 +17,7 @@ export interface RoomInfo {
     host: PlayerInfo;
     joinedUsers: PlayerInfo[];
     mercenaries: PlayerInfo[];
+    blockedPlayerIds?: string[];
     inactive?: boolean;
 }
 

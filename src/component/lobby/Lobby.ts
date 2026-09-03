@@ -1,7 +1,7 @@
 import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
-import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
+import { BASE_UNIT_DESCRIPTIONS, ROOM_CAPACITY, SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatParticipant, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
 import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData, UserStateData } from '../../dto/responces';
@@ -218,7 +218,12 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         } else {
             oldRoomInfo.joinedUsers = roomInfo.joinedUsers;
             oldRoomInfo.mercenaries = roomInfo.mercenaries;
+            oldRoomInfo.blockedPlayerIds = roomInfo.blockedPlayerIds;
             oldRoomInfo.host = roomInfo.host;
+            if (roomInfo.host.playerId === this.state.userState.playerInfo.playerId &&
+                roomInfo.joinedUsers.length >= ROOM_CAPACITY - 1) {
+                this.mercenariesPopup.hide();
+            }
         }
         this.update();
     }
@@ -292,7 +297,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     protected onCreateRoom(scenarioId: string): void {
         this.roomsContainer.scrollTo({ top: 0 });
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
-            capacity: 4,
+            capacity: ROOM_CAPACITY,
             scenarioId, // todo: make room creation dialog
         } as CreateRoomRequestData);
     }

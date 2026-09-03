@@ -2,7 +2,7 @@ import { container, injectable } from 'tsyringe';
 import { BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, BUTTON_START_GAME, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
 import { ROOM_DESIGN } from '../../constants/Resources';
 import { RoomInfo } from '../../domain/domain';
-import { JoinGameRoomRequestData, RequestType } from '../../dto/requests';
+import { JoinGameRoomRequestData, KickFromGameRoomRequestData, RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -39,6 +39,12 @@ export default class Room extends Component {
     private readonly hireMercenaryButton: Button;
     @component('mercenary_icon', Icon)
     private readonly mercenaryIcon: Icon;
+    @component('button_kick_player_2', Button)
+    private readonly kickPlayer2Button: Button;
+    @component('button_kick_player_3', Button)
+    private readonly kickPlayer3Button: Button;
+    @component('button_kick_player_4', Button)
+    private readonly kickPlayer4Button: Button;
 
     public set objectDescription(value: ObjectDescription) {
         this._objectDescription = value;
@@ -111,7 +117,11 @@ export default class Room extends Component {
         } else {
             this.joinRoomButton.show();
             this.leaveRoomButton.hide();
-            this.joinRoomButton.enable();
+            if (roomInfo.blockedPlayerIds?.includes(this.state.userState.playerInfo.playerId)) {
+                this.joinRoomButton.disable();
+            } else {
+                this.joinRoomButton.enable();
+            }
         }
         isUserHostOfRoom ? this.startGameButton.enable() : this.startGameButton.disable();
 
@@ -120,6 +130,10 @@ export default class Room extends Component {
         } else {
             this.hireMercenaryPlaceholder.show();
         }
+
+        isUserHostOfRoom && roomInfo.joinedUsers.length >= 1 ? this.kickPlayer2Button.show() : this.kickPlayer2Button.hide();
+        isUserHostOfRoom && roomInfo.joinedUsers.length >= 2 ? this.kickPlayer3Button.show() : this.kickPlayer3Button.hide();
+        isUserHostOfRoom && roomInfo.joinedUsers.length >= 3 ? this.kickPlayer4Button.show() : this.kickPlayer4Button.hide();
     }
 
     protected initialize(): void {
@@ -141,6 +155,10 @@ export default class Room extends Component {
         this.joinRoomButton.onClick = target => this.doJoinRoom();
         this.leaveRoomButton.onClick = target => this.doLeaveRoom();
         this.startGameButton.onClick = target => this.doStartGame();
+
+        this.kickPlayer2Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[0].playerId);
+        this.kickPlayer3Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[1].playerId);
+        this.kickPlayer4Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[2].playerId);
     }
 
     public onHireMercenary(callback: (roomUid: number) => void): void {
@@ -159,6 +177,10 @@ export default class Room extends Component {
 
     protected doJoinRoom(): void {
         this.communicator.sendMessage(RequestType.JOIN_ROOM, { roomUid: this.roomInfo.uid } as JoinGameRoomRequestData);
+    }
+
+    protected kickPlayer(playerId: string): void {
+        this.communicator.sendMessage(RequestType.KICK_FROM_ROOM, { playerId } as KickFromGameRoomRequestData);
     }
 
     protected doLeaveRoom(): void {

@@ -8,6 +8,7 @@ export enum RequestType {
     ENTER_LOBBY = 'enterLobby',
     EXIT_LOBBY = 'exitLobby',
     JOIN_ROOM = 'joinRoom',
+    KICK_FROM_ROOM = 'kickFromRoom',
     HIRE_MERCENARY = 'hireMercenary',
     LEAVE_ROOM = 'leaveRoom',
     LOBBY_STATUS = 'lobbyStatus',
@@ -66,6 +67,10 @@ export interface CreateRoomRequestData extends RequestData {
 
 export interface JoinGameRoomRequestData extends RequestData {
     roomUid: number;
+}
+
+export interface KickFromGameRoomRequestData extends RequestData {
+    playerId: string;
 }
 
 export interface ActionRequestData extends Action, RequestData {

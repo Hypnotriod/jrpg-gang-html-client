@@ -300,3 +300,5 @@ export const SCENARIO_IDS = {
     MEDIUM: 'medium-01',
     ADVANCED: 'advanced-01',
 }
+
+export const ROOM_CAPACITY = 4;
