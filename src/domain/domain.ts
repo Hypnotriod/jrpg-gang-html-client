@@ -142,7 +142,7 @@ export interface Equipment extends Item {
     slotsNumber: number;
     equipped?: boolean;
     requirements?: UnitRequirements;
-    modification: UnitModification[];
+    modification?: UnitModification[];
 }
 
 export interface ActionRange {
