@@ -212,7 +212,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelPhysique.description = { Physique: 'Affects stun chance. For every 10 points, adds 1 point to all physical resistances' };
         this.labelAgility.description = { Agility: 'Affects attack/dodge chance' };
         this.labelEndurance.description = { Endurance: 'Affects stamina recovery' };
-        this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.Multiplies by 1% all the modification points' };
+        this.labelIntelligence.description = { Intelligence: 'Enhances fire, cold, lightning, exhaustion, manaDrain, fear, curse, and madness damage.' };
         this.labelInitiative.description = { Initiative: 'Affects turn order. For every 10 points, adds 1 action point' };
         this.labelLuck.description = { Luck: 'Affects critical chance' };
         this.unitBooty.description = { Booty: 'Character coins and rubies' };
