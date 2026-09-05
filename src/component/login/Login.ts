@@ -125,9 +125,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
             nickname,
             class: clazz,
         } as SetPlayerInfoRequestData);
-        if (response.status === ResponseStatus.ALREADY_EXISTS) {
+        if (response.status === ResponseStatus.ALREADY_EXISTS || response.status === ResponseStatus.NOT_ALLOWED) {
             this.errorLabel.show();
-            this.errorLabel.value = 'A user with this nickname already exists';
+            this.errorLabel.value = response.status === ResponseStatus.NOT_ALLOWED ?
+                'This nickname is reserved' : 'A user with this nickname already exists';
             this.isJoining = false;
             return;
         }
