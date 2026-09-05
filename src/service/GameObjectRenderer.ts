@@ -375,7 +375,7 @@ export default class GameObjectRenderer {
 
     protected emptyOrAllFieldsZeros(ignoreHeaders: string[], header: string, data: any): boolean {
         return !data || Object.keys(data).every(key =>
-            (!data[key] && !this.isZeroValueKey(header, key)) || this.ignoreKey(ignoreHeaders, header, key));
+            ((!data[key] || data[key].length === 0) && !this.isZeroValueKey(header, key)) || this.ignoreKey(ignoreHeaders, header, key));
     }
 
     protected isZeroValueKey(header: string, key: string): boolean {

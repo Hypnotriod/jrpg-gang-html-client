@@ -16,22 +16,22 @@
 }
 
 .game-log {
-    background-color: rgba(90, 90, 90, 0.8);
+    background-color: #2b494e78;
     padding: 10px;
     height: 265px;
     overflow-y: auto;
     overflow-x: hidden;
-    border-radius: 3px;
+    border-radius: 5px;
     width: 250px;
 }
 
 .game-chat {
-    background-color: rgba(90, 90, 90, 0.8);
+    background-color: #2b494e78;
     padding: 10px;
     height: 218px;
     overflow-y: auto;
     overflow-x: hidden;
-    border-radius: 3px;
+    border-radius: 5px;
     width: 370px;
 }
 

@@ -66,7 +66,7 @@ export default class GameBase extends Component {
     }
 
     protected getUnitName(unit: GameUnit): string {
-        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : (`${unit.name} (${unit.uid})`);
+        return unit.playerInfo ? `${unit.name} (${unit.playerInfo.nickname})` : (`${unit.name}`);
     }
 
     protected distinguishEndRoundResult(endRound: EndRoundResult): object {

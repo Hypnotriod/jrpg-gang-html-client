@@ -320,7 +320,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         const inventoryItems: InventoryItem[] = [
             ...filter('weapon', inventory.weapon),
             ...filter('ammunition', inventory.ammunition),
-            ...filter('magic', inventory.magic),
+            ...filter('magic', inventory.magic?.filter(magic =>
+                !this.state.userState.unit.inventory.magic?.some(m => m.code === magic.code))),
             ...filter('armor', inventory.armor),
             ...filter('disposable', inventory.disposable),
             ...filter('provision', inventory.provision),
@@ -411,8 +412,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitProgress.htmlValue = `${this.keyValue('Level', pr.level)}<br>
                                    ${this.keyValue('Exp', pr.experience, pr.experienceNext)}<br>
                                    ${this.keyValue('Base Attr Points', pr.baseAttributesPoints || 0)}<br>
-                                   ${this.keyValue('Attr Points', pr.attributesPoints || 0)}<br>
-                                   `;
+                                   ${this.keyValue('Attr Points', pr.attributesPoints || 0)}`;
         pr.experience >= pr.experienceNext! ? this.btnLevelUp.show() : this.btnLevelUp.hide();
     }
 
