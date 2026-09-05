@@ -24,10 +24,25 @@ body {
     margin-top: 3px;
     margin-bottom: 3px;
     margin-left: -3px;
-    padding-left: 2px;
+    padding-left: 3px;
     padding-top: 2px;
-    background-color: #2b494e;
+    background-color: #2b494e92;
     border-radius: 3px;
+}
+
+.configurator-block {
+    background-color: #2b2d4e84;
+    border-radius: 5px;
+    padding: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0;
+}
+
+.card-panel-transparent {
+    background-color: #2b494e92;
+    border-radius: 5px;
+    padding: 20px;
 }
 
 .hidden {

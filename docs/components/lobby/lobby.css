@@ -42,12 +42,12 @@
 }
 
 .lobby-chat {
-    background-color: rgba(90, 90, 90, 0.8);
+    background-color: #2b494e78;
     padding: 10px;
     height: 420px;
     overflow-y: auto;
     overflow-x: hidden;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .lobby-chat-input {
