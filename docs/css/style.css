@@ -188,7 +188,7 @@ body {
     pointer-events: none;
     position: fixed;
     overflow: hidden;
-    max-width: 460px;
+    max-width: 470px;
     background-color: rgb(40, 51, 61);
     z-index: 2000;
     min-height: 40px;
