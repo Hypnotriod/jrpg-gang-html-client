@@ -175,6 +175,10 @@ export default abstract class Component {
         this.view.scrollTo(options);
     }
 
+    public getBoundingRect(): DOMRect {
+        return this.view.getBoundingClientRect();
+    }
+
     protected async delay(ms?: number): Promise<void> {
         return new Promise(resolve => {
             window.setTimeout(resolve, ms);

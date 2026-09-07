@@ -116,7 +116,7 @@ export default class ItemIcon extends Component {
         this._descriptionPopup.isShopItem = this._isShopItem;
         this._descriptionPopup.unit = this._unit;
         this._descriptionPopup.data = { ...this._data, hint: this._hint };
-        this._descriptionPopup.show();
+        this._descriptionPopup.show(this.getBoundingRect(), 500);
     }
 
     protected onLeave(): void {

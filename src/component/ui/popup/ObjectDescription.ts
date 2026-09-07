@@ -1,7 +1,7 @@
 import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import Container from '../container/Container';
-import { GameUnit } from '../../../domain/domain';
+import { GameUnit, Position } from '../../../domain/domain';
 
 @injectable()
 export default class ObjectDescription extends Container {
@@ -12,6 +12,8 @@ export default class ObjectDescription extends Container {
     private _shown: boolean = false;
     private _isShopItem: boolean = false;
     private _e?: MouseEvent;
+    private _stickTo?: DOMRect;
+    private _showTimeout: number;
 
     public constructor(private readonly renderer: GameObjectRenderer) {
         super();
@@ -36,18 +38,27 @@ export default class ObjectDescription extends Container {
         if (!ObjectDescription._active) {
             super.hide();
         } else if (this._shown) {
-            this.show();
+            this.show(this._stickTo);
         }
     }
 
-    public override show(): void {
+    public override show(stickTo?: DOMRect, timeoutMs?: number): void {
+        this._stickTo = stickTo;
         this._shown = true;
         if (!ObjectDescription._active) return;
-        super.show();
+        clearTimeout(this._showTimeout);
+        this._showTimeout = window.setTimeout(
+            () => {
+                if (!ObjectDescription._active) return;
+                super.show();
+                this.updatePositionOnMouseMove(this._e);
+            },
+            timeoutMs ?? 0);
     }
 
     public override hide(): void {
         this._shown = false;
+        clearTimeout(this._showTimeout);
         super.hide();
     }
 
@@ -57,12 +68,24 @@ export default class ObjectDescription extends Container {
         if (!e) { return; }
         this.leftPx = 0;
         this.topPx = 0;
-        this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
-        this.topPx = (window.innerHeight - this.height) / 2;
-        if (e.clientY - this.height > this.topPx) {
-            this.topPx = e.clientY - this.height;
-        } else if (e.clientY < this.topPx) {
-            this.topPx = e.clientY;
+        if (this._stickTo) {
+            this.leftPx = this._stickTo.x + this._stickTo.width + 2 + this.width < window.innerWidth ?
+                this._stickTo.x + this._stickTo.width + 2 : this._stickTo.x - this.width - 2;
+            this.topPx = (this._stickTo.height - this.height) / 2 + this._stickTo.y;
+            if (this.topPx < 32) {
+                this.topPx = 32;
+            }
+            if (this.topPx + this.height + 32 > window.innerHeight) {
+                this.topPx = window.innerHeight - this.height - 32;
+            }
+        } else {
+            this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
+            this.topPx = (window.innerHeight - this.height) / 2;
+            if (e.clientY - this.height > this.topPx) {
+                this.topPx = e.clientY - this.height;
+            } else if (e.clientY < this.topPx) {
+                this.topPx = e.clientY;
+            }
         }
     }
 
@@ -101,6 +124,6 @@ export default class ObjectDescription extends Container {
                 this.renderer.column(misc, 6)
             );
         }
-        this.updatePositionOnMouseMove();
+        this.updatePositionOnMouseMove(this._e);
     }
 }
