@@ -37,7 +37,7 @@ export default class Icon extends Component {
             this.onHoverCallback?.(this);
             if (!this._descriptionPopup || !this._description) { return; }
             this._descriptionPopup.data = this._description;
-            this._descriptionPopup.show();
+            this._descriptionPopup.show(this.getBoundingRect(), 250);
         };
         this.view.onmouseleave = (event: MouseEvent) => {
             this.onLeaveCallback?.(this);
