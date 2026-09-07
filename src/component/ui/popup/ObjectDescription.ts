@@ -38,12 +38,12 @@ export default class ObjectDescription extends Container {
         if (!ObjectDescription._active) {
             super.hide();
         } else if (this._shown) {
-            this.show(this._stickTo);
+            this.show({ stickTo: this._stickTo });
         }
     }
 
-    public override show(stickTo?: DOMRect, timeoutMs?: number): void {
-        this._stickTo = stickTo;
+    public override show(options?: { stickTo?: DOMRect, timeoutMs?: number }): void {
+        this._stickTo = options?.stickTo;
         this._shown = true;
         if (!ObjectDescription._active) return;
         clearTimeout(this._showTimeout);
@@ -53,7 +53,7 @@ export default class ObjectDescription extends Container {
                 super.show();
                 this.updatePositionOnMouseMove(this._e);
             },
-            timeoutMs ?? 0);
+            options?.timeoutMs ?? 0);
     }
 
     public override hide(): void {

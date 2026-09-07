@@ -146,12 +146,12 @@ export default class SpotCell extends Component {
                 description: this._unit.description,
                 hint: this._hint,
             };
-            this._descriptionPopup.show(this.getBoundingRect(), 500);
+            this._descriptionPopup.show({ stickTo: this.getBoundingRect(), timeoutMs: 500 });
             return;
         }
         if (this._icon.enabled) {
             this._descriptionPopup.data = { hint: 'Click to move here' };
-            this._descriptionPopup.show(this.getBoundingRect(), 500);
+            this._descriptionPopup.show({ stickTo: this.getBoundingRect(), timeoutMs: 500 });
             return;
         }
     }

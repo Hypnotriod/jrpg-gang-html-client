@@ -13,7 +13,7 @@ export default class Label extends Component {
     protected onHover(): void {
         if (!this._descriptionPopup || !this._description) { return; }
         this._descriptionPopup.data = this._description;
-        this._descriptionPopup.show(undefined, 250);
+        this._descriptionPopup.show({ timeoutMs: 250 });
     }
 
     protected onLeave(): void {
