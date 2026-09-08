@@ -199,6 +199,25 @@ body {
     border-radius: 3px;
 }
 
+.range-table {
+    border-spacing: 30px;
+    width: 82px;
+}
+
+.spread-table {
+    border-spacing: 30px;
+    width: 64px;
+}
+
+.range-cell {
+    width: 10px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0px;
+    border: 2px solid rgb(30, 35, 41);
+}
+
 .achievement-popup {
     pointer-events: none;
     position: fixed;

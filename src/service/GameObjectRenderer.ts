@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { GameUnit, Unit, UnitInventory, Weapon } from '../domain/domain';
+import { ActionRange, GameUnit, Position, Unit, UnitInventory, Weapon } from '../domain/domain';
 import ActionService, { sum } from './ActionService';
 
 @injectable()
@@ -260,6 +260,9 @@ export default class GameObjectRenderer {
         if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         if (header === 'damage') depth = 13;
         if (header === 'modification') depth = 23;
+        if (header === 'spread') {
+            return this.renderSpread(data, depth);
+        }
         const result = data.reduce((acc, d, i) => acc + '<div class="objects-block">' +
             this.renderObject(d, ignoreHeaders, `${header}` + (data.length > 1 ? ` ${i + 1}` : ''), depth) + '</div>', '');
         return result.toString();
@@ -267,12 +270,46 @@ export default class GameObjectRenderer {
 
     protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
+        if (header === 'range') {
+            return this.renderRange(data, depth);
+        }
         data = this.patchDeviation(data);
         data = this.patchDuration(data);
         data = this.patchTrueFalse(data);
         data = this.patchChance(data);
         return this.header(header, depth) + Object.keys(data)
             .reduce((acc, key) => acc + this.render(data[key], ignoreHeaders, key, depth + 1, header), '');
+    }
+
+    protected renderRange(range: ActionRange, depth: number): string {
+        const table = [['purple', '', '', ''], ['purple', '', '', ''], ['purple', '', '', '']]
+            .map((row, y) => row.map((v, x) => {
+                if (x === 0) return v;
+                if (range?.minimumX && range.minimumX > x) return 'grey';
+                if (range?.maximumX && range.maximumX < x) return 'grey';
+                if (range?.maximumY && range.maximumY < Math.abs(y - 1)) return 'grey';
+                return 'green';
+            }));
+        const result = this.header('range', depth) + '<table class="range-table">' +
+            table.flatMap(row => '<tr>' + row.map(v => `<th class="range-cell ${v}"> </th>`).join('') + '</tr>').join('')
+            + '</table>';
+        return result;
+    }
+
+    protected renderSpread(positions: Position[], depth: number): string {
+        const table = [['', '', ''], ['', 'orange', ''], ['', '', '']]
+            .map((row, y) => row.map((v, x) => {
+                x--;
+                if (x === 0 && y === 1) return v;
+                if (positions.some(p => p.x === x && p.y === y - 1)) {
+                    return 'green';
+                }
+                return 'grey';
+            }));
+        const result = this.header('spread', depth) + '<table class="spread-table">' +
+            table.flatMap(row => '<tr>' + row.map(v => `<th class="range-cell ${v}"> </th>`).join('') + '</tr>').join('')
+            + '</table>';
+        return result;
     }
 
     protected patchChance(data: any): any {
