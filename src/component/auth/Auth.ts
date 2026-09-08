@@ -22,6 +22,7 @@ export default class Auth extends Component {
     public override show(): void {
         SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
+        this.setButtonState(true);
         super.show();
     }
 
@@ -32,10 +33,17 @@ export default class Auth extends Component {
     }
 
     protected onAuthGoogleClick(): void {
+        this.setButtonState(false);
         window.location.href = this.appConfig.authUrl;
     }
 
     protected onAuthGuestClick(): void {
+        this.setButtonState(false);
         window.location.href = this.appConfig.authGuestUrl;
+    }
+
+    protected setButtonState(enabled: boolean): void {
+        enabled ? this.authGoogleButton.enable() : this.authGoogleButton.disable();
+        enabled ? this.authGuestButton.enable() : this.authGuestButton.disable();
     }
 }

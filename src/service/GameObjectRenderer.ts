@@ -197,7 +197,7 @@ export default class GameObjectRenderer {
     public renderItemUseCost(data: any, unit?: GameUnit): string {
         let result = '';
         if (unit && data.useCost && Object.values(data.useCost).some(v => Number(v))) {
-            result += this.header('Use Cost', 2);
+            result += this.header('Use Cost', 43);
             result += this.keyValueRequired('health', data.useCost, [unit.state.health, 0]);
             result += this.keyValueRequired('stamina', data.useCost, [unit.state.stamina, 0]);
             result += this.keyValueRequired('mana', data.useCost, [unit.state.mana, 0]);
@@ -363,6 +363,8 @@ export default class GameObjectRenderer {
                 return `<span class="purple lighten-1">${value}:</span><br>`;
             case 33:
                 return `<span class="grey darken-1">${value}:</span><br>`;
+            case 43:
+                return `<span class="pink lighten-2">${value}:</span><br>`;
             default:
             case 2:
                 return `<span class="light-blue lighten-1">${value}:</span><br>`;
