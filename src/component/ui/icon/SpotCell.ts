@@ -470,7 +470,7 @@ export default class SpotCell extends Component {
                 SoundService.play(SoundName.HIT);
                 this._iconHit.show();
             }
-            this._icon.shake();
+            this.shake();
             this.hitHpLabel.show();
             this.hitHpLabel.value = withDrain && !itemPhysicalDamage ? '' : `${actualPhysicalDamage}HP`;
             if (this.actionService.hasCriticalMissDamage(result, targetUid)) {

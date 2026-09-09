@@ -150,6 +150,8 @@ export default class Icon extends Component {
             this.view.style.marginLeft = '4px';
             await timeout(50);
         }
+        this.view.style.marginTop = '2px';
+        this.view.style.marginBottom = '2px';
         this.view.style.marginLeft = '2px';
     }
 
@@ -166,7 +168,7 @@ export default class Icon extends Component {
             await timeout(25);
         }
         await timeout(25);
-        for (let n = 4; n >= 0; n -= 2) {
+        for (let n = 4; n > 0; n -= 2) {
             if (direction === 'up') {
                 this.view.style.marginTop = `${n * m + offsetX}px`;
                 this.view.style.marginBottom = `${offsetX - n * m}px`;
@@ -175,6 +177,7 @@ export default class Icon extends Component {
             }
             await timeout(25);
         }
+        this.view.style.marginTop = '2px';
         this.view.style.marginBottom = '2px';
         this.view.style.marginLeft = '2px';
     }

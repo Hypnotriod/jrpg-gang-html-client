@@ -211,7 +211,7 @@ export default class GameFlowControls extends GameBase {
         if (this.autoNextPhaseInProgress) { return; }
         this.autoNextPhaseInProgress = true;
         let timeout = 1100;
-        if ([GamePhase.TAKE_ACTION_AI].includes(this.state.gameState.nextPhase)) {
+        if ([GamePhase.TAKE_ACTION_AI, GamePhase.RETREAT_ACTION].includes(this.state.gameState.nextPhase)) {
             timeout = 500;
         }
         if ([GamePhase.ACTION_COMPLETE].includes(this.state.gameState.nextPhase) &&
