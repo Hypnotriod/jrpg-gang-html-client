@@ -207,6 +207,17 @@ body {
     width: 64px;
 }
 
+.gear-change-icon {
+    padding: 1px;
+    border: 1px solid #7e7e7e96;
+    width: 20px;
+    height: 20px;
+    margin-left: 44px;
+    margin-top: 4px;
+    background-color: white;
+    border-radius: 3px;
+}
+
 .range-cell {
     width: 10px;
     height: 18px;
