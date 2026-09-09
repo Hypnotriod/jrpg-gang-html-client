@@ -154,6 +154,7 @@ export const ICON_MISSED: string = 'icon_missed';
 export const ICON_TARGET: string = 'icon_target';
 export const ICON_UNREACHABLE: string = 'icon_unreachable';
 export const ICON_EXPERIENCE: string = 'icon_experience';
+export const ICON_GEAR_CHANGE: string = 'icon_gear_change';
 
 export const UNIT_ICON: string = 'unit_icon';
 export const UNIT_INFO: string = 'unit_info';

@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -50,6 +50,8 @@ export default class SpotCell extends Component {
     protected readonly _iconEffect: Container;
     @component(ICON_FOOD, Container)
     protected readonly _iconFood: Container;
+    @component(ICON_GEAR_CHANGE, Container)
+    protected readonly _iconGearChange: Container;
     @component(ICON_HIT, Container)
     protected readonly _iconHit: Container;
     @component(ICON_HIT_COLD, Container)
@@ -249,6 +251,7 @@ export default class SpotCell extends Component {
 
     protected hideActionResultIcons(): void {
         this._iconFood.hide();
+        this._iconGearChange.hide();
         this._iconMissed.hide();
         this._iconHit.hide();
         this._iconHitCold.hide();
@@ -492,8 +495,15 @@ export default class SpotCell extends Component {
         await this._icon.shake();
     }
 
-    public async bounce(direction: 'left' | 'right'): Promise<void> {
+    public async bounce(direction: 'left' | 'right' | 'up'): Promise<void> {
         await this._icon.bounce(direction);
+    }
+
+    public changeGear(code: string): void {
+        (this._iconGearChange.view as HTMLImageElement).src = `./assets/icons/${code}.png`;
+        this.hideActionResultIcons();
+        this._iconGearChange.show();
+        this.actionResultTimeoutId = window.setTimeout(() => this.hideActionResultIcons(), 500);
     }
 
     public onUnitLeft(): void {

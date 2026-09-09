@@ -153,18 +153,29 @@ export default class Icon extends Component {
         this.view.style.marginLeft = '2px';
     }
 
-    public async bounce(direction: 'left' | 'right'): Promise<void> {
-        const m = direction === 'left' ? -1 : 1;
-        const offset = direction === 'left' ? -1 : 2;
+    public async bounce(direction: 'left' | 'right' | 'up'): Promise<void> {
+        const m = direction === 'right' ? 1 : -1;
+        const offsetX = direction === 'left' ? -1 : 2;
         for (let n = 0; n <= 4; n++) {
-            this.view.style.marginLeft = `${n * m + offset}px`;
+            if (direction === 'up') {
+                this.view.style.marginTop = `${n * m + offsetX}px`;
+                this.view.style.marginBottom = `${offsetX - n * m}px`;
+            } else {
+                this.view.style.marginLeft = `${n * m + offsetX}px`;
+            }
             await timeout(25);
         }
         await timeout(25);
         for (let n = 4; n >= 0; n -= 2) {
-            this.view.style.marginLeft = `${n * m + offset}px`;
+            if (direction === 'up') {
+                this.view.style.marginTop = `${n * m + offsetX}px`;
+                this.view.style.marginBottom = `${offsetX - n * m}px`;
+            } else {
+                this.view.style.marginLeft = `${n * m + offsetX}px`;
+            }
             await timeout(25);
         }
+        this.view.style.marginBottom = '2px';
         this.view.style.marginLeft = '2px';
     }
 }

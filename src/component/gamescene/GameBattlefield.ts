@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResultType, ActionType, Cell, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Position, Weapon } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, EndRoundResult, Equipment, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Magic, Position, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -55,6 +55,14 @@ export default class GameBattlefield extends GameBase {
         const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
         if (item && (item as Weapon).damage && targets.length) {
             this.spots[unit.position.x][unit.position.y].bounce(unit.faction === GameUnitFaction.ENEMY ? 'left' : 'right');
+        } else if (unitActionResult.action.action === ActionType.MOVE ||
+            unitActionResult.action.action === ActionType.PLACE ||
+            unitActionResult.action.action === ActionType.USE
+        ) {
+            this.spots[unit.position.x][unit.position.y].bounce('up');
+        } else if (unitActionResult.action.action === ActionType.EQUIP) {
+            this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
+            this.spots[unit.position.x][unit.position.y].bounce('up');
         }
         targets.forEach(targetUid => {
             const target: GameUnit = this.findUnitByUid(targetUid)!;
