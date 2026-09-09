@@ -467,6 +467,7 @@ export default class SpotCell extends Component {
                 SoundService.play(SoundName.HIT);
                 this._iconHit.show();
             }
+            this._icon.shake();
             this.hitHpLabel.show();
             this.hitHpLabel.value = withDrain && !itemPhysicalDamage ? '' : `${actualPhysicalDamage}HP`;
             if (this.actionService.hasCriticalMissDamage(result, targetUid)) {
@@ -485,6 +486,14 @@ export default class SpotCell extends Component {
                 this._iconEffect.show();
             }
         }
+    }
+
+    public async shake(): Promise<void> {
+        await this._icon.shake();
+    }
+
+    public async bounce(direction: 'left' | 'right'): Promise<void> {
+        await this._icon.bounce(direction);
     }
 
     public onUnitLeft(): void {

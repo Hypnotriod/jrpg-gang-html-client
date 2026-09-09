@@ -1,3 +1,4 @@
+import { timeout } from '../../../utils/utils';
 import Component from '../../Component';
 import ObjectDescription from '../popup/ObjectDescription';
 
@@ -10,7 +11,6 @@ export default class Icon extends Component {
     private _icon: string;
     private _descriptionPopup?: ObjectDescription;
     private _description: object;
-
 
     public set descriptionPopup(value: ObjectDescription) {
         this._descriptionPopup = value;
@@ -141,5 +141,30 @@ export default class Icon extends Component {
         this._enabled = true;
         this.view.classList.remove('red');
         this.view.classList.remove('lighten-4');
+    }
+
+    public async shake(): Promise<void> {
+        for (let n = 0; n < 4; n++) {
+            this.view.style.marginLeft = '0px';
+            await timeout(50);
+            this.view.style.marginLeft = '4px';
+            await timeout(50);
+        }
+        this.view.style.marginLeft = '2px';
+    }
+
+    public async bounce(direction: 'left' | 'right'): Promise<void> {
+        const m = direction === 'left' ? -1 : 1;
+        const offset = direction === 'left' ? -1 : 2;
+        for (let n = 0; n <= 4; n++) {
+            this.view.style.marginLeft = `${n * m + offset}px`;
+            await timeout(25);
+        }
+        await timeout(25);
+        for (let n = 4; n >= 0; n -= 2) {
+            this.view.style.marginLeft = `${n * m + offset}px`;
+            await timeout(25);
+        }
+        this.view.style.marginLeft = '2px';
     }
 }

@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionResultType, ActionType, Cell, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Position, Weapon } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Position, Weapon } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
@@ -50,10 +50,13 @@ export default class GameBattlefield extends GameBase {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
         if (unitActionResult?.result.result !== ActionResultType.ACCOMPLISHED) { return; }
         const targets: number[] = this.actionService.targets(unitActionResult.result);
+        const unit: GameUnit = this.findUnitByUid(unitActionResult.action.uid!)!;
+        const item = this.findItemInInventory(unit.inventory, unitActionResult.action.itemUid!);
+        const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
+        if (item && (item as Weapon).damage && targets.length) {
+            this.spots[unit.position.x][unit.position.y].bounce(unit.faction === GameUnitFaction.ENEMY ? 'left' : 'right');
+        }
         targets.forEach(targetUid => {
-            const unit: GameUnit = this.findUnitByUid(unitActionResult.action.uid!)!;
-            const item = this.findItemInInventory(unit.inventory, unitActionResult.action.itemUid!);
-            const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
             const target: GameUnit = this.findUnitByUid(targetUid)!;
             this.spots[target.position.x][target.position.y].updateWithActionResult(unitActionResult.result, targetUid, item, ammo,);
         })
