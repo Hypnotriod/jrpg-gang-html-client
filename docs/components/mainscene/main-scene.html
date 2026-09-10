@@ -18,7 +18,7 @@
         <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
                 style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Info Popup (I)</b></span>
     </label>
-    <button id="button_rules" class="btn-small blue"
+    <button id="button_rules" class="btn-small green darken-4"
         style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Rules</button>
 </div>
 <div id="rules_popup" class="rules-popup blue-grey darken-4 hidden no-select">
@@ -33,15 +33,15 @@
             </div>
 
             <div style="padding: 4px;">
-                <span class="orange darken-2">Prepare for the Battle</span> • When the battle begins, you get time to
+                <span class="blue darken-2">Prepare for the battle phase</span> • When the battle begins, you get time to
                 equip/select your gear, and position your character.<br>
                 No item can be used during this phase. Press the <span class="blue-text"><b>READY</b></span> button to
                 begin the battle.
             </div>
 
             <div style="padding: 4px;">
-                <span class="orange darken-2">Battle</span> • The battle is turn-based. Turn order is determined by the
-                Initiative attribute. Each action consumes action points.<br>
+                <span class="orange darken-2">Battle phase</span> • The battle is turn-based. Turn order is determined by the
+                character initiative. Each action consumes action points.<br>
                 On your turn, you can move your character to any available position controlled by your party paying 4
                 action points.<br>
                 You can attack enemies or heal/buff yourself or an ally by selecting the appropriate item and
@@ -55,12 +55,12 @@
             </div>
 
             <div style="padding: 4px;">
-                <span class="orange darken-2">Resting Phase</span> • Once the battle is over, no items can be used
+                <span class="green darken-2">Resting Phase</span> • Once the battle is over, no items can be used
                 except
                 provisions.<br>
                 You can press <span class="green-text"><b>I'M DONE</b></span> to take your share and leave the
                 dungeon.<br>
-                Otherwise, press <span class="orange-text"><b>NEXT BATTLE</b></span> to prepare for the next dungeon
+                Otherwise, press <span class="orange-text"><b>NEXT</b></span> to prepare for the next dungeon
                 level.
             </div>
 
@@ -81,7 +81,7 @@
                         src="./assets/icons/slot-weapon-2.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
                     weapon slots.<br>
-                    Should be equipped and selected before uset in combat.
+                    Must be equipped and selected before use in combat.
                 </div>
             </div>
 
@@ -93,7 +93,7 @@
                 <div class="col">
                     Shields. Takes up one <img src="./assets/icons/slot-weapon.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> weapon slot.<br>
-                    Should be equipped to take effect.
+                    Must be equipped to take effect.
                 </div>
             </div>
 
@@ -104,13 +104,11 @@
                 </div>
                 <div class="col">
                     Long-range assault weapons.
-                    Takes up one <img src="./assets/icons/slot-weapon.png"
-                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> or two <img
-                        src="./assets/icons/slot-weapon-2.png"
+                    Takes up two <img src="./assets/icons/slot-weapon-2.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
                     weapon slots.<br>
                     Are not effective in close combat.<br>
-                    May require ammunition. Should be equipped and selected before use in combat.
+                    May require ammunition. Must be equipped and selected before use in combat.
                 </div>
             </div>
 
@@ -121,7 +119,7 @@
                 </div>
                 <div class="col">
                     Ammunition items. Each item matches the weapon by its kind.<br>
-                    Should be equipped in the ammo <img src="./assets/icons/slot-ammo.png"
+                    Must be equipped in the ammo <img src="./assets/icons/slot-ammo.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot if the weapon requires
                     ammunition of a specific kind.
                 </div>
@@ -134,7 +132,7 @@
                 </div>
                 <div class="col s10">
                     Close-range assault magic.<br>
-                    Should be selected before use in combat.
+                    Must be selected before use in combat.
                 </div>
             </div>
 
@@ -146,7 +144,7 @@
                 </div>
                 <div class="col s10">
                     Long-range assault magic.<br>
-                    Should be selected before use in combat.
+                    Must be selected before use in combat.
                 </div>
             </div>
 
@@ -158,7 +156,7 @@
                 <div class="col">
                     Support magic. Modifies or restores ally attributes.
                     <span class="grey-text">(ex.: health, stamina, agility, endurance, etc.)</span><br>
-                    Should be selected before use in combat.
+                    Must be selected before use in combat.
                 </div>
             </div>
 
@@ -171,7 +169,7 @@
                 <div class="col">
                     Recovery items. Modifies or restores ally attributes.
                     <span class="grey-text">(ex.: health, stamina, agility, endurance, etc.)</span><br>
-                    Should be selected before use in combat.
+                    Must be selected before use in combat.
                 </div>
             </div>
 
@@ -192,7 +190,7 @@
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
                     <img src="./assets/icons/slot-neck.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slots.<br>
-                    Should be equipped to take effect.
+                    Must be equipped to take effect.
                 </div>
             </div>
 
@@ -295,16 +293,52 @@
             <br>
             <img src="./assets/icons/dizzy.png"
                 style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• The character is
-            stunned and misses their current turn.
+            stunned and skips their current turn.
             <br>
             <img src="./assets/icons/tired.png"
-                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• Character has depleted
-            their stamina. The damage they take deals critical damage.
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• The character has
+            depleted their stamina. The damage they take causes critical damage.
             <br>
             <img src="./assets/icons/stress.png"
                 style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• The character is under
             stress and runs away.
             <br>
+
+            <div class="center-align">
+                <span class="amber-text"><b>Game mechanics</b></span>
+            </div>
+            <div style="padding: 4px;">
+                <span class="red darken-2">Critical Damage</span> • Doubles the damage.
+            </div>
+            <div style="padding: 4px;">
+                <span class="red darken-2">Critical Miss</span> • If a character's attack misses and their stress
+                is greater than zero, a critical miss check is performed.<br>
+                The character may damage itself with double damage.
+            </div>
+            <div style="padding: 4px;">
+                <span class="green darken-2">Exhaustion</span> • Any instant physical damage absorbed by a character's
+                equipment accumulates as exhaustion damage.<br>
+                However, it cannot be enhanced by the opponent's intelligence.<br>
+                If a character is hit while totally exhausted (stamina is zero), critical
+                damage is dealt.
+            </div>
+            <div style="padding: 4px;">
+                <span class="orange darken-2">Stun</span> • Any instant physical damage can cause stun.<br>
+                When stunned, a character loses its turn in the current round and appears at the end of the turn order
+                in the next round.<br>
+                If a character is hit while stunned, critical damage is dealt and the stun is reset.
+            </div>
+            <div style="padding: 4px;">
+                <span class="purple darken-2">Retreat</span> • If the stress attribute is greater than zero, before each
+                character's turn the retreat check is performed.<br>
+                A character can miss its turn by moving to a corner of the battlefield.
+            </div>
+            <div style="padding: 4px;">
+                <span class="grey darken-2">Equipment Wearout</span> • Each successful action followed by damage, or
+                each action that requires ammunition, increases the wearout of the character's weapon,
+                as well as the wearout of the target's equipment. If the wearout of an item reaches its durability, the
+                item can no longer be used and becomes unequipped.
+            </div>
 
         </div>
         </b>
