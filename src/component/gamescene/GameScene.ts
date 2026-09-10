@@ -250,7 +250,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         switch (this.state.gameState.nextPhase) {
             case GamePhase.PREPARE_UNIT:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle.<br>
-                Place your Character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
+                Place your character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
                 break;
             case GamePhase.SPOT_COMPLETE:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle.<br>
@@ -264,7 +264,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             default:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is taking turns.<br>
-                Character movement costs<span class="orange-text">4</span>action points. Select a<span class="red-text">weapon</span>/<span class="purple-text">magic</span>/<span class="green-text">disposable</span>to attack the enemy.<br> 
+                character movement costs<span class="orange-text">4</span>action points. Select a<span class="red-text">weapon</span>/<span class="purple-text">magic</span>/<span class="green-text">disposable</span>to attack the enemy.<br> 
                 Select a<span class="green-text">disposable</span>/<span class="purple-text">magic</span>to recover / buff yourself or an ally. Changing gear costs<span class="orange-text">no</span>action points.`;
                 break;
         }

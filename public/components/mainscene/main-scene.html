@@ -21,7 +21,7 @@
     <button id="button_rules" class="btn-small blue"
         style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Rules</button>
 </div>
-<div id="rules_popup" class="rules-popup blue-grey darken-4 hidden">
+<div id="rules_popup" class="rules-popup blue-grey darken-4 hidden no-select">
     <div class="row">
         <div class="col s12 white-text scrollbar-y" style="max-height: 500px;">
             <h6 class="center-align amber-text">
@@ -34,9 +34,9 @@
 
             <div style="padding: 4px;">
                 <span class="orange darken-2">Prepare for the Battle</span> • When the battle begins, you get time to
-                to equip/select your gear, and position your Character.<br>
-                No item can be used during this phase.<br>
-                Press the <span class="blue-text"><b>READY</b></span> button to begin the battle.
+                equip/select your gear, and position your character.<br>
+                No item can be used during this phase. Press the <span class="blue-text"><b>READY</b></span> button to
+                begin the battle.
             </div>
 
             <div style="padding: 4px;">
@@ -214,7 +214,7 @@
 
             <div style="padding-top: 4px;">
                 <span class="light-blue lighten-1">Requirements</span> • What is required from
-                your Character to be able to equip or use an item.
+                your character to be able to equip or use an item.
                 <span class="grey-text">(ex.: strength, agility, intelligence, etc.)</span>
             </div>
 
@@ -264,12 +264,17 @@
 
             <div style="padding-top: 4px;">
                 <span class="orange lighten-1">Purchase Price</span> •
-                The price to sell the item back. Check the "Sell" checkbox to sell an item from your inventory.
+                The price to sell the item back. Check the sell <img src="./assets/icons/sell-item.png"
+                    style="vertical-align: middle; padding-bottom: 4px; width: 20px;" /> checkbox to sell an item
+                from your
+                inventory.
             </div>
 
             <div style="padding-top: 4px;">
                 <span class="orange lighten-1">Repair Price</span> •
-                The price to repair an item. Check the "Repair" checkbox to repair an item in your inventory.
+                The price to repair an item. Check the repair <img src="./assets/icons/repair-item.png"
+                    style="vertical-align: middle; padding-bottom: 4px; width: 20px;" /> checkbox to repair an
+                item in your inventory.
             </div>
 
             <br>
@@ -286,13 +291,25 @@
             cannot be equipped <span class="grey-text">(wear out is reached durability)</span>
             <br>
             <img src="./assets/icons/pawn.png"
-                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• Action points
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• Action points.
+            <br>
+            <img src="./assets/icons/dizzy.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• The character is
+            stunned and misses their current turn.
+            <br>
+            <img src="./assets/icons/tired.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• Character has depleted
+            their stamina. The damage they take deals critical damage.
+            <br>
+            <img src="./assets/icons/stress.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• The character is under
+            stress and runs away.
             <br>
 
         </div>
         </b>
         <div class="col s12 center" style="padding-top: 10px;">
-            <button id="button_ok" class="btn-small blue">Ok</button><br>
+            <button id="button_ok" class="btn-small blue">Close</button><br>
         </div>
     </div>
 </div>

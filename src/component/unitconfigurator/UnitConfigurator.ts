@@ -209,7 +209,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.unitProgress.descriptionPopup = this.itemDescription;
         this.unitResistance.descriptionPopup = this.itemDescription;
 
-        this.labelHealth.description = { Health: 'The hit points the Character can take before dying' };
+        this.labelHealth.description = { Health: 'The hit points the character can take before dying' };
         this.labelStamina.description = { Stamina: 'A weapon may require stamina points to perform an action' };
         this.labelMana.description = { Mana: 'A weapon or spell may require mana points to perform an action' };
         this.labelActionPoints.description = { ActionPoints: 'A weapon, spell, or disposable item may require action points to perform an action' };
