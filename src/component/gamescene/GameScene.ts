@@ -255,7 +255,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             case GamePhase.SPOT_COMPLETE:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle.<br>
                 Press <span class="green-text">I'M DONE</span> if you want to take your share and leave the dungeon.<br>
-                Otherwise, consume the<span class="purple-text lighten-4">provision</span>to restore. Press <span class="orange-text">NEXT BATTLE</span> to get ready for more.`;
+                Otherwise, consume the<span class="purple-text lighten-4">provision</span>to restore. Press <span class="orange-text">NEXT</span> to get ready for more.`;
                 break;
             case GamePhase.SCENARIO_COMPLETE:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over!<br>
