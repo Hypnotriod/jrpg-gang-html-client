@@ -19,6 +19,9 @@ import Quests from '../quests/Quests';
 import { component } from '../decorator/decorator';
 import Checkbox from '../ui/checkbox/Checkbox';
 import ObjectDescription from '../ui/popup/ObjectDescription';
+import Button from '../ui/button/Button';
+import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
+import Container from '../ui/container/Container';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -28,6 +31,12 @@ export default class MainScene extends Component {
     private readonly checkboxSound: Checkbox;
     @component('checkbox_info', Checkbox)
     private readonly checkboxInfo: Checkbox;
+    @component('rules_popup', InstructionsPopup)
+    private readonly rulesPopup: InstructionsPopup;
+    @component('button_rules', Button)
+    private readonly buttonRules: Button;
+    @component('rules_popup_shadow', Container)
+    private readonly popupShadow: Container;
 
     private login: Login;
     private auth: Auth;
@@ -50,6 +59,7 @@ export default class MainScene extends Component {
         this.hide();
         SoundService.initialize();
         this.initializeComponents().then(() => {
+            this.configurator.setRulesPopup(this.rulesPopup);
             this.login.tryToAutologin();
             this.show();
         });
@@ -69,8 +79,11 @@ export default class MainScene extends Component {
                 this.checkboxInfo.checked = ObjectDescription.active;
             }
         });
+
+        this.rulesPopup.shadow = this.popupShadow;
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
+        this.buttonRules.onClick = target => this.rulesPopup.show();
     }
 
     protected toggleSoundMute(): void {

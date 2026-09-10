@@ -2,7 +2,8 @@ import { Action, ActionResult, ChatMessage, ChatParticipant, ChatState, Employme
 import { RequestType } from './requests';
 
 export const KEY_SESSION_ID: string = 'sessionId';
-export const KEY_IS_INSTRUCTIONS_SHOWN: string = 'isInstructionsShown';
+export const KEY_ARE_INSTRUCTIONS_SHOWN: string = 'areInstructionsShown';
+export const KEY_ARE_RULES_SHOWN: string = 'areRulesPopupShown';
 export const KEY_IS_NEW_PLAYER: string = 'isNewPlayer';
 export const KEY_IS_GUEST: string = 'isGuest';
 export const KEY_TOKEN: string = 'token';
