@@ -1,3 +1,4 @@
+<div id="rules_popup_shadow" class="popup-shadow hidden"></div>
 <div id="login_container" class="login-container hidden no-select"></div>
 <div id="auth_container" class="auth-container hidden no-select"></div>
 <div id="lobby_container" class="lobby-container hidden no-select"></div>
@@ -17,4 +18,281 @@
         <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
                 style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Info Popup (I)</b></span>
     </label>
+    <button id="button_rules" class="btn-small blue"
+        style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Rules</button>
+</div>
+<div id="rules_popup" class="rules-popup blue-grey darken-4 hidden">
+    <div class="row">
+        <div class="col s12 white-text scrollbar-y" style="max-height: 500px;">
+            <h6 class="center-align amber-text">
+                Game Rules
+            </h6>
+
+            <div class="center-align">
+                <span class="amber-text"><b>Combat</b></span>
+            </div>
+
+            <div style="padding: 4px;">
+                <span class="orange darken-2">Prepare for the Battle</span> • When the battle begins, you get time to
+                to equip/select your gear, and position your Character.<br>
+                No item can be used during this phase.<br>
+                Press the <span class="blue-text"><b>READY</b></span> button to begin the battle.
+            </div>
+
+            <div style="padding: 4px;">
+                <span class="orange darken-2">Battle</span> • The battle is turn-based. Turn order is determined by the
+                Initiative attribute. Each action consumes action points.<br>
+                On your turn, you can move your character to any available position controlled by your party paying 4
+                action points.<br>
+                You can attack enemies or heal/buff yourself or an ally by selecting the appropriate item and
+                clicking on the enemy or ally.<br>
+                Such actions cost the action points specified in the item use cost.<br>
+                Provision items cannot be used during this phase. Equipping or unequipping gear costs no action
+                points.<br>
+                Press the <span class="green-text"><b>WAIT</b></span> button to move to the end of the turn order.<br>
+                Press the <span class="purple-text lighten-1"><b>END TURN</b></span> button to end your turn in the
+                current round.
+            </div>
+
+            <div style="padding: 4px;">
+                <span class="orange darken-2">Resting Phase</span> • Once the battle is over, no items can be used
+                except
+                provisions.<br>
+                You can press <span class="green-text"><b>I'M DONE</b></span> to take your share and leave the
+                dungeon.<br>
+                Otherwise, press <span class="orange-text"><b>NEXT BATTLE</b></span> to prepare for the next dungeon
+                level.
+            </div>
+
+            <div class="center-align">
+                <span class="amber-text"><b>Items</b></span>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/sword-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/dagger-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/axe-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Close-range assault weapons.
+                    Takes up one <img src="./assets/icons/slot-weapon.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> or two <img
+                        src="./assets/icons/slot-weapon-2.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    weapon slots.<br>
+                    Should be equipped and selected before uset in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/shield-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/shield-02.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Shields. Takes up one <img src="./assets/icons/slot-weapon.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> weapon slot.<br>
+                    Should be equipped to take effect.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/bow-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/sorcerer-staff-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Long-range assault weapons.
+                    Takes up one <img src="./assets/icons/slot-weapon.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> or two <img
+                        src="./assets/icons/slot-weapon-2.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    weapon slots.<br>
+                    Are not effective in close combat.<br>
+                    May require ammunition. Should be equipped and selected before use in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/arrow-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/fire-charge-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Ammunition items. Each item matches the weapon by its kind.<br>
+                    Should be equipped in the ammo <img src="./assets/icons/slot-ammo.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot if the weapon requires
+                    ammunition of a specific kind.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/plasma-touch-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/fire-touch-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col s10">
+                    Close-range assault magic.<br>
+                    Should be selected before use in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/magic-lighting-strike-01.png"
+                        style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/magic-exhaustion-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col s10">
+                    Long-range assault magic.<br>
+                    Should be selected before use in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/magic-health-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/magic-shield-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Support magic. Modifies or restores ally attributes.
+                    <span class="grey-text">(ex.: health, stamina, agility, endurance, etc.)</span><br>
+                    Should be selected before use in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/stamina-potion-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/mana-potion-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Recovery items. Modifies or restores ally attributes.
+                    <span class="grey-text">(ex.: health, stamina, agility, endurance, etc.)</span><br>
+                    Should be selected before use in combat.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/helmet-02.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/armor-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/gloves-03.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Armor. Takes up one of the following <img src="./assets/icons/slot-head.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    <img src="./assets/icons/slot-body.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    <img src="./assets/icons/slot-hand.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    <img src="./assets/icons/slot-leg.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+                    <img src="./assets/icons/slot-neck.png"
+                        style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slots.<br>
+                    Should be equipped to take effect.
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="col" style="padding-right: 0;">
+                    <img src="./assets/icons/provision-ham-01.png" style="vertical-align: middle; height: 32px;">
+                    <img src="./assets/icons/provision-wine-01.png" style="vertical-align: middle; height: 32px;">
+                </div>
+                <div class="col">
+                    Provision. Restores ally attributes.
+                    <span class="grey-text">(ex.: health, mana, etc.)</span><br>
+                    Can only be used in the "Resting Phase".
+                </div>
+            </div>
+
+            <div class="center-align">
+                <span class="amber-text"><b>Item attributes</b></span>
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="light-blue lighten-1">Requirements</span> • What is required from
+                your Character to be able to equip or use an item.
+                <span class="grey-text">(ex.: strength, agility, intelligence, etc.)</span>
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="pink lighten-2">Use Cost</span> • What is required to use an item.
+                <span class="grey-text">(ex.: mana, stamina, action points, etc.)</span>
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="light-green lighten-1">Range</span> • The reach of an item. An action can be performed
+                from any purple square on any green square.
+            </div>
+
+            <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;"> •
+            Close-range example. You can reach only targets in the adjacent column.
+            <br>
+            <img src="./assets/icons/long-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;"> •
+            Long-range example. You can reach any targets except those in the adjacent column.
+            <br>
+
+            <div style="padding-top: 4px;">
+                <span class="light-green lighten-1">Spread</span> • An item effect spread. The effect is duplicated
+                from an orange square to the green ones.
+            </div>
+
+            <img src="./assets/icons/spread-one-row.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
+            • Affects adjacent targets in the same column.
+            <br>
+
+            <div style="padding-top: 4px;">
+                <span class="red lighten-1">Damage</span> • The damage type(s) an item can deal.
+                <span class="grey-text">(ex.: stabbing, cutting, fire, poison, etc.)</span><br>
+                Damage may have a base chance (%). Temporal damage has a duration (in rounds).
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="purple lighten-1">Modification</span> • Recovers and/or modifies various character
+                attributes.
+                <span class="grey-text">(ex.: health, stamina, agility, strength, luck, etc.)</span><br>
+                Temporal modification has a duration (in rounds). Equipped items have a permanent modification effect.
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="orange lighten-1">Price</span> •
+                An item's price.
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="orange lighten-1">Purchase Price</span> •
+                The price to sell the item back. Check the "Sell" checkbox to sell an item from your inventory.
+            </div>
+
+            <div style="padding-top: 4px;">
+                <span class="orange lighten-1">Repair Price</span> •
+                The price to repair an item. Check the "Repair" checkbox to repair an item in your inventory.
+            </div>
+
+            <br>
+            <div class="center-align">
+                <span class="amber-text"><b>Icons</b></span>
+            </div>
+            <img src="./assets/icons/cant-use.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• An item cannot be
+            equipped <span class="grey-text">(requirements are not met)</span> or used <span class="grey-text">(not
+                enough action points, stamina, mana, etc.)</span>
+            <br>
+            <img src="./assets/icons/broken.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• An item is broken and
+            cannot be equipped <span class="grey-text">(wear out is reached durability)</span>
+            <br>
+            <img src="./assets/icons/pawn.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">• Action points
+            <br>
+
+        </div>
+        </b>
+        <div class="col s12 center" style="padding-top: 10px;">
+            <button id="button_ok" class="btn-small blue">Ok</button><br>
+        </div>
+    </div>
 </div>
