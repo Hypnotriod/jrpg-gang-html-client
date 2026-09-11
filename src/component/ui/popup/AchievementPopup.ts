@@ -40,7 +40,7 @@ export class AchievementPopup extends Component {
             return;
         }
         this.icon.icon = achievement.icon;
-        this.labelDescription.value = achievement.popup;
+        this.labelDescription.htmlValue = achievement.popup;
         if (achievement.target) {
             this.labelRequirements.value = `${this.playersUnit.achievements[code] ?? 0} / ${achievement.target}`;
             this.labelRequirements.show();

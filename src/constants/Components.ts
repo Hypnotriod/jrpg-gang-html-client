@@ -23,6 +23,7 @@ export const BUTTON_CREATE_ROOM_EASY: string = 'button_create_room_easy';
 export const BUTTON_CREATE_ROOM_MEDIUM: string = 'button_create_room_medium';
 export const BUTTON_CREATE_ROOM_ADVANCED: string = 'button_create_room_advanced';
 export const BUTTON_LOBBY: string = 'button_lobby';
+export const BUTTON_TRAINING: string = 'button_training';
 export const BUTTON_JOBS: string = 'button_jobs';
 export const BUTTON_QUESTS: string = 'button_quests';
 export const BUTTON_LEVEL_UP: string = 'button_level_up';

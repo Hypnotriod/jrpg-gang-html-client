@@ -258,13 +258,19 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 Otherwise, consume the<span class="purple-text lighten-4">provision</span>to restore. Press <span class="orange-text">NEXT</span> to get ready for more.`;
                 break;
             case GamePhase.SCENARIO_COMPLETE:
-                this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over!<br>
-                Congratulations! You have reached the end of the dungeon!<br>
-                Press <span class="green-text">I'M DONE</span> to take your share and leave the dungeon.`;
+                if (this.state.userState.unit.achievements['first-blood']) {
+                    this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over!<br>
+                    Congratulations! You have reached the end of the dungeon!<br>
+                    Press <span class="green-text">I'M DONE</span> to take your share and leave the dungeon.`;
+                } else {
+                    this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The training is over!<br>
+                    Congratulations! You have completed your training!<br>
+                    Press <span class="green-text">I'M DONE</span> to take your reward and leave.`;
+                }
                 break;
             default:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is taking turns.<br>
-                character movement costs<span class="orange-text">4</span>action points. Select a<span class="red-text">weapon</span>/<span class="purple-text">magic</span>/<span class="green-text">disposable</span>to attack the enemy.<br> 
+                Character movement costs<span class="orange-text">4</span>action points. Select a<span class="red-text">weapon</span>/<span class="purple-text">magic</span>/<span class="green-text">disposable</span>to attack the enemy.<br> 
                 Select a<span class="green-text">disposable</span>/<span class="purple-text">magic</span>to recover / buff yourself or an ally. Changing gear costs<span class="orange-text">no</span>action points.`;
                 break;
         }

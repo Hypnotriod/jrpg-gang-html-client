@@ -6,29 +6,35 @@ export interface AchievementInfo {
 }
 
 export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
+    'training-completed': {
+        icon: 'dummy-01',
+        tag: 'objectives',
+        target: 0,
+        popup: 'Congratulations!<br>You have completed your training!',
+    },
     'first-blood': {
         icon: 'dungeon-01',
         tag: 'objectives',
         target: 0,
-        popup: 'Congratulations! You have completed your first dungeon level!',
+        popup: 'Congratulations!<br>You have completed your first dungeon level!',
     },
     'scenario-easy-01-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,
-        popup: 'Congratulations! You have completed the Forgotten Ruins!',
+        popup: 'Congratulations!<br>You have completed the Forgotten Ruins!',
     },
     'scenario-medium-01-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,
-        popup: 'Congratulations! You have completed the Cursed Swamp!',
+        popup: 'Congratulations!<br>You have completed the Cursed Swamp!',
     },
     'scenario-advanced-01-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,
-        popup: 'Congratulations! You have completed the Dragon\'s Lair!',
+        popup: 'Congratulations!<br>You have completed the Dragon\'s Lair!',
     },
     'kill-5-slimes': {
         icon: 'quest-kill-5-slimes',
@@ -166,6 +172,6 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         icon: 'quest-save-princess',
         tag: 'Objectives',
         target: 0,
-        popup: 'Congratulations! You have defeated the Dragon and saved the Princess!',
+        popup: 'Congratulations!<br>You have defeated the Dragon and saved the Princess!',
     },
 };

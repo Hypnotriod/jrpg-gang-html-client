@@ -1,7 +1,7 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, BUTTON_TRAINING, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon, UnitQuestStatus } from '../../domain/domain';
-import { ActionRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
+import { ActionRequestData, CreateRoomRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { ActionResultData, KEY_ARE_INSTRUCTIONS_SHOWN, KEY_ARE_RULES_SHOWN, QuestsStatusData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
@@ -30,6 +30,8 @@ import { compareItemsByName } from '../../utils/utils';
 export default class UnitConfigurator extends Component implements ServerCommunicatorHandler {
     @component(BUTTON_LOBBY, Button)
     private readonly lobbyButton: Button;
+    @component(BUTTON_TRAINING, Button)
+    private readonly trainingButton: Button;
     @component(BUTTON_JOBS, Button)
     private readonly jobsButton: Button;
     @component(BUTTON_QUESTS, Button)
@@ -167,6 +169,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             RequestType.QUESTS_STATUS
         ], this);
         this.lobbyButton.onClick = target => this.goToLobby();
+        this.trainingButton.onClick = target => this.goToTraining();
         this.jobsButton.onClick = target => this.goToJobs();
         this.questsButton.onClick = target => this.goToQuests();
         this.btnHealth.onClick = target => this.skillUp(ActionProperty.HEALTH);
@@ -250,7 +253,25 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected goToLobby(): void {
         this.hide();
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
-        this.lobby.show();
+        if (!this.state.userState.unit.achievements['training-completed']) {
+            this.communicator.sendMessage(RequestType.CREATE_ROOM, {
+                capacity: 1,
+                scenarioId: 'training-01',
+            } as CreateRoomRequestData);
+            this.communicator.sendMessage(RequestType.START_GAME);
+        } else {
+            this.lobby.show();
+        }
+    }
+
+    protected goToTraining(): void {
+        this.hide();
+        this.communicator.sendMessage(RequestType.ENTER_LOBBY);
+        this.communicator.sendMessage(RequestType.CREATE_ROOM, {
+            capacity: 1,
+            scenarioId: 'training-01',
+        } as CreateRoomRequestData);
+        this.communicator.sendMessage(RequestType.START_GAME);
     }
 
     protected goToJobs(): void {
@@ -388,6 +409,17 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.updateUnitAttributes();
         this.updateActiveItems();
         this.updateClassSelectionButtons();
+        if (!this.state.userState.unit.achievements['training-completed']) {
+            this.lobbyButton.hide();
+            this.trainingButton.show();
+            !this.state.userState.unit.quests['quest-training'] ?
+                this.trainingButton.disable() : this.trainingButton.enable();
+        } else {
+            this.trainingButton.hide();
+            this.lobbyButton.show();
+            this.state.userState.unit.quests['quest-training'] !== 'completed' ?
+                this.lobbyButton.disable() : this.lobbyButton.enable();
+        }
     }
 
     protected updateClassSelectionButtons(): void {
