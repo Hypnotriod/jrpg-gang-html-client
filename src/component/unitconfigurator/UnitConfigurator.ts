@@ -137,7 +137,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     public setRulesPopup(rulesPopup: InstructionsPopup): void {
         this.rulesPopup = rulesPopup;
-        this.rulesPopup.onHide = () => sessionStorage.setItem(KEY_ARE_RULES_SHOWN, 'true');
+        this.rulesPopup.onHide = () => localStorage.setItem(KEY_ARE_RULES_SHOWN, 'true');
     }
 
     public show(): void {
@@ -146,7 +146,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
-        if (!sessionStorage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
+        if (!localStorage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
             this.instructionsPopup.show();
         }
         super.show();
@@ -229,8 +229,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.shopItemPopup.descriptionPopup = this.itemDescription;
 
         this.instructionsPopup.onHide = () => {
-            sessionStorage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
-            if (sessionStorage.getItem(KEY_ARE_RULES_SHOWN)) return;
+            localStorage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
+            if (localStorage.getItem(KEY_ARE_RULES_SHOWN)) return;
             this.rulesPopup.show();
         };
 
