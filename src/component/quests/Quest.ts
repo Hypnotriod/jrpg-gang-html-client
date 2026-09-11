@@ -78,11 +78,11 @@ export default class Quest extends Component {
         if (status.status === UnitQuestStatus.INACTIVE) {
             this.buttonApply.show();
             this.buttonComplete.hide();
-            this.labelRequirements.value = this.renderer.renderApplicationRequirements(this.patchRequirenments(status.activation.requirements), this.state.userState.unit);
+            this.labelRequirements.value = this.renderer.renderApplicationRequirements(this.patchRequirements(status.activation.requirements), this.state.userState.unit);
         } else if (status.status === UnitQuestStatus.ACTIVE) {
             this.buttonApply.hide();
             this.buttonComplete.show();
-            this.labelRequirements.value = this.renderer.render(this.patchRequirenments(status.completion.requirements));
+            this.labelRequirements.value = this.renderer.render(this.patchRequirements(status.completion.requirements));
         } else {
             this.buttonApply.hide();
             this.buttonComplete.hide();
@@ -97,8 +97,8 @@ export default class Quest extends Component {
         this.buttonComplete.enabled = value;
     }
 
-    private patchRequirenments(requirenments?: UnitRequirements): any {
-        const r: any = { ...requirenments };
+    private patchRequirements(requirements?: UnitRequirements): any {
+        const r: any = { ...requirements };
         if (r.achievements) {
             Object.keys(r.achievements).forEach(k => {
                 r[ACHIEVEMENTS[k]?.tag ?? k] = `${(this.state.userState.unit.achievements[k] ?? 0)} / ${r.achievements![k]}`;

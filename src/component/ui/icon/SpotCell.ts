@@ -276,7 +276,7 @@ export default class SpotCell extends Component {
         let reachable = false;
         const gamePhase = this.state.gameState.nextPhase;
         const chosenItem = this.unitItems.chosenItem;
-        const hintRequirenments = (actor: GameUnit, useCost?: UnitBaseAttributes) => {
+        const hintRequirements = (actor: GameUnit, useCost?: UnitBaseAttributes) => {
             if (actor.state.stamina < (useCost?.stamina ?? 0)) {
                 this._hint = '!Not enough stamina';
             } else if (actor.state.mana < (useCost?.mana ?? 0)) {
@@ -308,12 +308,12 @@ export default class SpotCell extends Component {
                             this._hint = '!No ammunition';
                         }
                     }
-                    hintRequirenments(actor, useCost);
+                    hintRequirements(actor, useCost);
                 }
                 if (modification && actor.faction === this._unit.faction) {
                     chance = this.actionService.modificationChance(modification, actor);
                     this._hint = !reachable ? '!Can\'t reach' : 'Click to use';
-                    hintRequirenments(actor, useCost);
+                    hintRequirements(actor, useCost);
                 }
                 if (recovery && gamePhase === GamePhase.SPOT_COMPLETE) {
                     this._hint = 'Click to consume';
