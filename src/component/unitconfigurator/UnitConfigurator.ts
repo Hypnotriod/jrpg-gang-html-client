@@ -684,6 +684,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: ActionType.LEVEL_UP,
         } as ActionRequestData);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
     }
