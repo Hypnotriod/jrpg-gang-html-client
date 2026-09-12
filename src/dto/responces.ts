@@ -1,4 +1,4 @@
-import { Action, ActionResult, ChatMessage, ChatParticipant, ChatState, EmploymentStatus, GameEvent, GameQuestsStatus, GameShopStatus, GameUnit, MercenariesStatus, PlayerInfo, RoomInfo, UnitBooty } from '../domain/domain';
+import { Action, ActionResult, ChatMessage, ChatParticipant, ChatState, EmploymentStatus, GameEvent, GameQuestsStatus, GameScenarioConfig, GameShopStatus, GameUnit, MercenariesStatus, PlayerInfo, RoomInfo, UnitBooty } from '../domain/domain';
 import { RequestType } from './requests';
 
 export const KEY_SESSION_ID: string = 'sessionId';
@@ -55,6 +55,7 @@ export interface ServerStatusData {
 
 export interface LobbyStatusData {
     rooms: RoomInfo[];
+    scenarios: GameScenarioConfig[];
 }
 
 export interface RoomStatusData {

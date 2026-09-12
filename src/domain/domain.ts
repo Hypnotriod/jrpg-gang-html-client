@@ -21,6 +21,13 @@ export interface RoomInfo {
     inactive?: boolean;
 }
 
+export interface GameScenarioConfig {
+    id: string;
+    name: string;
+    capacity: number;
+    requirements: UnitRequirements;
+}
+
 export interface UnitBooty {
     coins: number;
     ruby?: number;

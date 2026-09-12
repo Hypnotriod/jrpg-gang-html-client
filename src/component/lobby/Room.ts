@@ -107,6 +107,7 @@ export default class Room extends Component {
 
         const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
         const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
+        const roomIsFull: boolean = roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.capacity - 1;
         if (isUserInRoom) {
             this.joinRoomButton.hide();
             this.leaveRoomButton.show();
@@ -117,7 +118,7 @@ export default class Room extends Component {
         } else {
             this.joinRoomButton.show();
             this.leaveRoomButton.hide();
-            if (roomInfo.blockedPlayerIds?.includes(this.state.userState.playerInfo.playerId)) {
+            if (roomInfo.blockedPlayerIds?.includes(this.state.userState.playerInfo.playerId) || roomIsFull) {
                 this.joinRoomButton.disable();
             } else {
                 this.joinRoomButton.enable();
@@ -125,7 +126,7 @@ export default class Room extends Component {
         }
         isUserHostOfRoom ? this.startGameButton.enable() : this.startGameButton.disable();
 
-        if (!isUserHostOfRoom || roomInfo.mercenaries.length || roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.capacity - 1) {
+        if (!isUserHostOfRoom || roomInfo.mercenaries.length || roomIsFull) {
             this.hireMercenaryPlaceholder.hide();
         } else {
             this.hireMercenaryPlaceholder.show();

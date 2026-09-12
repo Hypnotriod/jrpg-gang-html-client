@@ -401,7 +401,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.updateProgress();
         this.updateUnitAttributes();
         this.updateActiveItems();
-        this.updateClassSelectionButtons();
         if (!this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.lobbyButton.hide();
             this.trainingButton.show();
@@ -413,10 +412,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED ?
                 this.lobbyButton.disable() : this.lobbyButton.enable();
         }
-    }
-
-    protected updateClassSelectionButtons(): void {
-        const playerInfo = this.state.userState.playerInfo;
     }
 
     protected updateBooty(): void {
