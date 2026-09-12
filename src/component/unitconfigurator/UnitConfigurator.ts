@@ -252,15 +252,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected goToLobby(): void {
         this.hide();
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
-        if (!this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
-            this.communicator.sendMessage(RequestType.CREATE_ROOM, {
-                capacity: 1,
-                scenarioId: SCENARIO_IDS.TRAINING,
-            } as CreateRoomRequestData);
-            this.communicator.sendMessage(RequestType.START_GAME);
-        } else {
-            this.lobby.show();
-        }
+        this.lobby.show();
     }
 
     protected goToTraining(): void {
