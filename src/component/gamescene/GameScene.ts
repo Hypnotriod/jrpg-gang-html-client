@@ -24,6 +24,7 @@ import GameUnitsQueue from './GameUnitsQueue';
 import { DungeonLootPopup } from '../ui/popup/DungeonLootPopup';
 import { LeaveDungeonPopup } from '../ui/popup/LeaveDungeonPopup';
 import Container from '../ui/container/Container';
+import { ACHIEVEMENT_IDS } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
@@ -258,7 +259,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 Otherwise, consume the<span class="purple-text lighten-4">provision</span>to restore. Press <span class="orange-text">NEXT</span> to get ready for more.`;
                 break;
             case GamePhase.SCENARIO_COMPLETE:
-                if (this.state.userState.unit.achievements['first-blood']) {
+                if (this.state.userState.unit.achievements[ACHIEVEMENT_IDS.FIRST_BLOOD]) {
                     this.gamePhaseInfoLabel.htmlValue = `${infoIcon} The battle is over!<br>
                     Congratulations! You have reached the end of the dungeon!<br>
                     Press <span class="green-text">I'M DONE</span> to take your share and leave the dungeon.`;

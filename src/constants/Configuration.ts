@@ -296,9 +296,19 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
 };
 
 export const SCENARIO_IDS = {
+    TRAINING: 'training-01',
     EASY: 'easy-01',
     MEDIUM: 'medium-01',
     ADVANCED: 'advanced-01',
+}
+
+export const ACHIEVEMENT_IDS = {
+    TRAINING_COMPLETED: 'training-completed',
+    FIRST_BLOOD: 'first-blood',
+}
+
+export const QUEST_IDS = {
+    QUEST_TRAINING: 'quest-training',
 }
 
 export const ROOM_CAPACITY = 4;

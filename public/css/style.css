@@ -201,10 +201,12 @@ body {
 
 .range-table {
     width: 82px;
+    margin-top: 2px;
 }
 
 .spread-table {
     width: 64px;
+    margin-top: 2px;
 }
 
 .gear-change-icon {

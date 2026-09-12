@@ -199,7 +199,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected onLobbyStatus(data: LobbyStatusData): void {
-        this.state.rooms = data.rooms;
+        this.state.rooms = data.rooms.filter(room => room.scenarioId !== SCENARIO_IDS.TRAINING);
         this.update();
     }
 

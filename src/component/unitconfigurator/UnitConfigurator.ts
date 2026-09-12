@@ -17,7 +17,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
-import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configuration';
+import { ACHIEVEMENT_IDS, BASE_UNIT_DESCRIPTIONS, QUEST_IDS, SCENARIO_IDS, USER_CLASSES } from '../../constants/Configuration';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
@@ -145,13 +145,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     public show(): void {
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
-        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
+        this.communicator.sendMessage(RequestType.SHOP_STATUS);
         if (!localStorage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
             this.instructionsPopup.show();
         }
-        super.show();
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
     }
@@ -253,10 +252,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected goToLobby(): void {
         this.hide();
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
-        if (!this.state.userState.unit.achievements['training-completed']) {
+        if (!this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.communicator.sendMessage(RequestType.CREATE_ROOM, {
                 capacity: 1,
-                scenarioId: 'training-01',
+                scenarioId: SCENARIO_IDS.TRAINING,
             } as CreateRoomRequestData);
             this.communicator.sendMessage(RequestType.START_GAME);
         } else {
@@ -269,7 +268,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
             capacity: 1,
-            scenarioId: 'training-01',
+            scenarioId: SCENARIO_IDS.TRAINING,
         } as CreateRoomRequestData);
         this.communicator.sendMessage(RequestType.START_GAME);
     }
@@ -302,6 +301,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             case RequestType.SHOP_STATUS:
                 this.state.shopStatus = (response.data as ShopStatusData).shop;
                 this.updateShopStatus(this.state.shopStatus);
+                if (!this.visible) {
+                    super.show();
+                }
                 break;
             case RequestType.QUESTS_STATUS:
                 this.updateNewQuestsIcon(response.data as QuestsStatusData);
@@ -409,15 +411,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.updateUnitAttributes();
         this.updateActiveItems();
         this.updateClassSelectionButtons();
-        if (!this.state.userState.unit.achievements['training-completed']) {
+        if (!this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.lobbyButton.hide();
             this.trainingButton.show();
-            !this.state.userState.unit.quests['quest-training'] ?
+            !this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] ?
                 this.trainingButton.disable() : this.trainingButton.enable();
         } else {
             this.trainingButton.hide();
             this.lobbyButton.show();
-            this.state.userState.unit.quests['quest-training'] !== 'completed' ?
+            this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED ?
                 this.lobbyButton.disable() : this.lobbyButton.enable();
         }
     }

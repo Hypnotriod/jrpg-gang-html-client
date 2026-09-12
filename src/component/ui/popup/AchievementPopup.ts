@@ -10,7 +10,7 @@ import Label from '../label/Label';
 
 @injectable()
 export class AchievementPopup extends Component {
-    private static readonly TIMEOUT_MS: number = 6000;
+    private static readonly TIMEOUT_MS: number = 4000;
 
     @component(ICON, Icon)
     protected readonly icon: Icon;
