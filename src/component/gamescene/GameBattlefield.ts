@@ -63,11 +63,16 @@ export default class GameBattlefield extends GameBase {
         } else if (unitActionResult.action.action === ActionType.EQUIP) {
             this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
             this.spots[unit.position.x][unit.position.y].bounce('up');
+        } else if (unitActionResult.action.action === ActionType.SKIP) {
+            this.spots[unit.position.x][unit.position.y].onSkip();
+        } else if (unitActionResult.action.action === ActionType.WAIT) {
+            this.spots[unit.position.x][unit.position.y].onWait();
         }
         targets.forEach(targetUid => {
             const target: GameUnit = this.findUnitByUid(targetUid)!;
             this.spots[target.position.x][target.position.y].updateWithActionResult(unitActionResult.result, targetUid, item, ammo,);
         })
+
     }
 
     public updateWithExperience(): void {

@@ -215,7 +215,7 @@ export default class GameFlowControls extends GameBase {
             timeout = 500;
         }
         if ([GamePhase.ACTION_COMPLETE].includes(this.state.gameState.nextPhase) &&
-            (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP].includes(this.state.gameState.unitActionResult.action.action))) {
+            (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP, ActionType.WAIT].includes(this.state.gameState.unitActionResult.action.action))) {
             timeout = 500;
         }
         this.nextPhaseTimeoutId = window.setTimeout(() => this.callAutoNextPhase(), timeout);

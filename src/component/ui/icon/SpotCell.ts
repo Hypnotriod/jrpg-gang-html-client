@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
-import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
+import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -78,6 +78,10 @@ export default class SpotCell extends Component {
     protected readonly hitCriticalLabel: Label;
     @component(LABEL_CRITICAL_MISS, Label)
     protected readonly missCriticalLabel: Label;
+    @component(LABEL_SKIP, Label)
+    protected readonly skipLabel: Label;
+    @component(LABEL_WAIT, Label)
+    protected readonly waitLabel: Label;
     @component(LABEL_HIT_CHANCE, Label)
     protected readonly hitChanceLabel: Label;
     @component(LABEL_EXP, Label)
@@ -267,6 +271,8 @@ export default class SpotCell extends Component {
         this.hitHpLabel.hide();
         this.hitCriticalLabel.hide();
         this.missCriticalLabel.hide();
+        this.skipLabel.hide();
+        this.waitLabel.hide();
     }
 
     public showActionChance() {
@@ -411,6 +417,16 @@ export default class SpotCell extends Component {
         SoundService.play(SoundName.DEBUFF);
     }
 
+    public onSkip(): void {
+        this.onActionResultIcon(500);
+        this.skipLabel.show();
+    }
+
+    public onWait(): void {
+        this.onActionResultIcon(500);
+        this.waitLabel.show();
+    }
+
     public updateWithTurnOrder(order: number): void {
         this.turnOrderLabel.value = String(order);
         order ? this.turnOrderLabel.show() : this.turnOrderLabel.hide();
@@ -515,10 +531,10 @@ export default class SpotCell extends Component {
         this.actionResultTimeoutId = window.setTimeout(() => (this.icon = icon), 800);
     }
 
-    private onActionResultIcon(): void {
+    private onActionResultIcon(timeoutms: number = 1100): void {
         this.hideActionResultIcons();
         clearInterval(this.actionResultTimeoutId);
-        this.actionResultTimeoutId = window.setTimeout(() => this.hideActionResultIcons(), 1100);
+        this.actionResultTimeoutId = window.setTimeout(() => this.hideActionResultIcons(), timeoutms);
     }
 
     public updateWithExperience(experience: number): void {
