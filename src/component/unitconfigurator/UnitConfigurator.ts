@@ -259,7 +259,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.hide();
         this.communicator.sendMessage(RequestType.ENTER_LOBBY);
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
-            capacity: 1,
             scenarioId: SCENARIO_IDS.TRAINING,
         } as CreateRoomRequestData);
         this.communicator.sendMessage(RequestType.START_GAME);

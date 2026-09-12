@@ -61,7 +61,6 @@ export interface JoinRequestData extends RequestData {
 }
 
 export interface CreateRoomRequestData extends RequestData {
-    capacity: number;
     scenarioId: string;
 }
 
