@@ -11,6 +11,7 @@ export const AUTH_STYLE: string = COMPONENTS_PATH + 'auth/auth.css';
 
 export const LOBBY_DESIGN: string = COMPONENTS_PATH + 'lobby/lobby.html';
 export const ROOM_DESIGN: string = COMPONENTS_PATH + 'lobby/room.html';
+export const DUNGEON_DESIGN: string = COMPONENTS_PATH + 'lobby/dungeon.html';
 export const MERCENARY_DESIGN: string = COMPONENTS_PATH + 'lobby/mercenary.html';
 export const LOBBY_STYLE: string = COMPONENTS_PATH + 'lobby/lobby.css';
 

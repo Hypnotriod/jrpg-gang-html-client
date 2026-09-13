@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
-import { AUTH_DESIGN, AUTH_STYLE, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, MERCENARY_DESIGN, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
+import { AUTH_DESIGN, AUTH_STYLE, DUNGEON_DESIGN, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, MERCENARY_DESIGN, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
 import Component from '../Component';
@@ -10,10 +10,10 @@ import Lobby from '../lobby/Lobby';
 import Login from '../login/Login';
 import Auth from '../auth/Auth';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
-import ServerCommunicatorService from '../../service/ServerCommunicatorService';
+import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
-import { KEY_SESSION_ID } from '../../dto/responces';
+import { KEY_SESSION_ID, Response, ResponseStatus, ServerStatusData } from '../../dto/responces';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { component } from '../decorator/decorator';
@@ -22,11 +22,12 @@ import ObjectDescription from '../ui/popup/ObjectDescription';
 import Button from '../ui/button/Button';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import Container from '../ui/container/Container';
+import Label from '../ui/label/Label';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
 @injectable()
-export default class MainScene extends Component {
+export default class MainScene extends Component implements ServerCommunicatorHandler {
     @component('checkbox_sound', Checkbox)
     private readonly checkboxSound: Checkbox;
     @component('checkbox_info', Checkbox)
@@ -35,6 +36,8 @@ export default class MainScene extends Component {
     private readonly rulesPopup: InstructionsPopup;
     @component('button_rules', Button)
     private readonly buttonRules: Button;
+    @component('label_user_number', Label)
+    private readonly labelUserNumber: Label;
     @component('rules_popup_shadow', Container)
     private readonly popupShadow: Container;
 
@@ -84,6 +87,9 @@ export default class MainScene extends Component {
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
         this.buttonRules.onClick = target => this.rulesPopup.show();
+
+        this.communicator.subscribe([RequestType.SERVER_STATUS], this);
+        this.communicator.sendMessage(RequestType.SERVER_STATUS);
     }
 
     protected toggleSoundMute(): void {
@@ -98,8 +104,25 @@ export default class MainScene extends Component {
         localStorage.setItem('info', String(ObjectDescription.active));
     }
 
+    protected onServerStatus(data: ServerStatusData): void {
+        this.state.usersNumber = data.usersNumber;
+        this.labelUserNumber.value = `Players online ${this.state.usersNumber}`;
+    }
+
+    public handleServerResponse(response: Response): void {
+        if (response.status !== ResponseStatus.OK) { return; }
+        switch (response.type) {
+            case RequestType.SERVER_STATUS:
+                this.onServerStatus(response.data as ServerStatusData);
+                break;
+        }
+    }
+
+    handleConnectionLost(): void { }
+
     protected async preloadResources(): Promise<void> {
         await this.loaderService.load(ROOM_DESIGN, RESOURCE_DESIGN);
+        await this.loaderService.load(DUNGEON_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(MERCENARY_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(ITEM_ICON_DESIGN, RESOURCE_DESIGN);
         await this.loaderService.load(SHOP_ITEM_ICON_DESIGN, RESOURCE_DESIGN);

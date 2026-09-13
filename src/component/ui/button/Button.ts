@@ -21,4 +21,12 @@ export default class Button extends Component {
         this.view.onclick = null;
         super.destroy();
     }
+
+    public get label(): string {
+        return this.view.textContent!;
+    }
+
+    public set label(value: string) {
+        this.view.textContent = value;
+    }
 }

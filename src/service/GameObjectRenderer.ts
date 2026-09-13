@@ -107,6 +107,7 @@ export default class GameObjectRenderer {
 
     protected renderInventoryIcons(inventory: UnitInventory): string {
         return [
+            ...((inventory as any).descriptor || []),
             ...(inventory.weapon || []),
             ...(inventory.ammunition || []),
             ...(inventory.magic || []),

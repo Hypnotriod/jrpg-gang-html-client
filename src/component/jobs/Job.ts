@@ -96,7 +96,7 @@ export default class Job extends Component {
             this.buttonComplete.show();
             this.buttonQuit.show();
         } else {
-            this.labelTime.value = new Date(config.duration * 1000).toISOString().slice(14, 19);
+            this.updateTimeLeft(config.duration)
             this.buttonApply.show();
             this.buttonComplete.hide();
             this.buttonQuit.hide();
@@ -123,7 +123,9 @@ export default class Job extends Component {
     }
 
     protected updateTimeLeft(timeLeft: number): void {
-        this.labelTime.value = new Date(timeLeft * 1000).toISOString().slice(14, 19);
+        const time = new Date(timeLeft * 1000).toISOString().slice(14, 19);
+        this.labelTime.htmlValue =
+            `<img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${time}`
     }
 
     public set enabled(value: boolean) {

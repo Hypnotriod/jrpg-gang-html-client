@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Equipment, GameEvent, GameShopStatus, GameUnit, InventoryItem, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements, Weapon } from '../domain/domain';
+import { Equipment, GameEvent, GameScenarioConfig, GameShopStatus, GameUnit, InventoryItem, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements, Weapon } from '../domain/domain';
 import { UserStateData } from '../dto/responces';
 
 @singleton()
@@ -9,6 +9,7 @@ export default class GameStateService {
     private _shopStatus: GameShopStatus;
     private _gameState: GameEvent;
     private _rooms: RoomInfo[];
+    private _scenarios: GameScenarioConfig[];
     private _usersNumber: number;
 
     public set playerInfo(value: PlayerInfo) {
@@ -57,6 +58,13 @@ export default class GameStateService {
 
     public get userState(): UserStateData {
         return this._userState;
+    }
+
+    public get scenarios(): GameScenarioConfig[] {
+        return this._scenarios;
+    }
+    public set scenarios(value: GameScenarioConfig[]) {
+        this._scenarios = value;
     }
 
     public isUserInRooms(roomInfos: RoomInfo[]): boolean {

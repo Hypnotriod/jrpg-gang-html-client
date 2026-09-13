@@ -103,10 +103,12 @@ export default abstract class Component {
     }
 
     public disable(): void {
+        this._enabled = false;
         this._view.setAttribute('disabled', 'disabled');
     }
 
     public enable(): void {
+        this._enabled = true;
         this._view.removeAttribute('disabled');
     }
 

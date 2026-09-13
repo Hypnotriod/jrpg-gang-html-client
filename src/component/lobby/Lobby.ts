@@ -1,12 +1,13 @@
 import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, BUTTON_CREATE_ROOM_ADVANCED, BUTTON_CREATE_ROOM_EASY, BUTTON_CREATE_ROOM_MEDIUM, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USERS_COUNT, LOBBY_CHAT, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
-import { BASE_UNIT_DESCRIPTIONS, ROOM_CAPACITY, SCENARIO_IDS } from '../../constants/Configuration';
+import { BUTTON_CONFIGURATOR, DUNGEONS_CONTAINER, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USER_NUMBER, LOBBY_CHAT, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatParticipant, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
-import { ChatMessageRequestData, CreateRoomRequestData, RequestType } from '../../dto/requests';
-import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, ServerStatusData, UserStateData } from '../../dto/responces';
+import { ChatMessageRequestData, RequestType } from '../../dto/requests';
+import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
+import { SoundName, SoundService } from '../../service/SoundService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
@@ -14,32 +15,28 @@ import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
+import ObjectDescription from '../ui/popup/ObjectDescription';
 import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
-import Room from './Room';
-import ObjectDescription from '../ui/popup/ObjectDescription';
-import { SoundName, SoundService } from '../../service/SoundService';
+import Dungeon from './Dungeon';
 import MercenariesPopup from './MercenariesPopup';
+import Room from './Room';
 
 @injectable()
 @singleton()
 export default class Lobby extends Component implements ServerCommunicatorHandler {
     @component(ROOMS_CONTAINER, Container)
     private readonly roomsContainer: Container;
-    @component(BUTTON_CREATE_ROOM_EASY, Button)
-    private readonly createRoomEasyButton: Button;
-    @component(BUTTON_CREATE_ROOM_MEDIUM, Button)
-    private readonly createRoomMediumButton: Button;
-    @component(BUTTON_CREATE_ROOM_ADVANCED, Button)
-    private readonly createRoomAdvancedButton: Button;
+    @component(DUNGEONS_CONTAINER, Container)
+    private readonly dungeonsContainer: Container;
     @component(BUTTON_CONFIGURATOR, Button)
     private readonly configuratorButton: Button;
     @component(UNIT_ICON, Icon)
     private readonly unitIcon: Icon;
     @component(UNIT_INFO, Container)
     private readonly unitInfo: Container;
-    @component(LABEL_USERS_COUNT, Label)
-    private readonly usersCountLabel: Label;
+    @component(LABEL_USER_NUMBER, Label)
+    private readonly userNumberLabel: Label;
     @component(LOBBY_CHAT, TextField)
     private readonly chat: TextField;
     @component(INPUT_LOBBY_CHAT_MESSAGE, TextInput)
@@ -50,10 +47,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly popupShadow: Container;
     @component('mercenaries_popup', MercenariesPopup)
     private readonly mercenariesPopup: MercenariesPopup;
+    @component('button_dungeons', Button)
+    private readonly dungeonsButton: Button;
+    @component('button_parties', Button)
+    private readonly partiesButton: Button;
     @component(UNIT_BOOTY, Label)
     private readonly unitBooty: Label;
 
     private readonly rooms: Map<number, Room> = new Map();
+    private readonly dungeons: Map<string, Dungeon> = new Map();
     private chatState: ChatState;
 
     constructor(private readonly communicator: ServerCommunicatorService,
@@ -66,12 +68,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.hide();
         this.objectDescription.hide();
         this.unitIcon.descriptionPopup = this.objectDescription;
-        this.createRoomEasyButton.disable();
-        this.createRoomEasyButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.EASY);
-        this.createRoomMediumButton.disable();
-        this.createRoomMediumButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.MEDIUM);
-        this.createRoomAdvancedButton.disable();
-        this.createRoomAdvancedButton.onClick = target => this.onCreateRoom(SCENARIO_IDS.ADVANCED);
+        this.dungeonsButton.onClick = target => this.showDungeons();
+        this.partiesButton.onClick = target => this.showParties();
         this.configuratorButton.onClick = target => this.goToUnitConfig();
         this.communicator.subscribe([
             RequestType.SERVER_STATUS,
@@ -108,7 +106,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     public show(): void {
-        this.communicator.sendMessage(RequestType.SERVER_STATUS);
+        this.showDungeons();
         this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
@@ -118,9 +116,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
-            case RequestType.SERVER_STATUS:
-                this.onServerStatus(response.data as ServerStatusData);
-                break;
             case RequestType.LOBBY_STATUS:
                 super.show();
                 this.onLobbyStatus(response.data as LobbyStatusData);
@@ -193,13 +188,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             `<span style="font-size: 13px;">${convert(message.message)}<br>`;
     }
 
-    protected onServerStatus(data: ServerStatusData): void {
-        this.state.usersNumber = data.usersNumber;
-        this.updateUsersInfo();
-    }
-
     protected onLobbyStatus(data: LobbyStatusData): void {
-        this.state.rooms = data.rooms.filter(room => room.scenarioId !== SCENARIO_IDS.TRAINING);
+        this.state.rooms = data.rooms.filter(room => room.scenario.id !== SCENARIO_IDS.TRAINING);
+        this.state.scenarios = data.scenarios.filter(scenario => scenario.id !== SCENARIO_IDS.TRAINING);
         this.update();
     }
 
@@ -221,8 +212,19 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             oldRoomInfo.blockedPlayerIds = roomInfo.blockedPlayerIds;
             oldRoomInfo.host = roomInfo.host;
             if (roomInfo.host.playerId === this.state.userState.playerInfo.playerId &&
-                roomInfo.joinedUsers.length >= ROOM_CAPACITY - 1) {
+                roomInfo.joinedUsers.length >= roomInfo.scenario.capacity - 1) {
                 this.mercenariesPopup.hide();
+            }
+        }
+        const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
+        const isUserHostOfRoom: boolean = oldRoomInfo !== undefined && this.state.isUserHostOfRoom(oldRoomInfo);
+        if (isUserInRoom) {
+            this.showParties(false);
+        } else if (this.partiesButton.enabled === false && this.dungeonsButton.enabled === false) {
+            if (isUserHostOfRoom) {
+                this.showDungeons();
+            } else {
+                this.dungeonsButton.enable();
             }
         }
         this.update();
@@ -234,6 +236,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.updateState(isUserInRooms);
         this.updateUnitInfo();
         this.updateUsersInfo();
+        this.updateDungeons();
     }
 
     protected updateUsersInfo(): void {
@@ -242,9 +245,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             .map(k => this.chatState.participants[k])
             .filter(p => p.unavailable !== true)
             .map(p => `<span class="green-text text-lighten-2">${p.nickname}</span>`);
-        this.usersCountLabel.htmlValue =
-            `<span class="orange-text text-lighten-1">Players online:</span> ${this.state.usersNumber ?? 0}<br>
-            <span class="orange-text text-lighten-1">Players in lobby:</span> ${inLobby.length} ${inLobby.join(',')}`;
+        this.userNumberLabel.htmlValue =
+            `<span class="orange-text text-lighten-1">In lobby:</span> ${inLobby.join(',')}`;
     }
 
     public handleConnectionLost(): void {
@@ -275,6 +277,41 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 this.rooms.delete(uid);
             }
         });
+        this.partiesButton.label = `Parties (${roomInfos.length})`;
+        roomInfos.forEach(roomInfo => {
+            const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
+            if (isUserInRoom) {
+                this.showParties(false);
+            }
+        });
+    }
+
+    protected updateDungeons(): void {
+        if (!this.state.scenarios) return;
+        const unit = this.state.userState.unit;
+        this.state.scenarios.forEach(scenario => {
+            if (this.dungeons.get(scenario.id)) return;
+            this.dungeons.set(scenario.id, Dungeon.createDungeon(this, DUNGEONS_CONTAINER)!);
+        });
+        this.state.scenarios.forEach(scenario => {
+            const dungeon = this.dungeons.get(scenario.id)!;
+            dungeon.update(scenario);
+            dungeon.enabled = this.state.checkRequirements(unit, scenario.requirements);
+        });
+    }
+
+    protected showDungeons(): void {
+        this.dungeonsButton.disable();
+        this.partiesButton.enable();
+        this.roomsContainer.hide();
+        this.dungeonsContainer.show();
+    }
+
+    protected showParties(dungeonsEnabled: boolean = true): void {
+        this.partiesButton.disable();
+        this.dungeonsButton.enabled = dungeonsEnabled;
+        this.roomsContainer.show();
+        this.dungeonsContainer.hide();
     }
 
     protected updateRoom(roomInfo: RoomInfo, isUserInRooms: boolean): number {
@@ -288,15 +325,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected updateState(isUserInRooms: boolean): void {
         const level = this.state.userState.unit.stats.progress.level;
-        this.createRoomEasyButton.enabled = !isUserInRooms;
-        this.createRoomMediumButton.enabled = !isUserInRooms && level >= 2;
-        this.createRoomAdvancedButton.enabled = !isUserInRooms && level >= 3;
         this.configuratorButton.enabled = !isUserInRooms;
-    }
-
-    protected onCreateRoom(scenarioId: string): void {
-        this.roomsContainer.scrollTo({ top: 0 });
-        this.communicator.sendMessage(RequestType.CREATE_ROOM, { scenarioId } as CreateRoomRequestData);
     }
 
     protected onHireMercenary(roomUid: number): void {

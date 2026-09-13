@@ -12,8 +12,7 @@ export interface PlayerInfo {
 
 export interface RoomInfo {
     uid: number;
-    capacity: number;
-    scenarioId: string;
+    scenario: GameScenarioConfig;
     host: PlayerInfo;
     joinedUsers: PlayerInfo[];
     mercenaries: PlayerInfo[];
@@ -24,6 +23,7 @@ export interface RoomInfo {
 export interface GameScenarioConfig {
     id: string;
     name: string;
+    description: string;
     capacity: number;
     requirements: UnitRequirements;
 }

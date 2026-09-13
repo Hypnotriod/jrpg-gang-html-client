@@ -12,7 +12,7 @@ export const QUESTS_CONTAINER: string = 'quests_container';
 export const QUESTS_LIST_CONTAINER: string = 'quests_list_container';
 
 export const ROOMS_CONTAINER: string = 'rooms_container';
-export const SELECT_ROOMS_CONTAINER: string = 'select_rooms_container';
+export const DUNGEONS_CONTAINER: string = 'dungeons_container';
 
 export const BUTTON_AUTH: string = 'button_auth';
 export const BUTTON_AUTH_GUEST: string = 'button_auth_guest';
@@ -68,7 +68,7 @@ export const LABEL_WAIT: string = 'label_wait';
 export const LABEL_HIT_CHANCE: string = 'label_hit_chance';
 export const LABEL_EXP: string = 'label_exp';
 export const LABEL_TURN_ORDER: string = 'label_turn_order';
-export const LABEL_USERS_COUNT: string = 'label_users_count';
+export const LABEL_USER_NUMBER: string = 'label_user_number';
 export const LABEL_USERS_IN_GAME: string = 'label_users_in_game';
 export const LABEL_HEADER: string = 'label_header';
 export const LABEL_DESCRIPTION: string = 'label_description';
@@ -102,6 +102,7 @@ export const BUTTON_INITIATIVE: string = 'button_initiative';
 export const LABEL_LUCK: string = 'label_luck';
 export const BUTTON_LUCK: string = 'button_luck';
 export const BUTTON_APPLY: string = 'button_apply';
+export const BUTTON_ENTER: string = 'button_enter';
 export const BUTTON_PREVIOUS: string = 'button_previous';
 export const BUTTON_NEXT: string = 'button_next';
 

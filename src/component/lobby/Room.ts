@@ -12,8 +12,9 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
-import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
+import { BASE_UNIT_DESCRIPTIONS } from '../../constants/Configuration';
 import ObjectDescription from '../ui/popup/ObjectDescription';
+import { SoundName, SoundService } from '../../service/SoundService';
 
 @injectable()
 export default class Room extends Component {
@@ -90,24 +91,12 @@ export default class Room extends Component {
                 '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
         });
 
-        switch (roomInfo.scenarioId) {
-            case SCENARIO_IDS.EASY:
-                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_01.png';
-                this.dungeonLabel.htmlValue = '<span class="blue-text lighten-2">Forgotten Ruins</span>';
-                break;
-            case SCENARIO_IDS.MEDIUM:
-                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_02.png';
-                this.dungeonLabel.htmlValue = '<span class="green-text lighten-2">Cursed Swamp</span>';
-                break;
-            case SCENARIO_IDS.ADVANCED:
-                (this.findChild('icon_room') as HTMLImageElement).src = './assets/icons/dungeon_03.png';
-                this.dungeonLabel.htmlValue = '<span class="red-text lighten-2">Dragon\'s Lair</span>';
-                break;
-        }
+        this.dungeonLabel.value = roomInfo.scenario.name;
+        (this.findChild('icon_room') as HTMLImageElement).src = `./assets/icons/${roomInfo.scenario.id}.png`;
 
         const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
         const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
-        const roomIsFull: boolean = roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.capacity - 1;
+        const roomIsFull: boolean = roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.scenario.capacity - 1;
         if (isUserInRoom) {
             this.joinRoomButton.hide();
             this.leaveRoomButton.show();
@@ -151,7 +140,10 @@ export default class Room extends Component {
         this.mercenaryIcon.icon = 'person';
 
         this.hireMercenaryButton.onClick = target => this._hireMercenaryCallback?.(this.roomInfo.uid);
-        this.mercenaryIcon.onClick = target => this._hireMercenaryCallback?.(this.roomInfo.uid);
+        this.mercenaryIcon.onClick = target => {
+            SoundService.play(SoundName.CLICK);
+            this._hireMercenaryCallback?.(this.roomInfo.uid);
+        }
 
         this.joinRoomButton.onClick = target => this.doJoinRoom();
         this.leaveRoomButton.onClick = target => this.doLeaveRoom();
