@@ -338,6 +338,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected updateShopStatus(data: GameShopStatus): void {
         this.updateShopInventoryIcons(data.items);
+        this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
     }
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
