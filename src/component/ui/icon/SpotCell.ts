@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -44,6 +44,8 @@ export default class SpotCell extends Component {
     protected readonly _iconMana: Container;
     @component(ICON_DRAIN, Container)
     protected readonly _iconDrain: Container;
+    @component(ICON_STRESSED_SM, Container)
+    protected readonly _iconStressedSm: Container;
     @component(ICON_CURRENT, Container)
     protected readonly _iconCurrent: Container;
     @component(ICON_EFFECT, Container)
@@ -239,6 +241,7 @@ export default class SpotCell extends Component {
         this._iconStamina.hide();
         this._iconMana.hide();
         this._iconDrain.hide();
+        this._iconStressedSm.hide();
         this._iconTarget.hide();
         this._iconUnreachable.hide();
         this._iconExperience.hide();
@@ -388,6 +391,7 @@ export default class SpotCell extends Component {
         this._unit.modification?.find(m => m.baseAttributes?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
         this._unit.modification?.find(m => m.baseAttributes?.mana) ? this._iconMana.show() : this._iconMana.hide();
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
+        this._unit.state.stress ? this._iconStressedSm.show() : this._iconStressedSm.hide();
         if ((this._unit.faction === GameUnitFaction.ENEMY || this._unit.faction === GameUnitFaction.PARTY) && isActive) {
             this._icon.enable();
         } else if (forceDisable) {

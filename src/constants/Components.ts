@@ -143,6 +143,7 @@ export const ICON_HEALTH: string = 'icon_health';
 export const ICON_STAMINA: string = 'icon_stamina';
 export const ICON_MANA: string = 'icon_mana';
 export const ICON_DRAIN: string = 'icon_drain';
+export const ICON_STRESSED_SM: string = 'icon_stressed_sm';
 export const ICON_CURRENT: string = 'icon_current';
 export const ICON_CANT_USE: string = 'icon_cant_use';
 export const ICON_BROKEN: string = 'icon_broken';
