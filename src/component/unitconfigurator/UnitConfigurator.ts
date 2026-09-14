@@ -659,12 +659,14 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.USER_STATUS);
     }
 
-    protected skillUp(skill: ActionProperty): void {
+    protected async skillUp(skill: ActionProperty): Promise<void> {
         this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
             action: ActionType.SKILL_UP,
             property: skill,
         } as ActionRequestData);
         this.communicator.sendMessage(RequestType.USER_STATUS);
+        await this.communicator.until(RequestType.CONFIGURATION_ACTION);
+        SoundService.play(SoundName.SKILL_UP);
     }
 
     protected levelUp(): void {

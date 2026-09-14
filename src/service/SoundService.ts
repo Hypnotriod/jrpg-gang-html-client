@@ -33,6 +33,7 @@ export enum SoundName {
     BELL = 'bell',
     ACHIEVEMENT = 'achievement',
     LEVEL_UP = 'level_up',
+    SKILL_UP = 'skill_up',
     QUEST_COMPLETE = 'quest_complete',
     FOOD = 'food',
     PAGE_TURN = 'page_turn',
@@ -96,6 +97,7 @@ export class SoundService {
         SoundService.sounds[SoundName.BELL] = new Howl({ src: ['assets/sounds/bell.mp3'] });
         SoundService.sounds[SoundName.ACHIEVEMENT] = new Howl({ src: ['assets/sounds/achievement.mp3'] });
         SoundService.sounds[SoundName.LEVEL_UP] = new Howl({ src: ['assets/sounds/level_up.mp3'] });
+        SoundService.sounds[SoundName.SKILL_UP] = new Howl({ src: ['assets/sounds/skill_up.mp3'] });
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
         SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
