@@ -95,9 +95,6 @@ export default class GameObjectRenderer {
         if (data.equipped) {
             result += this.keyValue('equipped', data.equipped ? 'yes' : 'no');
         }
-        if (data.canBeThrownAway) {
-            result += this.keyValue('canBeThrownAway', data.canBeThrownAway ? 'yes' : 'no');
-        }
         if (data.canBeSold) {
             result += this.keyValue('canBeSold', data.canBeSold ? 'yes' : 'no');
         }
