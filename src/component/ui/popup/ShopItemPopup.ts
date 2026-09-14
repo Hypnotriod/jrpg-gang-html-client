@@ -36,6 +36,10 @@ export class ShopItemPopup extends Container {
     protected readonly yesButton: Button;
     @component('button_no', Button)
     protected readonly noButton: Button;
+    @component('button_minus', Button)
+    protected readonly minusButton: Button;
+    @component('button_plus', Button)
+    protected readonly plusButton: Button;
 
     protected _shadow?: Container;
     protected slider: HTMLInputElement;
@@ -54,8 +58,10 @@ export class ShopItemPopup extends Container {
     protected initialize(): void {
         this.quantitySlider.onChange = () => {
             this.quantity = this.quantitySlider.value
-            this.quantityLabel.value = `x${this.quantity}`;
+            this.quantityLabel.value = `${this.quantity}`;
             this.item = this._item;
+            this.minusButton.enabled = this.quantity > 1;
+            this.plusButton.enabled = this.quantity < this.quantitySlider.max;
             SoundService.play(SoundName.CLICK, { rate: 0.05 });
         }
         this.noButton.onClick = () => {
@@ -65,6 +71,8 @@ export class ShopItemPopup extends Container {
             this.hide();
             this.onYesCallback?.(this.quantity);
         }
+        this.minusButton.onClick = () => { this.quantitySlider.value--; }
+        this.plusButton.onClick = () => { this.quantitySlider.value++; }
     }
 
     public override show(): void {
@@ -119,9 +127,13 @@ export class ShopItemPopup extends Container {
             this._item.type === ItemType.WEAPON) {
             this.quantitySlider.hide();
             this.quantityLabel.hide();
+            this.minusButton.hide();
+            this.plusButton.hide();
         } else {
             this.quantitySlider.show();
             this.quantityLabel.show();
+            this.minusButton.show();
+            this.plusButton.show();
         }
         let price: UnitBooty;
         if (this._mode === ShopItemPopupMode.BUY) {
