@@ -36,9 +36,10 @@ export default class Quests extends Component implements ServerCommunicatorHandl
     }
 
 
-    public show(): void {
-        super.show();
+    public async show(): Promise<void> {
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
+        await this.communicator.until(RequestType.QUESTS_STATUS);
+        super.show();
     }
 
     protected goToUnitConfig(): void {

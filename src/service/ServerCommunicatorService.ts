@@ -12,6 +12,7 @@ export interface ServerCommunicatorHandler {
 @injectable()
 export default class ServerCommunicatorService {
     private readonly subscribers: Map<RequestType, ServerCommunicatorHandler[]> = new Map();
+    private readonly oneShotSubscribers: Map<RequestType, ((response: Response) => void)[]> = new Map();
     private readonly requestsQueue: Request[] = [];
     private pendingRequestId: string | undefined;
     private ws: WebSocket | null;
@@ -66,6 +67,15 @@ export default class ServerCommunicatorService {
         return !!this.ws && this.ws.readyState === WebSocket.OPEN;
     }
 
+    public until(requestType: RequestType): Promise<Response> {
+        return new Promise<Response>(resolve => {
+            if (!this.oneShotSubscribers.get(requestType)) {
+                this.oneShotSubscribers.set(requestType, []);
+            }
+            this.oneShotSubscribers.get(requestType)!.push((response) => resolve(response));
+        });
+    }
+
     private connectToWs(suffix: string): void {
         this.ws = new WebSocket(this.appConfig.gameServerWsUrl + suffix);
         this.ws.onopen = (event: Event) => this.onOpen(event);
@@ -96,8 +106,14 @@ export default class ServerCommunicatorService {
 
     private notify(response: Response): void {
         const handlers: ServerCommunicatorHandler[] | undefined = this.subscribers.get(response.type);
-        if (!handlers) { return; }
-        handlers.forEach(handler => handler.handleServerResponse(response));
+        const oneShotCallbacks: ((response: Response) => void)[] | undefined = this.oneShotSubscribers.get(response.type);
+        if (handlers) {
+            handlers.forEach(handler => handler.handleServerResponse(response));
+        }
+        if (oneShotCallbacks) {
+            oneShotCallbacks.forEach(callback => callback(response));
+            this.oneShotSubscribers.delete(response.type)
+        }
     }
 
     private onError(event: ErrorEvent): void {

@@ -170,9 +170,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.battlefield.updateUnitsTurnOrder();
     }
 
-    public override show(): void {
+    public async show(): Promise<void> {
         this.communicator.sendMessage(RequestType.GAME_CHAT_STATE);
-        super.show();
         this.unitItems.destroy();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
             SoundService.play(SoundName.DOOR);
@@ -180,6 +179,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         }
         SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
+        await this.communicator.until(RequestType.GAME_CHAT_STATE);
+        super.show();
     }
 
     public handleConnectionLost(): void {

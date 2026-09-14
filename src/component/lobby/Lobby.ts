@@ -105,19 +105,20 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.unitConfigurator.show();
     }
 
-    public show(): void {
+    public async show(): Promise<void> {
         this.showDungeons();
         this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
+        await this.communicator.until(RequestType.LOBBY_STATUS);
+        super.show();
     }
 
     public handleServerResponse(response: Response): void {
         if (response.status !== ResponseStatus.OK) { return; }
         switch (response.type) {
             case RequestType.LOBBY_STATUS:
-                super.show();
                 this.onLobbyStatus(response.data as LobbyStatusData);
                 this.updateBooty();
                 break;

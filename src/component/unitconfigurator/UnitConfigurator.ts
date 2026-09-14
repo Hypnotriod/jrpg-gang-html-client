@@ -142,7 +142,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.rulesPopup.onHide = () => localStorage.setItem(KEY_ARE_RULES_SHOWN, 'true');
     }
 
-    public show(): void {
+    public async show(): Promise<void> {
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.USER_STATUS);
@@ -153,6 +153,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
+        await this.communicator.until(RequestType.SHOP_STATUS);
+        super.show();
     }
 
     protected initialize(): void {
@@ -292,9 +294,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             case RequestType.SHOP_STATUS:
                 this.state.shopStatus = (response.data as ShopStatusData).shop;
                 this.updateShopStatus(this.state.shopStatus);
-                if (!this.visible) {
-                    super.show();
-                }
                 break;
             case RequestType.QUESTS_STATUS:
                 this.updateNewQuestsIcon(response.data as QuestsStatusData);

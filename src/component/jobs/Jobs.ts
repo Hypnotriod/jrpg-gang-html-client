@@ -37,10 +37,11 @@ export default class Jobs extends Component implements ServerCommunicatorHandler
         this.unitConfigurator.show();
     }
 
-    public show(): void {
-        super.show();
+    public async show(): Promise<void> {
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
+        await this.communicator.until(RequestType.JOBS_STATUS);
+        super.show();
     }
 
     handleServerResponse(response: Response): void {
