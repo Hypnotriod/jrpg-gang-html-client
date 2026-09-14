@@ -202,6 +202,14 @@ export interface Provision extends Item {
 
 export type InventoryItem = Weapon | Disposable | Ammunition | Provision | Magic | Armor;
 
+export interface UnitInventoryDescriptor {
+    code: string;
+    quantity?: number;
+    equipped?: boolean;
+    wearout?: number;
+    requirements?: UnitRequirements;
+}
+
 export interface UnitInventory {
     weapon?: Weapon[];
     magic?: Magic[];
@@ -209,6 +217,7 @@ export interface UnitInventory {
     disposable?: Disposable[];
     ammunition?: Ammunition[];
     provision?: Provision[];
+    descriptor?: UnitInventoryDescriptor[];
 }
 
 export interface Position {
