@@ -83,6 +83,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
             }
         });
 
+        this.labelUserNumber.value = '';
+
         this.rulesPopup.shadow = this.popupShadow;
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
