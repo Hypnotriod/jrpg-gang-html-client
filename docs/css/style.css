@@ -322,6 +322,24 @@ body {
     transform: translate(-50%, -50%);
 }
 
+.tips-popup {
+    position: fixed;
+    background-color: rgba(29, 43, 55, 0.94);
+    z-index: 200;
+    min-width: 300px;
+    max-width: 1000px;
+    padding: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 46px);
+}
+
 .dungeon-loot-popup {
     position: fixed;
     background-color: rgb(75, 87, 98);

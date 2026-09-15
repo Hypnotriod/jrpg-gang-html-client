@@ -1,4 +1,5 @@
 <div id="rules_popup_shadow" class="popup-shadow hidden"></div>
+<div id="tips_popup_shadow" class="popup-shadow hidden"></div>
 <div id="login_container" class="login-container hidden no-select"></div>
 <div id="auth_container" class="auth-container hidden no-select"></div>
 <div id="lobby_container" class="lobby-container hidden no-select"></div>
@@ -18,11 +19,28 @@
         <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
                 style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Info Popup (I)</b></span>
     </label>
+    <label class="grey-text" style="padding-left: 5px;">
+        <input id="checkbox_tips" type="checkbox" />
+        <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
+                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Show Tips</b></span>
+    </label>
     <button id="button_rules" class="btn-small green darken-3"
-        style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Rules</button>
+        style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Game Rules</button>
     <b><span id="label_user_number" class="grey-text right"
             style="padding-right: 12px; padding-top: 2px; font-size: 12px;">Players
             online 1</span></b>
+</div>
+<div id="tips_popup" class="tips-popup darken-4 no-select hidden">
+    <b>
+        <div class="center-align">
+            <span class="amber-text"><img src="./assets/icons/info.png"
+                    style="vertical-align: middle; padding-bottom: 4px;" /> Tips</span>
+        </div>
+        <div id="message_label" class="row grey-text text-lighten-3" style="margin: 0;"> </div>
+        <div class="center" style="margin-top: 6px; margin-bottom: 2px;">
+            <button id="button_ok" class="btn-small blue" style="height: 24px; line-height: 0;">ok</button><br>
+        </div>
+    </b>
 </div>
 <div id="rules_popup" class="rules-popup blue-grey darken-4 hidden no-select">
     <div class="row">
