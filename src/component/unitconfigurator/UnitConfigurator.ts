@@ -2,7 +2,7 @@ import { delay, inject, injectable, singleton } from 'tsyringe';
 import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, BUTTON_TRAINING, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon, UnitQuestStatus } from '../../domain/domain';
 import { ActionRequestData, CreateRoomRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
-import { ActionResultData, KEY_ARE_INSTRUCTIONS_SHOWN, KEY_ARE_RULES_SHOWN, QuestsStatusData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
+import { ActionResultData, KEY_ARE_INSTRUCTIONS_SHOWN, QuestsStatusData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -24,6 +24,8 @@ import Quests from '../quests/Quests';
 import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import { compareItemsByName } from '../../utils/utils';
+import { TipsPopup } from '../ui/popup/TipsPopup';
+import { GameTipKey } from '../../constants/Tips';
 
 @singleton()
 @injectable()
@@ -124,12 +126,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly unitItems: Map<number, ItemIcon> = new Map();
     private readonly shopItems: Map<number, ItemIcon> = new Map();
     private shopFilter: string[] = [];
-    private rulesPopup: InstructionsPopup;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
         private readonly renderer: GameObjectRenderer,
+        private readonly tips: TipsPopup,
         @inject(delay(() => Lobby)) private readonly lobby: Lobby,
         @inject(delay(() => Jobs)) private readonly jobs: Jobs,
         @inject(delay(() => Quests)) private readonly quests: Quests,
@@ -137,12 +139,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         super();
     }
 
-    public setRulesPopup(rulesPopup: InstructionsPopup): void {
-        this.rulesPopup = rulesPopup;
-        this.rulesPopup.onHide = () => localStorage.setItem(KEY_ARE_RULES_SHOWN, 'true');
-    }
-
     public async show(): Promise<void> {
+        this.tips.clearQueue();
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.USER_STATUS);
@@ -150,6 +148,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         if (!localStorage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
             this.instructionsPopup.show();
+        } else {
+            this.tips.showTip(GameTipKey.MAIN_HUB);
         }
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
@@ -234,8 +234,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
         this.instructionsPopup.onHide = () => {
             localStorage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
-            if (localStorage.getItem(KEY_ARE_RULES_SHOWN)) return;
-            this.rulesPopup.show();
+            this.tips.showTip(GameTipKey.MAIN_HUB);
         };
 
         this.newQuestsIcon.hide();

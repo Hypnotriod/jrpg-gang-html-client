@@ -10,6 +10,7 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Label from '../ui/label/Label';
 import GameBase from './GameBase';
+import { TipsPopup } from '../ui/popup/TipsPopup';
 
 @injectable()
 @singleton()
@@ -54,13 +55,20 @@ export default class GameFlowControls extends GameBase {
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
+        private readonly tips: TipsPopup,
         private readonly actionService: ActionService) {
         super(state, actionService);
     }
 
     protected initialize(): void {
-        this.nextPhaseButton.onClick = target => this.onNextPhase();
-        this.nextBattleButton.onClick = target => this.onNextPhase();
+        this.nextPhaseButton.onClick = target => {
+            this.tips.clearQueue();
+            this.onNextPhase();
+        }
+        this.nextBattleButton.onClick = target => {
+            this.tips.clearQueue();
+            this.onNextPhase();
+        }
         this.waitButton.onClick = target => this.onWait();
         this.retreatButton.onClick = target => this.onRetreatGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
@@ -256,10 +264,12 @@ export default class GameFlowControls extends GameBase {
     }
 
     protected onRetreatGameClick(): void {
+        this.tips.clearQueue();
         this.onRetreateCallback?.();
     }
 
     protected onLeaveGameClick(): void {
+        this.tips.clearQueue();
         this.onLeaveCallback?.();
     }
 

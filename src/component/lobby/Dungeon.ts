@@ -14,6 +14,8 @@ import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
+import { TipsPopup } from '../ui/popup/TipsPopup';
+import { GameTipKey } from '../../constants/Tips';
 
 @injectable()
 export default class Dungeon extends Component {
@@ -30,7 +32,8 @@ export default class Dungeon extends Component {
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly renderer: GameObjectRenderer,
-        private readonly state: GameStateService) {
+        private readonly state: GameStateService,
+        private readonly tips: TipsPopup) {
         super();
     }
 
@@ -52,6 +55,7 @@ export default class Dungeon extends Component {
         this.communicator.sendMessage(RequestType.CREATE_ROOM, {
             scenarioId: this.config.id,
         } as CreateRoomRequestData);
+        this.tips.showTip(GameTipKey.MERCENARY);
     }
 
     public update(config: GameScenarioConfig): void {

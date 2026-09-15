@@ -1,7 +1,7 @@
 import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
 import { ACHIEVEMENT_POPUP, BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
+import { ActionResultType, ActionType, Cell, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -25,6 +25,8 @@ import { DungeonLootPopup } from '../ui/popup/DungeonLootPopup';
 import { LeaveDungeonPopup } from '../ui/popup/LeaveDungeonPopup';
 import Container from '../ui/container/Container';
 import { ACHIEVEMENT_IDS } from '../../constants/Configuration';
+import { TipsPopup } from '../ui/popup/TipsPopup';
+import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips';
 
 @injectable()
 @singleton()
@@ -65,6 +67,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         private readonly configurator: UnitConfigurator,
         private readonly renderer: GameObjectRenderer,
         private readonly state: GameStateService,
+        private readonly tips: TipsPopup,
         private readonly actionService: ActionService) {
         super(state, actionService);
     }
@@ -171,6 +174,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public async show(): Promise<void> {
+        this.tips.clearQueue();
         this.communicator.sendMessage(RequestType.GAME_CHAT_STATE);
         this.unitItems.destroy();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
@@ -235,6 +239,56 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.logAction();
         this.handleAchievements();
         this.handleGameActionSound();
+        this.manageTips();
+    }
+
+    protected manageTips(): void {
+        const playersUnit = this.playersUnit();
+        if (!playersUnit) return;
+        switch (this.state.gameState.nextPhase) {
+            case GamePhase.PREPARE_UNIT:
+            case GamePhase.SPOT_COMPLETE:
+                if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.75) {
+                    this.tips.showTip(GameTipKey.CONSUME_PROVISION_HEALTH);
+                }
+                if (playersUnit.state.mana < playersUnit.stats.baseAttributes.mana * 0.5) {
+                    this.tips.showTip(GameTipKey.CONSUME_PROVISION_MANA);
+                }
+            case GamePhase.SCENARIO_COMPLETE:
+                break;
+            default:
+                if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
+                    this.tips.showTip(closeCombatTip(this.state.userState.unit.class!));
+                    const units = this.state.gameState.spot.battlefield.units;
+                    if (units.filter(u => u.uid !== playersUnit.uid).every(u => u.position.x > 1)) {
+                        this.tips.showTip(rangeCombatTip(this.state.userState.unit.class!));
+                    }
+                }
+        }
+        if (playersUnit.state.stamina < playersUnit.stats.baseAttributes.stamina * 0.25) {
+            this.tips.showTip(GameTipKey.LOW_STAMINA);
+        }
+        if (playersUnit.state.stamina === 0) {
+            this.tips.showTip(GameTipKey.NO_STAMINA);
+        }
+        if (playersUnit.state.isStunned) {
+            this.tips.showTip(GameTipKey.STUNNED);
+        }
+        if (playersUnit.state.stress) {
+            this.tips.showTip(GameTipKey.STRESSED);
+        }
+        if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.5) {
+            this.tips.showTip(GameTipKey.LOW_HEALTH);
+        }
+        if (playersUnit.state.mana < playersUnit.stats.baseAttributes.mana * 0.25) {
+            this.tips.showTip(GameTipKey.LOW_MANA);
+        }
+        if (playersUnit.damage?.some(d => d.bleeding)) {
+            this.tips.showTip(GameTipKey.BLEADING);
+        }
+        if (playersUnit.damage?.some(d => d.poison)) {
+            this.tips.showTip(GameTipKey.POISONED);
+        }
     }
 
     protected updateBooty(): void {

@@ -23,6 +23,7 @@ import Button from '../ui/button/Button';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import Container from '../ui/container/Container';
 import Label from '../ui/label/Label';
+import { TipsPopup } from '../ui/popup/TipsPopup';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -32,8 +33,12 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly checkboxSound: Checkbox;
     @component('checkbox_info', Checkbox)
     private readonly checkboxInfo: Checkbox;
+    @component('checkbox_tips', Checkbox)
+    private readonly checkboxTips: Checkbox;
     @component('rules_popup', InstructionsPopup)
     private readonly rulesPopup: InstructionsPopup;
+    @component('tips_popup', TipsPopup)
+    private readonly tipsPopup: TipsPopup;
     @component('button_rules', Button)
     private readonly buttonRules: Button;
     @component('label_user_number', Label)
@@ -62,13 +67,13 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.hide();
         SoundService.initialize();
         this.initializeComponents().then(() => {
-            this.configurator.setRulesPopup(this.rulesPopup);
             this.login.tryToAutologin();
             this.show();
         });
         this.initializeFocusHandler();
         this.checkboxSound.checked = localStorage.getItem('sound') !== 'false';
         this.checkboxInfo.checked = localStorage.getItem('info') !== 'false';
+        this.checkboxTips.checked = localStorage.getItem('tips') !== 'false';
         SoundService.muted = !this.checkboxSound.checked;
         ObjectDescription.active = this.checkboxInfo.checked;
 
@@ -85,9 +90,11 @@ export default class MainScene extends Component implements ServerCommunicatorHa
 
         this.labelUserNumber.value = '';
 
+        this.tipsPopup.shadow = this.popupShadow;
         this.rulesPopup.shadow = this.popupShadow;
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
+        this.checkboxTips.onChange = target => this.toggleTipsPopup();
         this.buttonRules.onClick = target => this.rulesPopup.show();
 
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
@@ -104,6 +111,12 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         SoundService.play(SoundName.CLICK);
         ObjectDescription.active = !ObjectDescription.active;
         localStorage.setItem('info', String(ObjectDescription.active));
+    }
+
+    protected toggleTipsPopup(): void {
+        SoundService.play(SoundName.CLICK);
+        this.tipsPopup.active = !this.tipsPopup.active;
+        localStorage.setItem('tips', String(this.tipsPopup.active));
     }
 
     protected onServerStatus(data: ServerStatusData): void {
