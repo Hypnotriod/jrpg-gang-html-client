@@ -174,7 +174,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public async show(): Promise<void> {
-        this.tips.clearQueue();
         this.communicator.sendMessage(RequestType.GAME_CHAT_STATE);
         this.unitItems.destroy();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
@@ -244,15 +243,20 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected manageTips(): void {
         const playersUnit = this.playersUnit();
-        if (!playersUnit) return;
         switch (this.state.gameState.nextPhase) {
             case GamePhase.PREPARE_UNIT:
+                this.tips.showTip(GameTipKey.COMBAT_PHASE);
+                break;
             case GamePhase.SPOT_COMPLETE:
+                if (!playersUnit) return;
                 if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.75) {
                     this.tips.showTip(GameTipKey.CONSUME_PROVISION_HEALTH);
                 }
                 if (playersUnit.state.mana < playersUnit.stats.baseAttributes.mana * 0.5) {
                     this.tips.showTip(GameTipKey.CONSUME_PROVISION_MANA);
+                }
+                if (playersUnit.state.stress) {
+                    this.tips.showTip(GameTipKey.CONSUME_PROVISION_STRESS);
                 }
             case GamePhase.SCENARIO_COMPLETE:
                 break;
@@ -265,6 +269,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                     }
                 }
         }
+        if (!playersUnit) return;
         if (playersUnit.state.stamina < playersUnit.stats.baseAttributes.stamina * 0.25) {
             this.tips.showTip(GameTipKey.LOW_STAMINA);
         }

@@ -62,11 +62,9 @@ export default class GameFlowControls extends GameBase {
 
     protected initialize(): void {
         this.nextPhaseButton.onClick = target => {
-            this.tips.clearQueue();
             this.onNextPhase();
         }
         this.nextBattleButton.onClick = target => {
-            this.tips.clearQueue();
             this.onNextPhase();
         }
         this.waitButton.onClick = target => this.onWait();
@@ -264,12 +262,10 @@ export default class GameFlowControls extends GameBase {
     }
 
     protected onRetreatGameClick(): void {
-        this.tips.clearQueue();
         this.onRetreateCallback?.();
     }
 
     protected onLeaveGameClick(): void {
-        this.tips.clearQueue();
         this.onLeaveCallback?.();
     }
 

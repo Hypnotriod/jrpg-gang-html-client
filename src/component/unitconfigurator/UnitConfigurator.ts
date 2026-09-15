@@ -140,7 +140,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public async show(): Promise<void> {
-        this.tips.clearQueue();
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.USER_STATUS);
@@ -155,6 +154,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
         await this.communicator.until(RequestType.SHOP_STATUS);
         super.show();
+        const progress: UnitProgress = this.state.userState.unit.stats.progress;
+        if (progress.experience >= progress.experienceNext!) {
+            this.tips.showTip(GameTipKey.LEVEL_UP);
+        }
     }
 
     protected initialize(): void {
@@ -410,6 +413,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.lobbyButton.show();
             this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED ?
                 this.lobbyButton.disable() : this.lobbyButton.enable();
+        }
+        if (this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED] &&
+            this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED
+        ) {
+            this.tips.showTip(GameTipKey.RESOLVE_TRAINING_QUEST);
         }
     }
 
