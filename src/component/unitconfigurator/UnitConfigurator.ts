@@ -158,6 +158,13 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         if (progress.experience >= progress.experienceNext!) {
             this.tips.showTip(GameTipKey.LEVEL_UP);
         }
+        if (this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] === UnitQuestStatus.COMPLETED) {
+            this.tips.showTip(GameTipKey.REPLENISH_SUPPLIES);
+            this.tips.showTip(GameTipKey.MANAGE_INVENTORY);
+        }
+        if (this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] === UnitQuestStatus.ACTIVE) {
+            this.tips.showTip(GameTipKey.START_TRAINING_QUEST);
+        }
     }
 
     protected initialize(): void {

@@ -1,7 +1,10 @@
 export enum GameTipKey {
     MAIN_HUB = 'tip_main_hub',
     COMBAT_PHASE = 'tip_combat_phase',
+    START_TRAINING_QUEST = 'tip_start_training_quest',
     RESOLVE_TRAINING_QUEST = 'tip_resolve_training_quest',
+    REPLENISH_SUPPLIES = 'tip_replenish_supplies',
+    MANAGE_INVENTORY = 'tip_manage_inventory',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
     CLOSE_COMBAT_BARBARIAN = 'tip_close_combat_barbarian',
     CLOSE_COMBAT_MAGE = 'tip_close_combat_mage',
@@ -44,11 +47,48 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         Open the Quests menu from the top and take you active assignment.<div>
         <span style="margin-left: 8px;">Read the game rules by clicking the Game Rules button at the top of the screen.</span>`,
     [GameTipKey.COMBAT_PHASE]: `
-        Welcome adventurer! This is your learning mission.<br>
+        Welcome, adventurer! This is your learning mission.<br>
         Follow the instructions in the combat phase notes above.`,
+    [GameTipKey.START_TRAINING_QUEST]: `
+        Now you can proceed to the training.`,
     [GameTipKey.RESOLVE_TRAINING_QUEST]: `
         <img src="./assets/icons/warning.png" style="vertical-align: middle; padding-bottom: 4px;" />
         Open the Quests menu from the top to complete your first quest.`,
+    [GameTipKey.REPLENISH_SUPPLIES]: `
+        <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/stamina-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/mana-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/antidote-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/bandage-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/fire-charge-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/arrow-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/provision-ham-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/provision-wine-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/provision-beer-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/helmet-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/basic-armor-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/boots-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <img src="./assets/icons/gloves-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
+        <br>
+        Don't forget to restock your potions, ammunition and provision.<br>
+        You might need better gear before heading down into the Dungeons.`,
+    [GameTipKey.MANAGE_INVENTORY]: `
+        <img src="./assets/icons/backpack.png" style="vertical-align: middle; padding-bottom: 4px;" />
+        Don't forget to equip your weapon and armor into the corresponding slots.<br>
+        When such icon 
+        <img src="./assets/icons/slot-weapon.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+            <img src="./assets/icons/slot-head.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+            <img src="./assets/icons/slot-body.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+            <img src="./assets/icons/slot-hand.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+            <img src="./assets/icons/slot-leg.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+            <img src="./assets/icons/slot-neck.png"
+                style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
+        is displayed, it means the item is equipped.`,
     [GameTipKey.CLOSE_COMBAT_WARRIOR]: `
         <img src="./assets/icons/sword-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Use your close combat weapon to attack targets in the adjacent column.<br>
