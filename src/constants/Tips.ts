@@ -5,6 +5,7 @@ export enum GameTipKey {
     RESOLVE_TRAINING_QUEST = 'tip_resolve_training_quest',
     REPLENISH_SUPPLIES = 'tip_replenish_supplies',
     MANAGE_INVENTORY = 'tip_manage_inventory',
+    BROKEN_GEAR = 'tip_broken_gear',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
     CLOSE_COMBAT_BARBARIAN = 'tip_close_combat_barbarian',
     CLOSE_COMBAT_MAGE = 'tip_close_combat_mage',
@@ -147,6 +148,10 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.STUNNED]: `
         <img src="./assets/icons/dizzy.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your character is stunned. Any damage you take will be critical.`,
+    [GameTipKey.BROKEN_GEAR]: `
+        <img src="./assets/icons/broken.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
+        Your gear is broken and cannot be used.<br>
+        You can repair it when you return from the dungeon.`,
     [GameTipKey.STRESSED]: `
         <img src="./assets/icons/stressed.png" style="vertical-align: middle; padding-bottom: 4px; width: 16px; margin: 4px; margin-left: 8px;">
         Your character is stressed. Bad things can happen.<br>
