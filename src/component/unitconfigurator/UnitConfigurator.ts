@@ -26,6 +26,7 @@ import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import { compareItemsByName } from '../../utils/utils';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
+import { StorageService } from '../../service/StorageService';
 
 @singleton()
 @injectable()
@@ -132,6 +133,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         private readonly state: GameStateService,
         private readonly renderer: GameObjectRenderer,
         private readonly tips: TipsPopup,
+        protected readonly storage: StorageService,
         @inject(delay(() => Lobby)) private readonly lobby: Lobby,
         @inject(delay(() => Jobs)) private readonly jobs: Jobs,
         @inject(delay(() => Quests)) private readonly quests: Quests,
@@ -145,15 +147,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
-        if (!localStorage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
-            this.instructionsPopup.show();
-        } else {
-            this.tips.showTip(GameTipKey.MAIN_HUB);
-        }
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
         await this.communicator.until(RequestType.SHOP_STATUS);
         super.show();
+        if (!this.storage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
+            this.instructionsPopup.show();
+        } else {
+            this.tips.showTip(GameTipKey.MAIN_HUB);
+        }
         const progress: UnitProgress = this.state.userState.unit.stats.progress;
         if (progress.experience >= progress.experienceNext!) {
             this.tips.showTip(GameTipKey.LEVEL_UP);
@@ -243,7 +245,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.shopItemPopup.descriptionPopup = this.itemDescription;
 
         this.instructionsPopup.onHide = () => {
-            localStorage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
+            this.storage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
             this.tips.showTip(GameTipKey.MAIN_HUB);
         };
 

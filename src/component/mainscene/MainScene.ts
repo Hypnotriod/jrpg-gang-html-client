@@ -162,7 +162,6 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         window.addEventListener('blur', (event) => {
             this.blurTimeout = window.window.setTimeout(() => {
                 if (!this.state.userState?.sessionId) return;
-                localStorage.removeItem(KEY_SESSION_ID);
                 this.communicator.sendMessage(RequestType.LEAVE);
                 this.blurTimeout = -1;
                 window.location.reload();
