@@ -6,6 +6,7 @@ export enum GameTipKey {
     REPLENISH_SUPPLIES = 'tip_replenish_supplies',
     MANAGE_INVENTORY = 'tip_manage_inventory',
     BROKEN_GEAR = 'tip_broken_gear',
+    WAIT_SKIP = 'tip_wait_skip',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
     CLOSE_COMBAT_BARBARIAN = 'tip_close_combat_barbarian',
     CLOSE_COMBAT_MAGE = 'tip_close_combat_mage',
@@ -185,8 +186,11 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.LOBBY]: `
         From here you can enter dungeons as a party leader.<br>
         You can join other players' parties in the Parties tab.`,
+    [GameTipKey.WAIT_SKIP]: `
+        By clicking the Wait button, you will be at the end of the turn order.<br>
+        Clicking the End Turn button will skip your turn entirely.`,
     [GameTipKey.DEFEATED]: `
         <img src="./assets/icons/death.png" style="vertical-align: middle; height: 24px;">The hero has been defeated. But death is only a new beginning.`,
     [GameTipKey.LEVEL_UP]: `
-        Your character is ready to gain a new level.<br>Press level up button and assign you attribute points.`,
+        Your character is ready to gain a new level.<br>Click the Level Up button and assign you attribute points.`,
 };
