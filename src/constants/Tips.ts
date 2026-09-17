@@ -22,6 +22,7 @@ export enum GameTipKey {
     BLEADING = 'tip_bleading',
     POISONED = 'tip_poisoned',
     STRESSED = 'tip_stressed',
+    LOBBY = 'tip_lobby',
     MERCENARY = 'tip_mercenary',
     LEVEL_UP = 'tip_level_up',
     CONSUME_PROVISION_HEALTH = 'tip_consume_provision_health',
@@ -51,10 +52,11 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         Welcome, adventurer! This is your learning mission.<br>
         Follow the instructions in the combat phase notes above.`,
     [GameTipKey.START_TRAINING_QUEST]: `
-        Now you can proceed to the training.`,
+        Now you can proceed to your training.<br>
+        Click the Training button in the upper right corner.`,
     [GameTipKey.RESOLVE_TRAINING_QUEST]: `
         <img src="./assets/icons/warning.png" style="vertical-align: middle; padding-bottom: 4px;" />
-        Open the Quests menu from the top to complete your first quest.`,
+        Open the Quests menu from the top to complete your training quest.`,
     [GameTipKey.REPLENISH_SUPPLIES]: `
         <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
         <img src="./assets/icons/stamina-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
@@ -179,6 +181,9 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.MERCENARY]: `
         <img src="./assets/icons/villager-01.png" style="vertical-align: middle; height: 32px;">
         You can hire a mercenary to help you on your journey.`,
+    [GameTipKey.LOBBY]: `
+        From here you can enter dungeons as a party leader.<br>
+        You can join other players' parties in the Parties tab.`,
     [GameTipKey.LEVEL_UP]: `
         Your character is ready to gain a new level.<br>Press level up button and assign you attribute points.`,
 };

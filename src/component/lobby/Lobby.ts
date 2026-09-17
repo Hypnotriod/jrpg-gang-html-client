@@ -21,6 +21,8 @@ import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Dungeon from './Dungeon';
 import MercenariesPopup from './MercenariesPopup';
 import Room from './Room';
+import { TipsPopup } from '../ui/popup/TipsPopup';
+import { GameTipKey } from '../../constants/Tips';
 
 @injectable()
 @singleton()
@@ -58,7 +60,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly dungeons: Map<string, Dungeon> = new Map();
     private chatState: ChatState;
 
-    constructor(private readonly communicator: ServerCommunicatorService,
+    constructor(
+        private readonly communicator: ServerCommunicatorService,
+        @inject(delay(() => TipsPopup)) private readonly tips: TipsPopup,
         @inject(delay(() => UnitConfigurator)) private readonly unitConfigurator: UnitConfigurator,
         private readonly state: GameStateService) {
         super();
@@ -113,6 +117,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         await this.communicator.until(RequestType.LOBBY_STATUS);
         super.show();
+        this.tips.showTip(GameTipKey.LOBBY);
     }
 
     public handleServerResponse(response: Response): void {
