@@ -8,21 +8,53 @@ interface InstantiateOnInitData {
     propertyKey: string;
 }
 
+export interface ComponentResizeConfig {
+    minScale: number;
+    maxScale: number;
+    contentWidth: number;
+    contentHeight: number;
+}
+
 export default abstract class Component {
     protected instantiateOnInitList: InstantiateOnInitData[];
     protected _view: HTMLElement;
     protected display: string;
     protected _enabled: boolean = true;
+    protected _resizeConfig?: ComponentResizeConfig;
+
+    public get resizeConfig(): ComponentResizeConfig | undefined {
+        return this._resizeConfig;
+    }
+
+    public set resizeConfig(value: ComponentResizeConfig | undefined) {
+        this._resizeConfig = value;
+        this.onResize();
+    }
 
     public init(view: HTMLElement): Component {
         this._view = view;
         this.display = this._view.style.display;
         this.instantiateOnInit();
         this.initialize();
+        window.addEventListener("resize", (event) => this.onResize());
         return this;
     }
 
-    private instantiateOnInit(): void {
+    protected onResize(): void {
+        const conf = this.resizeConfig;
+        if (!conf) return;
+        const scale = this.scaleFactor(conf);
+        this.view.style.transform = `scale(${scale})`;
+    }
+
+    protected scaleFactor(config: ComponentResizeConfig): number {
+        const scaleRaw = (window.innerWidth / window.innerHeight < config.contentWidth / config.contentHeight) ?
+            window.innerWidth / config.contentWidth : window.innerHeight / config.contentHeight;
+        const scale = Math.min(config.maxScale, Math.max(config.minScale, scaleRaw));
+        return Math.round(scale * 1000) / 1000;
+    }
+
+    protected instantiateOnInit(): void {
         this.instantiateOnInitList && this.instantiateOnInitList.forEach(({ id, clazz, propertyKey }) => {
             (this as any)[propertyKey] = this.instantiate(id, clazz);
         });
@@ -142,7 +174,7 @@ export default abstract class Component {
     }
 
     public set leftPx(value: number) {
-        this.view.style.left = `${value}px`;
+        this.view.style.left = `${Math.round(value)}px`;
     }
 
     public get leftPx(): number {
@@ -150,7 +182,7 @@ export default abstract class Component {
     }
 
     public set topPx(value: number) {
-        this.view.style.top = `${value}px`;
+        this.view.style.top = `${Math.round(value)}px`;
     }
 
     public get topPx(): number {

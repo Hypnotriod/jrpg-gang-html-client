@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { ACHIEVEMENTS } from '../../../constants/AchievementInfo';
 import { ICON, LABEL_DESCRIPTION, LABEL_REQUIREMENTS } from '../../../constants/Components';
 import { GameUnit } from '../../../domain/domain';
@@ -9,6 +9,7 @@ import Icon from '../icon/Icon';
 import Label from '../label/Label';
 
 @injectable()
+@singleton()
 export class AchievementPopup extends Component {
     private static readonly TIMEOUT_MS: number = 4000;
 

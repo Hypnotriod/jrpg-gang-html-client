@@ -1,3 +1,5 @@
+import { ComponentResizeConfig } from '../component/Component';
+
 export const USER_CLASSES: string[] = [
     'warrior',
     'barbarian',
@@ -421,4 +423,12 @@ export const ACHIEVEMENT_IDS = {
 
 export const QUEST_IDS = {
     QUEST_TRAINING: 'quest-training',
+}
+
+
+export const RESIZE_CONFIG: ComponentResizeConfig = {
+    contentHeight: 700,
+    contentWidth: 1100,
+    maxScale: 1.5,
+    minScale: 1,
 }

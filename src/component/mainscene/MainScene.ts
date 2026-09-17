@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
+import { ACHIEVEMENT_POPUP, AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
 import { AUTH_DESIGN, AUTH_STYLE, DUNGEON_DESIGN, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, MERCENARY_DESIGN, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE } from '../../constants/Resources';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
@@ -13,7 +13,7 @@ import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
-import { KEY_SESSION_ID, Response, ResponseStatus, ServerStatusData } from '../../dto/responces';
+import { Response, ResponseStatus, ServerStatusData } from '../../dto/responces';
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { component } from '../decorator/decorator';
@@ -24,6 +24,8 @@ import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import Container from '../ui/container/Container';
 import Label from '../ui/label/Label';
 import { TipsPopup } from '../ui/popup/TipsPopup';
+import { RESIZE_CONFIG } from '../../constants/Configuration';
+import { AchievementPopup } from '../ui/popup/AchievementPopup';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -35,6 +37,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly checkboxInfo: Checkbox;
     @component('checkbox_tips', Checkbox)
     private readonly checkboxTips: Checkbox;
+    @component('button_fullscreen', Button)
+    private readonly buttonFullscreen: Button;
     @component('rules_popup', InstructionsPopup)
     private readonly rulesPopup: InstructionsPopup;
     @component('tips_popup', TipsPopup)
@@ -47,6 +51,10 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly rulesPopupShadow: Container;
     @component('tips_popup_shadow', Container)
     private readonly tipsPopupShadow: Container;
+    @component('scale_container', Container)
+    private readonly scaleContainer: Container;
+    @component(ACHIEVEMENT_POPUP, AchievementPopup)
+    private readonly achievementPopup: AchievementPopup;
 
     private login: Login;
     private auth: Auth;
@@ -97,10 +105,13 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
         this.checkboxTips.onChange = target => this.toggleTipsPopup();
+        this.buttonFullscreen.onClick = target => this.toggleFullscreen();
         this.buttonRules.onClick = target => this.rulesPopup.show();
 
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
+
+        this.scaleContainer.resizeConfig = RESIZE_CONFIG;
     }
 
     protected toggleSoundMute(): void {
@@ -119,6 +130,12 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         SoundService.play(SoundName.CLICK);
         this.tipsPopup.active = !this.tipsPopup.active;
         localStorage.setItem('tips', String(this.tipsPopup.active));
+    }
+
+    protected toggleFullscreen(): void {
+        !document.fullscreenElement ?
+            document.documentElement?.requestFullscreen?.() :
+            document.exitFullscreen?.();
     }
 
     protected onServerStatus(data: ServerStatusData): void {

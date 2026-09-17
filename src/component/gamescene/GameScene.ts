@@ -1,6 +1,6 @@
 import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
-import { ACHIEVEMENT_POPUP, BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, Cell, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
@@ -39,8 +39,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly chatMessageInput: TextInput;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
-    @component(ACHIEVEMENT_POPUP, AchievementPopup)
-    private readonly achievementPopup: AchievementPopup;
     @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
     private readonly unitsQueue: GameUnitsQueue;
     @component(UNIT_ITEMS_CONTAINER, GameUnitItems)
@@ -68,6 +66,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         private readonly renderer: GameObjectRenderer,
         private readonly state: GameStateService,
         private readonly tips: TipsPopup,
+        private readonly achievementPopup: AchievementPopup,
         private readonly actionService: ActionService) {
         super(state, actionService);
     }

@@ -131,9 +131,9 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <img src="./assets/icons/long-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any green square from any purple square.`,
     [GameTipKey.RANGE_COMBAT_WARRIOR]: `
-        Since you don't have a ranged weapon, you'll need to move your character closer to the distant targets.`,
+        Since you don't have a ranged weapon, you'll need<br>to move your character closer to the distant targets.`,
     [GameTipKey.RANGE_COMBAT_BARBARIAN]: `
-        Since you don't have a ranged weapon, you'll need to move your character closer to the distant targets.`,
+        Since you don't have a ranged weapon, you'll need<br>to move your character closer to the distant targets.`,
     [GameTipKey.LOW_HEALTH]: `
         <span style="margin-left: 8px;">Your health is low.</span><br>
         <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px;">

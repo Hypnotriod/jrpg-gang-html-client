@@ -2,6 +2,7 @@ import { injectable } from 'tsyringe';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
 import Container from '../container/Container';
 import { GameUnit, Position } from '../../../domain/domain';
+import { RESIZE_CONFIG } from '../../../constants/Configuration';
 
 @injectable()
 export default class ObjectDescription extends Container {
@@ -68,25 +69,24 @@ export default class ObjectDescription extends Container {
         if (!e) { return; }
         this.leftPx = 0;
         this.topPx = 0;
+        const scale = this.scaleFactor(RESIZE_CONFIG);
         if (this._stickTo) {
-            this.leftPx = this._stickTo.x + this._stickTo.width + 2 + this.width < window.innerWidth ?
-                this._stickTo.x + this._stickTo.width + 2 : this._stickTo.x - this.width - 2;
-            this.topPx = (this._stickTo.height - this.height) / 2 + this._stickTo.y;
-            if (this.topPx < 32) {
-                this.topPx = 32;
-            }
-            if (this.topPx + this.height + 32 > window.innerHeight) {
-                this.topPx = window.innerHeight - this.height - 32;
-            }
+            this.leftPx = this._stickTo.x + this._stickTo.width * scale + 2 + this.width * scale < window.innerWidth ?
+                this._stickTo.x + this._stickTo.width + 2 * scale : this._stickTo.x - this.width * scale - 2 * scale;
+            this.topPx = this._stickTo.y + (this._stickTo.height - this.height * scale) / 2;
+            // this.topPx = this._stickTo.y;
         } else {
             this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
-            this.topPx = (window.innerHeight - this.height) / 2;
-            if (e.clientY - this.height > this.topPx) {
-                this.topPx = e.clientY - this.height;
-            } else if (e.clientY < this.topPx) {
-                this.topPx = e.clientY;
-            }
+            this.topPx = e.clientY - this.height * scale / 2;
         }
+        if (this.topPx < 32) {
+            this.topPx = 32;
+        }
+        if (this.topPx + this.height * scale + 32 > window.innerHeight) {
+            this.topPx = window.innerHeight - this.height * scale - 32;
+        }
+        this.leftPx = (this.leftPx - window.innerWidth / 2) / scale + window.innerWidth / 2;
+        this.topPx = (this.topPx - window.innerHeight / 2) / scale + window.innerHeight / 2;
     }
 
     public get isShopItem(): boolean {

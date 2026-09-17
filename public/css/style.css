@@ -10,6 +10,7 @@ body {
     background-blend-mode: darken;
     background-size: cover;
     scrollbar-width: thin;
+    overflow: hidden;
     scrollbar-color: rgb(170, 170, 170) #00000000;
     background-color: rgb(18, 18, 18);
     font-size: 14px;
