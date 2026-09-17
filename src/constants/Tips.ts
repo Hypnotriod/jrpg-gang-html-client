@@ -22,6 +22,7 @@ export enum GameTipKey {
     BLEADING = 'tip_bleading',
     POISONED = 'tip_poisoned',
     STRESSED = 'tip_stressed',
+    DEFEATED = 'tip_defeated',
     LOBBY = 'tip_lobby',
     MERCENARY = 'tip_mercenary',
     LEVEL_UP = 'tip_level_up',
@@ -184,6 +185,8 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.LOBBY]: `
         From here you can enter dungeons as a party leader.<br>
         You can join other players' parties in the Parties tab.`,
+    [GameTipKey.DEFEATED]: `
+        <img src="./assets/icons/death.png" style="vertical-align: middle; height: 24px;">The hero has been defeated. But death is only a new beginning.`,
     [GameTipKey.LEVEL_UP]: `
         Your character is ready to gain a new level.<br>Press level up button and assign you attribute points.`,
 };

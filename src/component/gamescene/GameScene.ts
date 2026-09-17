@@ -300,6 +300,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         if (playersUnit.inventory.weapon?.some(w => w.durability && (w.wearout ?? 0) >= w.durability)) {
             this.tips.showTip(GameTipKey.BROKEN_GEAR);
         }
+        if (playersUnit.isDead) {
+            this.tips.showTip(GameTipKey.DEFEATED);
+        }
     }
 
     protected updateBooty(): void {

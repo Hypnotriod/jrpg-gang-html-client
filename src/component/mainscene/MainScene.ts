@@ -44,7 +44,9 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     @component('label_user_number', Label)
     private readonly labelUserNumber: Label;
     @component('rules_popup_shadow', Container)
-    private readonly popupShadow: Container;
+    private readonly rulesPopupShadow: Container;
+    @component('tips_popup_shadow', Container)
+    private readonly tipsPopupShadow: Container;
 
     private login: Login;
     private auth: Auth;
@@ -90,8 +92,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
 
         this.labelUserNumber.value = '';
 
-        this.tipsPopup.shadow = this.popupShadow;
-        this.rulesPopup.shadow = this.popupShadow;
+        this.tipsPopup.shadow = this.tipsPopupShadow;
+        this.rulesPopup.shadow = this.rulesPopupShadow;
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
         this.checkboxTips.onChange = target => this.toggleTipsPopup();
