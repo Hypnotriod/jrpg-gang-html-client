@@ -429,6 +429,6 @@ export const QUEST_IDS = {
 export const RESIZE_CONFIG: ComponentResizeConfig = {
     contentHeight: 700,
     contentWidth: 1100,
-    maxScale: 1.5,
+    maxScale: 2,
     minScale: 1,
 }
