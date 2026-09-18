@@ -155,6 +155,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.state.playerInfo = (response.data as PlayerInfoData).playerInfo;
                 this.handlePlayerInfo();
                 this.updateGamePhaseInfo();
+                this.manageTips();
                 break;
             case RequestType.USER_STATUS:
                 const status: UserStatus = (response.data as UserStateData).status;
@@ -242,12 +243,14 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected manageTips(): void {
         const playersUnit = this.playersUnit();
+        if (!playersUnit) return;
         switch (this.state.gameState.nextPhase) {
             case GamePhase.PREPARE_UNIT:
-                this.tips.showTip(GameTipKey.COMBAT_PHASE);
+                if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
+                    this.tips.showTip(GameTipKey.COMBAT_PHASE);
+                }
                 break;
             case GamePhase.SPOT_COMPLETE:
-                if (!playersUnit) return;
                 if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.75) {
                     this.tips.showTip(GameTipKey.CONSUME_PROVISION_HEALTH);
                 }
@@ -269,7 +272,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                     }
                 }
         }
-        if (!playersUnit) return;
         if (playersUnit.state.stamina < playersUnit.stats.baseAttributes.stamina * 0.25) {
             this.tips.showTip(GameTipKey.LOW_STAMINA);
         }
