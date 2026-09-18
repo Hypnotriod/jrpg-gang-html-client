@@ -190,7 +190,7 @@ body {
     position: fixed;
     overflow: hidden;
     max-width: 470px;
-    background-color: rgb(40, 51, 61);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 2000;
     min-height: 40px;
     padding: 10px;
@@ -233,7 +233,7 @@ body {
 .achievement-popup {
     pointer-events: none;
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 1000;
     width: 350px;
     top: 24px;
@@ -266,7 +266,7 @@ body {
 
 .shop-item-popup {
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 200;
     width: 320px;
     padding-top: 10px;
@@ -283,7 +283,7 @@ body {
 
 .leave-dungeon-popup {
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 1000;
     width: 310px;
     padding-top: 10px;
@@ -300,7 +300,7 @@ body {
 
 .instructions-popup {
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 200;
     width: 560px;
     padding-top: 10px;
@@ -317,7 +317,7 @@ body {
 
 .rules-popup {
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 200;
     width: 900px;
     padding-top: 10px;
@@ -352,7 +352,7 @@ body {
 
 .dungeon-loot-popup {
     position: fixed;
-    background-color: rgb(75, 87, 98);
+    background-color: rgba(29, 43, 55, 0.98);
     z-index: 200;
     width: 300px;
     padding-top: 10px;

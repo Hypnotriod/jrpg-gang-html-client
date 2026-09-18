@@ -28,7 +28,7 @@ export default class GameObjectRenderer {
             result += `<span class="purple lighten-1">${data.name}</span><br>`;
         }
         if (data.description) {
-            result += data.description + '<br>';
+            result += `<span class="grey-text text-lighten-2">${data.description}</span><br>`;
         }
         if (this.isUnitData(data)) {
             if (!this.emptyOrAllFieldsZeros([], '', data.inventory)) {
