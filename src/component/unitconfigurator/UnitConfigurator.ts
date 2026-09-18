@@ -151,7 +151,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
         await this.communicator.until(RequestType.SHOP_STATUS);
         super.show();
-        if (!this.storage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN)) {
+        if (!this.storage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN) &&
+            !this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.instructionsPopup.show();
         } else {
             this.tips.showTip(GameTipKey.MAIN_HUB);
