@@ -140,7 +140,12 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.PREPARE_UNIT:
             case GamePhase.TAKE_ACTION:
             case GamePhase.SPOT_COMPLETE:
-                let timeout: number = this.state.gameState.phaseTimeout ?? 0;
+                let timeout = this.state.gameState.phaseTimeout;
+                if (timeout === undefined) {
+                    this.resetnextPhaseTicker();
+                    this.gameStatusLabel.htmlValue = this.nextPhaseDescription();
+                    return;
+                }
                 timeout = Math.max(timeout - 2, 0);
                 const time = new Date(timeout * 1000).toISOString().slice(14, 19);
                 this.gameStatusLabel.htmlValue = `${this.nextPhaseDescription()} <img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${time}`;
