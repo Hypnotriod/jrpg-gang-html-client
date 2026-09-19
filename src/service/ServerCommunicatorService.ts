@@ -17,15 +17,24 @@ export default class ServerCommunicatorService {
     private readonly requestsQueue: Request[] = [];
     private pendingRequestId: string | undefined;
     private pendingRequestTimeStamp: number = 0;
-    private _ping: number[] = [];
+    private pingSamples: number[];
     private ws: WebSocket | null;
 
     public get ping(): number {
-        if (!this._ping.length) return 0;
-        return this._ping.reduce((acc, v) => acc + v) / this._ping.length;
+        const samples: number[] = [...this.pingSamples].sort();
+        const quaterLength: number = Math.floor(samples.length / 4);
+        const halfLength: number = Math.floor(samples.length / 2);
+
+        let result: number = 0;
+        for (let n = quaterLength; n < halfLength + quaterLength; n++) {
+            result += samples[n];
+        }
+        return Math.round(result / halfLength);
     }
 
-    constructor(private readonly appConfig: AppConfig) { }
+    constructor(private readonly appConfig: AppConfig) {
+        this.pingSamples = Array.from(Array(this.PING_SAMPLES_NUM).keys()).map(_ => 0);
+    }
 
     public subscribe(requestTypes: RequestType[], handler: ServerCommunicatorHandler): void {
         this.unsubscribe(handler);
@@ -96,8 +105,8 @@ export default class ServerCommunicatorService {
         const response: Response = JSON.parse(event.data) as Response;
         if (response.id && response.id === this.pendingRequestId) {
             this.pendingRequestId = undefined;
-            this._ping.push(Date.now() - this.pendingRequestTimeStamp);
-            this._ping.length > this.PING_SAMPLES_NUM && this._ping.shift();
+            this.pingSamples.push(Date.now() - this.pendingRequestTimeStamp);
+            this.pingSamples.length > this.PING_SAMPLES_NUM && this.pingSamples.shift();
             this.nextRequest();
         }
         this.notify(response);
