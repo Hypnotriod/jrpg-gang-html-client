@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
+import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, ICON_BLEEDING, ICON_COLD, ICON_DRAIN, ICON_FIRE, ICON_HEALTH, ICON_LIGHTING, ICON_MANA, ICON_POISON, ICON_STAMINA, ICON_STRESSED_SM, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnitFaction, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -11,10 +11,13 @@ import Button from '../ui/button/Button';
 import Label from '../ui/label/Label';
 import GameBase from './GameBase';
 import { TipsPopup } from '../ui/popup/TipsPopup';
+import Container from '../ui/container/Container';
 
 @injectable()
 @singleton()
 export default class GameFlowControls extends GameBase {
+    private readonly BAR_WIDTH: number = 110;
+
     @component(LABEL_GAME_STATUS, Label)
     private readonly gameStatusLabel: Label;
     @component(LABEL_DUNGEON_NAME, Label)
@@ -35,6 +38,39 @@ export default class GameFlowControls extends GameBase {
     private readonly retreatButton: Button;
     @component(BUTTON_LEAVE, Button)
     private readonly leaveButton: Button;
+
+    @component(ICON_BLEEDING, Container)
+    protected readonly _iconBleeding: Container;
+    @component(ICON_POISON, Container)
+    protected readonly _iconPoison: Container;
+    @component(ICON_COLD, Container)
+    protected readonly _iconCold: Container;
+    @component(ICON_FIRE, Container)
+    protected readonly _iconFire: Container;
+    @component(ICON_LIGHTING, Container)
+    protected readonly _iconLighting: Container;
+    @component(ICON_HEALTH, Container)
+    protected readonly _iconHealth: Container;
+    @component(ICON_STAMINA, Container)
+    protected readonly _iconStamina: Container;
+    @component(ICON_MANA, Container)
+    protected readonly _iconMana: Container;
+    @component(ICON_DRAIN, Container)
+    protected readonly _iconDrain: Container;
+    @component(ICON_STRESSED_SM, Container)
+    protected readonly _iconStressedSm: Container;
+    @component('label_health', Label)
+    private readonly labelHealth: Label;
+    @component('label_stamina', Label)
+    private readonly labelStamina: Label;
+    @component('label_mana', Label)
+    private readonly labelMana: Label;
+    @component('health_bar', Container)
+    private readonly healthBar: Container;
+    @component('stamina_bar', Container)
+    private readonly staminaBar: Container;
+    @component('mana_bar', Container)
+    private readonly manaBar: Container;
 
     private onRetreateCallback?: () => void;
     private onLeaveCallback?: () => void;
@@ -79,6 +115,27 @@ export default class GameFlowControls extends GameBase {
         this.updatenextPhaseLabel();
         this.updateusersInGame();
         const unit = this.playersUnit();
+        if (unit) {
+            const healthTotal = this.actionService.baseAttributeTotalValue(unit, 'health').reduce((acc, v) => acc + v, 0);
+            const staminaTotal = this.actionService.baseAttributeTotalValue(unit, 'stamina').reduce((acc, v) => acc + v, 0);
+            const manaTotal = this.actionService.baseAttributeTotalValue(unit, 'mana').reduce((acc, v) => acc + v, 0);
+            this.labelHealth.value = `HP: ${unit.state.health} / ${healthTotal}`;
+            this.labelStamina.value = `SP: ${unit.state.stamina} / ${staminaTotal}`;
+            this.labelMana.value = `MP: ${unit.state.mana} / ${manaTotal}`;
+            this.healthBar.width = Math.min(unit.state.health / (healthTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
+            this.staminaBar.width = Math.min(unit.state.stamina / (staminaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
+            this.manaBar.width = Math.min(unit.state.mana / (manaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
+            unit.damage?.find(m => m.bleeding) ? this._iconBleeding.show() : this._iconBleeding.hide();
+            unit.damage?.find(m => m.poison) ? this._iconPoison.show() : this._iconPoison.hide();
+            unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
+            unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
+            unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
+            unit.damage?.find(m => m.manaDrain || m.exhaustion || m.fear || m.curse || m.madness) ? this._iconDrain.show() : this._iconDrain.hide();
+            unit.modification?.find(m => m.baseAttributes?.health) ? this._iconHealth.show() : this._iconHealth.hide();
+            unit.modification?.find(m => m.baseAttributes?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
+            unit.modification?.find(m => m.baseAttributes?.mana) ? this._iconMana.show() : this._iconMana.hide();
+            unit.state.stress ? this._iconStressedSm.show() : this._iconStressedSm.hide();
+        }
         if (!unit || unit.isDead) {
             this.retreatButton.show();
             this.skipButton.hide();
