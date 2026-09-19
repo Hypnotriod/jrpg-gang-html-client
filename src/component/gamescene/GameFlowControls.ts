@@ -143,7 +143,7 @@ export default class GameFlowControls extends GameBase {
                 let timeout = this.state.gameState.phaseTimeout;
                 if (timeout === undefined) {
                     this.resetnextPhaseTicker();
-                    this.gameStatusLabel.htmlValue = this.nextPhaseDescription();
+                    this.gameStatusLabel.value = `${this.nextPhaseDescription()}`;
                     return;
                 }
                 timeout = Math.max(timeout - 2, 0);
@@ -230,6 +230,7 @@ export default class GameFlowControls extends GameBase {
             (!this.state.gameState.unitActionResult || [ActionType.MOVE, ActionType.SKIP, ActionType.WAIT].includes(this.state.gameState.unitActionResult.action.action))) {
             timeout = 500;
         }
+        timeout = Math.max(timeout / 2, timeout - this.communicator.ping);
         this.nextPhaseTimeoutId = window.setTimeout(() => this.callAutoNextPhase(), timeout);
     }
 

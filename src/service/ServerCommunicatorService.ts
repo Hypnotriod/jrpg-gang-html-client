@@ -11,11 +11,19 @@ export interface ServerCommunicatorHandler {
 @singleton()
 @injectable()
 export default class ServerCommunicatorService {
+    private readonly PING_SAMPLES_NUM: number = 4;
     private readonly subscribers: Map<RequestType, ServerCommunicatorHandler[]> = new Map();
     private readonly oneShotSubscribers: Map<RequestType, ((response: Response) => void)[]> = new Map();
     private readonly requestsQueue: Request[] = [];
     private pendingRequestId: string | undefined;
+    private pendingRequestTimeStamp: number = 0;
+    private _ping: number[] = [];
     private ws: WebSocket | null;
+
+    public get ping(): number {
+        if (!this._ping.length) return 0;
+        return this._ping.reduce((acc, v) => acc + v) / this._ping.length;
+    }
 
     constructor(private readonly appConfig: AppConfig) { }
 
@@ -85,14 +93,14 @@ export default class ServerCommunicatorService {
     }
 
     private onMessage(event: MessageEvent<string>): void {
-        console.log(event.data);
         const response: Response = JSON.parse(event.data) as Response;
-        Object.freeze(response);
-        this.notify(response);
         if (response.id && response.id === this.pendingRequestId) {
             this.pendingRequestId = undefined;
+            this._ping.push(Date.now() - this.pendingRequestTimeStamp);
+            this._ping.length > this.PING_SAMPLES_NUM && this._ping.shift();
             this.nextRequest();
         }
+        this.notify(response);
     }
 
     private nextRequest(): void {
@@ -101,6 +109,7 @@ export default class ServerCommunicatorService {
         }
         const request: Request = this.requestsQueue.shift()!;
         this.pendingRequestId = request.id;
+        this.pendingRequestTimeStamp = Date.now();
         this.ws.send(JSON.stringify(request));
     }
 
@@ -121,13 +130,11 @@ export default class ServerCommunicatorService {
     }
 
     private onOpen(event: Event): void {
-        console.log('Joined:', event);
         this.nextRequest();
     }
 
     private onClose(event: Event): void {
         this.onConnectionLost();
-        console.log('Disconnected:', event);
         this.ws = null;
     }
 
