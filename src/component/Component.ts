@@ -21,12 +21,16 @@ export default abstract class Component {
     protected display: string;
     protected _enabled: boolean = true;
     protected _resizeConfig?: ComponentResizeConfig;
+    protected _resizeListener: () => void = this.onResize.bind(this);
 
     public get resizeConfig(): ComponentResizeConfig | undefined {
         return this._resizeConfig;
     }
 
     public set resizeConfig(value: ComponentResizeConfig | undefined) {
+        if (!this._resizeConfig) {
+            window.addEventListener("resize", this._resizeListener);
+        }
         this._resizeConfig = value;
         this.onResize();
     }
@@ -36,7 +40,6 @@ export default abstract class Component {
         this.display = this._view.style.display;
         this.instantiateOnInit();
         this.initialize();
-        window.addEventListener("resize", (event) => this.onResize());
         return this;
     }
 
@@ -63,6 +66,7 @@ export default abstract class Component {
     protected abstract initialize(): void;
 
     public destroy(): void {
+        window.removeEventListener("resize", this._resizeListener);
         this._view.remove();
         (this._view as HTMLElement | null) = null;
     }
