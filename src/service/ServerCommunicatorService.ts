@@ -11,7 +11,7 @@ export interface ServerCommunicatorHandler {
 @singleton()
 @injectable()
 export default class ServerCommunicatorService {
-    private readonly PING_SAMPLES_NUM: number = 4;
+    private readonly PING_SAMPLES_NUM: number = 8;
     private readonly subscribers: Map<RequestType, ServerCommunicatorHandler[]> = new Map();
     private readonly oneShotSubscribers: Map<RequestType, ((response: Response) => void)[]> = new Map();
     private readonly requestsQueue: Request[] = [];
