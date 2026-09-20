@@ -19,6 +19,7 @@ export enum GameTipKey {
     LOW_STAMINA = 'tip_low_stamina',
     LOW_MANA = 'tip_low_mana',
     NO_STAMINA = 'tip_no_stamina',
+    ARMOR_PROTECTION = 'tip_armor_protection',
     STUNNED = 'tip_stunned',
     BLEADING = 'tip_bleading',
     POISONED = 'tip_poisoned',
@@ -149,6 +150,8 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.NO_STAMINA]: `
         <img src="./assets/icons/tired.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your stamina is completely drained. Any damage you take will be critical.`,
+    [GameTipKey.ARMOR_PROTECTION]: `
+        All damage absorbed by your armor or shild reduces the character's stamina.`,
     [GameTipKey.STUNNED]: `
         <img src="./assets/icons/dizzy.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your character is stunned. Any damage you take will be critical.`,

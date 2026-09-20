@@ -10,6 +10,8 @@ import ObjectDescription from '../ui/popup/ObjectDescription';
 import GameBase from './GameBase';
 import GameUnitItems from './GameUnitItems';
 import { SoundName, SoundService } from '../../service/SoundService';
+import { TipsPopup } from '../ui/popup/TipsPopup';
+import { GameTipKey } from '../../constants/Tips';
 
 @injectable()
 @singleton()
@@ -17,7 +19,9 @@ export default class GameBattlefield extends GameBase {
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly state: GameStateService,
-        private readonly actionService: ActionService) {
+        private readonly actionService: ActionService,
+        private readonly tips: TipsPopup,
+    ) {
         super(state, actionService);
     }
 
@@ -49,6 +53,7 @@ export default class GameBattlefield extends GameBase {
     public updateActionTargets(): void {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
         if (unitActionResult?.result.result !== ActionResultType.ACCOMPLISHED) { return; }
+        const playersUnit = this.playersUnit();
         const targets: number[] = this.actionService.targets(unitActionResult.result);
         const unit: GameUnit = this.findUnitByUid(unitActionResult.action.uid!)!;
         const item = this.findItemInInventory(unit.inventory, unitActionResult.action.itemUid!);
@@ -70,6 +75,12 @@ export default class GameBattlefield extends GameBase {
         }
         targets.forEach(targetUid => {
             const target: GameUnit = this.findUnitByUid(targetUid)!;
+            if (target.uid === playersUnit?.uid &&
+                this.actionService.hasDamage(unitActionResult.result, targetUid) &&
+                target.inventory.armor?.some(a => a?.equipped)
+            ) {
+                this.tips.showTip(GameTipKey.ARMOR_PROTECTION);
+            }
             this.spots[target.position.x][target.position.y].updateWithActionResult(unitActionResult.result, targetUid, item, ammo,);
         })
 
