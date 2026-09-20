@@ -114,9 +114,9 @@ export default class GameBattlefield extends GameBase {
                 const cell = this.spots[x][y];
                 const unit = this.spots[x][y].unit;
                 if (!unit) {
-                    cell.updateWithTurnOrder(0);
+                    cell.updateWithTurnOrder(0, false);
                 } else {
-                    cell.updateWithTurnOrder(unitsQueue.indexOf(unit.uid!) + 1);
+                    cell.updateWithTurnOrder(unitsQueue.indexOf(unit.uid!) + 1, this.isCurrentPlayerUnitId(unit.uid!));
                 }
             }
         }

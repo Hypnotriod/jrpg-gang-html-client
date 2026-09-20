@@ -147,9 +147,9 @@ export default class SpotCell extends Component {
                 code: this._unit.code,
                 unitUid: this._unit.uid,
                 state: this._unit.state,
-                damage: this._unit.damage,
                 stats: this._unit.stats,
-                modification: this._unit.modification,
+                damage: this.combineDamageImpactObjects(this._unit.damage),
+                modification: this.combineModificationImpactObjects(this._unit.modification),
                 inventory: this._unit.inventory,
                 description: this._unit.description,
                 hint: this._hint,
@@ -162,6 +162,102 @@ export default class SpotCell extends Component {
             this._descriptionPopup.show({ stickTo: this.getBoundingRect(), timeoutMs: 500 });
             return;
         }
+    }
+
+    protected combineDamageImpactObjects(damage?: DamageImpact[]): DamageImpact[] | undefined {
+        if (!damage) return undefined;
+        return [damage.reduce((acc, d) => {
+            return ({
+                bleeding: (acc.bleeding ?? 0) + (d.bleeding ?? 0),
+                cold: (acc.cold ?? 0) + (d.cold ?? 0),
+                crushing: (acc.crushing ?? 0) + (d.crushing ?? 0),
+                curse: (acc.curse ?? 0) + (d.curse ?? 0),
+                cutting: (acc.cutting ?? 0) + (d.cutting ?? 0),
+                exhaustion: (acc.exhaustion ?? 0) + (d.exhaustion ?? 0),
+                fear: (acc.fear ?? 0) + (d.fear ?? 0),
+                fire: (acc.fire ?? 0) + (d.fire ?? 0),
+                lightning: (acc.lightning ?? 0) + (d.lightning ?? 0),
+                madness: (acc.madness ?? 0) + (d.madness ?? 0),
+                manaDrain: (acc.manaDrain ?? 0) + (d.manaDrain ?? 0),
+                poison: (acc.poison ?? 0) + (d.poison ?? 0),
+                stabbing: (acc.stabbing ?? 0) + (d.stabbing ?? 0),
+                duration: Math.max(acc.duration ?? 0, d.duration ?? 0),
+            } as DamageImpact);
+        }, {} as DamageImpact)];
+    }
+
+    protected combineModificationImpactObjects(modification?: UnitModificationImpact[]): UnitModificationImpact[] | undefined {
+        if (!modification) return undefined;
+        return [modification.reduce((acc, d) => {
+            return ({
+                recovery: {
+                    health: (acc.recovery?.health ?? 0) + (d.recovery?.health ?? 0),
+                    stamina: (acc.recovery?.stamina ?? 0) + (d.recovery?.stamina ?? 0),
+                    mana: (acc.recovery?.mana ?? 0) + (d.recovery?.mana ?? 0),
+                    actionPoints: (acc.recovery?.actionPoints ?? 0) + (d.recovery?.actionPoints ?? 0),
+
+                    bleeding: (acc.recovery?.bleeding ?? 0) + (d.recovery?.bleeding ?? 0),
+                    cold: (acc.recovery?.cold ?? 0) + (d.recovery?.cold ?? 0),
+                    crushing: (acc.recovery?.crushing ?? 0) + (d.recovery?.crushing ?? 0),
+                    curse: (acc.recovery?.curse ?? 0) + (d.recovery?.curse ?? 0),
+                    cutting: (acc.recovery?.cutting ?? 0) + (d.recovery?.cutting ?? 0),
+                    exhaustion: (acc.recovery?.exhaustion ?? 0) + (d.recovery?.exhaustion ?? 0),
+                    fear: (acc.recovery?.fear ?? 0) + (d.recovery?.fear ?? 0),
+                    fire: (acc.recovery?.fire ?? 0) + (d.recovery?.fire ?? 0),
+                    lightning: (acc.recovery?.lightning ?? 0) + (d.recovery?.lightning ?? 0),
+                    madness: (acc.recovery?.madness ?? 0) + (d.recovery?.madness ?? 0),
+                    manaDrain: (acc.recovery?.manaDrain ?? 0) + (d.recovery?.manaDrain ?? 0),
+                    poison: (acc.recovery?.poison ?? 0) + (d.recovery?.poison ?? 0),
+                    stabbing: (acc.recovery?.stabbing ?? 0) + (d.recovery?.stabbing ?? 0),
+                },
+                damage: {
+                    bleeding: (acc.damage?.bleeding ?? 0) + (d.damage?.bleeding ?? 0),
+                    cold: (acc.damage?.cold ?? 0) + (d.damage?.cold ?? 0),
+                    crushing: (acc.damage?.crushing ?? 0) + (d.damage?.crushing ?? 0),
+                    curse: (acc.damage?.curse ?? 0) + (d.damage?.curse ?? 0),
+                    cutting: (acc.damage?.cutting ?? 0) + (d.damage?.cutting ?? 0),
+                    exhaustion: (acc.damage?.exhaustion ?? 0) + (d.damage?.exhaustion ?? 0),
+                    fear: (acc.damage?.fear ?? 0) + (d.damage?.fear ?? 0),
+                    fire: (acc.damage?.fire ?? 0) + (d.damage?.fire ?? 0),
+                    lightning: (acc.damage?.lightning ?? 0) + (d.damage?.lightning ?? 0),
+                    madness: (acc.damage?.madness ?? 0) + (d.damage?.madness ?? 0),
+                    manaDrain: (acc.damage?.manaDrain ?? 0) + (d.damage?.manaDrain ?? 0),
+                    poison: (acc.damage?.poison ?? 0) + (d.damage?.poison ?? 0),
+                    stabbing: (acc.damage?.stabbing ?? 0) + (d.damage?.stabbing ?? 0),
+                },
+                resistance: {
+                    bleeding: (acc.resistance?.bleeding ?? 0) + (d.resistance?.bleeding ?? 0),
+                    cold: (acc.resistance?.cold ?? 0) + (d.resistance?.cold ?? 0),
+                    crushing: (acc.resistance?.crushing ?? 0) + (d.resistance?.crushing ?? 0),
+                    curse: (acc.resistance?.curse ?? 0) + (d.resistance?.curse ?? 0),
+                    cutting: (acc.resistance?.cutting ?? 0) + (d.resistance?.cutting ?? 0),
+                    exhaustion: (acc.resistance?.exhaustion ?? 0) + (d.resistance?.exhaustion ?? 0),
+                    fear: (acc.resistance?.fear ?? 0) + (d.resistance?.fear ?? 0),
+                    fire: (acc.resistance?.fire ?? 0) + (d.resistance?.fire ?? 0),
+                    lightning: (acc.resistance?.lightning ?? 0) + (d.resistance?.lightning ?? 0),
+                    madness: (acc.resistance?.madness ?? 0) + (d.resistance?.madness ?? 0),
+                    manaDrain: (acc.resistance?.manaDrain ?? 0) + (d.resistance?.manaDrain ?? 0),
+                    poison: (acc.resistance?.poison ?? 0) + (d.resistance?.poison ?? 0),
+                    stabbing: (acc.resistance?.stabbing ?? 0) + (d.resistance?.stabbing ?? 0),
+                },
+                baseAttributes: {
+                    health: (acc.baseAttributes?.health ?? 0) + (d.baseAttributes?.health ?? 0),
+                    stamina: (acc.baseAttributes?.stamina ?? 0) + (d.baseAttributes?.stamina ?? 0),
+                    mana: (acc.baseAttributes?.mana ?? 0) + (d.baseAttributes?.mana ?? 0),
+                    actionPoints: (acc.baseAttributes?.actionPoints ?? 0) + (d.baseAttributes?.actionPoints ?? 0),
+                },
+                attributes: {
+                    agility: (acc.attributes?.agility ?? 0) + (d.attributes?.agility ?? 0),
+                    endurance: (acc.attributes?.endurance ?? 0) + (d.attributes?.endurance ?? 0),
+                    initiative: (acc.attributes?.initiative ?? 0) + (d.attributes?.initiative ?? 0),
+                    intelligence: (acc.attributes?.intelligence ?? 0) + (d.attributes?.intelligence ?? 0),
+                    physique: (acc.attributes?.physique ?? 0) + (d.attributes?.physique ?? 0),
+                    strength: (acc.attributes?.strength ?? 0) + (d.attributes?.strength ?? 0),
+                    luck: (acc.attributes?.luck ?? 0) + (d.attributes?.luck ?? 0),
+                },
+                duration: Math.max(acc.duration ?? 0, d.duration ?? 0),
+            } as UnitModificationImpact);
+        }, {} as UnitModificationImpact)];
     }
 
     protected onLeave(): void {
@@ -431,8 +527,15 @@ export default class SpotCell extends Component {
         this.waitLabel.show();
     }
 
-    public updateWithTurnOrder(order: number): void {
+    public updateWithTurnOrder(order: number, isPlayer: boolean): void {
         this.turnOrderLabel.value = String(order);
+        if (isPlayer) {
+            this.turnOrderLabel.view.classList.remove('grey');
+            this.turnOrderLabel.view.classList.add('green');
+        } else {
+            this.turnOrderLabel.view.classList.add('grey');
+            this.turnOrderLabel.view.classList.remove('green');
+        }
         order ? this.turnOrderLabel.show() : this.turnOrderLabel.hide();
     }
 

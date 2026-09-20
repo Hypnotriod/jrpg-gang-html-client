@@ -40,7 +40,7 @@ export default class GameUnitsQueue extends GameBase {
         const unitsQueue = this.state.gameState.state.activeUnitsQueue;
         const cell: SpotCell = SpotCell.createQueueSpotCell(this, this.view)!;
         cell.updateWithUnit(data, isActive, true);
-        cell.updateWithTurnOrder(unitsQueue.indexOf(data.uid!) + 1);
+        cell.updateWithTurnOrder(unitsQueue.indexOf(data.uid!) + 1, this.isCurrentPlayerUnitId(data.uid!));
         cell.descriptionPopup = this._objectDescription;
     }
 
