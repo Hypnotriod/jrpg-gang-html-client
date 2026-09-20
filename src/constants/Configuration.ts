@@ -291,7 +291,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
         name: "Villager",
         code: "villager-01",
         class: "opportunist",
-        description: "Once a simple villager, he now wanders the shadowed roads with a nameless hunger for danger. The harvest moon revealed a restless spirit beneath his weathered skin as he answers the call of ruined keeps and blood-soaked bargains.",
+        description: "Once a simple villager, he now wanders the shadowed roads with a nameless hunger for danger.",
         stats: {
             progress: {
                 level: 1
@@ -331,7 +331,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
         name: "Soldier",
         code: "soldier-01",
         class: "opportunist",
-        description: "A once-proud royal guard, now scarred and soured by endless nights hunting infernal horrors. His blade still remembers the discipline of the king's service, but his eyes hold the cold resolve of one who has stared into the abyss and refused to blink.",
+        description: "A once-proud royal guard, now scarred and soured by endless nights hunting infernal horrors.",
         stats: {
             progress: {
                 level: 5
@@ -374,7 +374,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
         booty: {},
         achievements: {},
         quests: {},
-        description: "Once the princess's personal guard, now a haunted avenger burdened by failure and fire. His oath has turned to bitter steel, and he stalks the shadows seeking the Dragon's blood and the salvation of his own damned soul.",
+        description: "Once the princess's personal guard, now a haunted avenger burdened by failure and fire.",
         stats: {
             progress: {
                 level: 10
