@@ -65,6 +65,8 @@ export default class GameFlowControls extends GameBase {
     private readonly labelStamina: Label;
     @component('label_mana', Label)
     private readonly labelMana: Label;
+    @component('label_stress', Label)
+    private readonly labelStress: Label;
     @component('health_bar', Container)
     private readonly healthBar: Container;
     @component('stamina_bar', Container)
@@ -122,6 +124,14 @@ export default class GameFlowControls extends GameBase {
             this.labelHealth.value = `HP: ${unit.state.health} / ${healthTotal}`;
             this.labelStamina.value = `SP: ${unit.state.stamina} / ${staminaTotal}`;
             this.labelMana.value = `MP: ${unit.state.mana} / ${manaTotal}`;
+            this.labelStress.value = `STRESS: ${unit.state.stress ?? 0}`;
+            if (unit.state.stress) {
+                this.labelStress.view.classList.add('red-text');
+                this.labelStress.view.classList.remove('grey-text');
+            } else {
+                this.labelStress.view.classList.add('grey-text');
+                this.labelStress.view.classList.remove('red-text');
+            }
             this.healthBar.width = Math.min(unit.state.health / (healthTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
             this.staminaBar.width = Math.min(unit.state.stamina / (staminaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
             this.manaBar.width = Math.min(unit.state.mana / (manaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
