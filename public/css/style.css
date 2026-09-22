@@ -200,6 +200,14 @@ body {
     border-radius: 3px;
 }
 
+button {
+    border-radius: 4px !important;
+}
+
+button:active {
+    transform: translate(0px, 1px);
+}
+
 .range-table {
     width: 82px;
     margin-top: 2px;
