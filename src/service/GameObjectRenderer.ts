@@ -22,7 +22,7 @@ export default class GameObjectRenderer {
             result += `<b><img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 3px;" /><span class="${data.hint[0] === '!' ? 'red-text' : 'orange-text'} lighten-1" style="font-size: 13px;">${hint}</span></b><br>`;
         }
         if (data.code) {
-            result += `<img src="./assets/icons/${data.code}.png"><br>`;
+            result += `<img src="./assets/icons/${data.code}.png" style="width: 96px; height: 96px;"><br>`;
         }
         if (data.name) {
             result += `<span class="purple lighten-1">${data.name}</span><br>`;
