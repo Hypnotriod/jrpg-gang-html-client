@@ -11,7 +11,7 @@ body {
     background-size: cover;
     scrollbar-width: thin;
     overflow: hidden;
-    scrollbar-color: rgb(170, 170, 170) #00000000;
+    scrollbar-color: rgb(97, 97, 97) #00000000;
     background-color: rgb(18, 18, 18);
     font-size: 14px;
 }
@@ -51,16 +51,19 @@ body {
 }
 
 .selection-icon {
-    background-color: aliceblue;
     display: inline-block;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: 72px 72px;
     cursor: pointer;
     width: 74px;
     height: 74px;
     padding: 5px;
     margin: 2px;
     border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(88, 88, 88);
 }
 
 .selection-icon-56 {
@@ -75,10 +78,6 @@ body {
     padding: 5px;
     margin: 2px;
     border-radius: 3px;
-}
-
-.selection-icon:disabled {
-    background-color: gray;
 }
 
 .btn-plus {
@@ -115,49 +114,45 @@ body {
     overflow-x: hidden;
 }
 
+.disabled {
+    background-color: #553c3c !important;
+}
+
 .unselected {
-    border: solid 3px transparent;
-    background-color: aliceblue;
-    padding: 3px;
-    padding-left: 2px;
+    background-color: #374949;
 }
 
 .unselected:hover {
-    background-color: aquamarine;
+    background-color: #365b62;
 }
 
 .selected {
-    border: solid 3px transparent;
-    background-color: darkcyan;
-    padding: 3px;
-    padding-left: 2px;
+    background-color: #468993;
 }
 
 .selected:hover {
-    background-color: cadetblue;
+    background-color: #509ca8;
 }
 
 .active {
-    border: solid 3px transparent;
-    background-color: rgb(236, 188, 235);
-    padding: 3px;
-    padding-left: 2px;
+    background-color: rgb(99, 59, 128);
 }
 
 .active:hover {
-    background-color: rgb(246, 210, 245);
+    background-color: rgb(119, 71, 154);
 }
 
 .chosen {
     border: 3px solid rgb(255, 132, 32);
+    padding: -3px;
 }
 
 .chosen-equipped {
-    background-color: rgb(145, 73, 197) !important;
+    background-color: rgb(99, 59, 128) !important;
 }
 
 .chosen-equipped:hover {
-    background-color: rgb(166, 111, 205) !important;
+    background-color: rgb(119, 71, 154) !important;
 }
 
 .item-icon-warpper {

@@ -84,6 +84,7 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.checkboxSound.checked = localStorage.getItem('sound') !== 'false';
         this.checkboxInfo.checked = localStorage.getItem('info') !== 'false';
         this.checkboxTips.checked = localStorage.getItem('tips') !== 'false';
+        this.tipsPopup.active = this.checkboxTips.checked;
         SoundService.muted = !this.checkboxSound.checked;
         ObjectDescription.active = this.checkboxInfo.checked;
 

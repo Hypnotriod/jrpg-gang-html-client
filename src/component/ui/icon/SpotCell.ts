@@ -68,6 +68,8 @@ export default class SpotCell extends Component {
     protected readonly _iconHitDrain: Container;
     @component(ICON_MISSED, Container)
     protected readonly _iconMissed: Container;
+    @component('label_missed', Container)
+    protected readonly _labelMissed: Container;
     @component(ICON_TARGET, Container)
     protected readonly _iconTarget: Container;
     @component(ICON_UNREACHABLE, Container)
@@ -356,6 +358,7 @@ export default class SpotCell extends Component {
         this._iconFood.hide();
         this._iconGearChange.hide();
         this._iconMissed.hide();
+        this._labelMissed.hide();
         this._iconHit.hide();
         this._iconHitCold.hide();
         this._iconHitFire.hide();
@@ -560,6 +563,7 @@ export default class SpotCell extends Component {
             this.onActionResultIcon();
             SoundService.play(SoundName.MISS);
             this._iconMissed.show();
+            this._labelMissed.show();
         } else if (this.actionService.hasDamage(result, targetUid)) {
             this.onActionResultIcon();
             const weaponImpact: DamageImpact[] | undefined = (item as Weapon | undefined)?.damage?.filter(d => !d.duration);
