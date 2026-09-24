@@ -46,9 +46,9 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <span style="margin-left: 8px;">Your character sheet is on the left. Hover over for more information.</span><br>
         <img src="./assets/icons/sword-02.png" style="vertical-align: middle; padding-bottom: 4px; width: 22px; margin-top: 6px;" />
         You can buy items in the Shop on the right.<br>
-        <img src="./assets/icons/backpack.png" style="vertical-align: middle; padding-bottom: 4px;" />
+        <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can manage your gear in the Inventory below.<br>
-        <img src="./assets/icons/warning.png" style="vertical-align: middle; padding-bottom: 4px;" />
+        <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         Open the Quests menu from the top and take you active assignment.<div>
         <span style="margin-left: 8px;">Read the game rules by clicking the Game Rules button at the top of the screen.</span>`,
     [GameTipKey.COMBAT_PHASE]: `
@@ -58,7 +58,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         Now you can proceed to your training.<br>
         Click the Training button in the upper right corner.`,
     [GameTipKey.RESOLVE_TRAINING_QUEST]: `
-        <img src="./assets/icons/warning.png" style="vertical-align: middle; padding-bottom: 4px;" />
+        <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         Open the Quests menu from the top to complete your training quest.`,
     [GameTipKey.REPLENISH_SUPPLIES]: `
         <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
@@ -79,7 +79,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         Don't forget to restock your potions, ammunition and provision.<br>
         You might need better gear before heading down into the Dungeons.`,
     [GameTipKey.MANAGE_INVENTORY]: `
-        <img src="./assets/icons/backpack.png" style="vertical-align: middle; padding-bottom: 4px;" />
+        <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         Don't forget to equip your weapon and armor into the corresponding slots.<br>
         When such icon 
         <img src="./assets/icons/slot-weapon.png"
@@ -137,7 +137,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         Since you don't have a ranged weapon, you'll need<br>to move your character closer to the distant targets.`,
     [GameTipKey.LOW_HEALTH]: `
         <span style="margin-left: 8px;">Your health is low.</span><br>
-        <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px;">
+        <img src="./assets/icons/health-potion-01.png" style="height:24px; vertical-align: middle; height: 32px;">
         Use health potions to regenerate health during combat.`,
     [GameTipKey.LOW_STAMINA]: `
         <span style="margin-left: 8px;">Your stamina is low and you may not be able to use your weapon.</span><br>
