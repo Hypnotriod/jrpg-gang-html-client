@@ -148,11 +148,11 @@ body {
 }
 
 .chosen-equipped {
-    background-color: rgb(99, 59, 128) !important;
+    background-color: rgb(99, 59, 128);
 }
 
 .chosen-equipped:hover {
-    background-color: rgb(119, 71, 154) !important;
+    background-color: rgb(119, 71, 154);
 }
 
 .item-icon-warpper {
