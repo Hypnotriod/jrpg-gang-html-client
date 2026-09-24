@@ -215,7 +215,7 @@ export default class GameFlowControls extends GameBase {
                 }
                 timeout = Math.max(timeout - 2, 0);
                 const time = new Date(timeout * 1000).toISOString().slice(14, 19);
-                this.gameStatusLabel.htmlValue = `${this.nextPhaseDescription()} <img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${time}`;
+                this.gameStatusLabel.htmlValue = `${this.nextPhaseDescription()} <img src="./assets/icons/hourglass.png" style="height:20px; vertical-align: middle; padding-bottom: 4px;" />${time}`;
                 if (fromTickInterval && timeout <= 10) {
                     SoundService.play(SoundName.CLOCK_TICK);
                 }

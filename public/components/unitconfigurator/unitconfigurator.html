@@ -21,44 +21,44 @@
                 <div>
                     <button id="button_previous" class="btn-small purple"
                         style="padding: 4px; line-height: 0; max-height: 20px;">◀</button>
-                    <b><span id="label_class" class="white-text lighten-1"></span></b>
+                    <b><span id="label_class" class="grey-text text-lighten-1"></span></b>
                     <button id="button_next" class="btn-small purple"
                         style="padding: 4px; line-height: 0; max-height: 20px;">▶</button>
                 </div>
             </div>
             <div class="configurator-block" style="margin-top: 10px;">
                 <span class="light-blue lighten-1">Booty:</span><br>
-                <span id="unit_booty" class="white-text" style="padding: 0;"></span><br>
+                <span id="unit_booty" class="grey-text text-lighten-4" style="padding: 0;"></span><br>
                 <span class="light-blue lighten-1">Progress:</span><br>
-                <span id="unit_progress" class="white-text" style="padding: 0;"></span><br>
+                <span id="unit_progress" class="grey-text text-lighten-4" style="padding: 0;"></span><br>
             </div>
         </div>
         <div class="col s2" style="padding: 0;">
             <div class="configurator-block">
                 <span class="light-blue lighten-1">Base attributes:</span><br>
-                <span id="label_health" class="white-text">Health: 50</span>
+                <span id="label_health" class="grey-text text-lighten-4">Health: 50</span>
                 <button id="button_health" class="btn-plus right orange">+</button><br>
-                <span id="label_stamina" class="white-text">stamina: 50</span>
+                <span id="label_stamina" class="grey-text text-lighten-4">stamina: 50</span>
                 <button id="button_stamina" class="btn-plus right orange">+</button><br>
-                <span id="label_mana" class="white-text">mana: 50</span>
+                <span id="label_mana" class="grey-text text-lighten-4">mana: 50</span>
                 <button id="button_mana" class="btn-plus right orange">+</button><br>
-                <span id="label_action_points" class="white-text">action points: 8</span>
+                <span id="label_action_points" class="grey-text text-lighten-4">action points: 8</span>
                 <br>
                 <br>
                 <span class="light-blue lighten-1">Attributes:</span><br>
-                <span id="label_strength" class="white-text">strength: 50</span>
+                <span id="label_strength" class="grey-text text-lighten-4">strength: 50</span>
                 <button id="button_strength" class="btn-plus right orange">+</button><br>
-                <span id="label_physique" class="white-text">physique: 50</span>
+                <span id="label_physique" class="grey-text text-lighten-4">physique: 50</span>
                 <button id="button_physique" class="btn-plus right orange">+</button><br>
-                <span id="label_agility" class="white-text">agility: 50</span>
+                <span id="label_agility" class="grey-text text-lighten-4">agility: 50</span>
                 <button id="button_agility" class="btn-plus right orange">+</button><br>
-                <span id="label_endurance" class="white-text">endurance: 50</span>
+                <span id="label_endurance" class="grey-text text-lighten-4">endurance: 50</span>
                 <button id="button_endurance" class="btn-plus right orange">+</button><br>
-                <span id="label_intelligence" class="white-text">intelligence: 50</span>
+                <span id="label_intelligence" class="grey-text text-lighten-4">intelligence: 50</span>
                 <button id="button_intelligence" class="btn-plus right orange">+</button><br>
-                <span id="label_initiative" class="white-text">initiative: 50</span>
+                <span id="label_initiative" class="grey-text text-lighten-4">initiative: 50</span>
                 <button id="button_initiative" class="btn-plus right orange">+</button><br>
-                <span id="label_luck" class="white-text">luck: 50</span>
+                <span id="label_luck" class="grey-text text-lighten-4">luck: 50</span>
                 <button id="button_luck" class="btn-plus right orange">+</button><br>
                 <button id="button_level_up" class="btn-small center orange" style="margin-top: 10px;">Level Up</button>
             </div>
@@ -66,16 +66,16 @@
         <div class="col s2">
             <div class="configurator-block">
                 <span class="light-blue lighten-1">Resistance:</span><br>
-                <span id="unit_resistance" class="white-text" style="padding: 0;"></span>
+                <span id="unit_resistance" class="grey-text text-lighten-4" style="padding: 0;"></span>
             </div>
         </div>
-        <div style="margin: 10px;">
+        <div style="margin: 0px;">
             <span class="orange-text lighten-3">
-                <img src="./assets/icons/sword-02.png"
-                    style="vertical-align: middle; padding-bottom: 4px; width: 24px;" />
+                <img src="./assets/icons/leather-bag-potions.png"
+                    style="vertical-align: middle; padding-bottom: 2px; width: 28px;" />
                 <b>SHOP</b>
-                <img src="./assets/icons/shield-02.png"
-                    style="vertical-align: middle; padding-bottom: 4px; width: 24px;" />
+                <img src="./assets/icons/armory-gear.png"
+                    style="vertical-align: middle; padding-bottom: 4px; width: 32px;" />
             </span>
             <button id="button_tab_shop_items" class="btn-small purple"
                 style="padding: 4px; line-height: 0; max-height: 20px;">items</button>
@@ -93,21 +93,22 @@
                 style="max-height: 324px; padding: 0;"></div>
         </div>
         <span class="green-text lighten-3">
-            <img src="./assets/icons/backpack.png" style="vertical-align: middle; padding-bottom: 4px;" />
+            <img src="./assets/icons/backpack.png"
+                style=" height: 34px; vertical-align: middle; padding-bottom: 4px;" />
             <b>INVENTORY</b>
         </span>
-        <label class="white-text" style="padding-left: 20px;">
+        <label class="grey-text text-lighten-4" style="padding-left: 20px;">
             <input id="checkbox_sell" type="checkbox" />
             <span style="padding-left: 24px;">Sell <img src="./assets/icons/sell-item.png"
-                    style="vertical-align: middle; padding-bottom: 4px;" /></span>&nbsp;&nbsp;&nbsp;
+                    style="height: 32px; vertical-align: middle; padding-bottom: 8px; padding-left: 4px;" /></span>&nbsp;&nbsp;&nbsp;
         </label>
-        <label class="white-text">
+        <label class="grey-text text-lighten-4">
             <input id="checkbox_repair" type="checkbox" />
             <span style="padding-left: 24px;">Repair<img src="./assets/icons/repair-item.png"
-                    style="vertical-align: middle; padding-bottom: 4px;" /></span>
+                    style="height: 32px; vertical-align: middle; padding-bottom: 8px; padding-left: 4px;" /></span>
         </label>
     </div>
-    <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin: -3px; margin-top: -20px;"></div>
+    <div id="unit_items_container" class="items-container-x scrollbar-x" style="margin: -3px; margin-top: -22px;"></div>
 </div>
 <div id="popup_shadow" class="popup-shadow hidden"></div>
 <div id="shop_item_popup" class="shop-item-popup darken-4 hidden">
@@ -117,7 +118,7 @@
         </div>
         <div class="col s8">
             <span id="label_description" class="orange-text">Buy an item?</span><br>
-            <div id="label_price" class="white-text" style="padding-top: 6px;"> </div>
+            <div id="label_price" class="grey-text text-lighten-4" style="padding-top: 6px;"> </div>
             <div class="center" style="margin-left: -12px;">
                 <b><span id="label_quantity" class="orange-text" style="font-size: 18px;">1</span></b>
             </div>
@@ -148,7 +149,7 @@
 <div id="instructions_popup" class="instructions-popup darken-4 hidden">
     <div class="row">
         <div class="col s2">
-            <img src="./assets/icons/king.png" />
+            <img src="./assets/icons/king.png" style="width: 80px;" />
         </div>
         <div class="col s10">
             <b><span class="amber-text">
@@ -158,19 +159,19 @@
                     us.
                 </span></b>
             <div style="padding-left: 16px; padding-top: 10px;">
-                <li class="white-text">
+                <li class="grey-text text-lighten-4">
                     Spend your coin in the <span class="orange-text lighten-4">Shop</span> to arm yourself with cursed
                     steel and warding charms.
                 </li>
-                <li class="white-text">
+                <li class="grey-text text-lighten-4">
                     Take <span class="orange-text lighten-4">Quests</span>.
                     The Hunters Guild offers dangerous work for those who can survive it.
                 </li>
-                <li class="white-text">
+                <li class="grey-text text-lighten-4">
                     Take <span class="orange-text lighten-4">Jobs</span> if your purse is empty.
                     The pay is small, but it will keep you alive a little longer.
                 </li>
-                <li class="white-text">
+                <li class="grey-text text-lighten-4">
                     Descend into the <span class="orange-text lighten-4">Dungeons</span> and face the darkness.
                     Find allies among the lost and steel yourself for the end.
                 </li>
@@ -182,4 +183,4 @@
         </div>
     </div>
 </div>
-<div id="item_description_popup" class="item-description-popup white-text"></div>
+<div id="item_description_popup" class="item-description-popup grey-text text-lighten-4"></div>

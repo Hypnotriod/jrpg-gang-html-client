@@ -313,7 +313,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected updateGamePhaseInfo(): void {
-        const infoIcon = '<img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 4px;" />';
+        const infoIcon = '<img src="./assets/icons/info.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />';
         if (this.playersUnit()?.isDead) {
             this.gamePhaseInfoLabel.htmlValue = `${infoIcon} You have been defeated.<br>
                 No loot can be claimed. Press <span class="red-text">ABANDON</span> to return to the hub.`;

@@ -70,13 +70,13 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         icon: 'quest-kill-20-rats',
         tag: 'Kills',
         target: 20,
-        popup: 'You have killed the Rat',
+        popup: 'You have killed the Giant Rat',
     },
-    'kill-20-mosquitoes': {
-        icon: 'quest-kill-20-mosquitoes',
+    'kill-20-fleas': {
+        icon: 'quest-kill-20-fleas',
         tag: 'Kills',
         target: 20,
-        popup: 'You have killed the Mosquito',
+        popup: 'You have killed the Giant Flea',
     },
     'kill-20-bats': {
         icon: 'quest-kill-20-bats',

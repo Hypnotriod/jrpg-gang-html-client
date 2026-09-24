@@ -19,7 +19,7 @@ export default class GameObjectRenderer {
         let result = '';
         if (data.hint) {
             const hint = data.hint[0] === '!' ? data.hint.slice(1) : data.hint;
-            result += `<b><img src="./assets/icons/info.png" style="vertical-align: middle; padding-bottom: 3px;" /><span class="${data.hint[0] === '!' ? 'red-text' : 'orange-text'} lighten-1" style="font-size: 13px;">${hint}</span></b><br>`;
+            result += `<b><img src="./assets/icons/info.png" style="height:20px; vertical-align: middle; padding-bottom: 3px;" /><span class="${data.hint[0] === '!' ? 'red-text' : 'orange-text'} lighten-1" style="font-size: 13px;">${hint}</span></b><br>`;
         }
         if (data.code) {
             result += `<img src="./assets/icons/${data.code}.png" style="width: 96px; height: 96px;"><br>`;
@@ -28,7 +28,7 @@ export default class GameObjectRenderer {
             result += `<span class="purple lighten-1">${data.name}</span><br>`;
         }
         if (data.description) {
-            result += `<span class="grey-text text-lighten-2">${data.description}</span><br>`;
+            result += `<b><span class="grey-text text-lighten-1">${data.description}</span></b><br>`;
         }
         if (this.isUnitData(data)) {
             if (!this.emptyOrAllFieldsZeros([], '', data.inventory)) {
@@ -353,20 +353,20 @@ export default class GameObjectRenderer {
             case 0:
                 return '';
             case 1:
-                return `<span class="light-green lighten-1">${value}:</span><br>`;
+                return `<span class="light-green darken-1">${value}:</span><br>`;
             case 3:
-                return `<span class="orange lighten-1">${value}:</span><br>`;
+                return `<span class="orange darken-1">${value}:</span><br>`;
             case 13:
-                return `<span class="red lighten-1">${value}:</span><br>`;
+                return `<span class="red darken-1">${value}:</span><br>`;
             case 23:
-                return `<span class="purple lighten-1">${value}:</span><br>`;
+                return `<span class="purple darken-1">${value}:</span><br>`;
             case 33:
                 return `<span class="grey darken-1">${value}:</span><br>`;
             case 43:
-                return `<span class="pink lighten-2">${value}:</span><br>`;
+                return `<span class="pink darken-1">${value}:</span><br>`;
             default:
             case 2:
-                return `<span class="light-blue lighten-1">${value}:</span><br>`;
+                return `<span class="light-blue darken-1">${value}:</span><br>`;
         }
     }
 

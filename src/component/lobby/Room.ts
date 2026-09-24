@@ -76,7 +76,7 @@ export default class Room extends Component {
         this.userIcons[0].descriptionPopup = this._objectDescription;
         this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[roomInfo.host.code]?.description };
         this.userConnectionStatusLabels[0].htmlValue = roomInfo.host.isOffline ?
-            '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
+            '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png" style="height: 16px;"/>';
 
         [...roomInfo.joinedUsers, ...roomInfo.mercenaries].forEach((user, i) => {
             const clazz = user.class;
@@ -88,7 +88,7 @@ export default class Room extends Component {
             this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[user.code]?.description };
 
             this.userConnectionStatusLabels[i + 1].htmlValue = !user.playerId ? '' : user.isOffline ?
-                '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png"/>';
+                '<img src="./assets/icons/offline.png"/>' : '<img src="./assets/icons/online.png" style="height: 16px;"/>';
         });
 
         this.dungeonLabel.value = roomInfo.scenario.name;

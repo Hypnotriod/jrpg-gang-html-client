@@ -125,7 +125,7 @@ export default class Job extends Component {
     protected updateTimeLeft(timeLeft: number): void {
         const time = new Date(timeLeft * 1000).toISOString().slice(14, 19);
         this.labelTime.htmlValue =
-            `<img src="./assets/icons/hourglass.png" style="vertical-align: middle; padding-bottom: 4px;" />${time}`
+            `<img src="./assets/icons/hourglass.png" style="height:20px; vertical-align: middle; padding-bottom: 4px;" />${time}`
     }
 
     public set enabled(value: boolean) {
