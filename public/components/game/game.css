@@ -18,7 +18,7 @@
 .game-log {
     background-color: #2b494e78;
     padding: 10px;
-    height: 265px;
+    height: 222px;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 5px;
@@ -32,10 +32,10 @@
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 5px;
-    width: 370px;
+    width: 320px;
 }
 
 .game-chat-input {
     margin: 0;
-    width: 370px;
+    width: 320px;
 }

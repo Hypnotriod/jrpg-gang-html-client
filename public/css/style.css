@@ -66,6 +66,22 @@ body {
     border-color: rgb(88, 88, 88);
 }
 
+.selection-icon-big {
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80px 80px;
+    cursor: pointer;
+    width: 86px;
+    height: 86px;
+    padding: 5px;
+    margin: 0px;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(88, 88, 88);
+}
+
 .selection-icon-56 {
     background-color: aliceblue;
     display: inline-block;
@@ -155,6 +171,11 @@ body {
     background-color: rgb(119, 71, 154);
 }
 
+.item-icon-warpper-big {
+    text-align: center;
+    width: 92px;
+}
+
 .item-icon-warpper {
     text-align: center;
     width: 80px;
@@ -184,7 +205,7 @@ body {
     pointer-events: none;
     position: fixed;
     overflow: hidden;
-    max-width: 470px;
+    max-width: 500px;
     background-color: rgba(29, 43, 55, 0.98);
     z-index: 2000;
     min-height: 40px;

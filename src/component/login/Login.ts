@@ -65,7 +65,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
         this.objectDescription.hide();
         USER_CLASSES.forEach((clazz, n) => {
-            const icon = ItemIcon.createItemIcon(clazz, this, ICONS_CONTAINER)!;
+            const icon = ItemIcon.createBigItemIcon(clazz, this, ICONS_CONTAINER)!;
             icon.onClick = target => this.onClassIconClick(target);
             icon.update(BASE_UNIT_DESCRIPTIONS[clazz] as InventoryItem, this.state);
             icon.descriptionPopup = this.objectDescription;
