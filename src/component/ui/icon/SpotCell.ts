@@ -109,7 +109,7 @@ export default class SpotCell extends Component {
     private _hint?: string | undefined;
 
     public displayActionChance: boolean = false;
-    public barWidth: number = 64;
+    public barWidth: number = 74;
 
     private stunnedSoundPlayed: boolean = false;
     private actionResultTimeoutId: number;
@@ -313,7 +313,7 @@ export default class SpotCell extends Component {
     public static createSpotCell(parent: Component, containerOrContainerId: HTMLElement | string): SpotCell | null {
         const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
         const iconComponent: SpotCell = parent.create(containerOrContainerId, SpotCell,
-            { design: resourceLoader.get(SPOT_CELL_DESIGN), classList: ['item-icon-warpper'] })!;
+            { design: resourceLoader.get(SPOT_CELL_DESIGN), classList: ['item-icon-warpper-big'] })!;
         return iconComponent;
     }
 
@@ -486,9 +486,9 @@ export default class SpotCell extends Component {
         this._unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
         this._unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
         this._unit.damage?.find(m => m.manaDrain || m.exhaustion || m.fear || m.curse || m.madness) ? this._iconDrain.show() : this._iconDrain.hide();
-        this._unit.modification?.find(m => m.baseAttributes?.health) ? this._iconHealth.show() : this._iconHealth.hide();
-        this._unit.modification?.find(m => m.baseAttributes?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
-        this._unit.modification?.find(m => m.baseAttributes?.mana) ? this._iconMana.show() : this._iconMana.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.health || m.recovery?.health) ? this._iconHealth.show() : this._iconHealth.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.stamina || m.recovery?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
+        this._unit.modification?.find(m => m.baseAttributes?.mana || m.recovery?.mana) ? this._iconMana.show() : this._iconMana.hide();
         this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
         this._unit.state.stress ? this._iconStressedSm.show() : this._iconStressedSm.hide();
         if ((this._unit.faction === GameUnitFaction.ENEMY || this._unit.faction === GameUnitFaction.PARTY) && isActive) {

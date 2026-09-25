@@ -74,7 +74,6 @@ export default class ObjectDescription extends Container {
             this.leftPx = this._stickTo.x + this._stickTo.width * scale + 2 + this.width * scale < window.innerWidth ?
                 this._stickTo.x + this._stickTo.width + 2 * scale : this._stickTo.x - this.width * scale - 2 * scale;
             this.topPx = this._stickTo.y + (this._stickTo.height - this.height * scale) / 2;
-            // this.topPx = this._stickTo.y;
         } else {
             this.leftPx = e.clientX + 32 + this.width < window.innerWidth ? e.clientX + 32 : e.clientX - this.width - 32;
             this.topPx = e.clientY - this.height * scale / 2;

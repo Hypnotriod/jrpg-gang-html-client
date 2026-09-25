@@ -69,6 +69,16 @@ export default class ItemIcon extends Component {
         return iconComponent;
     }
 
+    public static createBigItemIcon(icon: string, parent: Component, containerId: string | undefined = undefined): ItemIcon | null {
+        const resourceLoader: ResourceLoaderService = container.resolve(ResourceLoaderService);
+        const iconComponent: ItemIcon = parent.create(containerId || parent.view, ItemIcon,
+            { design: resourceLoader.get(ITEM_ICON_DESIGN), classList: ['item-icon-warpper-big'] })!;
+        iconComponent.icon = icon;
+        iconComponent._icon.view.classList.remove('selection-icon');
+        iconComponent._icon.view.classList.add('selection-icon-big');
+        return iconComponent;
+    }
+
     public set unit(value: GameUnit | undefined) {
         this._unit = value;
     }

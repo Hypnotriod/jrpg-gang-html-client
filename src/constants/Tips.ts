@@ -44,7 +44,7 @@ export function rangeCombatTip(clazz: string): GameTipKey {
 export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.MAIN_HUB]: `
         <span style="margin-left: 8px;">Your character sheet is on the left. Hover over for more information.</span><br>
-        <img src="./assets/icons/sword-02.png" style="vertical-align: middle; padding-bottom: 4px; width: 22px; margin-top: 6px;" />
+        <img src="./assets/icons/armory-gear.png" style="vertical-align: middle; padding-bottom: 4px; width: 22px; margin-top: 6px;" />
         You can buy items in the Shop on the right.<br>
         <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can manage your gear in the Inventory below.<br>

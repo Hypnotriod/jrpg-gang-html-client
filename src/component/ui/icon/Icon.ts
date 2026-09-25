@@ -143,19 +143,19 @@ export default class Icon extends Component {
 
     public async shake(): Promise<void> {
         for (let n = 0; n < 4; n++) {
-            this.view.style.marginLeft = '0px';
+            this.view.style.marginLeft = '-3px';
             await timeout(50);
-            this.view.style.marginLeft = '4px';
+            this.view.style.marginLeft = '3px';
             await timeout(50);
         }
-        this.view.style.marginTop = '2px';
-        this.view.style.marginBottom = '2px';
-        this.view.style.marginLeft = '2px';
+        this.view.style.marginTop = '0px';
+        this.view.style.marginBottom = '0px';
+        this.view.style.marginLeft = '0px';
     }
 
     public async bounce(direction: 'left' | 'right' | 'up'): Promise<void> {
-        const m = direction === 'right' ? 1 : -1;
-        const offsetX = direction === 'left' ? -1 : 2;
+        const m = direction === 'right' ? 2 : -2;
+        const offsetX = direction === 'left' ? -1 : 0;
         for (let n = 0; n <= 4; n++) {
             if (direction === 'up') {
                 this.view.style.marginTop = `${n * m + offsetX}px`;
@@ -175,8 +175,8 @@ export default class Icon extends Component {
             }
             await timeout(25);
         }
-        this.view.style.marginTop = '2px';
-        this.view.style.marginBottom = '2px';
-        this.view.style.marginLeft = '2px';
+        this.view.style.marginTop = '0px';
+        this.view.style.marginBottom = '0px';
+        this.view.style.marginLeft = '0px';
     }
 }

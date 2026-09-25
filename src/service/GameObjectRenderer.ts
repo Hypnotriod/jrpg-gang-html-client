@@ -8,7 +8,7 @@ export default class GameObjectRenderer {
     constructor(protected readonly actionService: ActionService) { }
 
     public column(html: string, s: number): string {
-        return `<div class="col s${s}" style="width: 190px;">${html}</div>`;
+        return `<div class="col s${s}" style="width: 230px;">${html}</div>`;
     }
 
     public row(html: string): string {
@@ -114,8 +114,8 @@ export default class GameObjectRenderer {
         const descriptorItems = [...(inventory.descriptor ?? [])];
         return (inventoryItems.length ? inventoryItems : descriptorItems).map(i =>
             (i as Weapon).equipped ?
-                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 30px; vertical-align: middle; background-color: #2b494e; border-radius: 2px;"/>` :
-                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 30px; vertical-align: middle;"/>`
+                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 32px; vertical-align: middle; background-color: #2b494e; border-radius: 2px;"/>` :
+                `<img src="./assets/icons/${i.code}.png" style="margin-right: 2px; width: 32px; vertical-align: middle;"/>`
         ).join('') + '<br>';
     }
 

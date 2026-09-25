@@ -141,9 +141,9 @@ export default class GameFlowControls extends GameBase {
             unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
             unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
             unit.damage?.find(m => m.manaDrain || m.exhaustion || m.fear || m.curse || m.madness) ? this._iconDrain.show() : this._iconDrain.hide();
-            unit.modification?.find(m => m.baseAttributes?.health) ? this._iconHealth.show() : this._iconHealth.hide();
-            unit.modification?.find(m => m.baseAttributes?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
-            unit.modification?.find(m => m.baseAttributes?.mana) ? this._iconMana.show() : this._iconMana.hide();
+            unit.modification?.find(m => m.baseAttributes?.health || m.recovery?.health) ? this._iconHealth.show() : this._iconHealth.hide();
+            unit.modification?.find(m => m.baseAttributes?.stamina || m.recovery?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
+            unit.modification?.find(m => m.baseAttributes?.mana || m.recovery?.mana) ? this._iconMana.show() : this._iconMana.hide();
             unit.state.stress ? this._iconStressedSm.show() : this._iconStressedSm.hide();
         }
         if (!unit || unit.isDead) {
@@ -247,7 +247,7 @@ export default class GameFlowControls extends GameBase {
             case GamePhase.READY_FOR_START_ROUND:
                 return 'Next round';
             case GamePhase.SPOT_COMPLETE:
-                return this.state.playerInfo?.isReady ? 'Wait for another player' : 'Prepare for the next battle or leave';
+                return this.state.playerInfo?.isReady ? 'Wait for another player' : 'Prepare for the next battle';
             case GamePhase.SCENARIO_COMPLETE:
                 return 'The dungeon is clear';
             case GamePhase.RETREAT_ACTION:
