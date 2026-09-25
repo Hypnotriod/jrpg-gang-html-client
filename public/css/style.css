@@ -159,8 +159,7 @@ body {
 }
 
 .chosen {
-    border: 3px solid rgb(255, 132, 32);
-    padding: -3px;
+    border: 1px solid rgb(255, 132, 32);
 }
 
 .chosen-equipped {
