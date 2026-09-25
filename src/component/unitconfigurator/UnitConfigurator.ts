@@ -528,8 +528,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected extraValue(value: number): string {
         if (!value) return '';
         return value > 0 ?
-            ` <span class="light-green lighten-1">+${value}</span>` :
-            ` <span class="red lighten-1">${value}</span>`;
+            ` <span class="light-green darken-2">+${value}</span>` :
+            ` <span class="red darken-2">${value}</span>`;
     }
 
     protected totalResistanceModification(equipment: Equipment, key: string): number {
@@ -539,12 +539,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected keyValue(key: string, value?: number, valueOf?: number): string {
         return valueOf === undefined ?
-            `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0}` :
-            `<span class="orange-text text-lighten-1" style="padding: 0;">${key}</span> ${value || 0} / ${valueOf}`;
+            `<span class="orange-text" style="padding: 0;">${key}</span> ${value || 0}` :
+            `<span class="orange-text" style="padding: 0;">${key}</span> ${value || 0} / ${valueOf}`;
     }
 
     protected keyValueIcon(key: string, icon: string, value?: number): string {
-        return `<span class="orange-text text-lighten-1" style="padding: 0;">
+        return `<span class="orange-text" style="padding: 0;">
             <img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" />
             ${key}</span> ${value || 0}`;
     }
