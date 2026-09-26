@@ -159,6 +159,7 @@ export default class GameBattlefield extends GameBase {
     protected updateBattleFieldUnits(): void {
         const corpses: GameUnit[] = this.state.gameState.spot.battlefield.corpses;
         const units: GameUnit[] = this.state.gameState.spot.battlefield.units;
+        const playersUnit = this.playersUnit();
         if (this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE &&
             (this.state.gameState.phase === GamePhase.TAKE_ACTION ||
                 this.state.gameState.phase === GamePhase.TAKE_ACTION_AI)) {
@@ -174,6 +175,15 @@ export default class GameBattlefield extends GameBase {
         units.forEach(unit => {
             const spot: SpotCell = this.spots[unit.position.x][unit.position.y];
             spot.updateWithUnit(unit, isActive);
+            if (playersUnit?.uid === unit.uid &&
+                (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT ||
+                    this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE)) {
+                spot.highlight(true);
+            }
+            if (playersUnit?.uid === unit.uid && this.currUnit?.uid === unit.uid &&
+                this.state.gameState.nextPhase === GamePhase.TAKE_ACTION) {
+                spot.highlight(true);
+            }
             if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT ||
                 this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE
             ) {
@@ -206,6 +216,7 @@ export default class GameBattlefield extends GameBase {
         for (const x in matrix) {
             for (const y in matrix[x]) {
                 this.spots[x][y].updateWithCell(matrix[x][y], isActive);
+                this.spots[x][y].highlight(false);
             }
         }
     }
