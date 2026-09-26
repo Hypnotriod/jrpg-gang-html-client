@@ -160,6 +160,7 @@ body {
 
 .chosen {
     border: 1px solid rgb(255, 132, 32);
+    box-shadow: 0 0 10px rgb(255, 132, 32), 0 0 6px rgb(255, 132, 32);
 }
 
 .chosen-equipped {
