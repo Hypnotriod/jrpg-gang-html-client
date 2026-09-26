@@ -456,6 +456,10 @@ export default class SpotCell extends Component {
         this._unit = undefined;
     }
 
+    public highlight(value: boolean): void {
+        value ? this._icon.choose() : this._icon.unchoose();
+    }
+
     public choose(actionPoints: number): void {
         this.actionPointsLabel.value = String(actionPoints);
         actionPoints ? this.actionPointsLabel.show() : this.actionPointsLabel.hide();
