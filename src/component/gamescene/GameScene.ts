@@ -446,32 +446,15 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected logAction(): void {
-        const head = '<div style="font-size: 12px;">';
+        const head = '';
         if (this.state.gameState.unitActionResult) {
-            const unit: GameUnit = this.findUnitByUid(this.state.gameState.unitActionResult.action.uid!)!;
-            const name: string = this.getUnitName(unit);
-            this.gameLog.value +=
-                (this.gameLog.value === '' ? '' : '<hr>') +
-                head +
-                this.renderer.header(name, 33) +
-                this.renderer.render(this.distinguishUnitActionResult(this.state.gameState.unitActionResult)) +
-                '</div>';
+            this.gameLog.value += head + this.renderUnitActionResult(this.state.gameState.unitActionResult) + '<br>';
         }
         if (this.state.gameState.endRoundResult) {
-            this.gameLog.value +=
-                head +
-                (this.gameLog.value === '' ? '' : '<hr>') +
-                this.renderer.header('End Round result', 33) +
-                this.renderer.render(this.distinguishEndRoundResult(this.state.gameState.endRoundResult)) +
-                '</div>';
+            this.gameLog.value += head + this.renderEndRoundResult(this.state.gameState.endRoundResult) + '<br>';
         }
         if (this.state.gameState.spotCompleteResult) {
-            this.gameLog.value +=
-                head +
-                (this.gameLog.value === '' ? '' : '<hr>') +
-                this.renderer.header('End Battle result', 33) +
-                this.renderer.render(this.distinguishSpotCompleteResultResult(this.state.gameState.spotCompleteResult)) +
-                '</div>';
+            this.gameLog.value += head + this.renderSpotCompleteResult(this.state.gameState.spotCompleteResult) + '<br>';
         }
     }
 
