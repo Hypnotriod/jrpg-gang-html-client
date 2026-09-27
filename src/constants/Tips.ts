@@ -53,6 +53,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <span style="margin-left: 8px;">Read the game rules by clicking the Game Rules button at the top of the screen.</span>`,
     [GameTipKey.COMBAT_PHASE]: `
         Welcome, adventurer! This is your learning mission.<br>
+        You must destroy all the training dummies.<br>
         Follow the instructions in the combat phase notes above.`,
     [GameTipKey.START_TRAINING_QUEST]: `
         Now you can proceed to your training.<br>
@@ -98,11 +99,15 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.CLOSE_COMBAT_WARRIOR]: `
         <img src="./assets/icons/sword-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
+        <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon.png"
+            style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.CLOSE_COMBAT_BARBARIAN]: `
         <img src="./assets/icons/axe-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
+        <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
+            style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.CLOSE_COMBAT_MAGE]: `
@@ -113,11 +118,15 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.CLOSE_COMBAT_RANGER]: `
         <img src="./assets/icons/dagger-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
+        <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon.png"
+            style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.RANGE_COMBAT_MAGE]: `
         <img src="./assets/icons/sorcerer-staff-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Select your long range weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets behind the adjacent column.<br>
+        <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
+            style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/fire-charge-01.png" style="vertical-align: middle; height: 32px; margin-top: 2px; margin-left: 8px;">
         The weapon ammunition must be equipped in the ammo <img src="./assets/icons/slot-ammo.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot<br>
@@ -126,6 +135,8 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.RANGE_COMBAT_RANGER]: `
         <img src="./assets/icons/bow-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
         Select your long range weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets behind the adjacent column.<br>
+        <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
+            style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/arrow-01.png" style="vertical-align: middle; height: 32px; margin-top: 2px; margin-left: 8px;">
         The weapon ammunition must be equipped in the ammo <img src="./assets/icons/slot-ammo.png"
                         style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot<br>
