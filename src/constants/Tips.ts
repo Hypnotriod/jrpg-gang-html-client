@@ -49,7 +49,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can manage your gear in the Inventory below.<br>
         <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
-        Open the Quests menu from the top and take you active assignment.<div>
+        Open the Quests menu from the top and take your active assignment.<div>
         <span style="margin-left: 8px;">Read the game rules by clicking the Game Rules button at the top of the screen.</span>`,
     [GameTipKey.COMBAT_PHASE]: `
         Welcome, adventurer! This is your learning mission.<br>
