@@ -67,6 +67,8 @@ export default class GameFlowControls extends GameBase {
     private readonly labelMana: Label;
     @component('label_stress', Label)
     private readonly labelStress: Label;
+    @component('label_action_points', Label)
+    private readonly labelActionPoints: Label;
     @component('health_bar', Container)
     private readonly healthBar: Container;
     @component('stamina_bar', Container)
@@ -132,6 +134,7 @@ export default class GameFlowControls extends GameBase {
                 this.labelStress.view.classList.add('grey-text');
                 this.labelStress.view.classList.remove('red-text');
             }
+            this.labelActionPoints.value = unit.state.actionPoints ? `AP: ${unit.state.actionPoints}` : '';
             this.healthBar.width = Math.min(unit.state.health / (healthTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
             this.staminaBar.width = Math.min(unit.state.stamina / (staminaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
             this.manaBar.width = Math.min(unit.state.mana / (manaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
@@ -153,6 +156,7 @@ export default class GameFlowControls extends GameBase {
             this.leaveButton.hide();
             this.nextPhaseButton.hide();
             this.nextBattleButton.hide();
+            this.labelActionPoints.value = '';
             return;
         }
         const gamePhase: string = this.state.gameState.nextPhase;

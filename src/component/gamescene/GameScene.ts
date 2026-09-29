@@ -1,11 +1,10 @@
 import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, Cell, ChatMessage, ChatState, GameEvent, GamePhase, GameUnit, ItemType } from '../../domain/domain';
+import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
-import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
 import { SoundName, SoundService } from '../../service/SoundService';
@@ -27,6 +26,7 @@ import Container from '../ui/container/Container';
 import { ACHIEVEMENT_IDS } from '../../constants/Configuration';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips';
+import GameLogRenderer from '../../service/GameLogRenderer';
 
 @injectable()
 @singleton()
@@ -63,7 +63,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     constructor(
         private readonly communicator: ServerCommunicatorService,
         private readonly configurator: UnitConfigurator,
-        private readonly renderer: GameObjectRenderer,
+        private readonly gameLogRenderer: GameLogRenderer,
         private readonly state: GameStateService,
         private readonly tips: TipsPopup,
         private readonly achievementPopup: AchievementPopup,
@@ -448,13 +448,13 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     protected logAction(): void {
         const head = '';
         if (this.state.gameState.unitActionResult) {
-            this.gameLog.value += head + this.renderUnitActionResult(this.state.gameState.unitActionResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderUnitActionResult(this.state.gameState.unitActionResult) + '<br>';
         }
         if (this.state.gameState.endRoundResult) {
-            this.gameLog.value += head + this.renderEndRoundResult(this.state.gameState.endRoundResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderEndRoundResult(this.state.gameState.endRoundResult) + '<br>';
         }
         if (this.state.gameState.spotCompleteResult) {
-            this.gameLog.value += head + this.renderSpotCompleteResult(this.state.gameState.spotCompleteResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderSpotCompleteResult(this.state.gameState.spotCompleteResult) + '<br>';
         }
     }
 
