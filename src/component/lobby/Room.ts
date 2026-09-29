@@ -179,6 +179,9 @@ export default class Room extends Component {
     protected doLeaveRoom(): void {
         if (this.roomInfo.host.nickname === this.state.userState.playerInfo.nickname) {
             this.communicator.sendMessage(RequestType.DESTROY_ROOM);
+            if (this.roomInfo.mercenaries.length) {
+                SoundService.play(SoundName.TREASURE);
+            }
         } else {
             this.communicator.sendMessage(RequestType.LEAVE_ROOM);
         }
