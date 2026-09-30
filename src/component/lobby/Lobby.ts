@@ -1,8 +1,7 @@
-import { convert } from 'html-to-text';
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, DUNGEONS_CONTAINER, INPUT_LOBBY_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_USER_NUMBER, LOBBY_CHAT, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CONFIGURATOR, DUNGEONS_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_USER_NUMBER, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
-import { ChatMessage, ChatParticipant, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
+import { ChatMessage, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
@@ -13,16 +12,15 @@ import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
 import Icon from '../ui/icon/Icon';
-import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
-import TextField from '../ui/textfield/TextField';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Dungeon from './Dungeon';
 import MercenariesPopup from './MercenariesPopup';
 import Room from './Room';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
+import { Chat } from '../ui/chat/Chat';
 
 @injectable()
 @singleton()
@@ -39,10 +37,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly unitInfo: Container;
     @component(LABEL_USER_NUMBER, Label)
     private readonly userNumberLabel: Label;
-    @component(LOBBY_CHAT, TextField)
-    private readonly chat: TextField;
-    @component(INPUT_LOBBY_CHAT_MESSAGE, TextInput)
-    private readonly chatMessageInput: TextInput;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
     @component('popup_shadow', Container)
@@ -53,12 +47,13 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     private readonly dungeonsButton: Button;
     @component('button_parties', Button)
     private readonly partiesButton: Button;
+    @component('lobby_chat', Chat)
+    private readonly lobbyChat: Chat;
     @component(UNIT_BOOTY, Label)
     private readonly unitBooty: Label;
 
     private readonly rooms: Map<number, Room> = new Map();
     private readonly dungeons: Map<string, Dungeon> = new Map();
-    private chatState: ChatState;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -93,14 +88,8 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected initChat(): void {
-        this.chat.autoScroll = true;
-        this.chatMessageInput.onEnter = input => {
-            this.communicator.sendMessage(RequestType.LOBBY_CHAT_MESSAGE, {
-                message: input.value,
-            } satisfies ChatMessageRequestData);
-            input.value = '';
-        };
-        this.chatMessageInput.maxLength = 128;
+        this.lobbyChat.onSendMessage(message => this.communicator.sendMessage(
+            RequestType.LOBBY_CHAT_MESSAGE, { message } satisfies ChatMessageRequestData));
     }
 
     protected goToUnitConfig(): void {
@@ -149,15 +138,17 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 break;
             case RequestType.LOBBY_CHAT_MESSAGE:
                 const message: ChatMessage = (response.data as ChatMessageData).message;
-                this.addChatMessage(message);
+                this.lobbyChat.addChatMessage(message);
                 break;
             case RequestType.LOBBY_CHAT_STATE:
                 const chatState: ChatState = (response.data as ChatStateData).chat;
-                this.handleChatState(chatState);
+                this.lobbyChat.handleChatState(chatState);
+                this.updateUsersInfo();
                 break;
             case RequestType.LOBBY_CHAT_PARTICIPANT:
                 const { playerId, participant } = (response.data as ChatParticipantData);
-                this.handleChatparticipant(playerId, participant);
+                this.lobbyChat.handleChatparticipant(playerId, participant);
+                this.updateUsersInfo();
                 break;
         }
     }
@@ -170,28 +161,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected keyValueIcon(icon: string, value?: number): string {
         return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" /> ${value || 0}`;
-    }
-
-    protected handleChatparticipant(playerId: string, participant: ChatParticipant): void {
-        if (!this.chatState) return;
-        this.chatState.participants[playerId] = participant;
-        this.updateUsersInfo();
-    }
-
-    protected handleChatState(chatState: ChatState): void {
-        this.chat.value = '';
-        this.chatState = chatState;
-        this.chatState.messages.forEach(message => this.addChatMessage(message));
-        this.updateUsersInfo();
-    }
-
-    protected addChatMessage(message: ChatMessage): void {
-        const date = new Date(message.timestamp);
-        const nickname = this.chatState.participants[message.from].nickname;
-        const colorClass = message.from == this.state.userState.playerInfo.playerId ? 'light-green lighten-1' : 'light-blue lighten-1';
-        this.chat.value +=
-            `<span class="${colorClass}" style="font-size: 13px;">${nickname}</span><span class="grey-text" style="font-size: 11px;">${date.toLocaleTimeString()}</span><br>` +
-            `<span style="font-size: 13px;">${convert(message.message)}<br>`;
     }
 
     protected onLobbyStatus(data: LobbyStatusData): void {
@@ -246,9 +215,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateUsersInfo(): void {
-        if (!this.chatState) return;
-        const inLobby = Object.keys(this.chatState.participants)
-            .map(k => this.chatState.participants[k])
+        if (!this.lobbyChat.chatState) return;
+        const inLobby = Object.keys(this.lobbyChat.chatState.participants)
+            .map(k => this.lobbyChat.chatState!.participants[k])
             .filter(p => p.unavailable !== true)
             .map(p => `<span class="green-text text-lighten-2">${p.nickname}</span>`);
         this.userNumberLabel.htmlValue =

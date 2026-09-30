@@ -1,6 +1,6 @@
 import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_CHAT, GAME_LOG, INPUT_GAME_CHAT_MESSAGE, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
@@ -10,7 +10,6 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import { SoundName, SoundService } from '../../service/SoundService';
 import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import { component } from '../decorator/decorator';
-import TextInput from '../ui/input/TextInput';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import TextField from '../ui/textfield/TextField';
@@ -27,16 +26,13 @@ import { ACHIEVEMENT_IDS } from '../../constants/Configuration';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips';
 import GameLogRenderer from '../../service/GameLogRenderer';
+import { Chat } from '../ui/chat/Chat';
 
 @injectable()
 @singleton()
 export default class GameScene extends GameBase implements ServerCommunicatorHandler {
     @component(GAME_LOG, TextField)
     private readonly gameLog: TextField;
-    @component(GAME_CHAT, TextField)
-    private readonly chat: TextField;
-    @component(INPUT_GAME_CHAT_MESSAGE, TextInput)
-    private readonly chatMessageInput: TextInput;
     @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
     private readonly objectDescription: ObjectDescription;
     @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
@@ -59,6 +55,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly popupShadow: Container;
     @component('label_game_phase_info', Label)
     private readonly gamePhaseInfoLabel: Label;
+    @component('game_chat', Chat)
+    private readonly gameChat: Chat;
 
     constructor(
         private readonly communicator: ServerCommunicatorService,
@@ -97,14 +95,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected initChat(): void {
-        this.chat.autoScroll = true;
-        this.chatMessageInput.onEnter = input => {
-            this.communicator.sendMessage(RequestType.GAME_CHAT_MESSAGE, {
-                message: input.value,
-            } satisfies ChatMessageRequestData);
-            input.value = '';
-        };
-        this.chatMessageInput.maxLength = 128;
+        this.gameChat.onSendMessage(message => this.communicator.sendMessage(
+            RequestType.GAME_CHAT_MESSAGE, { message } satisfies ChatMessageRequestData));
     }
 
     protected onRetreatGame(): void {
@@ -163,11 +155,11 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             case RequestType.GAME_CHAT_MESSAGE:
                 const message: ChatMessage = (response.data as ChatMessageData).message;
-                this.addChatMessage(message);
+                this.gameChat.addChatMessage(message);
                 break;
             case RequestType.GAME_CHAT_STATE:
                 const chatState: ChatState = (response.data as ChatStateData).chat;
-                this.handleChatState(chatState);
+                this.gameChat.handleChatState(chatState);
                 break;
         }
         this.battlefield.updateUnitsTurnOrder();
@@ -435,21 +427,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.hide();
             this.configurator.show();
         }
-    }
-
-    protected handleChatState(chatState: ChatState): void {
-        this.chat.value = '';
-        this.chatState = chatState;
-        this.chatState.messages.forEach(message => this.addChatMessage(message));
-    }
-
-    protected addChatMessage(message: ChatMessage): void {
-        const date = new Date(message.timestamp);
-        const nickname = this.chatState.participants[message.from].nickname;
-        const colorClass = this.isCurrentPlayerId(message.from) ? 'light-green lighten-1' : 'light-blue lighten-1';
-        this.chat.value +=
-            `<span class="${colorClass}" >${nickname}</span><span class="grey-text" style="font-size: 13px;">${date.toLocaleTimeString()}</span><br>` +
-            convert(message.message) + '<br>';
     }
 
     protected logAction(): void {
