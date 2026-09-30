@@ -180,6 +180,10 @@ export default class ItemIcon extends Component {
         return this._icon.chosen;
     }
 
+    public highlightError(): void {
+        this._icon.highlightError();
+    }
+
     private chosenEquipped(state?: GameStateService): boolean {
         const nextPhase = state?.gameState?.nextPhase;
         if (nextPhase === GamePhase.SPOT_COMPLETE && this.data?.type === ItemType.PROVISION) return true;

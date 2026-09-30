@@ -381,6 +381,13 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             actionresult === ActionResultType.NOT_FOUND
         ) {
             SoundService.play(SoundName.DENIED);
+            if ([ActionResultType.CANT_USE,
+            ActionResultType.NOT_ALLOWED,
+            ActionResultType.NOT_EUIPPED,
+            ActionResultType.NOT_REACHABLE,
+            ActionResultType.NO_AMMUNITION].includes(actionresult)) {
+                this.unitItems.highlightError();
+            }
             return;
         }
         if ((this.state.gameState.nextPhase === GamePhase.ACTION_COMPLETE ||

@@ -1,4 +1,4 @@
-import { timeout } from '../../../utils/utils';
+import { timeout, Token } from '../../../utils/utils';
 import Component from '../../Component';
 import ObjectDescription from '../popup/ObjectDescription';
 
@@ -11,6 +11,8 @@ export default class Icon extends Component {
     private _icon: string;
     private _descriptionPopup?: ObjectDescription;
     private _description: object;
+    private _animationToken?: Token;
+    private _highlightToken?: Token;
 
     public set descriptionPopup(value: ObjectDescription) {
         this._descriptionPopup = value;
@@ -141,12 +143,27 @@ export default class Icon extends Component {
         this.view.classList.remove('disabled');
     }
 
+    public async highlightError(): Promise<void> {
+        const token = this.acquireNewHighlightToken();
+        for (let n = 0; n < 2; n++) {
+            this.view.classList.add('icon-error');
+            await timeout(100);
+            if (token.cancelled) return;
+            this.view.classList.remove('icon-error');
+            await timeout(100);
+            if (token.cancelled) return;
+        }
+    }
+
     public async shake(): Promise<void> {
+        const token = this.acquireNewAnimationToken();
         for (let n = 0; n < 4; n++) {
             this.view.style.marginLeft = '-3px';
             await timeout(50);
+            if (token.cancelled) return;
             this.view.style.marginLeft = '3px';
             await timeout(50);
+            if (token.cancelled) return;
         }
         this.view.style.marginTop = '0px';
         this.view.style.marginBottom = '0px';
@@ -154,6 +171,7 @@ export default class Icon extends Component {
     }
 
     public async bounce(direction: 'left' | 'right' | 'up'): Promise<void> {
+        const token = this.acquireNewAnimationToken();
         const m = direction === 'right' ? 2 : -2;
         const offsetX = direction === 'left' ? -1 : 0;
         for (let n = 0; n <= 4; n++) {
@@ -164,8 +182,10 @@ export default class Icon extends Component {
                 this.view.style.marginLeft = `${n * m + offsetX}px`;
             }
             await timeout(25);
+            if (token.cancelled) return;
         }
         await timeout(25);
+        if (token.cancelled) return;
         for (let n = 4; n > 0; n -= 2) {
             if (direction === 'up') {
                 this.view.style.marginTop = `${n * m + offsetX}px`;
@@ -174,9 +194,24 @@ export default class Icon extends Component {
                 this.view.style.marginLeft = `${n * m + offsetX}px`;
             }
             await timeout(25);
+            if (token.cancelled) return;
         }
         this.view.style.marginTop = '0px';
         this.view.style.marginBottom = '0px';
         this.view.style.marginLeft = '0px';
+    }
+
+    protected acquireNewAnimationToken(): Token {
+        const token = new Token();
+        this._animationToken?.cancel();
+        this._animationToken = token;
+        return token;
+    }
+
+    protected acquireNewHighlightToken(): Token {
+        const token = new Token();
+        this._highlightToken?.cancel();
+        this._highlightToken = token;
+        return token;
     }
 }

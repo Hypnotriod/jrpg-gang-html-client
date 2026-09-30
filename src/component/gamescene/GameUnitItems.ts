@@ -48,6 +48,10 @@ export default class GameUnitItems extends GameBase {
         return [...this.unitItems.values()].find(i => i.chosen);
     }
 
+    public highlightError(): void {
+        this.getChosenItem()?.highlightError();
+    }
+
     public update(activeTypes: ItemType[]): void {
         if (!this.state.playerInfo) { return; }
         const unit = this.playersUnit();
