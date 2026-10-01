@@ -82,12 +82,13 @@ export class Chat extends Component {
         const date = new Date(message.timestamp);
         const currentuser = message.from == this.state.userState.playerInfo.playerId;
         const colorClass = currentuser ? 'light-green lighten-1' : 'light-blue lighten-1';
+        const muted = Chat.mutedUsers.length && Chat.mutedUsers.includes(nickname);
         this.chatMessages.value +=
             `<span class="${colorClass} black-text" style="font-size: 13px;">${nickname}</span>
             <span class="grey-text" style="font-size: 11px;">${date.toLocaleTimeString()}</span>` +
-            (currentuser ? '' : `<img src="./assets/icons/sound.png" style="height: 11px; vertical-align: middle; cursor: pointer;" onclick="window.muteChatUser('${nickname}')" alt="mute"/>`) +
+            (currentuser ? '' : `<img src="./assets/icons/${muted ? 'no-sound' : 'sound'}.png" style="height: 11px; vertical-align: middle; cursor: pointer;" onclick="window.muteChatUser('${nickname}')" alt="mute"/>`) +
             `<br>` +
-            (Chat.mutedUsers.length && Chat.mutedUsers.includes(nickname) ?
+            (muted ?
                 `<span class="grey-text" style="font-size: 13px;">muted</span><br>` :
                 `<span style="font-size: 13px;">${convert(message.message)}</span><br>`);
     }
