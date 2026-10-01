@@ -1,8 +1,8 @@
 import { container, injectable } from 'tsyringe';
 import { ACHIEVEMENTS } from '../../constants/AchievementInfo';
-import { BUTTON_ENTER, ICON, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_REQUIREMENTS } from '../../constants/Components';
+import { BUTTON_ENTER, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_REQUIREMENTS } from '../../constants/Components';
 import { DUNGEON_DESIGN } from '../../constants/Resources';
-import { GameScenarioConfig, UnitQuestStatus, UnitRequirements } from '../../domain/domain';
+import { GameScenarioConfig, UnitRequirements } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
@@ -12,10 +12,10 @@ import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import Container from '../ui/container/Container';
-import Icon from '../ui/icon/Icon';
 import Label from '../ui/label/Label';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
+import Image from '../ui/image/Image';
 
 @injectable()
 export default class Dungeon extends Component {
@@ -27,6 +27,8 @@ export default class Dungeon extends Component {
     protected readonly labelRequirements: Container;
     @component(BUTTON_ENTER, Button)
     protected readonly buttonEnter: Button;
+    @component('icon_dungeon', Image)
+    protected readonly dungeonIcon: Image;
     protected config: GameScenarioConfig;
 
     constructor(
@@ -60,7 +62,7 @@ export default class Dungeon extends Component {
 
     public update(config: GameScenarioConfig): void {
         this.config = config;
-        (this.findChild('icon_dungeon') as HTMLImageElement).src = `./assets/icons/${config.id}.png`;
+        this.dungeonIcon.src = `./assets/icons/${config.id}.png`;
         this.labelHeader.value = config.name;
         this.labelDescription.value = config.description!;
         this.labelRequirements.value = this.renderer.renderApplicationRequirements(this.patchRequirements(config.requirements), this.state.userState.unit);

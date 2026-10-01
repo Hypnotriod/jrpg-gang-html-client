@@ -10,6 +10,7 @@ import ObjectDescription from '../popup/ObjectDescription';
 import Icon from './Icon';
 import Container from '../container/Container';
 import GameStateService from '../../../service/GameStateService';
+import Image from '../image/Image';
 
 export default class ItemIcon extends Component {
     @component(ICON, Icon)
@@ -22,8 +23,8 @@ export default class ItemIcon extends Component {
     protected readonly iconCurrent: Container;
     @component(ICON_CANT_USE, Container)
     protected readonly iconCantUse: Container;
-    @component('icon_slot', Container)
-    protected readonly iconSlot: Container;
+    @component('icon_slot', Image)
+    protected readonly iconSlot: Image;
     @component(ICON_BROKEN, Container)
     protected readonly iconBroken: Container;
     @component(LABEL_ACTION_POINTS, Label)
@@ -213,7 +214,7 @@ export default class ItemIcon extends Component {
             if (asEquipment.slotsNumber > 1 && slot === String(EquipmentSlot.WEAPON)) {
                 slot = `${EquipmentSlot.WEAPON}-2`;
             }
-            (this.iconSlot?.view as HTMLImageElement).src = `./assets/icons/slot-${slot}.png`;
+            this.iconSlot.src = `./assets/icons/slot-${slot}.png`;
             this.iconSlot?.show();
         } else {
             this.iconSlot?.hide();

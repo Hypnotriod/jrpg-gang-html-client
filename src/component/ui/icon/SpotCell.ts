@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
-import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitActionResult, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
+import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -13,6 +13,7 @@ import Icon from './Icon';
 import GameUnitItems from '../../gamescene/GameUnitItems';
 import GameStateService from '../../../service/GameStateService';
 import { SoundName, SoundService } from '../../../service/SoundService';
+import Image from '../image/Image';
 
 @injectable()
 export default class SpotCell extends Component {
@@ -52,8 +53,8 @@ export default class SpotCell extends Component {
     protected readonly _iconEffect: Container;
     @component(ICON_FOOD, Container)
     protected readonly _iconFood: Container;
-    @component(ICON_GEAR_CHANGE, Container)
-    protected readonly _iconGearChange: Container;
+    @component(ICON_GEAR_CHANGE, Image)
+    protected readonly _iconGearChange: Image;
     @component(ICON_HIT, Container)
     protected readonly _iconHit: Container;
     @component(ICON_HIT_COLD, Container)
@@ -631,7 +632,7 @@ export default class SpotCell extends Component {
     }
 
     public changeGear(code: string): void {
-        (this._iconGearChange.view as HTMLImageElement).src = `./assets/icons/${code}.png`;
+        this._iconGearChange.src = `./assets/icons/${code}.png`;
         this.hideActionResultIcons();
         this._iconGearChange.show();
         this.actionResultTimeoutId = window.setTimeout(() => this.hideActionResultIcons(), 500);

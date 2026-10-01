@@ -99,8 +99,6 @@ export default class MainScene extends Component implements ServerCommunicatorHa
             }
         });
 
-        this.labelUserNumber.value = '';
-
         this.tipsPopup.shadow = this.tipsPopupShadow;
         this.rulesPopup.shadow = this.rulesPopupShadow;
         this.checkboxSound.onChange = target => this.toggleSoundMute();
@@ -108,10 +106,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.checkboxTips.onChange = target => this.toggleTipsPopup();
         this.buttonFullscreen.onClick = target => this.toggleFullscreen();
         this.buttonRules.onClick = target => this.rulesPopup.show();
-
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
-
         this.scaleContainer.resizeConfig = RESIZE_CONFIG;
     }
 

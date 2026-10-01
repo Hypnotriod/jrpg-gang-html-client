@@ -15,6 +15,7 @@ import Label from '../ui/label/Label';
 import { BASE_UNIT_DESCRIPTIONS } from '../../constants/Configuration';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { SoundName, SoundService } from '../../service/SoundService';
+import Image from '../ui/image/Image';
 
 @injectable()
 export default class Room extends Component {
@@ -46,6 +47,8 @@ export default class Room extends Component {
     private readonly kickPlayer3Button: Button;
     @component('button_kick_player_4', Button)
     private readonly kickPlayer4Button: Button;
+    @component('icon_room', Image)
+    protected readonly roomIcon: Image;
 
     public set objectDescription(value: ObjectDescription) {
         this._objectDescription = value;
@@ -92,7 +95,7 @@ export default class Room extends Component {
         });
 
         this.dungeonLabel.value = roomInfo.scenario.name;
-        (this.findChild('icon_room') as HTMLImageElement).src = `./assets/icons/${roomInfo.scenario.id}.png`;
+        this.roomIcon.src = `./assets/icons/${roomInfo.scenario.id}.png`;
 
         const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
         const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
