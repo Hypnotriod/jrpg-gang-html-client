@@ -77,7 +77,7 @@ export class SoundService {
         SoundService.sounds[SoundName.LIGHTNING] = new Howl({ src: ['assets/sounds/lightning.mp3'] });
         SoundService.sounds[SoundName.ICE] = new Howl({ src: ['assets/sounds/ice.mp3'] });
         SoundService.sounds[SoundName.POISON] = new Howl({ src: ['assets/sounds/poison.mp3'] });
-        // SoundService.sounds[SoundName.ACID] = new Howl({ src: ['assets/sounds/acid.mp3'] }); // todo
+        SoundService.sounds[SoundName.ACID] = new Howl({ src: ['assets/sounds/acid.mp3'] });
         SoundService.sounds[SoundName.DEBUFF] = new Howl({ src: ['assets/sounds/debuff.mp3'] });
         SoundService.sounds[SoundName.MOVE] = new Howl({ src: ['assets/sounds/move.mp3'] });
         SoundService.sounds[SoundName.TREASURE] = new Howl({ src: ['assets/sounds/treasure.mp3'] });
