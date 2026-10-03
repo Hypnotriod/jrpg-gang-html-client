@@ -51,6 +51,7 @@ export interface Damage {
     cold?: number;
     lightning?: number;
     poison?: number;
+    acid?: number;
     exhaustion?: number;
     manaDrain?: number;
     bleeding?: number;

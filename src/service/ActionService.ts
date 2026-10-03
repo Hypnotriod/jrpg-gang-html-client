@@ -72,6 +72,7 @@ export default class ActionService {
             (d.fire || 0) +
             (d.lightning || 0) +
             (d.poison || 0) +
+            (d.acid || 0) +
             (d.stabbing || 0)
             , 0);
     }

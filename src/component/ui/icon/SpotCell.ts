@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM, ICON_HIT_ACID, ICON_ACID } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -31,6 +31,8 @@ export default class SpotCell extends Component {
     protected readonly _iconBleeding: Container;
     @component(ICON_POISON, Container)
     protected readonly _iconPoison: Container;
+    @component(ICON_ACID, Container)
+    protected readonly _iconAcid: Container;
     @component(ICON_COLD, Container)
     protected readonly _iconCold: Container;
     @component(ICON_FIRE, Container)
@@ -65,6 +67,8 @@ export default class SpotCell extends Component {
     protected readonly _iconHitLighting: Container;
     @component(ICON_HIT_POISON, Container)
     protected readonly _iconHitPoison: Container;
+    @component(ICON_HIT_ACID, Container)
+    protected readonly _iconHitAcid: Container;
     @component(ICON_HIT_DRAIN, Container)
     protected readonly _iconHitDrain: Container;
     @component(ICON_MISSED, Container)
@@ -183,6 +187,7 @@ export default class SpotCell extends Component {
                 madness: (acc.madness ?? 0) + (d.madness ?? 0),
                 manaDrain: (acc.manaDrain ?? 0) + (d.manaDrain ?? 0),
                 poison: (acc.poison ?? 0) + (d.poison ?? 0),
+                acid: (acc.acid ?? 0) + (d.acid ?? 0),
                 stabbing: (acc.stabbing ?? 0) + (d.stabbing ?? 0),
                 duration: Math.max(acc.duration ?? 0, d.duration ?? 0),
             } as DamageImpact);
@@ -211,6 +216,7 @@ export default class SpotCell extends Component {
                     madness: (acc.recovery?.madness ?? 0) + (d.recovery?.madness ?? 0),
                     manaDrain: (acc.recovery?.manaDrain ?? 0) + (d.recovery?.manaDrain ?? 0),
                     poison: (acc.recovery?.poison ?? 0) + (d.recovery?.poison ?? 0),
+                    acid: (acc.recovery?.acid ?? 0) + (d.recovery?.acid ?? 0),
                     stabbing: (acc.recovery?.stabbing ?? 0) + (d.recovery?.stabbing ?? 0),
                 },
                 damage: {
@@ -226,6 +232,7 @@ export default class SpotCell extends Component {
                     madness: (acc.damage?.madness ?? 0) + (d.damage?.madness ?? 0),
                     manaDrain: (acc.damage?.manaDrain ?? 0) + (d.damage?.manaDrain ?? 0),
                     poison: (acc.damage?.poison ?? 0) + (d.damage?.poison ?? 0),
+                    acid: (acc.damage?.acid ?? 0) + (d.damage?.acid ?? 0),
                     stabbing: (acc.damage?.stabbing ?? 0) + (d.damage?.stabbing ?? 0),
                 },
                 resistance: {
@@ -241,6 +248,7 @@ export default class SpotCell extends Component {
                     madness: (acc.resistance?.madness ?? 0) + (d.resistance?.madness ?? 0),
                     manaDrain: (acc.resistance?.manaDrain ?? 0) + (d.resistance?.manaDrain ?? 0),
                     poison: (acc.resistance?.poison ?? 0) + (d.resistance?.poison ?? 0),
+                    acid: (acc.resistance?.acid ?? 0) + (d.resistance?.acid ?? 0),
                     stabbing: (acc.resistance?.stabbing ?? 0) + (d.resistance?.stabbing ?? 0),
                 },
                 baseAttributes: {
@@ -333,6 +341,7 @@ export default class SpotCell extends Component {
         this._iconReady.hide();
         this._iconBleeding.hide();
         this._iconPoison.hide();
+        this._iconAcid.hide();
         this._iconCold.hide();
         this._iconFire.hide();
         this._iconLighting.hide();
@@ -365,6 +374,7 @@ export default class SpotCell extends Component {
         this._iconHitFire.hide();
         this._iconHitLighting.hide();
         this._iconHitPoison.hide();
+        this._iconHitAcid.hide();
         this._iconHitDrain.hide();
         this._iconEffect.hide();
         this._iconExperience.hide();
@@ -487,6 +497,7 @@ export default class SpotCell extends Component {
         this._unit.state.stamina === 0 && this._unit.state.isStunned !== true && this._unit.isDead !== true ? this._iconNoStamina.show() : this._iconNoStamina.hide();
         this._unit.damage?.find(m => m.bleeding) ? this._iconBleeding.show() : this._iconBleeding.hide();
         this._unit.damage?.find(m => m.poison) ? this._iconPoison.show() : this._iconPoison.hide();
+        this._unit.damage?.find(m => m.acid) ? this._iconAcid.show() : this._iconAcid.hide();
         this._unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
         this._unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
         this._unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
@@ -582,6 +593,7 @@ export default class SpotCell extends Component {
             const withCold = impact?.some(d => d.cold);
             const withLightning = impact?.some(d => d.lightning);
             const withPoison = impact?.some(d => d.poison);
+            const withAcid = impact?.some(d => d.acid);
             const withDrain = impact?.some(d => d.fear || d.curse || d.madness || d.exhaustion || d.manaDrain);
             if (withFire) {
                 SoundService.play(SoundName.FIREBALL);
@@ -595,6 +607,9 @@ export default class SpotCell extends Component {
             } else if (withPoison) {
                 SoundService.play(SoundName.POISON);
                 this._iconHitPoison.show();
+            } else if (withAcid) {
+                SoundService.play(SoundName.ACID);
+                this._iconHitAcid.show();
             } else if (withDrain && !itemPhysicalDamage) {
                 SoundService.play(SoundName.DEBUFF);
                 this._iconHitDrain.show();

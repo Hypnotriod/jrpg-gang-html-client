@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, ICON_BLEEDING, ICON_COLD, ICON_DRAIN, ICON_FIRE, ICON_HEALTH, ICON_LIGHTING, ICON_MANA, ICON_POISON, ICON_STAMINA, ICON_STRESSED_SM, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
+import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, ICON_ACID, ICON_BLEEDING, ICON_COLD, ICON_DRAIN, ICON_FIRE, ICON_HEALTH, ICON_LIGHTING, ICON_MANA, ICON_POISON, ICON_STAMINA, ICON_STRESSED_SM, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnitFaction, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -43,6 +43,8 @@ export default class GameFlowControls extends GameBase {
     protected readonly _iconBleeding: Container;
     @component(ICON_POISON, Container)
     protected readonly _iconPoison: Container;
+    @component(ICON_ACID, Container)
+    protected readonly _iconAcid: Container;
     @component(ICON_COLD, Container)
     protected readonly _iconCold: Container;
     @component(ICON_FIRE, Container)
@@ -140,6 +142,7 @@ export default class GameFlowControls extends GameBase {
             this.manaBar.width = Math.min(unit.state.mana / (manaTotal || 1) * this.BAR_WIDTH, this.BAR_WIDTH);
             unit.damage?.find(m => m.bleeding) ? this._iconBleeding.show() : this._iconBleeding.hide();
             unit.damage?.find(m => m.poison) ? this._iconPoison.show() : this._iconPoison.hide();
+            unit.damage?.find(m => m.acid) ? this._iconAcid.show() : this._iconAcid.hide();
             unit.damage?.find(m => m.cold) ? this._iconCold.show() : this._iconCold.hide();
             unit.damage?.find(m => m.fire) ? this._iconFire.show() : this._iconFire.hide();
             unit.damage?.find(m => m.lightning) ? this._iconLighting.show() : this._iconLighting.hide();
