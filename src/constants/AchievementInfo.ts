@@ -102,11 +102,11 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 10,
         popup: 'You have killed the Nasty Goblin',
     },
-    'kill-10-daemons': {
-        icon: 'quest-kill-10-daemons',
+    'kill-10-demons': {
+        icon: 'quest-kill-10-demons',
         tag: 'Kills',
         target: 10,
-        popup: 'You have killed the Daemon',
+        popup: 'You have killed the Demon',
     },
     'kill-5-trolls': {
         icon: 'quest-kill-5-trolls',
