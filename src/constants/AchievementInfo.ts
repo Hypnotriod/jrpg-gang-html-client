@@ -18,19 +18,19 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'Congratulations!<br>You have completed your first dungeon level!',
     },
-    'scenario-easy-01-completed': {
+    'scenario-forgotten-ruins-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,
         popup: 'Congratulations!<br>You have completed the Forgotten Ruins!',
     },
-    'scenario-medium-01-completed': {
+    'scenario-cursed-swamp-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,
         popup: 'Congratulations!<br>You have completed the Cursed Swamp!',
     },
-    'scenario-advanced-01-completed': {
+    'scenario-dragons-lair-completed': {
         icon: 'dungeon-01',
         tag: '',
         target: 0,

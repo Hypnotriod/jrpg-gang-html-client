@@ -420,7 +420,7 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
 };
 
 export const SCENARIO_IDS = {
-    TRAINING: 'training-01',
+    TRAINING: 'scenario-training',
 }
 
 export const ACHIEVEMENT_IDS = {
