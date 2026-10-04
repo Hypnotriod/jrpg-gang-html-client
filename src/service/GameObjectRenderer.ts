@@ -230,8 +230,8 @@ export default class GameObjectRenderer {
             result += this.keyValueExtra('Fire', this.actionService.resistanceTotalValue(data, 'fire'));
             result += this.keyValueExtra('Cold', this.actionService.resistanceTotalValue(data, 'cold'));
             result += this.keyValueExtra('Lightning', this.actionService.resistanceTotalValue(data, 'lightning'));
-            result += this.keyValueExtra('Poison', this.actionService.resistanceTotalValue(data, 'poison'));
             result += this.keyValueExtra('Acid', this.actionService.resistanceTotalValue(data, 'acid'));
+            result += this.keyValueExtra('Poison', this.actionService.resistanceTotalValue(data, 'poison'));
             result += this.keyValueExtra('Exhaustion', this.actionService.resistanceTotalValue(data, 'exhaustion'));
             result += this.keyValueExtra('ManaDrain', this.actionService.resistanceTotalValue(data, 'manaDrain'));
             result += this.keyValueExtra('Bleeding', this.actionService.resistanceTotalValue(data, 'bleeding'));

@@ -445,8 +445,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                                      ${this.keyValue('Fire', res.fire || 0)}${this.extraResist('fire')}<br>
                                      ${this.keyValue('Cold', res.cold || 0)}${this.extraResist('cold')}<br>
                                      ${this.keyValue('Lightning', res.lightning || 0)}${this.extraResist('lightning')}<br>
-                                     ${this.keyValue('Poison', res.poison || 0)}${this.extraResist('poison')}<br>
                                      ${this.keyValue('Acid', res.acid || 0)}${this.extraResist('acid')}<br>
+                                     ${this.keyValue('Poison', res.poison || 0)}${this.extraResist('poison')}<br>
                                      ${this.keyValue('Exhaustion', res.exhaustion || 0)}${this.extraResist('exhaustion')}<br>
                                      ${this.keyValue('ManaDrain', res.manaDrain || 0)}${this.extraResist('manaDrain')}<br>
                                      ${this.keyValue('Bleeding', res.bleeding || 0)}${this.extraResist('bleeding')}<br>

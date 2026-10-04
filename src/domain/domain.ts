@@ -50,8 +50,8 @@ export interface Damage {
     fire?: number;
     cold?: number;
     lightning?: number;
-    poison?: number;
     acid?: number;
+    poison?: number;
     exhaustion?: number;
     manaDrain?: number;
     bleeding?: number;
