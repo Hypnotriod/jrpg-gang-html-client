@@ -11,6 +11,7 @@ import Icon from './Icon';
 import Container from '../container/Container';
 import GameStateService from '../../../service/GameStateService';
 import Image from '../image/Image';
+import { SoundName, SoundService } from '../../../service/SoundService';
 
 export default class ItemIcon extends Component {
     @component(ICON, Icon)
@@ -119,6 +120,16 @@ export default class ItemIcon extends Component {
         this.iconBroken?.hide();
         this.iconCurrent?.hide();
         this.actionPointsLabel?.hide();
+        this.view.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            SoundService.play(SoundName.CLICK);
+            if (this._descriptionPopup?.visible) {
+                this._descriptionPopup.hide();
+            } else {
+                this._descriptionPopup?.show({ stickTo: this.getBoundingRect(), force: true });
+            }
+            return false;
+        }, false);
     }
 
     protected onHover(): void {

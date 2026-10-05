@@ -143,6 +143,15 @@ export default class SpotCell extends Component {
         this._icon.onLeave = t => this.onLeave();
         this.hideAll();
         this.hideActionResultIcons();
+        this.view.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            if (this._descriptionPopup?.visible) {
+                this._descriptionPopup.hide();
+            } else {
+                this._descriptionPopup?.show({ stickTo: this.getBoundingRect(), force: true });
+            }
+            return false;
+        }, false);
     }
 
     protected onHover(): void {

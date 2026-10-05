@@ -43,14 +43,14 @@ export default class ObjectDescription extends Container {
         }
     }
 
-    public override show(options?: { stickTo?: DOMRect, timeoutMs?: number }): void {
+    public override show(options?: { stickTo?: DOMRect, timeoutMs?: number, force?: boolean }): void {
         this._stickTo = options?.stickTo;
         this._shown = true;
-        if (!ObjectDescription._active) return;
+        if (!ObjectDescription._active && options?.force !== true) return;
         clearTimeout(this._showTimeout);
         this._showTimeout = window.setTimeout(
             () => {
-                if (!ObjectDescription._active) return;
+                if (!ObjectDescription._active && options?.force !== true) return;
                 super.show();
                 this.updatePositionOnMouseMove(this._e);
             },

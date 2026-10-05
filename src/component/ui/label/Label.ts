@@ -1,3 +1,4 @@
+import { SoundName, SoundService } from '../../../service/SoundService';
 import Component from '../../Component';
 import ObjectDescription from '../popup/ObjectDescription';
 
@@ -8,6 +9,16 @@ export default class Label extends Component {
     protected initialize(): void {
         this.view.onmouseover = (event: MouseEvent) => this.onHover();
         this.view.onmouseleave = (event: MouseEvent) => this.onLeave();
+        this.view.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            SoundService.play(SoundName.CLICK);
+            if (this._descriptionPopup?.visible) {
+                this._descriptionPopup.hide();
+            } else {
+                this._descriptionPopup?.show({ force: true });
+            }
+            return false;
+        }, false);
     }
 
     protected onHover(): void {

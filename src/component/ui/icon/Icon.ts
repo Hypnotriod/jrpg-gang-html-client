@@ -1,3 +1,4 @@
+import { SoundName, SoundService } from '../../../service/SoundService';
 import { timeout, Token } from '../../../utils/utils';
 import Component from '../../Component';
 import ObjectDescription from '../popup/ObjectDescription';
@@ -47,6 +48,16 @@ export default class Icon extends Component {
             this._descriptionPopup.hide();
         };
         this.view.classList.add('unselected');
+        this.view.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            SoundService.play(SoundName.CLICK);
+            if (this._descriptionPopup?.visible) {
+                this._descriptionPopup.hide();
+            } else {
+                this._descriptionPopup?.show({ stickTo: this.getBoundingRect(), force: true });
+            }
+            return false;
+        }, false);
     }
 
     public destroy(): void {
