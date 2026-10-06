@@ -30,6 +30,18 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'Congratulations!<br>You have completed the Cursed Swamp!',
     },
+    'scenario-demonic-forest-completed': {
+        icon: 'dungeon-01',
+        tag: '',
+        target: 0,
+        popup: 'Congratulations!<br>You have completed the Demonic Forest!',
+    },
+    'scenario-orcs-camp-completed': {
+        icon: 'dungeon-01',
+        tag: '',
+        target: 0,
+        popup: 'Congratulations!<br>You have completed the Orcs Camp!',
+    },
     'scenario-dragons-lair-completed': {
         icon: 'dungeon-01',
         tag: '',
@@ -72,10 +84,10 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 20,
         popup: 'You have killed the Giant Rat',
     },
-    'kill-20-fleas': {
-        icon: 'quest-kill-20-fleas',
+    'kill-10-fleas': {
+        icon: 'quest-kill-10-fleas',
         tag: 'Kills',
-        target: 20,
+        target: 10,
         popup: 'You have killed the Giant Flea',
     },
     'kill-20-bats': {
@@ -113,6 +125,48 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         tag: 'Kills',
         target: 5,
         popup: 'You have killed the North Troll',
+    },
+    'kill-5-demonic-boars': {
+        icon: 'quest-kill-5-demonic-boars',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the Demonic Boar',
+    },
+    'kill-5-demonic-wolfs': {
+        icon: 'quest-kill-5-demonic-wolfs',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the Demonic Wolf',
+    },
+    'kill-5-orc-necromancers': {
+        icon: 'quest-kill-5-orc-necromancers',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the Orc Necromancer',
+    },
+    'kill-5-wendigo': {
+        icon: 'quest-kill-5-wendigo',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have killed the Wendigo',
+    },
+    'kill-10-griffins': {
+        icon: 'quest-kill-10-griffins',
+        tag: 'Kills',
+        target: 10,
+        popup: 'You have killed the Griffin',
+    },
+    'kill-10-manticores': {
+        icon: 'quest-kill-10-manticores',
+        tag: 'Kills',
+        target: 10,
+        popup: 'You have killed the Manticore',
+    },
+    'kill-20-orcs': {
+        icon: 'quest-kill-20-orcs',
+        tag: 'Kills',
+        target: 20,
+        popup: 'You have killed the Orc',
     },
     'artifact-01': {
         icon: 'quest-find-artifact-01',
@@ -156,6 +210,30 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 0,
         popup: 'You have found the Orb of Dragon King',
     },
+    'artifact-08': {
+        icon: 'quest-find-artifact-08',
+        tag: 'Artifacts',
+        target: 0,
+        popup: 'You have found the Bloody Goblet',
+    },
+    'artifact-09': {
+        icon: 'quest-find-artifact-09',
+        tag: 'Artifacts',
+        target: 0,
+        popup: 'You have found the Eldritch Heart',
+    },
+    'artifact-10': {
+        icon: 'quest-find-artifact-10',
+        tag: 'Artifacts',
+        target: 0,
+        popup: 'You have found the Magic Chest',
+    },
+    'artifact-11': {
+        icon: 'quest-find-artifact-11',
+        tag: 'Artifacts',
+        target: 0,
+        popup: 'You have found the Golden Apple',
+    },
     'kill-grim-reaper': {
         icon: 'quest-kill-grim-reaper',
         tag: 'Objectives',
@@ -167,6 +245,18 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         tag: 'Objectives',
         target: 0,
         popup: 'You have defeated the Hydra!',
+    },
+    'kill-forest-witch': {
+        icon: 'quest-kill-forest-witch',
+        tag: 'Objectives',
+        target: 0,
+        popup: 'You have defeated the Forest Witch!',
+    },
+    'kill-orc-commander': {
+        icon: 'quest-kill-orc-commander',
+        tag: 'Objectives',
+        target: 0,
+        popup: 'You have defeated the Orc Commander!',
     },
     'save-princess': {
         icon: 'quest-save-princess',
