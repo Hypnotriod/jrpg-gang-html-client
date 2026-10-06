@@ -487,7 +487,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.labelMana.htmlValue = this.keyValue('Mana', battr.mana ?? 0) + this.extraBaseAttribute('mana');
         this.labelActionPoints.htmlValue =
             this.keyValue('Action Points', battr.actionPoints) +
-            this.extraValue(Math.floor((attr.initiative + this.extraAttributeValue('initiative')) / 10));
+            this.extraValue(Math.max(0, Math.floor((attr.initiative + this.extraAttributeValue('initiative')) / 10)));
 
         this.labelStrength.htmlValue = this.keyValue('Strength', attr.strength ?? 0) + this.extraAttribute('strength');
         this.labelPhysique.htmlValue = this.keyValue('Physique', attr.physique ?? 0) + this.extraAttribute('physique');
