@@ -67,8 +67,8 @@
                     <span class="purple darken-2">Endurance</span> • Affects stamina recovery.
                 </div>
                 <div style="padding: 4px;">
-                    <span class="purple darken-2">Intelligence</span> • Enhances fire, cold, lightning, exhaustion,
-                    manaDrain, fear, curse, and madness damage.
+                    <span class="purple darken-2">Intelligence</span> • Enhances fire, cold, lightning, acid,
+                    exhaustion, manaDrain, fear, curse, and madness damage.
                 </div>
                 <div style="padding: 4px;">
                     <span class="purple darken-2">Initiative</span> • Affects turn order. For every 10 points, adds 1
@@ -401,6 +401,20 @@
             </div>
         </div>
     </div>
+    <div id="achievement_popup" class="achievement-popup darken-4 hidden">
+        <div class="row">
+            <div class="col">
+                <div id="icon" class="selection-icon" style="margin-left: 8px;"></div><br>
+            </div>
+            <div class="col s8">
+                <b>
+                    <span id="label_description" class="grey-text text-lighten-2"
+                        style="padding: 0;">Description</span><br><br>
+                    <span id="label_requirements" class="orange-text" style="padding: 0;">1 / 10</span>
+                </b>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="options-container no-select">
     <img src="./assets/icons/cogwheel.png" style="vertical-align: middle; padding-bottom: 2px; height: 22px;" />
@@ -412,7 +426,8 @@
     <label class="grey-text" style="padding-left: 5px;">
         <input id="checkbox_info" type="checkbox" />
         <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
-                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Info Popup (I)</b></span>
+                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Show Info on Hover.
+                (I)</b></span>
     </label>
     <label class="grey-text" style="padding-left: 5px;">
         <input id="checkbox_tips" type="checkbox" />
@@ -424,20 +439,5 @@
     <button id="button_rules" class="btn-small green darken-3"
         style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Game Rules</button>
     <b><span id="label_user_number" class="grey-text right"
-            style="padding-right: 12px; padding-top: 2px; font-size: 12px;">Players
-            online 1</span></b>
-</div>
-<div id="achievement_popup" class="achievement-popup darken-4 hidden">
-    <div class="row">
-        <div class="col">
-            <div id="icon" class="selection-icon" style="margin-left: 8px;"></div><br>
-        </div>
-        <div class="col s8">
-            <b>
-                <span id="label_description" class="grey-text text-lighten-2"
-                    style="padding: 0;">Description</span><br><br>
-                <span id="label_requirements" class="orange-text" style="padding: 0;">1 / 10</span>
-            </b>
-        </div>
-    </div>
+            style="padding-right: 12px; padding-top: 2px; font-size: 12px;"></span></b>
 </div>
