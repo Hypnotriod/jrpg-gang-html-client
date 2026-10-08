@@ -26,6 +26,7 @@ import Label from '../ui/label/Label';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { RESIZE_CONFIG } from '../../constants/Configuration';
 import { AchievementPopup } from '../ui/popup/AchievementPopup';
+import QuestLog from '../quests/QuestLog';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -55,6 +56,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly scaleContainer: Container;
     @component(ACHIEVEMENT_POPUP, AchievementPopup)
     private readonly achievementPopup: AchievementPopup;
+    @component('quest_log', QuestLog)
+    private readonly questLog: QuestLog;
 
     private login: Login;
     private auth: Auth;

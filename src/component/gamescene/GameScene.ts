@@ -27,6 +27,7 @@ import { TipsPopup } from '../ui/popup/TipsPopup';
 import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips';
 import GameLogRenderer from '../../service/GameLogRenderer';
 import { Chat } from '../ui/chat/Chat';
+import QuestLog from '../quests/QuestLog';
 
 @injectable()
 @singleton()
@@ -59,6 +60,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly gameChat: Chat;
 
     constructor(
+        private readonly questLog: QuestLog,
         private readonly communicator: ServerCommunicatorService,
         private readonly configurator: UnitConfigurator,
         private readonly gameLogRenderer: GameLogRenderer,
@@ -174,8 +176,16 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         }
         SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
         SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
-        await this.communicator.until(RequestType.GAME_CHAT_STATE);
+        this.communicator.sendMessage(RequestType.GAME_STATE);
+        this.communicator.sendMessage(RequestType.PLAYER_INFO);
+        await this.communicator.until(RequestType.PLAYER_INFO);
+        this.questLog.updateWithGameUnit(this.playersUnit());
         super.show();
+    }
+
+    public override hide(): void {
+        super.hide();
+        this.questLog.updateWithGameUnit(undefined);
     }
 
     public handleConnectionLost(): void {
@@ -351,6 +361,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             .forEach(uid => {
                 Object.keys(achievements[Number(uid)]).forEach(code => this.achievementPopup.pop(code, unit));
             })
+        this.questLog.updateWithGameUnit(unit);
     }
 
     private handleGameActionSound(): void {

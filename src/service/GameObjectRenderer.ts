@@ -452,7 +452,7 @@ export default class GameObjectRenderer {
         return false;
     }
 
-    protected capitalize(value: string): string {
+    public capitalize(value: string): string {
         return value.replace(/([a-z])([A-Z])/g, `$1 $2`).replace(/^./, char => char.toUpperCase());
     }
 }

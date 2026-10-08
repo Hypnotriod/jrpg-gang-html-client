@@ -18,6 +18,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import { InventoryItem } from '../../domain/domain';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { SoundName, SoundService } from '../../service/SoundService';
+import QuestLog from '../quests/QuestLog';
 
 @injectable()
 @singleton()
@@ -37,6 +38,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     private unsuccessJoinAttempts: number = 0;
 
     constructor(
+        private readonly questLog: QuestLog,
         private readonly appConfig: AppConfig,
         private readonly communicator: ServerCommunicatorService,
         private readonly query: QueryService,
@@ -171,9 +173,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.state.userState = response.data as UserStateData;
         sessionStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
         window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
-        if (this.state.userState.status === UserStatus.IN_GAME) {
-            this.communicator.sendMessage(RequestType.GAME_STATE);
-        }
+        this.questLog.show();
     }
 
     public handleConnectionLost(): void {
