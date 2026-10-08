@@ -29,6 +29,8 @@ export default class Dungeon extends Component {
     protected readonly buttonEnter: Button;
     @component('icon_dungeon', Image)
     protected readonly dungeonIcon: Image;
+    @component('icon_dungeon_completed', Image)
+    protected readonly dungeonCompletedIcon: Image;
     protected config: GameScenarioConfig;
 
     constructor(
@@ -61,8 +63,16 @@ export default class Dungeon extends Component {
     }
 
     public update(config: GameScenarioConfig): void {
+        const completed = !!this.state.userState.unit.achievements[config.id + '-completed'];
         this.config = config;
         this.dungeonIcon.src = `./assets/icons/${config.id}.png`;
+        if (completed) {
+            this.dungeonIcon.view.style.marginBottom = '-128px';
+            this.dungeonCompletedIcon.show();
+        } else {
+            this.dungeonIcon.view.style.marginBottom = '0';
+            this.dungeonCompletedIcon.hide();
+        }
         this.labelHeader.value = config.name;
         this.labelDescription.value = config.description!;
         this.labelRequirements.value = this.renderer.renderApplicationRequirements(this.patchRequirements(config.requirements), this.state.userState.unit);
