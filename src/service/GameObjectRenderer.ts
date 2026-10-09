@@ -354,7 +354,7 @@ export default class GameObjectRenderer {
             case 0:
                 return '';
             case 1:
-                return `<span class="light-green darken-1">${value}:</span><br>`;
+                return `<span class="green darken-1">${value}:</span><br>`;
             case 3:
                 return `<span class="orange darken-1">${value}:</span><br>`;
             case 13:
