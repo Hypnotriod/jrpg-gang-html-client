@@ -76,7 +76,7 @@ export default class QuestLog extends Component implements ServerCommunicatorHan
     }
 
     protected renderQuestStatus(quest: GameQuestStatus): string {
-        return `<span class="white-text"><img src="./assets/icons/warning.png" style="height: 16px;vertical-align: middle; padding-bottom: 2px;"/> ${quest.name}</span><br>` +
+        return `<b><span class="grey-text"><img src="./assets/icons/warning.png" style="height: 16px;vertical-align: middle; padding-bottom: 2px;"/> ${quest.name}</span></b><br>` +
             this.renderRequirements(quest.completion.requirements);
     }
 

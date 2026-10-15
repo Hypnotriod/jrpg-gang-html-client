@@ -96,6 +96,12 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         target: 20,
         popup: 'You have killed the bat',
     },
+    'kill-10-ghosts': {
+        icon: 'quest-kill-10-ghosts',
+        tag: 'Kills',
+        target: 10,
+        popup: 'You have killed the Cursing Ghost',
+    },
     'kill-10-skeletons': {
         icon: 'quest-kill-10-skeletons',
         tag: 'Kills',
@@ -113,6 +119,12 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         tag: 'Kills',
         target: 10,
         popup: 'You have killed the Nasty Goblin',
+    },
+    'kill-5-fire-skulls': {
+        icon: 'quest-kill-5-fire-skulls',
+        tag: 'Kills',
+        target: 5,
+        popup: 'You have cracked the Fire Skull',
     },
     'kill-10-demons': {
         icon: 'quest-kill-10-demons',
