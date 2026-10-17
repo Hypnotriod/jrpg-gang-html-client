@@ -1,6 +1,7 @@
 <div id="scale_container">
     <div id="rules_popup_shadow" class="popup-shadow hidden"></div>
     <div id="tips_popup_shadow" class="popup-shadow-lighten hidden"></div>
+    <div id="settings_popup_shadow" class="popup-shadow-lighten hidden" style="z-index: 5000;"></div>
     <div id="login_container" class="login-container hidden no-select"></div>
     <div id="auth_container" class="auth-container hidden no-select"></div>
     <div id="lobby_container" class="lobby-container hidden no-select"></div>
@@ -8,6 +9,49 @@
     <div id="jobs_container" class="lobby-container hidden no-select"></div>
     <div id="quests_container" class="lobby-container hidden no-select"></div>
     <div id="game_container" class="game-container hidden no-select"></div>
+    <div id="settings_popup" class="settings-popup no-select hidden">
+        <div class="row">
+            <h6 class="center-align amber-text">
+                Settings
+            </h6>
+            <div class="col s5">
+                <label class="grey-text" style="padding-right: 10px;">Sound Effects Volume</label>
+            </div>
+            <div class="col s7" style="margin-top: -6px;">
+                <input type="range" min="0" max="100" value="1" class="h-slider" id="slider_sound_volume">
+            </div>
+            <div class="col s5">
+                <label class="grey-text" style="padding-right: 10px;">Ambience Volume</label>
+            </div>
+            <div class="col s7" style="margin-top: -6px;">
+                <input type="range" min="0" max="100" value="1" class="h-slider" id="slider_music_volume">
+            </div>
+            <div class="col">
+                <label class="grey-text">
+                    <input id="checkbox_sound" type="checkbox" />
+                    <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/sound.png"
+                            style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>On/Off
+                            Sound</b></span>
+                </label><br>
+                <label class="grey-text">
+                    <input id="checkbox_tips" type="checkbox" />
+                    <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
+                            style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Show
+                            Tips</b></span>
+                </label><br>
+                <label class="grey-text">
+                    <input id="checkbox_info" type="checkbox" />
+                    <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
+                            style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Show Info on
+                            Hover</b></span>
+                </label><br>
+                <label class="grey-text">Info popup can be shown with a right-click.</label><br>
+            </div>
+            <div class="col s12 center" style="padding-top: 10px;">
+                <button id="button_ok" class="btn-small blue">Close</button>
+            </div>
+        </div>
+    </div>
     <div id="tips_popup" class="tips-popup darken-4 no-select hidden">
         <b>
             <div class="center-align">
@@ -417,24 +461,9 @@
         </div>
     </div>
 </div>
-<div class="options-container no-select">
-    <img src="./assets/icons/cogwheel.png" style="vertical-align: middle; padding-bottom: 2px; height: 22px;" />
-    <label class="grey-text" style="padding-left: 10px;">
-        <input id="checkbox_sound" type="checkbox" />
-        <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/sound.png"
-                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Sound (S)</b></span>
-    </label>
-    <label class="grey-text" style="padding-left: 5px;">
-        <input id="checkbox_info" type="checkbox" />
-        <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
-                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Show Info on Hover.
-                (I)</b></span>
-    </label>
-    <label class="grey-text" style="padding-left: 5px;">
-        <input id="checkbox_tips" type="checkbox" />
-        <span style="padding-left: 24px; font-size: 12px;"><img src="./assets/icons/info.png"
-                style="vertical-align: middle; padding-bottom: 6px; height: 22px;" /> <b>Tips</b></span>
-    </label>
+<div class="top-bar-container no-select">
+    <img src="./assets/icons/cogwheel.png" id="settings_icon"
+        style="vertical-align: middle; padding-bottom: 2px; padding-right: 4px; height: 22px; cursor: pointer;" />
     <button id="button_fullscreen" class="btn-small purple darken-3"
         style="padding: 4px; margin-bottom: 2px; line-height: 0; max-height: 18px;">Full Screen</button>
     <button id="button_rules" class="btn-small green darken-3"
@@ -446,7 +475,7 @@
     <div class="row" style="padding: 0; margin: 0;">
         <img id="quests_log_icon" class="right" src="./assets/icons/book.png" style="height: 32px; cursor: pointer;" />
     </div>
-    <div class="row scrollbar-y" style="padding: 0; margin: 0; max-height: 550px;" >
+    <div class="row scrollbar-y" style="padding: 0; margin: 0; max-height: 550px;">
         <span id="quests_status_label" class="hidden grey-text text-lighten-3"></span>
     </div>
 </div>
