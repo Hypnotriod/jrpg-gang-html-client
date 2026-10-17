@@ -1,4 +1,3 @@
-import { convert } from 'html-to-text';
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
 import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType } from '../../domain/domain';
@@ -7,7 +6,7 @@ import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, Game
 import ActionService from '../../service/ActionService';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { MusicName, SoundName, SoundService } from '../../service/SoundService';
 import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import { component } from '../decorator/decorator';
 import Label from '../ui/label/Label';
@@ -174,8 +173,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             SoundService.play(SoundName.DOOR);
             SoundService.play(SoundName.BATTLE_START, { delay: 0.4 });
         }
-        SoundService.play(SoundName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
-        SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
+        SoundService.play(MusicName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
+        SoundService.stop(MusicName.DRONE_MAIN, { fade: 0.2 });
         this.communicator.sendMessage(RequestType.GAME_STATE);
         this.communicator.sendMessage(RequestType.PLAYER_INFO);
         await this.communicator.until(RequestType.PLAYER_INFO);

@@ -376,6 +376,23 @@ button:active {
     transform: translate(-50%, -50%);
 }
 
+.settings-popup {
+    position: fixed;
+    background-color: rgba(29, 43, 55, 0.98);
+    z-index: 6000;
+    width: 420px;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .tips-popup {
     position: fixed;
     background-color: rgba(29, 43, 55, 0.94);

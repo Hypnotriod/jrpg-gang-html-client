@@ -19,7 +19,7 @@ import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { ACHIEVEMENT_IDS, BASE_UNIT_DESCRIPTIONS, QUEST_IDS, SCENARIO_IDS, USER_CLASSES } from '../../constants/Configuration';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { MusicName, SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
@@ -147,8 +147,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
-        SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
-        SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
+        SoundService.play(MusicName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
+        SoundService.stop(MusicName.DRONE_CAVE, { fade: 0.2 });
         await this.communicator.until(RequestType.SHOP_STATUS);
         super.show();
         if (!this.storage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN) &&

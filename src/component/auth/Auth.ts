@@ -4,7 +4,7 @@ import AppConfig from '../../application/AppConfig';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
 import { BUTTON_AUTH, BUTTON_AUTH_GUEST } from '../../constants/Components';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { MusicName, SoundService } from '../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -20,8 +20,8 @@ export default class Auth extends Component {
 
 
     public override show(): void {
-        SoundService.stop(SoundName.DRONE_MAIN, { fade: 0.2 });
-        SoundService.stop(SoundName.DRONE_CAVE, { fade: 0.2 });
+        SoundService.stop(MusicName.DRONE_MAIN, { fade: 0.2 });
+        SoundService.stop(MusicName.DRONE_CAVE, { fade: 0.2 });
         this.setButtonState(true);
         super.show();
     }

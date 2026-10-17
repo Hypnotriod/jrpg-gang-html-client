@@ -6,7 +6,7 @@ import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatParticipantData, ChatStateData, LobbyStatusData, MercenariesStatusData, Response, ResponseStatus, RoomStatusData, UserStateData } from '../../dto/responces';
 import GameStateService from '../../service/GameStateService';
 import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../service/ServerCommunicatorService';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { MusicName, SoundName, SoundService } from '../../service/SoundService';
 import Component from '../Component';
 import { component } from '../decorator/decorator';
 import Button from '../ui/button/Button';
@@ -103,7 +103,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
-        SoundService.play(SoundName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
+        SoundService.play(MusicName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         await this.communicator.until(RequestType.LOBBY_STATUS);
         super.show();
         this.tips.showTip(GameTipKey.LOBBY);

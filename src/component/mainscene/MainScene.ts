@@ -17,7 +17,6 @@ import { Response, ResponseStatus, ServerStatusData } from '../../dto/responces'
 import { SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { component } from '../decorator/decorator';
-import Checkbox from '../ui/checkbox/Checkbox';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import Button from '../ui/button/Button';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
@@ -27,17 +26,12 @@ import { TipsPopup } from '../ui/popup/TipsPopup';
 import { RESIZE_CONFIG } from '../../constants/Configuration';
 import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import QuestLog from '../quests/QuestLog';
+import { SettingsPopup } from '../ui/popup/SettingsPopup';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
 @injectable()
 export default class MainScene extends Component implements ServerCommunicatorHandler {
-    @component('checkbox_sound', Checkbox)
-    private readonly checkboxSound: Checkbox;
-    @component('checkbox_info', Checkbox)
-    private readonly checkboxInfo: Checkbox;
-    @component('checkbox_tips', Checkbox)
-    private readonly checkboxTips: Checkbox;
     @component('button_fullscreen', Button)
     private readonly buttonFullscreen: Button;
     @component('rules_popup', InstructionsPopup)
@@ -52,6 +46,12 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly rulesPopupShadow: Container;
     @component('tips_popup_shadow', Container)
     private readonly tipsPopupShadow: Container;
+    @component('settings_popup_shadow', Container)
+    private readonly settingsPopupShadow: Container;
+    @component('settings_popup', SettingsPopup)
+    private readonly settingsPopup: SettingsPopup;
+    @component('settings_icon', Button)
+    private readonly settingsIcon: Button;
     @component('scale_container', Container)
     private readonly scaleContainer: Container;
     @component(ACHIEVEMENT_POPUP, AchievementPopup)
@@ -84,52 +84,22 @@ export default class MainScene extends Component implements ServerCommunicatorHa
             this.show();
         });
         this.initializeFocusHandler();
-        this.checkboxSound.checked = localStorage.getItem('sound') !== 'false';
-        this.checkboxInfo.checked = localStorage.getItem('info') !== 'false';
-        this.checkboxTips.checked = localStorage.getItem('tips') !== 'false';
-        this.tipsPopup.active = this.checkboxTips.checked;
-        SoundService.muted = !this.checkboxSound.checked;
-        ObjectDescription.active = this.checkboxInfo.checked;
 
-        window.addEventListener('keydown', event => {
-            if (event.key === 's') {
-                this.toggleSoundMute();
-                this.checkboxSound.checked = !SoundService.muted;
-            }
-            if (event.key === 'i') {
-                this.toggleInfoPopup();
-                this.checkboxInfo.checked = ObjectDescription.active;
-            }
-        });
-
+        this.settingsPopup.shadow = this.settingsPopupShadow;
         this.tipsPopup.shadow = this.tipsPopupShadow;
         this.rulesPopup.shadow = this.rulesPopupShadow;
-        this.checkboxSound.onChange = target => this.toggleSoundMute();
-        this.checkboxInfo.onChange = target => this.toggleInfoPopup();
-        this.checkboxTips.onChange = target => this.toggleTipsPopup();
         this.buttonFullscreen.onClick = target => this.toggleFullscreen();
-        this.buttonRules.onClick = target => this.rulesPopup.show();
+        this.buttonRules.onClick = target => {
+            this.rulesPopup.show();
+            this.settingsPopup.hide();
+        }
+        this.settingsIcon.onClick = target => {
+            this.settingsPopup.show();
+            this.rulesPopup.hide();
+        }
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.scaleContainer.resizeConfig = RESIZE_CONFIG;
-    }
-
-    protected toggleSoundMute(): void {
-        SoundService.play(SoundName.CLICK);
-        SoundService.muted = !SoundService.muted;
-        localStorage.setItem('sound', String(!SoundService.muted));
-    }
-
-    protected toggleInfoPopup(): void {
-        SoundService.play(SoundName.CLICK);
-        ObjectDescription.active = !ObjectDescription.active;
-        localStorage.setItem('info', String(ObjectDescription.active));
-    }
-
-    protected toggleTipsPopup(): void {
-        SoundService.play(SoundName.CLICK);
-        this.tipsPopup.active = !this.tipsPopup.active;
-        localStorage.setItem('tips', String(this.tipsPopup.active));
     }
 
     protected toggleFullscreen(): void {

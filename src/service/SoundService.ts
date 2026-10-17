@@ -1,5 +1,10 @@
 import { Howl } from 'howler';
 
+export enum MusicName {
+    DRONE_MAIN = 'drone_main',
+    DRONE_CAVE = 'drone_cave',
+}
+
 export enum SoundName {
     BUFF = 'buff',
     CLICK = 'click',
@@ -38,8 +43,6 @@ export enum SoundName {
     QUEST_COMPLETE = 'quest_complete',
     FOOD = 'food',
     PAGE_TURN = 'page_turn',
-    DRONE_MAIN = 'drone_main',
-    DRONE_CAVE = 'drone_cave',
 }
 
 export const JOB_SOUND: { [key: string]: SoundName } = {
@@ -54,7 +57,29 @@ export const JOB_SOUND: { [key: string]: SoundName } = {
 
 export class SoundService {
     private static _muted: boolean = false;
-    private static readonly sounds: { [Key in SoundName]?: Howl } = {};
+    private static _soundVolume: number = 1;
+    private static _musicVolume: number = 1;
+    private static readonly sounds: { [Key in SoundName]?: Howl } & { [Key in MusicName]?: Howl } = {};
+
+    public static get soundVolume(): number {
+        return SoundService._soundVolume;
+    }
+
+    public static set soundVolume(value: number) {
+        SoundService._soundVolume = value;
+        if (this._muted) return;
+        Object.values(SoundName).forEach(k => this.sounds[k]?.volume(value));
+    }
+
+    public static get musicVolume(): number {
+        return SoundService._musicVolume;
+    }
+
+    public static set musicVolume(value: number) {
+        SoundService._musicVolume = value;
+        if (this._muted) return;
+        Object.values(MusicName).forEach(k => this.sounds[k]?.volume(value));
+    }
 
     public static get muted(): boolean {
         return SoundService._muted;
@@ -62,7 +87,8 @@ export class SoundService {
 
     public static set muted(value: boolean) {
         SoundService._muted = value;
-        Object.values(SoundService.sounds).forEach(s => s.volume(value ? 0 : 1));
+        Object.values(SoundName).forEach(k => this.sounds[k]?.volume(value ? 0 : this._soundVolume));
+        Object.values(MusicName).forEach(k => this.sounds[k]?.volume(value ? 0 : this._musicVolume));
     }
 
     public static initialize(): void {
@@ -103,16 +129,15 @@ export class SoundService {
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
         SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
-        SoundService.sounds[SoundName.DRONE_MAIN] = new Howl({ src: ['assets/sounds/drone_main.mp3'] });
-        SoundService.sounds[SoundName.DRONE_CAVE] = new Howl({ src: ['assets/sounds/drone_cave.mp3'] });
+        SoundService.sounds[MusicName.DRONE_MAIN] = new Howl({ src: ['assets/sounds/drone_main.mp3'] });
+        SoundService.sounds[MusicName.DRONE_CAVE] = new Howl({ src: ['assets/sounds/drone_cave.mp3'] });
     }
 
-    public static play(name: SoundName, options?: {
+    public static play(name: SoundName | MusicName, options?: {
         delay?: number,
         loop?: boolean;
         rate?: number,
         skipIfPlaying?: boolean,
-        volume?: number
     }): void {
         const sound = SoundService.sounds[name];
         if (!sound) return;
@@ -123,11 +148,12 @@ export class SoundService {
             window.setTimeout(() => sound.play(), options.delay * 1000);
             return;
         }
-        sound.volume(SoundService._muted ? 0 : (options?.volume ?? 1));
+        const volume = Object.values(MusicName).includes(name as MusicName) ? SoundService.musicVolume : SoundService.soundVolume;
+        sound.volume(SoundService._muted ? 0 : (volume ?? 1));
         sound.play();
     }
 
-    public static stop(name: SoundName, options?: { fade?: number }): void {
+    public static stop(name: SoundName | MusicName, options?: { fade?: number }): void {
         const sound = SoundService.sounds[name];
         if (!sound || !sound.seek()) return;
         if (options?.fade) {
