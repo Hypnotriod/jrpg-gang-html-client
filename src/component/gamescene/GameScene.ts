@@ -324,6 +324,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             case GamePhase.PREPARE_UNIT:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle.<br>
                 Place your character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
+                if (!this.gameLog.value) {
+                    this.gameLog.value = `You enter level ${this.state.gameState.state.spotNumber} of ${this.state.gameState.spot.name}<br>`;
+                }
                 break;
             case GamePhase.SPOT_COMPLETE:
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Take a rest and prepare for the next battle.<br>

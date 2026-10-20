@@ -64,7 +64,7 @@ export const ACHIEVEMENTS: { [key: string]: AchievementInfo } = {
         icon: 'quest-kill-10-rats',
         tag: 'Kills',
         target: 10,
-        popup: 'You have killed the Rat',
+        popup: 'You have killed the Giant Rat',
     },
     'kill-10-toads': {
         icon: 'quest-kill-10-toads',

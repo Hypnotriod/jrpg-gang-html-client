@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import GameStateService from './GameStateService';
 import ActionService from './ActionService';
-import { ActionResult, ActionResultType, ActionType, EndRoundResult, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../domain/domain';
+import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../domain/domain';
 
 @injectable()
 @singleton()
@@ -173,16 +173,17 @@ export default class GameLogRenderer {
         let result = '';
         const data = this.distinguishSpotCompleteResultResult(endRoundResult);
         if (data.experience) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.experience).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.experience).map(target => {
                 const exp = data.experience[target];
                 return `${target} gains ${exp} experience.`;
             }).join('<br>');
         }
         if (data.booty) {
-            result += (result.length ? '<br>' : '');
+            result += this.brPrefix(result);
             const booty = Object.keys(data.booty).map(k => `${data.booty[k]} ${k}`);
             result += `The party receives ${booty.join(', ')} of loot.`;
         }
+        result += this.brPrefix(result) + 'Level cleared!';
         return result;
     }
 
@@ -190,7 +191,7 @@ export default class GameLogRenderer {
         let result = '';
         const data = this.distinguishEndRoundResult(endRoundResult);
         if (data.damage) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.damage).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.damage).map(target => {
                 const damage = data.damage[target];
                 const d = Object.keys(data.damage[target])
                     .filter(k => damage[k] !== 0 && Number.isInteger(damage[k])).map(k => `${damage[k]} ${k}`);
@@ -198,21 +199,31 @@ export default class GameLogRenderer {
             }).join('<br>');
         }
         if (data.recovery) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.recovery).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.recovery).map(target => {
                 const recovery = data.recovery[target];
                 const r = Object.keys(data.recovery[target])
                     .filter(k => recovery[k] !== 0 && Number.isInteger(recovery[k])).map(k => `${recovery[k]} ${k}`);
                 return `${target} restores ${r.join(', ')}.`;
             }).join('<br>');
         }
+        endRoundResult.damage && Object.keys(endRoundResult.damage).forEach(k => {
+            const targetUnit = this.findUnitByUid(Number(k));
+            const name: string = this.getUnitName(targetUnit);
+            if (targetUnit?.isDead !== true && endRoundResult.damage![Number(k)].withStun) {
+                result += this.brPrefix(result) + `${name} is stunned.`;
+            }
+            if (targetUnit?.isDead) {
+                result += this.brPrefix(result) + `${name} is defeated.`;
+            }
+        });
         if (data.experience) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.experience).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.experience).map(target => {
                 const exp = data.experience[target];
                 return `${target} gains ${exp} experience.`;
             }).join('<br>');
         }
         if (data.drop) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.drop).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.drop).map(target => {
                 const drop = data.drop[target];
                 const d = Object.keys(data.drop[target])
                     .filter(k => drop[k] !== 0 && Number.isInteger(drop[k])).map(k => `${drop[k]} ${k}`);
@@ -256,23 +267,29 @@ export default class GameLogRenderer {
                 return `${name} unequips ${data.action.item}.`;
             case ActionType.PLACE:
             case ActionType.MOVE:
-                return `${name} moves.`;
+                return this._state.gameState.nextPhase === GamePhase.RETREAT_ACTION ?
+                    `${name} runs in panic.` : `${name} moves.`;
             case ActionType.WAIT:
                 return `${name} waits.`;
             case ActionType.SKIP:
                 return `${name} skips.`;
             case ActionType.USE:
-                if (!this._actionService.hasEffect(action.result, action.action.targetUid!)) {
-                    const targetUnit = this.findUnitByUid(action.action.targetUid!);
-                    return `${name} misses ${this.getUnitName(targetUnit)}.`;
-                }
-                return this.renderUseAction(name, data);
+                return this.renderUseAction(name, action, data);
         }
         return '';
     }
 
-    protected renderUseAction(name: string, data: any): string {
+    protected renderUseAction(name: string, action: GameUnitActionResult, data: any): string {
         let result = '';
+        new Set([
+            ...Object.keys(action.result.instantDamage || {}).map(k => Number(k)),
+            ...Object.keys(action.result.temporalDamage || {}).map(k => Number(k)),
+        ]).forEach(targetUid => {
+            if (!this._actionService.hasEffect(action.result, targetUid)) {
+                const targetUnit = this.findUnitByUid(targetUid);
+                result += this.brPrefix(result) + `${name} misses ${this.getUnitName(targetUnit)}.`;
+            }
+        })
         if (data.result.instantDamage) {
             result += Object.keys(data.result.instantDamage).map(target => {
                 const damages = data.result.instantDamage[target] as any[];
@@ -280,7 +297,7 @@ export default class GameLogRenderer {
                     .filter(k => Number.isInteger(d[k])).map(k => `${d[k]} ${k}`));
                 if (!damage.length) return '';
                 return `${name} deals ${damage.join(', ')} damage to ${target}.`;
-            }).join('<br>');
+            }).filter(s => s).join('<br>');
         }
         if (data.result.temporalDamage) {
             const temporalDamage = Object.keys(data.result.temporalDamage)
@@ -290,63 +307,79 @@ export default class GameLogRenderer {
                     return damage.flatMap(d => {
                         const damage = Object.keys(d).filter(k => k !== 'duration' && Number.isInteger(d[k])).map(k => `${d[k]} ${k}`)
                         return `${name} deals ${damage.join(', ')} damage to ${target} for ${d.duration} rounds.`;
-                    }).join('<br>');
+                    }).filter(s => s).join('<br>');
                 }).filter(s => s);
             if (temporalDamage.length) {
-                result += (result.length ? '<br>' : '') + temporalDamage.join('<br>');
+                result += this.brPrefix(result) + temporalDamage.join('<br>');
             }
         }
         if (data.result.instantRecovery) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.result.instantRecovery).map(target => {
+            const recovery = Object.keys(data.result.instantRecovery).map(target => {
                 const recoveries = data.result.instantRecovery[target] as any[];
                 const recovery = recoveries.flatMap(r => Object.keys(r)
                     .filter(k => r[k] !== 0 && Number.isInteger(r[k])).map(k => `${r[k]} ${k}`));
                 if (!recovery.length) return '';
                 return `${name} restores ${recovery.join(', ')} to ${target}.`;
-            }).join('<br>');
+            }).filter(s => s).join('<br>');
+            if (recovery) {
+                result += this.brPrefix(result) + recovery;
+            }
         }
         if (data.result.temporalModification) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.result.temporalModification).map(target => {
+            const modification = Object.keys(data.result.temporalModification).map(target => {
                 return (data.result.temporalModification[target] as any[]).flatMap(r => {
                     let result = '';
                     const duration = r.duration;
                     if (r.recovery) {
                         const recovery = Object.keys(r.recovery)
                             .filter(k => r.recovery[k] !== 0 && Number.isInteger(r.recovery[k])).map(k => `${r.recovery[k]} ${k}`);
-                        result += (result.length ? '<br>' : '') + `${name} adds ${recovery.join(', ')} of recovery to ${target} for ${duration} rounds.`;
+                        result += this.brPrefix(result) + `${name} adds ${recovery.join(', ')} of recovery to ${target} for ${duration} rounds.`;
                     }
                     if (r.damage) {
                         const damage = Object.keys(r.damage)
                             .filter(k => r.damage[k] !== 0 && Number.isInteger(r.damage[k])).map(k => `${r.damage[k]} ${k}`);
-                        result += (result.length ? '<br>' : '') + `${name} adds ${damage.join(', ')} of damage to ${target} for ${duration} rounds.`;
+                        result += this.brPrefix(result) + `${name} adds ${damage.join(', ')} of damage to ${target} for ${duration} rounds.`;
                     }
                     if (r.attributes) {
                         const attributes = Object.keys(r.attributes)
                             .filter(k => r.attributes[k] !== 0 && Number.isInteger(r.attributes[k])).map(k => `${r.attributes[k]} ${k}`);
-                        result += (result.length ? '<br>' : '') + `${name} adds ${attributes.join(', ')} attributes to ${target} for ${duration} rounds.`;
+                        result += this.brPrefix(result) + `${name} adds ${attributes.join(', ')} attributes to ${target} for ${duration} rounds.`;
                     }
                     if (r.baseAttributes) {
                         const baseAttributes = Object.keys(r.baseAttributes)
                             .filter(k => r.baseAttributes[k] !== 0 && Number.isInteger(r.baseAttributes[k])).map(k => `${r.baseAttributes[k]} ${k}`);
-                        result += (result.length ? '<br>' : '') + `${name} adds ${baseAttributes.join(', ')} attributes to ${target} for ${duration} rounds.`;
+                        result += this.brPrefix(result) + `${name} adds ${baseAttributes.join(', ')} attributes to ${target} for ${duration} rounds.`;
                     }
                     if (r.resistance) {
                         const resistance = Object.keys(r.resistance)
                             .filter(k => r.resistance[k] !== 0 && Number.isInteger(r.resistance[k])).map(k => `${r.resistance[k]} ${k}`);
-                        result += (result.length ? '<br>' : '') + `${name} adds ${resistance.join(', ')} resistance to ${target} for ${duration} rounds.`;
+                        result += this.brPrefix(result) + `${name} adds ${resistance.join(', ')} resistance to ${target} for ${duration} rounds.`;
                     }
                     return result;
-                }).join('<br>');
-            }).join('<br>');
+                }).filter(s => s).join('<br>');
+            }).filter(s => s).join('<br>');
+            if (modification) {
+                result += this.brPrefix(result) + modification;
+            }
         }
+        action.result.instantDamage && Object.keys(action.result.instantDamage).forEach(k => {
+            const targetUnit = this.findUnitByUid(Number(k));
+            const name: string = this.getUnitName(targetUnit);
+            if (targetUnit?.isDead !== true && action.result.instantDamage![Number(k)].some(d => d.withStun)) {
+                result += this.brPrefix(result) + `${name} is stunned.`;
+            }
+            if (targetUnit?.isDead) {
+                result += this.brPrefix(result) + `${name} is defeated.`;
+            }
+        });
         if (data.result.experience) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.result.experience).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.result.experience).map(target => {
                 const exp = data.result.experience[target];
                 return `${target} gains ${exp} experience.`;
             }).join('<br>');
         }
         if (data.result.drop) {
-            result += (result.length ? '<br>' : '') + Object.keys(data.result.drop).map(target => {
+            result += this.brPrefix(result) + Object.keys(data.result.drop).map(target => {
                 const drop = data.result.drop[target];
                 const d = Object.keys(data.result.drop[target])
                     .filter(k => drop[k] !== 0 && Number.isInteger(drop[k])).map(k => `${drop[k]} ${k}`);
@@ -354,5 +387,9 @@ export default class GameLogRenderer {
             }).join('<br>');
         }
         return result;
+    }
+
+    protected brPrefix(str: string): string {
+        return (str.length ? '<br>' : '');
     }
 }
