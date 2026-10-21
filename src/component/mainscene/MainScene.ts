@@ -14,10 +14,9 @@ import ServerCommunicatorService, { ServerCommunicatorHandler } from '../../serv
 import { RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import { Response, ResponseStatus, ServerStatusData } from '../../dto/responces';
-import { SoundName, SoundService } from '../../service/SoundService';
+import { SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { component } from '../decorator/decorator';
-import ObjectDescription from '../ui/popup/ObjectDescription';
 import Button from '../ui/button/Button';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
 import Container from '../ui/container/Container';
@@ -100,6 +99,9 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.scaleContainer.resizeConfig = RESIZE_CONFIG;
+        if (typeof screen.orientation !== 'undefined') {
+            this.buttonFullscreen.hide();
+        }
     }
 
     protected toggleFullscreen(): void {
