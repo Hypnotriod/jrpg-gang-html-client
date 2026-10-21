@@ -12,6 +12,7 @@ import Label from '../ui/label/Label';
 import GameBase from './GameBase';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import Container from '../ui/container/Container';
+import { timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -113,6 +114,31 @@ export default class GameFlowControls extends GameBase {
         this.retreatButton.onClick = target => this.onRetreatGameClick();
         this.leaveButton.onClick = target => this.onLeaveGameClick();
         this.skipButton.onClick = target => this.onSkipButtonClick();
+    }
+
+    public async highlightNoMana(): Promise<void> {
+        this.blinkLabelRed(this.labelMana);
+    }
+
+    public async highlightNoStamina(): Promise<void> {
+        this.blinkLabelRed(this.labelStamina);
+    }
+
+    public async highlightNoHealth(): Promise<void> {
+        this.blinkLabelRed(this.labelHealth);
+    }
+
+    public async highlightNoActionpoints(): Promise<void> {
+        this.blinkLabelRed(this.labelActionPoints);
+    }
+
+    protected async blinkLabelRed(label: Label): Promise<void> {
+        for (let n = 0; n < 2; n++) {
+            label.view.classList.add('icon-error');
+            await timeout(100);
+            label.view.classList.remove('icon-error');
+            await timeout(100);
+        }
     }
 
     public update(): void {

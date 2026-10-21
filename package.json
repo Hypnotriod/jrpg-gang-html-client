@@ -15,6 +15,7 @@
         "@types/html-to-text": "^9.0.4",
         "howler": "^2.2.4",
         "html-to-text": "^9.0.5",
+        "ismobilejs": "^1.1.1",
         "local-storage": "^2.0.0",
         "query-string": "^9.1.1",
         "reflect-metadata": "^0.2.2",

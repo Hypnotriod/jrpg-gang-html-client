@@ -144,12 +144,12 @@ export class SoundService {
         if (sound.playing() && ((options?.rate ?? 0) > sound.seek() || options?.skipIfPlaying)) return;
         sound.loop(options?.loop ?? false);
         sound.stop();
+        const volume = Object.values(MusicName).includes(name as MusicName) ? SoundService.musicVolume : SoundService.soundVolume;
+        sound.volume(SoundService._muted ? 0 : (volume ?? 1));
         if (options?.delay) {
             window.setTimeout(() => sound.play(), options.delay * 1000);
             return;
         }
-        const volume = Object.values(MusicName).includes(name as MusicName) ? SoundService.musicVolume : SoundService.soundVolume;
-        sound.volume(SoundService._muted ? 0 : (volume ?? 1));
         sound.play();
     }
 

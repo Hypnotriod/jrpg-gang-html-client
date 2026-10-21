@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType } from '../../domain/domain';
+import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType, Weapon } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -367,31 +367,43 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     private handleGameActionSound(): void {
-        const actionresult = this.state.gameState.unitActionResult?.result.result;
+        const actionResult = this.state.gameState.unitActionResult?.result.result;
         const actionType = this.state.gameState.unitActionResult?.action.action;
         if (this.state.gameState.unitActionResult?.result.drop ||
             this.state.gameState.endRoundResult?.drop
         ) {
             SoundService.play(SoundName.TREASURE, { delay: 0.2 });
         }
-        if (actionresult === ActionResultType.CANT_USE ||
-            actionresult === ActionResultType.IS_BROKEN ||
-            actionresult === ActionResultType.NOT_ALLOWED ||
-            actionresult === ActionResultType.NOT_EUIPPED ||
-            actionresult === ActionResultType.NOT_REACHABLE ||
-            actionresult === ActionResultType.NO_AMMUNITION ||
-            actionresult === ActionResultType.NOT_EMPTY ||
-            actionresult === ActionResultType.NOT_ENOUGH_RESOURCES ||
-            actionresult === ActionResultType.NOT_ENOUGH_SLOTS ||
-            actionresult === ActionResultType.NOT_FOUND
+        if (actionResult === ActionResultType.CANT_USE ||
+            actionResult === ActionResultType.IS_BROKEN ||
+            actionResult === ActionResultType.NOT_ALLOWED ||
+            actionResult === ActionResultType.NOT_EUIPPED ||
+            actionResult === ActionResultType.NOT_REACHABLE ||
+            actionResult === ActionResultType.NO_AMMUNITION ||
+            actionResult === ActionResultType.NOT_EMPTY ||
+            actionResult === ActionResultType.NOT_ENOUGH_RESOURCES ||
+            actionResult === ActionResultType.NOT_ENOUGH_SLOTS ||
+            actionResult === ActionResultType.NOT_FOUND
         ) {
             SoundService.play(SoundName.DENIED);
             if ([ActionResultType.CANT_USE,
             ActionResultType.NOT_ALLOWED,
             ActionResultType.NOT_EUIPPED,
             ActionResultType.NOT_REACHABLE,
-            ActionResultType.NO_AMMUNITION].includes(actionresult)) {
-                this.unitItems.highlightError();
+            ActionResultType.NO_AMMUNITION].includes(actionResult)) {
+                const item = this.unitItems.getChosenItem();
+                if (!item) return;
+                item.highlightError();
+                if (actionResult !== ActionResultType.CANT_USE) return;
+                const unit = this.playersUnit();
+                unit.state.actionPoints < ((item.data as Weapon).useCost?.actionPoints ?? 0) &&
+                    this.flowControls.highlightNoActionpoints();
+                unit.state.stamina < ((item.data as Weapon).useCost?.stamina ?? 0) &&
+                    this.flowControls.highlightNoStamina();
+                unit.state.mana < ((item.data as Weapon).useCost?.mana ?? 0) &&
+                    this.flowControls.highlightNoMana();
+                unit.state.health < ((item.data as Weapon).useCost?.health ?? 0) &&
+                    this.flowControls.highlightNoHealth();
             }
             return;
         }

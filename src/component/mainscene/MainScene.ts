@@ -26,6 +26,7 @@ import { RESIZE_CONFIG } from '../../constants/Configuration';
 import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import QuestLog from '../quests/QuestLog';
 import { SettingsPopup } from '../ui/popup/SettingsPopup';
+import isMobile from 'ismobilejs';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -99,7 +100,7 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.scaleContainer.resizeConfig = RESIZE_CONFIG;
-        if (typeof screen.orientation !== 'undefined') {
+        if (isMobile(window.navigator).any) {
             this.buttonFullscreen.hide();
         }
     }
