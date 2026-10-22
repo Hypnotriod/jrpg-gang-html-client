@@ -86,14 +86,14 @@ export default class ActionService {
     }
 
     public attackChance(impact: DamageImpact[], unit: GameUnit, target: GameUnit): number {
-        let chance = this.MAX_CHANCE;
+        let chance = impact[0].chance ? this.MAX_CHANCE : this.FULL_CHANCE;
         if (impact[0]?.chance) {
             chance = impact[0].chance;
             chance += !target.state.isStunned
                 ? (sum(this.attributeTotalValue(unit, 'agility')) - (unit.state.stress ?? 0)) - (sum(this.attributeTotalValue(target, 'agility')) - (target.state.stress ?? 0))
                 : (sum(this.attributeTotalValue(unit, 'agility')) - (unit.state.stress ?? 0)) + (target.state.stress ?? 0);
         }
-        return Math.max(this.MIN_CHANCE, Math.min(this.MAX_CHANCE, chance));
+        return Math.max(this.MIN_CHANCE, Math.min(impact[0].chance ? this.MAX_CHANCE : this.FULL_CHANCE, chance));
     }
 
     public modificationChance(impact: UnitModificationImpact[], unit: GameUnit): number {

@@ -112,12 +112,29 @@ export default class SpotCell extends Component {
     private _y: number;
     private _hover: boolean = false;
     private _hint?: string | undefined;
+    private _showSpreadChance: (position: Position) => void;
+    private _hideSpreadChance: (position: Position) => void;
 
     public displayActionChance: boolean = false;
     public barWidth: number = 74;
 
     private stunnedSoundPlayed: boolean = false;
     private actionResultTimeoutId: number;
+
+    public get showSpreadChance(): (position: Position) => void {
+        return this._showSpreadChance;
+    }
+
+    public set showSpreadChance(value: (position: Position) => void) {
+        this._showSpreadChance = value;
+    }
+
+    public get hideSpreadChance(): (position: Position) => void {
+        return this._hideSpreadChance;
+    }
+    public set hideSpreadChance(value: (position: Position) => void) {
+        this._hideSpreadChance = value;
+    }
 
     public get hint(): string | undefined {
         return this._hint;
@@ -283,9 +300,10 @@ export default class SpotCell extends Component {
     protected onLeave(): void {
         this._hover = false;
         this._descriptionPopup.hide();
-        this._iconTarget.hide();
-        this._iconUnreachable.hide();
-        this.hitChanceLabel.hide();
+        this.hideActionChance();
+        const chosenItem = this.unitItems.chosenItem;
+        if (!chosenItem) return;
+        (chosenItem as Weapon).spread?.forEach(s => this.hideSpreadChance?.(s));
     }
 
     public set descriptionPopup(value: ObjectDescription) {
@@ -397,9 +415,15 @@ export default class SpotCell extends Component {
         this.waitLabel.hide();
     }
 
-    public showActionChance() {
+    public hideActionChance(): void {
+        this._iconTarget.hide();
+        this._iconUnreachable.hide();
+        this.hitChanceLabel.hide();
+    }
+
+    public showActionChance(options?: { spread?: boolean }) {
         this._hint = undefined;
-        if (!this._unit || !this._hover) { return; }
+        if (!this._unit || (!this._hover && !options?.spread)) { return; }
         let chance = 0;
         let reachable = false;
         const gamePhase = this.state.gameState.nextPhase;
@@ -449,6 +473,7 @@ export default class SpotCell extends Component {
             }
         }
         if (!chance) return;
+        !options?.spread && (chosenItem as Weapon).spread?.forEach(s => this.showSpreadChance?.(s));
         this.hitChanceLabel.value = `${chance}%`;
         reachable && this._iconTarget.show();
         !reachable && this._iconUnreachable.show();
