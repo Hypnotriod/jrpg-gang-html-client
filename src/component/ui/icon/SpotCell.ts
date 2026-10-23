@@ -462,7 +462,7 @@ export default class SpotCell extends Component {
                     }
                     hintRequirements(actor, useCost);
                 }
-                if (modification && actor.faction === this._unit.faction) {
+                if (chosenItem.type !== ItemType.WEAPON && modification && actor.faction === this._unit.faction) {
                     chance = this.actionService.modificationChance(modification, actor);
                     this._hint = !reachable ? '!Can\'t reach' : 'Click to use';
                     hintRequirements(actor, useCost);
