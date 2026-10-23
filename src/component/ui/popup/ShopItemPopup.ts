@@ -171,7 +171,8 @@ export class ShopItemPopup extends Container {
                 (price.coins ? this.renderer.keyValueRequired('coins', price, [booty.coins, 0]) : '') +
                 (price.ruby ? this.renderer.keyValueRequired('ruby', price, [booty.ruby ?? 0, 0]) : '');
         }
-        if (this._mode === ShopItemPopupMode.REPAIR && (price.coins > booty.coins || (price.ruby ?? 0) > (booty.ruby ?? 0))) {
+        if ((this._mode === ShopItemPopupMode.REPAIR || this._mode === ShopItemPopupMode.REPAIR_ALL) &&
+            (price.coins > booty.coins || (price.ruby ?? 0) > (booty.ruby ?? 0))) {
             this.yesButton.disable();
         } else {
             this.yesButton.enable();
