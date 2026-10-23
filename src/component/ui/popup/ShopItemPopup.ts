@@ -16,6 +16,7 @@ export enum ShopItemPopupMode {
     BUY,
     SELL,
     REPAIR,
+    REPAIR_ALL,
 }
 
 @injectable()
@@ -124,7 +125,8 @@ export class ShopItemPopup extends Container {
         const booty = this.state.userState.unit.booty;
         if (this._item.type === ItemType.ARMOR ||
             this._item.type === ItemType.MAGIC ||
-            this._item.type === ItemType.WEAPON) {
+            this._item.type === ItemType.WEAPON ||
+            this._mode === ShopItemPopupMode.REPAIR_ALL) {
             this.quantitySlider.hide();
             this.quantityLabel.hide();
             this.minusButton.hide();
@@ -148,7 +150,14 @@ export class ShopItemPopup extends Container {
                 coins: (this._item as any).purchasePrice.coins * this.quantity,
                 ruby: ((this._item as any).purchasePrice.ruby ?? 0) * this.quantity
             };
-        } else {
+        } else if (this._mode === ShopItemPopupMode.REPAIR_ALL) {
+            this.labelDescription.htmlValue = `Repair<span class="green-text lighten-4">All</span>?`;
+            price = {
+                coins: (this._item as any).repairPrice.coins,
+                ruby: ((this._item as any).repairPrice.ruby ?? 0)
+            };
+        }
+        else {
             this.labelDescription.htmlValue = `Repair<span class="green-text lighten-4">${this._item.name}</span>?`;
             price = {
                 coins: (this._item as any).repairPrice.coins,

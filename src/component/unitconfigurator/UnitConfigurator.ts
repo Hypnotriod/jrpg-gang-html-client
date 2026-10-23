@@ -103,6 +103,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly checkboxSell: Checkbox;
     @component(CHECKBOX_REPAIR, Checkbox)
     private readonly checkboxRepair: Checkbox;
+    @component('button_repair_all', Button)
+    private readonly btnRepairAll: Button;
     @component(BUTTON_LEVEL_UP, Button)
     private readonly btnLevelUp: Button;
     @component(BUTTON_TAB_SHOP_WEAPON, Button)
@@ -202,6 +204,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
 
+        this.btnRepairAll.onClick = target => this.onRepairAll();
         this.btnTabShopWeapon.onClick = target => this.onShopFilterClick(target, ['weapon']);
         this.btnTabShopAmmunition.onClick = target => this.onShopFilterClick(target, ['ammunition']);
         this.btnTabShopArmor.onClick = target => this.onShopFilterClick(target, ['armor']);
@@ -337,19 +340,22 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             SoundService.play(SoundName.DENIED);
             return;
         }
-        if (action.action === ActionType.BUY)
+        if (action.action === ActionType.BUY) {
             SoundService.play(SoundName.TREASURE);
-        if (action.action === ActionType.EQUIP || action.action === ActionType.UNEQUIP)
+        } else if (action.action === ActionType.EQUIP || action.action === ActionType.UNEQUIP) {
             SoundService.play(SoundName.EQUIP);
-        if (action.action === ActionType.REPAIR)
-            SoundService.play(SoundName.REPAIR);
-        if (action.action === ActionType.SELL)
+        } else if (action.action === ActionType.REPAIR || action.action === ActionType.REPAIR_ALL) {
             SoundService.play(SoundName.TREASURE);
+            SoundService.play(SoundName.REPAIR);
+        } else if (action.action === ActionType.SELL) {
+            SoundService.play(SoundName.TREASURE);
+        }
     }
 
     protected updateShopStatus(data: GameShopStatus): void {
         this.updateShopInventoryIcons(data.items);
         this.updateUnitInventoryIcons(this.state.userState.unit.inventory);
+        this.updateRepairAllButton();
     }
 
     protected updateShopInventoryIcons(inventory: UnitInventory): void {
@@ -413,6 +419,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.updateProgress();
         this.updateUnitAttributes();
         this.updateActiveItems();
+        this.updateRepairAllButton();
         if (!this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.lobbyButton.hide();
             this.trainingButton.show();
@@ -723,6 +730,39 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.communicator.sendMessage(RequestType.SHOP_STATUS);
             this.communicator.sendMessage(RequestType.USER_STATUS);
         };
+    }
+
+    protected updateRepairAllButton(): void {
+        const price = this.totalRepairPrice();
+        if (!price.coins && !price.ruby) {
+            this.btnRepairAll.disable();
+        } else {
+            this.btnRepairAll.enable();
+        }
+    }
+
+    protected onRepairAll(): void {
+        const price = this.totalRepairPrice();
+        const item = { repairPrice: price, code: 'armory-gear' };
+        this.shopItemPopup.mode = ShopItemPopupMode.REPAIR_ALL;
+        this.shopItemPopup.item = item as any as InventoryItem;
+        this.shopItemPopup.show();
+        this.shopItemPopup.onYes = () => {
+            this.communicator.sendMessage(RequestType.SHOP_ACTION, {
+                action: ActionType.REPAIR_ALL,
+            } as ActionRequestData);
+            this.communicator.sendMessage(RequestType.SHOP_STATUS);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+        }
+    }
+
+    protected totalRepairPrice(): UnitBooty {
+        const price: UnitBooty = { coins: 0, ruby: 0 };
+        this.unitItems.forEach(i => {
+            price.coins += (i.data as any).repairPrice?.coins ?? 0;
+            price.ruby += (i.data as any).repairPrice?.ruby ?? 0;
+        });
+        return price;
     }
 
     protected onShopItemClick(target: ItemIcon): void {

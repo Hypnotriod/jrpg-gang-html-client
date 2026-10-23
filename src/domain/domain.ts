@@ -380,6 +380,7 @@ export enum ActionType {
     DEACTIVATE = 'deactivate',
     COMPLETE = 'complete',
     REPAIR = 'repair',
+    REPAIR_ALL = 'repairAll',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
     WAIT = 'wait',

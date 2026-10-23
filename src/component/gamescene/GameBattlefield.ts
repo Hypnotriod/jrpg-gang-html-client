@@ -148,8 +148,8 @@ export default class GameBattlefield extends GameBase {
                 spotCell.y = Number(y);
                 this.spots[x][y] = spotCell;
                 spotCell.onClick = target => this.onSpotCellClick(target);
-                spotCell.showSpreadChance = (s) => this.spots[s.x + Number(x)][s.y + Number(y)]?.showActionChance({ spread: true });
-                spotCell.hideSpreadChance = (s) => this.spots[s.x + Number(x)][s.y + Number(y)]?.hideActionChance();
+                spotCell.showSpreadChance = (s) => this.spots[s.x + Number(x)]?.[s.y + Number(y)]?.showActionChance({ spread: true });
+                spotCell.hideSpreadChance = (s) => this.spots[s.x + Number(x)]?.[s.y + Number(y)]?.hideActionChance();
             }
         }
         this.communicator.sendMessage(RequestType.PLAYER_INFO);
