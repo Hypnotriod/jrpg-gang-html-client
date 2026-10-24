@@ -212,7 +212,11 @@ body {
     max-width: 500px;
     right: 6px;
     top: 28px;
-    background-color: rgba(29, 43, 55, 0.9);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 800;
     padding: 10px;
     border-style: solid;
@@ -226,7 +230,11 @@ body {
     position: fixed;
     overflow: hidden;
     max-width: 500px;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 2000;
     min-height: 40px;
     padding: 10px;
@@ -277,7 +285,11 @@ button:active {
 .achievement-popup {
     pointer-events: none;
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 1000;
     width: 350px;
     padding-top: 20px;
@@ -310,7 +322,11 @@ button:active {
 
 .shop-item-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 200;
     width: 320px;
     padding-top: 10px;
@@ -327,7 +343,11 @@ button:active {
 
 .leave-dungeon-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 1000;
     width: 310px;
     padding-top: 10px;
@@ -344,7 +364,11 @@ button:active {
 
 .instructions-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 200;
     width: 560px;
     padding-top: 10px;
@@ -361,7 +385,11 @@ button:active {
 
 .rules-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 200;
     width: 900px;
     padding-top: 10px;
@@ -378,7 +406,11 @@ button:active {
 
 .settings-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 6000;
     width: 420px;
     padding-top: 10px;
@@ -395,7 +427,11 @@ button:active {
 
 .tips-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.94);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 200;
     min-width: 300px;
     max-width: 1000px;
@@ -414,7 +450,11 @@ button:active {
 
 .dungeon-loot-popup {
     position: fixed;
-    background-color: rgba(29, 43, 55, 0.98);
+    background-color: rgb(16, 44, 69);
+    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 200;
     width: 300px;
     padding-top: 10px;
