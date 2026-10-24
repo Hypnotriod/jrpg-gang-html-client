@@ -2,6 +2,7 @@
     background-color: rgb(23, 0, 56);
     background-image: url("./assets/backgrounds/bkg-03.jpg");
     background-blend-mode: darken;
+    background-size: cover;
     border-style: solid;
     border-width: 1px;
     border-color: rgb(60, 60, 60);
