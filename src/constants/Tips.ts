@@ -97,33 +97,33 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
                 style="vertical-align: middle; padding-bottom: 4px; width: 16px;">
         is displayed, it means the item is equipped.`,
     [GameTipKey.CLOSE_COMBAT_WARRIOR]: `
-        <img src="./assets/icons/sword-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/sword-01.png" style="vertical-align: middle; height: 40px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
         <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon.png"
             style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.CLOSE_COMBAT_BARBARIAN]: `
-        <img src="./assets/icons/axe-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/axe-01.png" style="vertical-align: middle; height: 40px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
         <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
             style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.CLOSE_COMBAT_MAGE]: `
-        <img src="./assets/icons/plasma-touch-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/plasma-touch-01.png" style="vertical-align: middle; height: 40px;">
         Select your close combat magic (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.CLOSE_COMBAT_RANGER]: `
-        <img src="./assets/icons/dagger-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/dagger-01.png" style="vertical-align: middle; height: 40px;">
         Select your close combat weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets in the adjacent column.<br>
         <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon.png"
             style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
         <img src="./assets/icons/close-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.RANGE_COMBAT_MAGE]: `
-        <img src="./assets/icons/sorcerer-staff-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/sorcerer-staff-01.png" style="vertical-align: middle; height: 40px;">
         Select your long range weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets behind the adjacent column.<br>
         <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
             style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
@@ -133,7 +133,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <img src="./assets/icons/long-range.png" style="vertical-align: middle; height: 32px; margin-top: 2px;">
         You can reach any <span class="green-text" style="padding: 0;">green</span> square from any <span class="purple-text text-lighten-1" style="padding: 0;">purple</span> square.`,
     [GameTipKey.RANGE_COMBAT_RANGER]: `
-        <img src="./assets/icons/bow-01.png" style="vertical-align: middle; height: 32px; margin-left: 8px;">
+        <img src="./assets/icons/bow-01.png" style="vertical-align: middle; height: 40px;">
         Select your long range weapon (<span class="orange-text" style="padding: 0;">it should glow orange</span>) to attack targets behind the adjacent column.<br>
         <span style="margin-left: 42px;">It must be equipped in the weapon <img src="./assets/icons/slot-weapon-2.png"
             style="vertical-align: middle; padding-bottom: 4px; width: 16px;"> slot.</span><br>
@@ -201,8 +201,8 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         From here you can enter dungeons as a party leader.<br>
         You can join other players' parties in the Parties tab.`,
     [GameTipKey.WAIT_SKIP]: `
-        By clicking the Wait button, you will be at the end of the turn order.<br>
-        Clicking the End Turn button will skip your turn entirely.`,
+        By clicking the <span class="green-text text-lighten-1" style="padding: 0;">WAIT</span> button, you will be at the end of the turn order.<br>
+        Clicking the <span class="purple-text" style="padding: 0;">END TURN</span> button will skip your turn entirely.`,
     [GameTipKey.DEFEATED]: `
         <img src="./assets/icons/death.png" style="vertical-align: middle; height: 24px;">The hero has been defeated. But death is only a new beginning.`,
     [GameTipKey.LEVEL_UP]: `

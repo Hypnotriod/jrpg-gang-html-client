@@ -473,7 +473,7 @@ export default class SpotCell extends Component {
             }
         }
         if (!chance) return;
-        !options?.spread && (chosenItem as Weapon).spread?.forEach(s => this.showSpreadChance?.(s));
+        !options?.spread && (chosenItem as Weapon).spread?.forEach(s => setTimeout(() => this.showSpreadChance?.(s)));
         this.hitChanceLabel.value = `${chance}%`;
         reachable && this._iconTarget.show();
         !reachable && this._iconUnreachable.show();
