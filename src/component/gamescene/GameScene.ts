@@ -328,7 +328,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 this.gamePhaseInfoLabel.htmlValue = `${infoIcon} Prepare for the battle.<br>
                 Place your character in a vacant spot. Equip your gear. No item can be used right now.<br>Press <span class="blue-text">READY</span> to begin the battle.`;
                 if (!this.gameLog.value) {
-                    this.gameLog.value = `You enter level ${this.state.gameState.state.spotNumber} of ${this.state.gameState.spot.name}<br>`;
+                    this.gameLog.value = `You enter level ${this.state.gameState.state.spotNumber} of ${this.state.gameState.spot.name}`;
                 }
                 break;
             case GamePhase.SPOT_COMPLETE:
@@ -458,15 +458,15 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     protected logAction(): void {
-        const head = '';
+        const head = (this.gameLog.value.length ? '<br>' : '');
         if (this.state.gameState.unitActionResult) {
-            this.gameLog.value += head + this.gameLogRenderer.renderUnitActionResult(this.state.gameState.unitActionResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderUnitActionResult(this.state.gameState.unitActionResult);
         }
         if (this.state.gameState.endRoundResult) {
-            this.gameLog.value += head + this.gameLogRenderer.renderEndRoundResult(this.state.gameState.endRoundResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderEndRoundResult(this.state.gameState.endRoundResult);
         }
         if (this.state.gameState.spotCompleteResult) {
-            this.gameLog.value += head + this.gameLogRenderer.renderSpotCompleteResult(this.state.gameState.spotCompleteResult) + '<br>';
+            this.gameLog.value += head + this.gameLogRenderer.renderSpotCompleteResult(this.state.gameState.spotCompleteResult);
         }
     }
 
