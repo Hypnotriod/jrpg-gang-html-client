@@ -7,35 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=0.5, user-scalable=0" />
     <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
     <style>
-        .lds-dual-ring {
+        .loader-container {
             display: inline-block;
-            width: 80px;
-            height: 80px;
-            position: absolute;
+            position: fixed;
+            width: 128px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
         }
 
-        .lds-dual-ring:after {
-            content: " ";
-            display: block;
-            width: 64px;
-            height: 64px;
-            margin: 8px;
-            border-radius: 50%;
-            border: 6px solid #fff;
-            border-color: #fff transparent #fff transparent;
-            animation: lds-dual-ring 1.2s linear infinite;
+        .loader-animation {
+            width: 128px;
+            aspect-ratio: 9;
+            background: radial-gradient(circle closest-side, #919191 90%, #0000) 0/calc(100%/9) 100% no-repeat;
+            animation: l2 1.5s steps(9) infinite;
         }
 
-        @keyframes lds-dual-ring {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
+        @keyframes l2 {
+            to {
+                background-position: 110%
             }
         }
     </style>
@@ -45,7 +35,10 @@
 </head>
 
 <body oncontextmenu="return false;">
-    <div class="lds-dual-ring"></div>
+    <div class="loader-container">
+        <img src="../assets/icons/dungeon-01.png" />
+        <div id="loader" class="loader-animation"></div>
+    </div>
     <div id="main_scene_container" class="main-scene-container"></div>
 </body>
 

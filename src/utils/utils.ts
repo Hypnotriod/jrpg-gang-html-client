@@ -20,4 +20,26 @@ export function timeout(ms: number): Promise<void> {
     return new Promise<void>(resolve => {
         setTimeout(() => resolve(), ms);
     })
-} 
+}
+
+let skipFirstReset = true;
+export function startLoaderAnimation(): void {
+    if (skipFirstReset) {
+        skipFirstReset = false;
+        return;
+    }
+    var el = document.getElementById('loader')!;
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+}
+
+export function stopLoaderAnimation(): void {
+    if (skipFirstReset) {
+        skipFirstReset = false;
+        return;
+    }
+    var el = document.getElementById('loader')!;
+    el.style.animation = 'none';
+    el.offsetHeight;
+}

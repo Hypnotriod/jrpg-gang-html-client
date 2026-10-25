@@ -23,7 +23,7 @@ import { MusicName, SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
 import { ShopItemPopup, ShopItemPopupMode } from '../ui/popup/ShopItemPopup';
 import { InstructionsPopup } from '../ui/popup/InstructionsPopup';
-import { compareItemsByName } from '../../utils/utils';
+import { compareItemsByName, startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/utils';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
 import { StorageService } from '../../service/StorageService';
@@ -144,15 +144,21 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     public async show(): Promise<void> {
+        startLoaderAnimation();
         this.unitItems.forEach(item => item.destroy());
         this.unitItems.clear();
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
+        await Promise.all([this.communicator.until(RequestType.SHOP_STATUS), timeout(350)]);
         SoundService.play(MusicName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
         SoundService.stop(MusicName.DRONE_CAVE, { fade: 0.2 });
-        await this.communicator.until(RequestType.SHOP_STATUS);
         super.show();
+        this.manageTips();
+        stopLoaderAnimation();
+    }
+
+    protected manageTips(): void {
         if (!this.storage.getItem(KEY_ARE_INSTRUCTIONS_SHOWN) &&
             !this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
             this.instructionsPopup.show();
@@ -169,6 +175,11 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         }
         if (this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] === UnitQuestStatus.ACTIVE) {
             this.tips.showTip(GameTipKey.START_TRAINING_QUEST);
+        }
+        if (this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED] &&
+            this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED
+        ) {
+            this.tips.showTip(GameTipKey.RESOLVE_TRAINING_QUEST);
         }
     }
 
@@ -430,11 +441,6 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.lobbyButton.show();
             this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED ?
                 this.lobbyButton.disable() : this.lobbyButton.enable();
-        }
-        if (this.state.userState.unit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED] &&
-            this.state.userState.unit.quests[QUEST_IDS.QUEST_TRAINING] !== UnitQuestStatus.COMPLETED
-        ) {
-            this.tips.showTip(GameTipKey.RESOLVE_TRAINING_QUEST);
         }
     }
 

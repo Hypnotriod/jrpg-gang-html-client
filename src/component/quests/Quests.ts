@@ -11,6 +11,7 @@ import Quest from './Quest';
 import { ActionType, GameQuestStatus, UnitQuestStatus } from '../../domain/domain';
 import GameStateService from '../../service/GameStateService';
 import { SoundName, SoundService } from '../../service/SoundService';
+import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -37,9 +38,11 @@ export default class Quests extends Component implements ServerCommunicatorHandl
 
 
     public async show(): Promise<void> {
+        startLoaderAnimation();
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
-        await this.communicator.until(RequestType.QUESTS_STATUS);
+        await Promise.all([this.communicator.until(RequestType.QUESTS_STATUS), timeout(300)]);
         super.show();
+        stopLoaderAnimation();
     }
 
     protected goToUnitConfig(): void {

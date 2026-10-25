@@ -11,6 +11,7 @@ import Button from '../ui/button/Button';
 import UnitConfigurator from '../unitconfigurator/UnitConfigurator';
 import Job from './Job';
 import { MusicName, SoundService } from '../../service/SoundService';
+import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -38,10 +39,12 @@ export default class Jobs extends Component implements ServerCommunicatorHandler
     }
 
     public async show(): Promise<void> {
+        startLoaderAnimation();
         this.communicator.sendMessage(RequestType.JOBS_STATUS);
         SoundService.play(MusicName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
-        await this.communicator.until(RequestType.JOBS_STATUS);
+        await Promise.all([this.communicator.until(RequestType.JOBS_STATUS), timeout(300)]);
         super.show();
+        stopLoaderAnimation();
     }
 
     handleServerResponse(response: Response): void {

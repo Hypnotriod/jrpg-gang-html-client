@@ -21,6 +21,7 @@ import Room from './Room';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
 import { Chat } from '../ui/chat/Chat';
+import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -99,13 +100,15 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     public async show(): Promise<void> {
+        startLoaderAnimation();
         this.showDungeons();
         this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
         this.communicator.sendMessage(RequestType.LOBBY_CHAT_STATE);
         this.communicator.sendMessage(RequestType.LOBBY_STATUS);
+        await Promise.all([this.communicator.until(RequestType.LOBBY_STATUS), timeout(300)]);
         SoundService.play(MusicName.DRONE_MAIN, { skipIfPlaying: true, loop: true });
-        await this.communicator.until(RequestType.LOBBY_STATUS);
         super.show();
+        stopLoaderAnimation();
         this.tips.showTip(GameTipKey.LOBBY);
     }
 

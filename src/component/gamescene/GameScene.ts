@@ -27,6 +27,7 @@ import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips
 import GameLogRenderer from '../../service/GameLogRenderer';
 import { Chat } from '../ui/chat/Chat';
 import QuestLog from '../quests/QuestLog';
+import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -167,19 +168,21 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     }
 
     public async show(): Promise<void> {
+        startLoaderAnimation();
         this.communicator.sendMessage(RequestType.GAME_CHAT_STATE);
         this.unitItems.destroy();
+        this.communicator.sendMessage(RequestType.GAME_STATE);
+        this.communicator.sendMessage(RequestType.PLAYER_INFO);
+        await Promise.all([this.communicator.until(RequestType.PLAYER_INFO), timeout(300)]);
+        this.questLog.updateWithGameUnit(this.playersUnit());
+        super.show();
+        stopLoaderAnimation();
         if (this.state.gameState?.nextPhase === GamePhase.PREPARE_UNIT) {
             SoundService.play(SoundName.DOOR);
             SoundService.play(SoundName.BATTLE_START, { delay: 0.4 });
         }
         SoundService.play(MusicName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
         SoundService.stop(MusicName.DRONE_MAIN, { fade: 0.2 });
-        this.communicator.sendMessage(RequestType.GAME_STATE);
-        this.communicator.sendMessage(RequestType.PLAYER_INFO);
-        await this.communicator.until(RequestType.PLAYER_INFO);
-        this.questLog.updateWithGameUnit(this.playersUnit());
-        super.show();
     }
 
     public override hide(): void {
