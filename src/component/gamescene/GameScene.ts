@@ -183,6 +183,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         }
         SoundService.play(MusicName.DRONE_CAVE, { skipIfPlaying: true, loop: true });
         SoundService.stop(MusicName.DRONE_MAIN, { fade: 0.2 });
+        if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT && !this.playersUnit().achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
+            this.tips.showTip(GameTipKey.COMBAT_PHASE);
+        }
     }
 
     public override hide(): void {
@@ -249,11 +252,6 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         const playersUnit = this.playersUnit();
         if (!playersUnit) return;
         switch (this.state.gameState.nextPhase) {
-            case GamePhase.PREPARE_UNIT:
-                if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
-                    this.tips.showTip(GameTipKey.COMBAT_PHASE);
-                }
-                break;
             case GamePhase.SPOT_COMPLETE:
                 if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.75) {
                     this.tips.showTip(GameTipKey.CONSUME_PROVISION_HEALTH);
@@ -264,7 +262,9 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 if (playersUnit.state.stress) {
                     this.tips.showTip(GameTipKey.CONSUME_PROVISION_STRESS);
                 }
+                break;
             case GamePhase.SCENARIO_COMPLETE:
+            case GamePhase.PREPARE_UNIT:
                 break;
             default:
                 if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {

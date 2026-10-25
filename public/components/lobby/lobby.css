@@ -29,7 +29,7 @@
 .mercenaries-popup {
     position: fixed;
     background-color: rgb(16, 44, 69);
-    background-image: url("../assets/backgrounds/popup-bkg-01.jpg");
+    background-image: url("./assets/backgrounds/popup-bkg-01.jpg");
     background-blend-mode: darken;
     background-size: cover;
     box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
