@@ -12,6 +12,7 @@ import GameUnitItems from './GameUnitItems';
 import { SoundName, SoundService } from '../../service/SoundService';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
+import { FLOOR_TILES } from '../../constants/Configuration';
 
 @injectable()
 @singleton()
@@ -217,7 +218,7 @@ export default class GameBattlefield extends GameBase {
                 this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT);
         for (const x in matrix) {
             for (const y in matrix[x]) {
-                this.spots[x][y].updateWithCell(matrix[x][y], isActive);
+                this.spots[x][y].updateWithCell(matrix[x][y], FLOOR_TILES[this.state.gameState.spot.code], isActive);
                 this.spots[x][y].highlight(false);
             }
         }

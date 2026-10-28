@@ -432,6 +432,14 @@ export const QUEST_IDS = {
     QUEST_TRAINING: 'quest-training',
 }
 
+export const FLOOR_TILES: any = {
+    'training-01': 'tile-floor-04',
+    'forgotten-ruins-01': 'tile-floor-01',
+    'cursed-swamp-01': 'tile-floor-02',
+    'demonic-forest-01': 'tile-floor-05',
+    'orcs-camp-01': 'tile-floor-04',
+    'dragons-lair-01': 'tile-floor-03',
+};
 
 export const RESIZE_CONFIG: ComponentResizeConfig = {
     contentHeight: 680,

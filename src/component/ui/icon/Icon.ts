@@ -10,6 +10,7 @@ export default class Icon extends Component {
     private _selected: boolean = false;
     private _chosen: boolean = false;
     private _icon: string;
+    private _backgroundIcon?: string;
     private _descriptionPopup?: ObjectDescription;
     private _description: object;
     private _animationToken?: Token;
@@ -58,6 +59,7 @@ export default class Icon extends Component {
             }
             return false;
         }, false);
+        this.backgroundIcon = 'icon-background';
     }
 
     public destroy(): void {
@@ -75,9 +77,21 @@ export default class Icon extends Component {
         return iconComponent;
     }
 
+    public get backgroundIcon(): string | undefined {
+        return this._backgroundIcon;
+    }
+
+    public set backgroundIcon(value: string | undefined) {
+        this._backgroundIcon = value;
+    }
+
     public set icon(value: string) {
         this._icon = value;
-        this.backgroundImage = `assets/icons/${value}.png`;
+        if (this.backgroundIcon && this.backgroundIcon !== this.icon) {
+            this.view.style.backgroundImage = `url('assets/icons/${value}.png'), url('assets/icons/${this.backgroundIcon}.png')`;
+        } else {
+            this.backgroundImage = `assets/icons/${value}.png`;
+        }
     }
 
     public get icon(): string {

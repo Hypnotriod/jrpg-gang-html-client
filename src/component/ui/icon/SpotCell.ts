@@ -165,6 +165,7 @@ export default class SpotCell extends Component {
             if (this._descriptionPopup?.visible) {
                 this._descriptionPopup.hide();
             } else {
+                if (!this._unit && !this._icon.enabled) return;
                 this._descriptionPopup?.show({ stickTo: this.getBoundingRect(), force: true });
             }
             return false;
@@ -316,6 +317,14 @@ export default class SpotCell extends Component {
 
     public set onClick(callback: (target: SpotCell) => void) {
         this._icon.onClick = t => callback(this);
+    }
+
+    public set backgroundIcon(value: string) {
+        this._icon.backgroundIcon = value;
+    }
+
+    public get backgroundIcon(): string | undefined {
+        return this._icon.backgroundIcon;
     }
 
     public set icon(value: string) {
@@ -490,9 +499,10 @@ export default class SpotCell extends Component {
         return this.actionService.modificationChance(impact, actor);
     }
 
-    public updateWithCell(cell: Cell, isActive: boolean): void {
+    public updateWithCell(cell: Cell, tile: string, isActive: boolean): void {
         this.hideAll();
         this.icon = cell.code;
+        this.backgroundIcon = tile;
         if (cell.factions.includes(GameUnitFaction.PARTY) && isActive) {
             this._icon.enable();
         } else {
