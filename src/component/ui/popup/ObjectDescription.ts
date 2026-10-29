@@ -104,14 +104,15 @@ export default class ObjectDescription extends Container {
         return this._unit;
     }
 
-    public set data(data: object) {
+    public set data(data: any) {
         const ignoreHeaders: string[] = [];
-        const main = this.renderer.renderMain(data, ignoreHeaders);
+        const main = this.renderer.renderMain(data, ignoreHeaders)
+            + this.renderer.renderPrice(data, this._unit, this._isShopItem)
+            + this.renderer.renderUpgrades(data.upgrades ?? []);
         const misc = this.renderer.renderAttributes(data)
             + this.renderer.renderResistance(data)
             + this.renderer.renderItemRequirements(data, this._unit)
             + this.renderer.renderItemUseCost(data, this._unit)
-            + this.renderer.renderPrice(data, this._unit, this._isShopItem)
             + this.renderer.render(data, ignoreHeaders);
         if (!main) {
             this.value = misc;

@@ -120,6 +120,7 @@ export enum ItemType {
     DISPOSABLE = 'disposable',
     AMMUNITION = 'ammunition',
     PROVISION = 'provision',
+    EQUIPMENT_UPGRADE = 'equipmentUpgrade',
     NONE = 'none',
 }
 
@@ -143,6 +144,12 @@ export enum EquipmentSlot {
     WEAPON = 'weapon',
 }
 
+export interface EquipmentUpgrade extends Item {
+    modification?: UnitModification;
+    damage?: DamageImpact[];
+    useCost?: UnitBaseAttributes;
+}
+
 export interface Equipment extends Item {
     wearout: number;
     durability: number;
@@ -151,6 +158,8 @@ export interface Equipment extends Item {
     equipped?: boolean;
     requirements?: UnitRequirements;
     modification?: UnitModification[];
+    upgrades?: EquipmentUpgrade[];
+    upgradesLimit?: number;
 }
 
 export interface ActionRange {
@@ -218,6 +227,7 @@ export interface UnitInventory {
     disposable?: Disposable[];
     ammunition?: Ammunition[];
     provision?: Provision[];
+    equipmentUpgrade?: EquipmentUpgrade[];
     descriptor?: UnitInventoryDescriptor[];
 }
 
@@ -381,6 +391,8 @@ export enum ActionType {
     COMPLETE = 'complete',
     REPAIR = 'repair',
     REPAIR_ALL = 'repairAll',
+    UPGRADE = 'upgrade',
+    BUY_AND_UPGRADE = 'buyAndUpgrade',
     THROW_AWAY = 'throwAway',
     SKIP = 'skip',
     WAIT = 'wait',

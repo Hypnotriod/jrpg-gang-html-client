@@ -468,6 +468,8 @@ export default class SpotCell extends Component {
                         } else if (weapon.ammunitionKind && !actor.inventory.ammunition?.some(a => a.equipped && a.kind === weapon.ammunitionKind)) {
                             this._hint = '!No ammunition';
                         }
+                        chance += weapon.upgrades?.flatMap(u => u.damage ? [u.damage[0]] : [])
+                            .reduce((acc, d) => acc + (d.chance ?? 0), 0) ?? 0;
                     }
                     hintRequirements(actor, useCost);
                 }

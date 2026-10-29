@@ -63,9 +63,9 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
+            ignoreHeaders.push('upgradesLimit', 'upgrades', 'baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
         } else {
-            ignoreHeaders.push('requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
+            ignoreHeaders.push('upgradesLimit', 'upgrades', 'requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -98,6 +98,9 @@ export default class GameObjectRenderer {
         if (data.canBeSold) {
             result += this.keyValue('canBeSold', data.canBeSold ? 'yes' : 'no');
         }
+        if ((data.upgradesLimit ?? 0) > (data.upgrades?.length ?? 0)) {
+            result += this.keyValue('canBeEnchanted', true);
+        }
 
         return result;
     }
@@ -119,32 +122,70 @@ export default class GameObjectRenderer {
         ).join('') + '<br>';
     }
 
+    public renderUpgrades(data: any[]): string {
+        return data.map(d => {
+            const dmgs: any[] = d.damage ?? [];
+            const damage = dmgs.length > 1 ? dmgs.reduce((acc, d, n) => ({ ...acc, [`Damage ${n + 1}`]: d }), {}) : ({ damage: dmgs[0] })
+            return this.renderObjects([{ useCost: d.useCost, ...damage, ...(d.modification ?? {}) }], [], 'Enchantment', 53);
+        }).join('');
+    }
+
     public renderPrice(data: any, unit?: GameUnit, isShopItem: boolean = false) {
         let result = '';
         if (!this.isUnitData(data)) {
-            if (data.price) {
+            if (data.price && (data.price.coins || data.price.ruby)) {
                 if (unit && isShopItem && !this.emptyOrAllFieldsZeros([], '', data.price)) {
-                    result += this.header('Price', 3);
-                    result += data.price.coins ? this.keyValueRequired('coins', data.price, [unit.booty.coins, 0]) : '';
-                    result += data.price.ruby ? this.keyValueRequired('ruby', data.price, [unit.booty.ruby ?? 0, 0]) : '';
+                    result += this.renderShopPriceValue('price', data.price, unit.booty);
                 } else {
-                    result += this.renderObject(data.price, [], 'price', 3);
+                    result += this.renderPriceValue('price', data.price);
                 }
             }
             if (data.purchasePrice) {
-                result += this.renderObject(data.purchasePrice, [], 'purchasePrice', 3);
+                result += this.renderPriceValue('purchasePrice', data.purchasePrice);
             }
             if (data.repairPrice) {
                 if (unit && !this.emptyOrAllFieldsZeros([], '', data.repairPrice)) {
-                    result += this.header('RepairPrice', 3);
-                    result += data.repairPrice.coins ? this.keyValueRequired('coins', data.repairPrice, [unit.booty.coins, 0]) : '';
-                    result += data.repairPrice.ruby ? this.keyValueRequired('ruby', data.repairPrice, [unit.booty.ruby ?? 0, 0]) : '';
+                    result += this.renderShopPriceValue('repairPrice', data.repairPrice, unit.booty);
                 } else {
-                    result += this.renderObject(data.repairPrice, [], 'repairPrice', 3);
+                    result += this.renderPriceValue('repairPrice', data.repairPrice);
                 }
             }
         }
         return result;
+    }
+
+    protected renderPriceValue(header: string, price: any): string {
+        function keyValueIcon(icon: string, value?: number): string {
+            return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" /> ${value || 0} `;
+        }
+        header = this.capitalize(header);
+        let result = `<span class="orange-text text-lighten-1">${header}</span>: `;
+        if (price.coins) {
+            result += `${keyValueIcon('coin', price.coins)}`;
+        }
+        if (price.ruby) {
+            result += `${keyValueIcon('ruby', price.ruby)}`;
+        }
+        return result + '<br>';
+    }
+
+    protected renderShopPriceValue(header: string, price: any, booty: any): string {
+        function keyValueIcon(key: string, icon: string, value: number, has: number): string {
+            if (has < Number(price[key])) {
+                return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" />
+                <span class="red-text" style="padding: 0">${value || 0}</span> `;
+            }
+            return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" /> ${value || 0} `;
+        }
+        header = this.capitalize(header);
+        let result = `<span class="orange-text text-lighten-1">${header}</span>: `;
+        if (price.coins) {
+            result += `${keyValueIcon('coins', 'coin', price.coins, booty.coins)}`;
+        }
+        if (price.ruby) {
+            result += `${keyValueIcon('ruby', 'ruby', price.ruby, booty.ruby)}`;
+        }
+        return result + '<br>';
     }
 
     public renderItemRequirements(data: any, unit?: GameUnit): string {
@@ -365,6 +406,8 @@ export default class GameObjectRenderer {
                 return `<span class="grey darken-1">${value}:</span><br>`;
             case 43:
                 return `<span class="pink darken-1">${value}:</span><br>`;
+            case 53:
+                return `<span class="deep-purple darken-1">${value}:</span><br>`;
             default:
             case 2:
                 return `<span class="light-blue darken-1">${value}:</span><br>`;
@@ -382,7 +425,7 @@ export default class GameObjectRenderer {
 
     public keyValueIcon(key: string, icon: string, value?: number): string {
         return `<span class="orange-text text-lighten-1" style="padding: 0;">
-            <img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 4px; width: 12px;" />
+            <img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" />
             ${key}</span> ${value || 0}`;
     }
 
@@ -403,7 +446,7 @@ export default class GameObjectRenderer {
         if (!value) return '';
         return total >= value ?
             `<span class="orange-text text-lighten-1">${key}</span>: ${value}<br>` :
-            `<span class="orange-text text-lighten-1">${key}</span>: <span class="red-text" text-lighten-2">${value}</span> <br>`;
+            `<span class="orange-text text-lighten-1">${key}</span>: <span class="red-text">${value}</span> <br>`;
     }
 
     protected keyValueColor(key: string, colorClass: string, value: number | string | boolean | undefined): string {

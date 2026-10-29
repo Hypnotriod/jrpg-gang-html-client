@@ -111,9 +111,11 @@ export default class ActionService {
         extra += (unit.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
             extra += a.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.upgrades?.reduce((acc, u) => acc + ((u.modification?.baseAttributes as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
             extra += w.modification?.reduce((acc, m) => acc + ((m.baseAttributes as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.upgrades?.reduce((acc, u) => acc + ((u.modification?.baseAttributes as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         if (fieldName === 'actionPoints') {
             extra += Math.floor(unit.stats.attributes.initiative / 10)
@@ -127,9 +129,11 @@ export default class ActionService {
         extra += (unit.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
             extra += a.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.upgrades?.reduce((acc, u) => acc + ((u.modification?.attributes as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
             extra += w.modification?.reduce((acc, m) => acc + ((m.attributes as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.upgrades?.reduce((acc, u) => acc + ((u.modification?.attributes as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         return [value, extra];
     }
@@ -140,9 +144,11 @@ export default class ActionService {
         extra += (unit.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0);
         unit.inventory.armor?.filter(a => a.equipped).forEach(a => {
             extra += a.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += a.upgrades?.reduce((acc, u) => acc + ((u.modification?.resistance as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         unit.inventory.weapon?.filter(w => w.equipped).forEach(w => {
             extra += w.modification?.reduce((acc, m) => acc + ((m.resistance as any)?.[fieldName] ?? 0), 0) ?? 0;
+            extra += w.upgrades?.reduce((acc, u) => acc + ((u.modification?.resistance as any ?? {})?.[fieldName] ?? 0), 0) ?? 0;
         });
         extra += this.extraResist(unit, fieldName);
         return [value, extra];
