@@ -28,6 +28,8 @@ export default class ItemIcon extends Component {
     protected readonly iconSlot: Image;
     @component(ICON_BROKEN, Container)
     protected readonly iconBroken: Container;
+    @component('icon_upgraded', Container)
+    protected readonly iconUpgraded?: Container;
     @component(LABEL_ACTION_POINTS, Label)
     protected readonly actionPointsLabel: Label;
 
@@ -118,6 +120,7 @@ export default class ItemIcon extends Component {
         this._icon.onLeave = t => this.onLeave();
         this.iconCantUse?.hide();
         this.iconBroken?.hide();
+        this.iconUpgraded?.hide();
         this.iconCurrent?.hide();
         this.actionPointsLabel?.hide();
         this.view.addEventListener('contextmenu', e => {
@@ -217,6 +220,7 @@ export default class ItemIcon extends Component {
         asEquipment.equipped ? this.select(state) : this.unselect();
         const isBroken = (asEquipment.wearout || -1) >= (asEquipment.durability || 0);
         isBroken ? this.iconBroken?.show() : this.iconBroken?.hide();
+        !isBroken && asEquipment.upgrades?.length ? this.iconUpgraded?.show() : this.iconUpgraded?.hide();
         isBroken && this.unselect();
         const cantuse = !unit ? false : !state.checkRequirements(unit, asEquipment.requirements) || !state.checkUseCost(unit, data);
         cantuse ? this.cantUse() : this.canUse();

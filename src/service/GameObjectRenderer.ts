@@ -126,7 +126,7 @@ export default class GameObjectRenderer {
         return data.map(d => {
             const dmgs: any[] = d.damage ?? [];
             const damage = dmgs.length > 1 ? dmgs.reduce((acc, d, n) => ({ ...acc, [`Damage ${n + 1}`]: d }), {}) : ({ damage: dmgs[0] })
-            return this.renderObjects([{ useCost: d.useCost, ...damage, ...(d.modification ?? {}) }], [], 'Enchantment', 53);
+            return this.renderObjects([{ useCost: d.useCost, ...damage, ...(d.modification ?? {}) }], [], d.name, 53);
         }).join('');
     }
 
