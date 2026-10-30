@@ -27,6 +27,7 @@ import { compareItemsByName, startLoaderAnimation, stopLoaderAnimation, timeout 
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
 import { StorageService } from '../../service/StorageService';
+import UpgradePopup from './UpgradePopup';
 
 @singleton()
 @injectable()
@@ -101,6 +102,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly itemDescription: ObjectDescription;
     @component(CHECKBOX_SELL, Checkbox)
     private readonly checkboxSell: Checkbox;
+    @component('checkbox_upgrade', Checkbox)
+    private readonly checkboxUpgrade: Checkbox;
     @component(CHECKBOX_REPAIR, Checkbox)
     private readonly checkboxRepair: Checkbox;
     @component('button_repair_all', Button)
@@ -119,6 +122,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     private readonly btnTabShopItems: Button;
     @component('shop_item_popup', ShopItemPopup)
     private readonly shopItemPopup: ShopItemPopup;
+    @component('upgrade_item_popup', UpgradePopup)
+    private readonly upgradeItemPopup: UpgradePopup;
     @component('instructions_popup', InstructionsPopup)
     private readonly instructionsPopup: InstructionsPopup;
     @component('popup_shadow', Container)
@@ -213,6 +218,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.btnUnitPrevious.onClick = target => this.previousUnit();
         this.btnUnitNext.onClick = target => this.nextUnit();
         this.checkboxSell.onChange = target => this.onCheckboxChange(target);
+        this.checkboxUpgrade.onChange = target => this.onCheckboxChange(target);
         this.checkboxRepair.onChange = target => this.onCheckboxChange(target);
 
         this.btnRepairAll.onClick = target => this.onRepairAll();
@@ -258,6 +264,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.instructionsPopup.shadow = this.popupShadow;
         this.shopItemPopup.shadow = this.popupShadow;
         this.shopItemPopup.descriptionPopup = this.itemDescription;
+        this.upgradeItemPopup.shadow = this.popupShadow;
+        this.upgradeItemPopup.descriptionPopup = this.itemDescription;
 
         this.instructionsPopup.onHide = () => {
             this.storage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
@@ -360,6 +368,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             SoundService.play(SoundName.REPAIR);
         } else if (action.action === ActionType.SELL) {
             SoundService.play(SoundName.TREASURE);
+        } else if (action.action === ActionType.BUY_AND_UPGRADE) {
+            SoundService.play(SoundName.TREASURE);
+            SoundService.play(SoundName.BUFF);
         }
     }
 
@@ -551,7 +562,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
 
     protected totalResistanceModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
-        return equipment.modification?.reduce((acc, m) => acc + (m.resistance as any)?.[key] || 0, 0) ?? 0;
+        let result = equipment.modification?.reduce((acc, m) => acc + (m.resistance as any)?.[key] || 0, 0) ?? 0;
+        result += equipment.upgrades?.reduce((acc, m) => acc + (m.modification?.resistance as any)?.[key] || 0, 0) ?? 0;
+        return result;
     }
 
     protected keyValue(key: string, value?: number, valueOf?: number): string {
@@ -650,7 +663,12 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected onCheckboxChange(target: Checkbox): void {
         if (target.checked && target === this.checkboxSell) {
             this.checkboxRepair.checked = false;
+            this.checkboxUpgrade.checked = false;
         } else if (target.checked && target === this.checkboxRepair) {
+            this.checkboxSell.checked = false;
+            this.checkboxUpgrade.checked = false;
+        } else if (target.checked && target === this.checkboxUpgrade) {
+            this.checkboxRepair.checked = false;
             this.checkboxSell.checked = false;
         }
         this.updateActiveItems();
@@ -660,6 +678,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         SoundService.play(SoundName.CLICK);
         if (this.checkboxSell.checked) {
             this.sellItem(target);
+        } else if (this.checkboxUpgrade.checked) {
+            this.upgradeItem(target);
         } else if (this.checkboxRepair.checked) {
             this.repairItem(target);
         } else {
@@ -673,6 +693,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
                 item.data.canBeSold ? item.enable() : item.disable();
             } else if (this.checkboxRepair.checked) {
                 (item.data as Equipment).wearout ? item.enable() : item.disable();
+            } else if (this.checkboxUpgrade.checked) {
+                !(item.data as Equipment).upgrades?.length && (item.data as Equipment).upgradesNumber ? item.enable() : item.disable();
             } else {
                 item.enable();
             }
@@ -711,6 +733,15 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
+    }
+
+    protected upgradeItem(target: ItemIcon): void {
+        const upgrades = (this.state.shopStatus.items.equipmentUpgrade ?? []).filter(u =>
+            ((u.damage || u.useCost) && target.data.type === ItemType.WEAPON) || u.modification && target.data.type === ItemType.ARMOR
+        );
+        this.upgradeItemPopup.item = target.data;
+        this.upgradeItemPopup.update(upgrades);
+        this.upgradeItemPopup.show();
     }
 
     protected sellItem(target: ItemIcon): void {

@@ -63,7 +63,6 @@ export default class MercenaryItem extends Component {
         const unit = this.state.userState.unit;
         this.data = mercenary;
         this.icon.icon = mercenary.code!;
-        this.icon.description = mercenary;
         this.icon.description = {
             description: mercenary.description,
             code: mercenary.code,

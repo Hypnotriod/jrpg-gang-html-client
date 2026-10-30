@@ -51,6 +51,31 @@
     overflow-y: auto;
 }
 
+.upgrades-popup {
+    position: fixed;
+    background-color: rgb(16, 44, 69);
+    background-image: url("./assets/backgrounds/popup-bkg-01.jpg");
+    background-blend-mode: darken;
+    background-size: cover;
+    box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
+    z-index: 1000;
+    width: 800px;
+    height: 400px;
+    padding: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(75, 75, 75);
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-47%, -50%);
+}
+
+.upgrades-container {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
 .lobby-chat {
     background-color: #2b494e78;
     padding: 10px;

@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ActionRange, GameUnit, Position, Unit, UnitInventory, Weapon } from '../domain/domain';
+import { ActionRange, GameUnit, Position, Unit, UnitBooty, UnitInventory, Weapon } from '../domain/domain';
 import ActionService, { sum } from './ActionService';
 
 @injectable()
@@ -63,9 +63,9 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('upgradesLimit', 'upgrades', 'baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
+            ignoreHeaders.push('upgradesNumber', 'upgrades', 'baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
         } else {
-            ignoreHeaders.push('upgradesLimit', 'upgrades', 'requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
+            ignoreHeaders.push('upgradesNumber', 'upgrades', 'requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
@@ -98,8 +98,8 @@ export default class GameObjectRenderer {
         if (data.canBeSold) {
             result += this.keyValue('canBeSold', data.canBeSold ? 'yes' : 'no');
         }
-        if ((data.upgradesLimit ?? 0) > (data.upgrades?.length ?? 0)) {
-            result += this.keyValue('canBeEnchanted', true);
+        if ((data.upgradesNumber ?? 0) > (data.upgrades?.length ?? 0)) {
+            result += this.keyValue('canBeEnchanted', 'yes');
         }
 
         return result;
@@ -134,16 +134,20 @@ export default class GameObjectRenderer {
         let result = '';
         if (!this.isUnitData(data)) {
             if (data.price && (data.price.coins || data.price.ruby)) {
-                if (unit && isShopItem && !this.emptyOrAllFieldsZeros([], '', data.price)) {
-                    result += this.renderShopPriceValue('price', data.price, unit.booty);
+                const price = ((data.upgrades ?? []) as any[]).reduce((acc, u) => ({
+                    coins: (acc.coins ?? 0) + (u.price?.coins ?? 0),
+                    ruby: (acc.ruby ?? 0) + (u.price?.ruby ?? 0),
+                }), { ...data.price } as UnitBooty);
+                if (unit && isShopItem && !this.emptyOrAllFieldsZeros([], '', price)) {
+                    result += this.renderShopPriceValue('price', price, unit.booty);
                 } else {
-                    result += this.renderPriceValue('price', data.price);
+                    result += this.renderPriceValue('price', price);
                 }
             }
             if (data.purchasePrice) {
                 result += this.renderPriceValue('purchasePrice', data.purchasePrice);
             }
-            if (data.repairPrice) {
+            if (data.repairPrice && (data.repairPrice.coins || data.repairPrice.ruby)) {
                 if (unit && !this.emptyOrAllFieldsZeros([], '', data.repairPrice)) {
                     result += this.renderShopPriceValue('repairPrice', data.repairPrice, unit.booty);
                 } else {
@@ -297,7 +301,7 @@ export default class GameObjectRenderer {
         return Boolean(data.stats);
     }
 
-    protected renderObjects(data: any[], ignoreHeaders: string[], header: string, depth: number): string {
+    public renderObjects(data: any[], ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || !data.length || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         if (header === 'damage') depth = 13;
         if (header === 'modification') depth = 23;
@@ -309,7 +313,7 @@ export default class GameObjectRenderer {
         return result.toString();
     }
 
-    protected renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
+    public renderObject(data: any, ignoreHeaders: string[], header: string, depth: number): string {
         if (!data || this.emptyOrAllFieldsZeros(ignoreHeaders, header, data) || this.ignoreKey(ignoreHeaders, header)) { return ''; }
         if (header === 'range') {
             return this.renderRange(data, depth);
@@ -490,6 +494,7 @@ export default class GameObjectRenderer {
             case 'canBeSold':
             case 'hint':
             case 'deviation':
+            case 'upgradesNumber':
                 return true;
         }
         return false;

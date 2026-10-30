@@ -74,6 +74,7 @@ export const LABEL_HEADER: string = 'label_header';
 export const LABEL_DESCRIPTION: string = 'label_description';
 export const LABEL_REQUIREMENTS: string = 'label_requirements';
 export const LABEL_REWARD: string = 'label_reward';
+export const LABEL_UPGRADE: string = 'label_upgrade';
 export const LABEL_TIME: string = 'label_time';
 export const LABEL_CLASS: string = 'label_class';
 

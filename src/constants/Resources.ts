@@ -13,6 +13,7 @@ export const LOBBY_DESIGN: string = COMPONENTS_PATH + 'lobby/lobby.html';
 export const ROOM_DESIGN: string = COMPONENTS_PATH + 'lobby/room.html';
 export const DUNGEON_DESIGN: string = COMPONENTS_PATH + 'lobby/dungeon.html';
 export const MERCENARY_DESIGN: string = COMPONENTS_PATH + 'lobby/mercenary.html';
+export const UPGRADE_DESIGN: string = COMPONENTS_PATH + 'lobby/upgrade.html';
 export const LOBBY_STYLE: string = COMPONENTS_PATH + 'lobby/lobby.css';
 
 export const ITEM_ICON_DESIGN: string = COMPONENTS_PATH + 'item/item_icon.html';

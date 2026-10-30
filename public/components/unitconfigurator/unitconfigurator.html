@@ -99,13 +99,18 @@
         </span>
         <label class="grey-text text-lighten-4" style="padding-left: 20px;">
             <input id="checkbox_sell" type="checkbox" />
-            <span style="padding-left: 24px;">Sell <img src="./assets/icons/sell-item.png"
+            <span style="padding-left: 24px;">Sell<img src="./assets/icons/sell-item.png"
                     style="height: 32px; vertical-align: middle; padding-bottom: 8px; padding-left: 4px;" /></span>&nbsp;&nbsp;&nbsp;
+        </label>
+        <label class="grey-text text-lighten-4">
+            <input id="checkbox_upgrade" type="checkbox" />
+            <span style="padding-left: 24px;">Enchant<img src="./assets/icons/enchant-item.png"
+                    style="height: 32px; vertical-align: middle; padding-bottom: 4px; padding-left: 4px;" /></span>&nbsp;&nbsp;&nbsp;
         </label>
         <label class="grey-text text-lighten-4">
             <input id="checkbox_repair" type="checkbox" />
             <span style="padding-left: 24px;">Repair<img src="./assets/icons/repair-item.png"
-                    style="height: 32px; vertical-align: middle; padding-bottom: 8px; padding-left: 4px;" /></span>
+                    style="height: 32px; vertical-align: middle; padding-bottom: 8px; padding-left: 4px;" /></span>&nbsp;&nbsp;&nbsp;
         </label>
         <button id="button_repair_all" class="btn-small purple"
             style="padding: 4px; line-height: 0; max-height: 20px; margin-top: -8px;">Repair All</button>
@@ -188,3 +193,19 @@
     </div>
 </div>
 <div id="item_description_popup" class="item-description-popup grey-text text-lighten-4"></div>
+<div id="upgrade_item_popup" class="upgrades-popup white-text hidden">
+    <div class="row grey-text">
+        <button id="button_close" class="btn purple darken-2 s12 right">Back</button>
+        <b><img src="./assets/icons/info.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
+            Enchant your equipment.
+        </b>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="icon" class="selection-icon-big"></div><br>
+        </div>
+        <div class="col s10">
+            <div id="upgrades_container" class="upgrades-container scrollbar-y"></div>
+        </div>
+    </div>
+</div>

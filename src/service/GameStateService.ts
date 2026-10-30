@@ -128,7 +128,9 @@ export default class GameStateService {
 
     public totalBaseAttributeModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
-        return equipment.modification?.reduce((acc, m) => acc + (m.baseAttributes as any)?.[key] || 0, 0) ?? 0;
+        let result = equipment.modification?.reduce((acc, m) => acc + (m.baseAttributes as any)?.[key] || 0, 0) ?? 0;
+        result += equipment.upgrades?.reduce((acc, m) => acc + (m.modification?.baseAttributes as any)?.[key] || 0, 0) ?? 0;
+        return result;
     }
 
     public totalAttributeValue(unit: GameUnit, key: string): number {
@@ -139,6 +141,8 @@ export default class GameStateService {
 
     public totalAttributeModification(equipment: Equipment, key: string): number {
         if (!equipment.equipped) return 0;
-        return equipment.modification?.reduce((acc, m) => acc + (m.attributes as any)?.[key] || 0, 0) ?? 0;
+        let result = equipment.modification?.reduce((acc, m) => acc + (m.attributes as any)?.[key] || 0, 0) ?? 0;
+        result += equipment.upgrades?.reduce((acc, m) => acc + (m.modification?.attributes as any)?.[key] || 0, 0) ?? 0;
+        return result;
     }
 }

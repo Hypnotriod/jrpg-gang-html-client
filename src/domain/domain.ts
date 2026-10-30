@@ -159,7 +159,7 @@ export interface Equipment extends Item {
     requirements?: UnitRequirements;
     modification?: UnitModification[];
     upgrades?: EquipmentUpgrade[];
-    upgradesLimit?: number;
+    upgradesNumber?: number;
 }
 
 export interface ActionRange {
