@@ -148,6 +148,7 @@ export interface EquipmentUpgrade extends Item {
     modification?: UnitModification;
     damage?: DamageImpact[];
     useCost?: UnitBaseAttributes;
+    requirements?: UnitRequirements;
 }
 
 export interface Equipment extends Item {

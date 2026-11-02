@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_UPGRADE } from '../../constants/Components';
+import { LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS, LABEL_UPGRADE } from '../../constants/Components';
 import { UPGRADE_DESIGN } from '../../constants/Resources';
 import { EquipmentUpgrade } from '../../domain/domain';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
@@ -19,6 +19,8 @@ export default class UpgradeItem extends Component {
     protected readonly labelDescription: Label;
     @component(LABEL_UPGRADE, Container)
     protected readonly labelUpgrade: Container;
+    @component(LABEL_REQUIREMENTS, Container)
+    protected readonly labelRequirements: Container;
     @component(LABEL_PRICE, Container)
     protected readonly labelPrice: Container;
     @component('button_upgrade', Button)
@@ -64,8 +66,9 @@ export default class UpgradeItem extends Component {
             useCost: this.data.useCost,
         });
         this.labelPrice.value = this.renderer.renderApplicationPrice(upgrade.price ?? {}, this.state.userState.unit);
+        this.labelRequirements.value = this.renderer.renderApplicationRequirements(upgrade.requirements || {}, this.state.userState.unit);
 
-        if (this.state.checkPrice(unit, upgrade.price)) {
+        if (this.state.checkRequirements(unit, upgrade.requirements) && this.state.checkPrice(unit, upgrade.price)) {
             this.buttonUpgrade.enable();
         } else {
             this.buttonUpgrade.disable();

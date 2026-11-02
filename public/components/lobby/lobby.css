@@ -59,7 +59,7 @@
     background-size: cover;
     box-shadow: 0 0 10px rgb(16, 16, 16), 0 0 6px rgb(0, 0, 0);
     z-index: 1000;
-    width: 800px;
+    width: 980px;
     height: 400px;
     padding: 10px;
     border-style: solid;
@@ -68,7 +68,7 @@
     border-radius: 5px;
     top: 50%;
     left: 50%;
-    transform: translate(-47%, -50%);
+    transform: translate(-50%, -55%);
 }
 
 .upgrades-container {
