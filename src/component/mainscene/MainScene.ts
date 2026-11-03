@@ -88,13 +88,15 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.settingsPopup.shadow = this.settingsPopupShadow;
         this.tipsPopup.shadow = this.tipsPopupShadow;
         this.rulesPopup.shadow = this.rulesPopupShadow;
+        this.settingsPopup.hide();
+        this.rulesPopup.hide();
         this.buttonFullscreen.onClick = target => this.toggleFullscreen();
         this.buttonRules.onClick = target => {
-            this.rulesPopup.show();
+            !this.rulesPopup.visible ? this.rulesPopup.show() : this.rulesPopup.hide();
             this.settingsPopup.hide();
         }
         this.settingsIcon.onClick = target => {
-            this.settingsPopup.show();
+            !this.settingsPopup.visible ? this.settingsPopup.show() : this.settingsPopup.hide();
             this.rulesPopup.hide();
         }
         this.communicator.subscribe([RequestType.SERVER_STATUS], this);

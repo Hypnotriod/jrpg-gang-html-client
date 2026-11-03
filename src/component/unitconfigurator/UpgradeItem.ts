@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import { LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS, LABEL_UPGRADE } from '../../constants/Components';
 import { UPGRADE_DESIGN } from '../../constants/Resources';
-import { EquipmentUpgrade } from '../../domain/domain';
+import { Upgrade } from '../../domain/domain';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import GameStateService from '../../service/GameStateService';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
@@ -26,7 +26,7 @@ export default class UpgradeItem extends Component {
     @component('button_upgrade', Button)
     protected readonly buttonUpgrade: Button;
 
-    protected data: EquipmentUpgrade;
+    protected data: Upgrade;
     protected onUpgradeCallback?: (uid: number) => void;
 
     public set onUpgrade(callback: (uid: number) => void) {
@@ -53,7 +53,7 @@ export default class UpgradeItem extends Component {
         this.buttonUpgrade.onClick = target => this.onUpgradeCallback?.(this.data.uid!);
     }
 
-    public update(upgrade: EquipmentUpgrade): void {
+    public update(upgrade: Upgrade): void {
         const unit = this.state.userState.unit;
         this.data = upgrade;
         this.labelHeader.value = upgrade.name;

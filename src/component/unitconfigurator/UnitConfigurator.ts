@@ -736,9 +736,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     }
 
     protected upgradeItem(target: ItemIcon): void {
-        const upgrades = (this.state.shopStatus.items.equipmentUpgrade ?? []).filter(u =>
-            ((u.damage || u.useCost) && target.data.type === ItemType.WEAPON) || u.modification && target.data.type === ItemType.ARMOR
-        );
+        const upgrades = (this.state.shopStatus.items.upgrade ?? []).filter(u => target.data.type === u.kind as unknown as ItemType);
         this.upgradeItemPopup.item = target.data;
         this.upgradeItemPopup.update(upgrades);
         this.upgradeItemPopup.show();

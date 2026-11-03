@@ -120,7 +120,7 @@ export enum ItemType {
     DISPOSABLE = 'disposable',
     AMMUNITION = 'ammunition',
     PROVISION = 'provision',
-    EQUIPMENT_UPGRADE = 'equipmentUpgrade',
+    EQUIPMENT_UPGRADE = 'upgrade',
     NONE = 'none',
 }
 
@@ -144,7 +144,13 @@ export enum EquipmentSlot {
     WEAPON = 'weapon',
 }
 
-export interface EquipmentUpgrade extends Item {
+export enum UpgradeKind {
+    ARMOR = 'armor',
+    WEAPON = 'weapon',
+}
+
+export interface Upgrade extends Item {
+    kind: UpgradeKind,
     modification?: UnitModification;
     damage?: DamageImpact[];
     useCost?: UnitBaseAttributes;
@@ -159,7 +165,7 @@ export interface Equipment extends Item {
     equipped?: boolean;
     requirements?: UnitRequirements;
     modification?: UnitModification[];
-    upgrades?: EquipmentUpgrade[];
+    upgrades?: Upgrade[];
     upgradesNumber?: number;
 }
 
@@ -228,7 +234,7 @@ export interface UnitInventory {
     disposable?: Disposable[];
     ammunition?: Ammunition[];
     provision?: Provision[];
-    equipmentUpgrade?: EquipmentUpgrade[];
+    upgrade?: Upgrade[];
     descriptor?: UnitInventoryDescriptor[];
 }
 

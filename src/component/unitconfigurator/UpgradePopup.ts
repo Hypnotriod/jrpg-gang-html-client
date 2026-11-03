@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { ICON } from '../../constants/Components';
-import { ActionType, EquipmentUpgrade, InventoryItem } from '../../domain/domain';
+import { ActionType, Upgrade, InventoryItem } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
 import Component from '../Component';
@@ -56,7 +56,7 @@ export default class UpgradePopup extends Component {
         this.buttonClose.onClick = target => this.hide();
     }
 
-    public update(upgrades: EquipmentUpgrade[]): void {
+    public update(upgrades: Upgrade[]): void {
         this.items.forEach(item => item.destroy());
         this.items = upgrades.map(mercenary => {
             const item = UpgradeItem.createItem(this, 'upgrades_container')!;
