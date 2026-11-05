@@ -186,6 +186,10 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         ) {
             this.tips.showTip(GameTipKey.RESOLVE_TRAINING_QUEST);
         }
+        if (this.state.userState.unit.inventory.armor?.some(a => (a.wearout ?? 0) > 0) ||
+            this.state.userState.unit.inventory.weapon?.some(w => (w.wearout ?? 0) > 0)) {
+            this.tips.showTip(GameTipKey.REPAIR_GEAR);
+        }
     }
 
     protected initialize(): void {
@@ -815,6 +819,9 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             } as ActionRequestData);
             this.communicator.sendMessage(RequestType.SHOP_STATUS);
             this.communicator.sendMessage(RequestType.USER_STATUS);
+            if (target.data.type === ItemType.WEAPON || target.data.type === ItemType.ARMOR) {
+                this.tips.showTip(GameTipKey.ENCHANT_GEAR);
+            }
         }
     }
 

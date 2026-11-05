@@ -18,6 +18,8 @@ export default class UpgradePopup extends Component {
     protected readonly icon: Icon;
     @component('button_close', Button)
     protected readonly buttonClose: Button;
+    @component('upgrades_container', Container)
+    protected readonly upgradesContainer: Container;
 
     protected items: UpgradeItem[] = [];
     protected _shadow?: Container;
@@ -45,6 +47,7 @@ export default class UpgradePopup extends Component {
         this._shadow?.show();
         this.icon.icon = this._item.code;
         this.icon.description = this._item;
+        this.upgradesContainer.scrollTo({ top: 0 });
     }
 
     public override hide(): void {

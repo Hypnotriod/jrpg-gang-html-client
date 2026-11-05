@@ -4,7 +4,9 @@ export enum GameTipKey {
     START_TRAINING_QUEST = 'tip_start_training_quest',
     RESOLVE_TRAINING_QUEST = 'tip_resolve_training_quest',
     REPLENISH_SUPPLIES = 'tip_replenish_supplies',
+    ENCHANT_GEAR = 'tip_enchant_gear',
     MANAGE_INVENTORY = 'tip_manage_inventory',
+    REPAIR_GEAR = 'tip_repair_gear',
     BROKEN_GEAR = 'tip_broken_gear',
     WAIT_SKIP = 'tip_wait_skip',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
@@ -79,6 +81,9 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <br>
         Don't forget to restock your potions, ammunition and provision.<br>
         You might need better gear before heading down into the Dungeons.`,
+    [GameTipKey.ENCHANT_GEAR]: `
+        You can upgrade your weapons and armor with enchantments.<br>
+        Keep in mind that this will increase the price of the item.`,
     [GameTipKey.MANAGE_INVENTORY]: `
         <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         Don't forget to equip your weapon and armor into the corresponding slots.<br>
@@ -166,6 +171,8 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.STUNNED]: `
         <img src="./assets/icons/dizzy.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your character is stunned. Any damage you take will be critical.`,
+    [GameTipKey.REPAIR_GEAR]: `
+        Some of your gear is worn out. Don't forget to repair it before it's too late.`,
     [GameTipKey.BROKEN_GEAR]: `
         <img src="./assets/icons/broken.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your gear is broken and cannot be used.<br>
