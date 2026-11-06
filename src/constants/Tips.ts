@@ -9,6 +9,8 @@ export enum GameTipKey {
     REPAIR_GEAR = 'tip_repair_gear',
     BROKEN_GEAR = 'tip_broken_gear',
     WAIT_SKIP = 'tip_wait_skip',
+    TURN_ORDER = 'tip_turn_order',
+    ACTION_POINTS = 'tip_action_points',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
     CLOSE_COMBAT_BARBARIAN = 'tip_close_combat_barbarian',
     CLOSE_COMBAT_MAGE = 'tip_close_combat_mage',
@@ -46,23 +48,22 @@ export function rangeCombatTip(clazz: string): GameTipKey {
 export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.MAIN_HUB]: `
         <span style="margin-left: 8px;">Your character sheet is on the left. Hover over or right-click for more information.</span><br>
-        <img src="./assets/icons/armory-gear.png" style="vertical-align: middle; padding-bottom: 4px; width: 22px; margin-top: 6px;" />
+        <img src="./assets/icons/armory-gear.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can buy items in the Shop on the right.<br>
         <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can manage your gear in the Inventory below.<br>
         <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
-        Open the Quests menu from the top and take your active assignment.<div>
-        <span style="margin-left: 8px;">Read the game rules by clicking the Game Rules button at the top of the screen.</span>`,
+        Open the <span class="green-text" style="padding: 0;">QUESTS</span> menu from the top and take your active assignment.`,
     [GameTipKey.COMBAT_PHASE]: `
         Welcome, adventurer! This is your learning mission.<br>
         You must destroy all the training dummies.<br>
         Follow the instructions in the combat phase notes above.`,
     [GameTipKey.START_TRAINING_QUEST]: `
         Now you can proceed to your training.<br>
-        Click the Training button in the upper right corner.`,
+        Click the <span class="pink-text" style="padding: 0;">TRAINING</span> button in the upper right corner.`,
     [GameTipKey.RESOLVE_TRAINING_QUEST]: `
         <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
-        Open the Quests menu from the top to complete your training quest.`,
+        Open the <span class="green-text" style="padding: 0;">QUESTS</span> menu from the top to complete your training quest.`,
     [GameTipKey.REPLENISH_SUPPLIES]: `
         <img src="./assets/icons/health-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
         <img src="./assets/icons/stamina-potion-01.png" style="vertical-align: middle; height: 32px; padding-bottom: 4px;" />
@@ -167,7 +168,7 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         <img src="./assets/icons/tired.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your stamina is completely drained. Any damage you take will be critical.`,
     [GameTipKey.ARMOR_PROTECTION]: `
-        All damage absorbed by your armor or shild reduces the character's stamina.`,
+        Any damage absorbed by your armor or shield becomes<br>exhaustion damage and reduces the character's stamina.`,
     [GameTipKey.STUNNED]: `
         <img src="./assets/icons/dizzy.png" style="vertical-align: middle; padding-bottom: 4px; width: 24px; margin: 4px;">
         Your character is stunned. Any damage you take will be critical.`,
@@ -207,11 +208,20 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.LOBBY]: `
         From here you can enter dungeons as a party leader.<br>
         You can join other players' parties in the Parties tab.`,
+    [GameTipKey.TURN_ORDER]: `
+        The turn order depends on the character initiative.<br>
+        Its number is displayed in the bottom left corner of the character icons.<br>
+        The character with the lowest turn number goes first.`,
+    [GameTipKey.ACTION_POINTS]: `
+        A weapon, spell, or disposable item requires action points to perform an action.<br>
+        Character movement always costs 4 action points. Changing gear costs no action points.<br>
+        The number of action points is displayed in the bottom right corner of the character icon during their turn.`,
     [GameTipKey.WAIT_SKIP]: `
         By clicking the <span class="green-text text-lighten-1" style="padding: 0;">WAIT</span> button, you will be at the end of the turn order.<br>
         Clicking the <span class="purple-text" style="padding: 0;">END TURN</span> button will skip your turn entirely.`,
     [GameTipKey.DEFEATED]: `
         <img src="./assets/icons/death.png" style="vertical-align: middle; height: 24px;">The hero has been defeated. But death is only a new beginning.`,
     [GameTipKey.LEVEL_UP]: `
-        Your character is ready to gain a new level.<br>Click the Level Up button and assign you attribute points.`,
+        Your character is ready to gain a new level.<br>
+        Click the <span class="orange-text" style="padding: 0;">LEVEL UP</span> button and assign you attribute points.`,
 };

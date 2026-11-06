@@ -268,6 +268,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             default:
                 if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {
+                    this.tips.showTip(GameTipKey.TURN_ORDER);
+                    this.tips.showTip(GameTipKey.ACTION_POINTS);
                     this.tips.showTip(GameTipKey.WAIT_SKIP);
                     this.tips.showTip(closeCombatTip(this.state.userState.unit.class!));
                     const units = this.state.gameState.spot.battlefield.units;
