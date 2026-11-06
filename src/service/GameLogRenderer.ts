@@ -287,6 +287,10 @@ export default class GameLogRenderer {
             if (!this._actionService.hasEffect(action.result, targetUid)) {
                 const targetUnit = this.findUnitByUid(targetUid);
                 result.push(`${name} misses ${this.getUnitName(targetUnit)}.`);
+                const unit = this.findUnitByUid(targetUid);
+                const unitName = this.getUnitName(unit);
+                delete data.result.instantDamage[unitName];
+                delete data.result.temporalDamage[unitName];
             }
         })
         if (data.result.instantDamage) {
@@ -294,7 +298,8 @@ export default class GameLogRenderer {
                 const damages = data.result.instantDamage[target] as any[];
                 const damage = damages.flatMap(d => Object.keys(d)
                     .filter(k => Number.isInteger(d[k])).map(k => `${d[k]} ${k}`));
-                if (!damage.length) return '';
+                const temporalDamage = data.result.temporalDamage[target];
+                if (!damage.length) return !temporalDamage.length ? `${name} deals no damage to ${target}.` : '';
                 return `${name} deals ${damage.join(', ')} damage to ${target}.`;
             }));
         }
@@ -305,6 +310,7 @@ export default class GameLogRenderer {
                     if (!damage.length) return '';
                     return damage.flatMap(d => {
                         const damage = Object.keys(d).filter(k => k !== 'duration' && Number.isInteger(d[k])).map(k => `${d[k]} ${k}`)
+                        if (!damage.length) return '';
                         return `${name} deals ${damage.join(', ')} damage to ${target} for ${d.duration} rounds.`;
                     });
                 });
