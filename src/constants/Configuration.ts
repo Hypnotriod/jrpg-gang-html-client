@@ -32,9 +32,9 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
                 luck: 5
             },
             resistance: {
-                stabbing: 5,
-                cutting: 5,
-                crushing: 5,
+                stabbing: 4,
+                cutting: 4,
+                crushing: 4,
                 fire: 0,
                 cold: 0,
                 lightning: 0,
@@ -164,13 +164,13 @@ export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
                 luck: 5
             },
             resistance: {
-                stabbing: 5,
-                cutting: 5,
-                crushing: 5,
+                stabbing: 3,
+                cutting: 3,
+                crushing: 3,
                 fire: 0,
                 cold: 0,
                 lightning: 0,
-                acid: 0,
+                acid: 3,
                 poison: 5,
                 exhaustion: 0,
                 manaDrain: 0,
