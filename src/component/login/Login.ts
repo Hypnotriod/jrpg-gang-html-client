@@ -74,6 +74,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
             this.icons.push(icon);
         });
         this.icons[0].select();
+        this.icons[0].choose();
         this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
@@ -82,7 +83,9 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected onClassIconClick(target: ItemIcon): void {
         this.icons.forEach(icon => icon.unselect());
+        this.icons.forEach(icon => icon.unchoose());
         target.select();
+        target.choose();
         this.onUserNameInput();
         SoundService.play(SoundName.CLICK);
     }
