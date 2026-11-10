@@ -134,9 +134,9 @@ export default class GameFlowControls extends GameBase {
 
     protected async blinkLabelRed(label: Label): Promise<void> {
         for (let n = 0; n < 2; n++) {
-            label.view.classList.add('icon-error');
+            label.view.classList.add('attribute-error');
             await timeout(100);
-            label.view.classList.remove('icon-error');
+            label.view.classList.remove('attribute-error');
             await timeout(100);
         }
     }

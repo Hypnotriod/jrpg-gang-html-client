@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import GameStateService from './GameStateService';
 import ActionService from './ActionService';
-import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory } from '../domain/domain';
+import { ActionResult, ActionResultType, ActionType, EndRoundResult, GamePhase, GameUnit, GameUnitActionResult, Item, SpotCompleteResult, UnitInventory, Weapon } from '../domain/domain';
 
 @injectable()
 @singleton()
@@ -239,23 +239,23 @@ export default class GameLogRenderer {
         if (action.result.result !== ActionResultType.ACCOMPLISHED) {
             switch (action.result.result) {
                 case ActionResultType.CANT_USE:
-                    return `<span class="red-text darken-3">Can't use</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">${this.distinguishCantUsePrompt(action)}</span>`;
                 case ActionResultType.IS_BROKEN:
-                    return `<span class="red-text darken-3">Item is broken</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Item is broken</span>`;
                 case ActionResultType.NOT_ALLOWED:
-                    return `<span class="red-text darken-3">Not allowed</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Not allowed</span>`;
                 case ActionResultType.NOT_EMPTY:
-                    return `<span class="red-text darken-3">Not empty</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Not empty</span>`;
                 case ActionResultType.NOT_EUIPPED:
-                    return `<span class="red-text darken-3">Not equipped</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Not equipped</span>`;
                 case ActionResultType.NOT_REACHABLE:
-                    return `<span class="red-text darken-3">Can't reach</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Can't reach</span>`;
                 case ActionResultType.NOT_ACCOMPLISHED:
-                    return `<span class="red-text darken-3">Not accomplished</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Not accomplished</span>`;
                 case ActionResultType.NOT_FOUND:
-                    return `<span class="red-text darken-3">Not found</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">Not found</span>`;
                 case ActionResultType.NO_AMMUNITION:
-                    return `<span class="red-text darken-3">No ammunition</span>`;
+                    return `<span class="red-text darken-3" style="padding: 0;">No ammunition</span>`;
             }
             return '';
         }
@@ -276,6 +276,26 @@ export default class GameLogRenderer {
                 return this.renderUseAction(name, action, data).filter(s => s).join('<br>');
         }
         return '';
+    }
+
+    protected distinguishCantUsePrompt(action: GameUnitActionResult): string {
+        const unit = this.findUnitByUid(action.action.uid!);
+        if (action.action.itemUid) {
+            const item = this.findItemInInventory(unit.inventory, action.action.itemUid);
+            if (unit.state.actionPoints < ((item as Weapon).useCost?.actionPoints ?? 0)) {
+                return `Not enough action points`;
+            }
+            if (unit.state.stamina < ((item as Weapon).useCost?.stamina ?? 0)) {
+                return `Not enough stamina`;
+            }
+            if (unit.state.mana < ((item as Weapon).useCost?.mana ?? 0)) {
+                return `Not enough mana`;
+            }
+            if (unit.state.health < ((item as Weapon).useCost?.health ?? 0)) {
+                return `Not enough health`;
+            }
+        }
+        return `Can't use`;
     }
 
     protected renderUseAction(name: string, action: GameUnitActionResult, data: any): string[] {
