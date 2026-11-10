@@ -108,7 +108,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     public tryToAutoLogin(force: boolean = false): void {
         if (this.unsuccessJoinAttempts >= this.MAX_UNSUCCESS_JOIN_ATTEMPTS) {
-            this.autoLoginFail();
+            this.fail();
             return;
         }
         const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
@@ -144,6 +144,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
         if (response.status === ResponseStatus.OK) {
             this.doJoin();
+        } else {
+            this.fail();
         }
     }
 
@@ -205,7 +207,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
     }
 
-    protected autoLoginFail(): void {
+    protected fail(): void {
         this.clearUrl();
         this.hide();
         this.auth.show();

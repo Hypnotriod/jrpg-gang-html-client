@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../application/AppConfig';
 import { Request, RequestData, RequestType } from '../dto/requests';
-import { Response } from '../dto/responces';
+import { Response, ResponseStatus } from '../dto/responces';
 
 export interface ServerCommunicatorHandler {
     handleServerResponse(response: Response): void;
@@ -56,12 +56,16 @@ export default class ServerCommunicatorService {
     public async sendConfigurationMessage(type: RequestType, data?: RequestData): Promise<Response> {
         const id: string = this.generateRequestId();
         const request: Request = { type, id, data };
-        const response = await fetch(this.appConfig.configurationUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(request),
-        });
-        return await response.json() as Response;
+        try {
+            const response = await fetch(this.appConfig.configurationUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(request),
+            });
+            return await response.json() as Response;
+        } catch (e) {
+            return { status: ResponseStatus.ERROR } as Response;
+        }
     }
 
     public joinWithToken(token: string): void {
