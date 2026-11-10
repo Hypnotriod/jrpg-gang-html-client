@@ -168,6 +168,10 @@ body {
     box-shadow: 0 0 10px rgb(255, 0, 0), 0 0 6px rgb(255, 0, 0);
 }
 
+.attribute-error {
+    box-shadow: 0 0 10px rgb(255, 0, 0), 0 0 6px rgb(255, 0, 0);
+}
+
 .chosen-equipped {
     background-color: rgb(99, 59, 128);
 }
