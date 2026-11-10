@@ -23,6 +23,8 @@ import QuestLog from '../quests/QuestLog';
 @injectable()
 @singleton()
 export default class Login extends Component implements ServerCommunicatorHandler {
+    private MAX_UNSUCCESS_JOIN_ATTEMPTS: number = 5;
+
     @component(INPUT_USER_NAME, TextInput)
     private readonly userNameInput: TextInput;
     @component(INPUT_LABEL_USER_NAME, TextInput)
@@ -104,10 +106,13 @@ export default class Login extends Component implements ServerCommunicatorHandle
         }
     }
 
-    public tryToAutologin(): void {
-        if (this.unsuccessJoinAttempts >= 5) { return; }
+    public tryToAutoLogin(force: boolean = false): void {
+        if (this.unsuccessJoinAttempts >= this.MAX_UNSUCCESS_JOIN_ATTEMPTS) {
+            this.autoLoginFail();
+            return;
+        }
         const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
-        if (isNewPlayer === VALUE_TRUE) {
+        if (!force && isNewPlayer === VALUE_TRUE) {
             this.show();
             return;
         }
@@ -168,19 +173,19 @@ export default class Login extends Component implements ServerCommunicatorHandle
                 this.hide();
                 this.auth.show();
             } else {
-                this.tryToAutologin();
+                this.tryToAutoLogin(true);
             }
             return;
         }
         this.unsuccessJoinAttempts = 0;
         this.state.userState = response.data as UserStateData;
         sessionStorage.setItem(KEY_SESSION_ID, this.state.userState.sessionId);
-        window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
+        this.clearUrl();
         this.questLog.show();
     }
 
     public handleConnectionLost(): void {
-        window.setTimeout(() => this.tryToAutologin(), 500);
+        this.tryToAutoLogin(true);
     }
 
     protected getClass(): string {
@@ -194,5 +199,17 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected getNickname(): string {
         return this.userNameInput.value;
+    }
+
+    protected clearUrl(): void {
+        window.history.replaceState({}, document.title, location.protocol + '//' + location.host + location.pathname);
+    }
+
+    protected autoLoginFail(): void {
+        this.clearUrl();
+        this.hide();
+        this.auth.show();
+        this.unsuccessJoinAttempts = 0;
+        alert('Oops, something went wrong...');
     }
 }

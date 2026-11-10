@@ -67,6 +67,7 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private jobs: Jobs;
     private quests: Quests;
     private blurTimeout: number = 0;
+    private statusDataTimeout: number = 0;
 
     constructor(
         private readonly loaderService: ResourceLoaderService,
@@ -80,7 +81,7 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.hide();
         SoundService.initialize();
         this.initializeComponents().then(() => {
-            this.login.tryToAutologin();
+            this.login.tryToAutoLogin();
             this.show();
         });
         this.initializeFocusHandler();
@@ -115,7 +116,15 @@ export default class MainScene extends Component implements ServerCommunicatorHa
 
     protected onServerStatus(data: ServerStatusData): void {
         this.state.usersNumber = data.usersNumber;
-        this.labelUserNumber.value = `Players online ${this.state.usersNumber}`;
+        this.updateStatusData();
+    }
+
+    protected updateStatusData(): void {
+        clearTimeout(this.statusDataTimeout);
+        if (this.visible) {
+            this.labelUserNumber.htmlValue = `Ping ${this.communicator.ping}&nbsp;&nbsp;&nbsp; Players Online ${this.state.usersNumber}`;
+            this.statusDataTimeout = window.setTimeout(() => this.updateStatusData(), 1000);
+        }
     }
 
     public handleServerResponse(response: Response): void {
