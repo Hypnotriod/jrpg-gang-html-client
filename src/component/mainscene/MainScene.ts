@@ -100,7 +100,7 @@ export default class MainScene extends Component implements ServerCommunicatorHa
             !this.settingsPopup.visible ? this.settingsPopup.show() : this.settingsPopup.hide();
             this.rulesPopup.hide();
         }
-        this.communicator.subscribe([RequestType.SERVER_STATUS], this);
+        this.communicator.subscribe([RequestType.SERVER_STATUS, RequestType.DELETE_ACCOUNT], this);
         this.communicator.sendMessage(RequestType.SERVER_STATUS);
         this.scaleContainer.resizeConfig = RESIZE_CONFIG;
         if (isMobile(window.navigator).any) {
@@ -132,6 +132,12 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         switch (response.type) {
             case RequestType.SERVER_STATUS:
                 this.onServerStatus(response.data as ServerStatusData);
+                break;
+            case RequestType.DELETE_ACCOUNT:
+                sessionStorage.clear();
+                this.communicator.close();
+                this.state.userState.playerInfo.isGuest = true;
+                alert('Your account has been deleted.');
                 break;
         }
     }

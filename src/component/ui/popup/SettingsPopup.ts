@@ -7,6 +7,9 @@ import { TipsPopup } from './TipsPopup';
 import ObjectDescription from './ObjectDescription';
 import Button from '../button/Button';
 import HSlider from '../slider/HSlider';
+import ServerCommunicatorService from '../../../service/ServerCommunicatorService';
+import { RequestType } from '../../../dto/requests';
+import GameStateService from '../../../service/GameStateService';
 
 @injectable()
 @singleton()
@@ -18,24 +21,36 @@ export class SettingsPopup extends Container {
     @component('checkbox_tips', Checkbox)
     private readonly checkboxTips: Checkbox;
     @component('button_ok', Button)
-    protected readonly buttonOk: Button;
+    private readonly buttonOk: Button;
     @component('slider_sound_volume', HSlider)
-    protected readonly soundVolumeSlider: HSlider;
+    private readonly soundVolumeSlider: HSlider;
     @component('slider_music_volume', HSlider)
-    protected readonly musicVolumeSlider: HSlider;
-    protected _shadow?: Container;
+    private readonly musicVolumeSlider: HSlider;
+    @component('checkbox_delete_account', Checkbox)
+    private readonly checkboxDeleteAccount: Checkbox;
+    @component('button_delete_account', Button)
+    private readonly buttonDeleteAccount: Button;
+    @component('delete_account_container', Container)
+    private readonly containerDeleteAccount: Container;
+    private _shadow?: Container;
 
     public set shadow(value: Container) {
         this._shadow = value;
     }
 
-    constructor(private readonly tipsPopup: TipsPopup) {
+    constructor(
+        private readonly tipsPopup: TipsPopup,
+        private readonly state: GameStateService,
+        private readonly communicator: ServerCommunicatorService
+    ) {
         super();
     }
 
     public override show(): void {
         super.show();
         this._shadow?.show();
+        const playerInfo = this.state?.userState?.playerInfo;
+        (playerInfo && !playerInfo.isGuest) ? this.containerDeleteAccount.show() : this.containerDeleteAccount.hide();
     }
 
     public override hide(): void {
@@ -65,8 +80,13 @@ export class SettingsPopup extends Container {
         this.checkboxSound.onChange = target => this.toggleSoundMute();
         this.checkboxInfo.onChange = target => this.toggleInfoPopup();
         this.checkboxTips.onChange = target => this.toggleTipsPopup();
+        this.checkboxDeleteAccount.onChange = target => this.toggleDeleteAccountButton();
 
         this.buttonOk.onClick = () => this.hide();
+        this.buttonDeleteAccount.onClick = () => this.deleteAccount();
+
+        this.containerDeleteAccount.hide();
+        this.buttonDeleteAccount.disable();
     }
 
     protected updateSoundVolume() {
@@ -96,5 +116,15 @@ export class SettingsPopup extends Container {
         SoundService.play(SoundName.CLICK);
         this.tipsPopup.active = !this.tipsPopup.active;
         localStorage.setItem('tips', String(this.tipsPopup.active));
+    }
+
+    protected toggleDeleteAccountButton(): void {
+        this.checkboxDeleteAccount.checked ? this.buttonDeleteAccount.enable() : this.buttonDeleteAccount.disable();
+    }
+
+    protected async deleteAccount(): Promise<void> {
+        this.buttonDeleteAccount.disable();
+        this.communicator.sendMessage(RequestType.DELETE_ACCOUNT);
+        this.hide();
     }
 }

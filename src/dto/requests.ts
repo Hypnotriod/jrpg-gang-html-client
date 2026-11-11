@@ -3,6 +3,7 @@ import { Action } from '../domain/domain';
 export enum RequestType {
     JOIN = 'join',
     LEAVE = 'leave',
+    DELETE_ACCOUNT = 'deleteAccount',
     CREATE_ROOM = 'createRoom',
     DESTROY_ROOM = 'destroyRoom',
     ENTER_LOBBY = 'enterLobby',

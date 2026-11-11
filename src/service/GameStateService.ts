@@ -63,6 +63,7 @@ export default class GameStateService {
     public get scenarios(): GameScenarioConfig[] {
         return this._scenarios;
     }
+
     public set scenarios(value: GameScenarioConfig[]) {
         this._scenarios = value;
     }

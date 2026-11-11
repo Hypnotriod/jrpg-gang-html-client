@@ -88,6 +88,10 @@ export default class ServerCommunicatorService {
         return !!this.ws && this.ws.readyState === WebSocket.OPEN;
     }
 
+    public close(): void {
+        this.ws?.close(1000);
+    }
+
     public until(requestType: RequestType): Promise<Response> {
         return new Promise<Response>(resolve => {
             if (!this.oneShotSubscribers.get(requestType)) {
