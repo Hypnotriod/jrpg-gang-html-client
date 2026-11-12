@@ -47,11 +47,14 @@ export function rangeCombatTip(clazz: string): GameTipKey {
 
 export const GAME_TIPS: { [key in GameTipKey]?: string } = {
     [GameTipKey.MAIN_HUB]: `
-        <span style="margin-left: 8px;">Your character sheet is on the left. Hover over or right-click for more information.</span><br>
+        <img src="./assets/icons/person.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
+        Your character sheet is on the left. Hover over the stats for more information.<br>
         <img src="./assets/icons/armory-gear.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can buy items in the Shop on the right.<br>
         <img src="./assets/icons/backpack.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         You can manage your gear in the Inventory below.<br>
+        <img src="./assets/icons/cogwheel.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
+        Check out the game settings in the top left corner to adjust your preferences.<br>
         <img src="./assets/icons/warning.png" style="height:24px; vertical-align: middle; padding-bottom: 4px;" />
         Open the <span class="green-text" style="padding: 0;">QUESTS</span> menu from the top and take your active assignment.`,
     [GameTipKey.COMBAT_PHASE]: `
