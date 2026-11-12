@@ -38,6 +38,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
     private readonly icons: ItemIcon[] = [];
     private isJoining: boolean = false;
     private unsuccessJoinAttempts: number = 0;
+    private token?: string;
+    private isNewPlayer?: string;
 
     constructor(
         private readonly questLog: QuestLog,
@@ -68,7 +70,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.joinButton.disable();
 
         this.objectDescription.hide();
-        USER_CLASSES.forEach((clazz, n) => {
+        USER_CLASSES.forEach((clazz) => {
             const icon = ItemIcon.createBigItemIcon(clazz, this, ICONS_CONTAINER)!;
             icon.onClick = target => this.onClassIconClick(target);
             icon.update(BASE_UNIT_DESCRIPTIONS[clazz] as InventoryItem, this.state);
@@ -111,8 +113,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
             this.fail();
             return;
         }
-        const isNewPlayer: string | undefined = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
-        if (!force && isNewPlayer === VALUE_TRUE) {
+        this.token = this.query.parsedQuery[KEY_TOKEN] as string | undefined;
+        this.isNewPlayer = this.query.parsedQuery[KEY_IS_NEW_PLAYER] as string || undefined;
+        this.clearUrl();
+        if (!force && this.isNewPlayer === VALUE_TRUE) {
             this.show();
             return;
         }
@@ -127,11 +131,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected async updatePlayerInfoAndJoin(): Promise<void> {
-        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
         const nickname: string = this.getNickname();
         const clazz: string = this.getClass();
         const response = await this.communicator.sendConfigurationMessage(RequestType.SET_PLAYER_INFO, {
-            token,
+            token: this.token,
             nickname,
             class: clazz,
         } as SetPlayerInfoRequestData);
@@ -151,10 +154,10 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected doJoin(): void {
         const sessionId: string | undefined = sessionStorage.getItem(KEY_SESSION_ID) || undefined;
-        const token: string | undefined = this.query.parsedQuery[KEY_TOKEN] as string || undefined;
         sessionStorage.removeItem(KEY_SESSION_ID);
-        if (token) {
-            this.communicator.joinWithToken(token);
+        if (this.token) {
+            this.communicator.joinWithToken(this.token);
+            this.token = undefined;
             return;
         }
         if (sessionId) {
