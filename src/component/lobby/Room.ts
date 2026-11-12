@@ -118,7 +118,7 @@ export default class Room extends Component {
         }
         isUserHostOfRoom ? this.startGameButton.enable() : this.startGameButton.disable();
 
-        if (!isUserHostOfRoom || roomInfo.mercenaries.length || roomIsFull) {
+        if (!isUserHostOfRoom || roomIsFull) {
             this.hireMercenaryPlaceholder.hide();
         } else {
             this.hireMercenaryPlaceholder.show();

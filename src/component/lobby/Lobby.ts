@@ -124,7 +124,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 this.updateBooty();
                 break;
             case RequestType.MERCENARIES_STATUS:
-                this.onMercenariesStatus(response.data as MercenariesStatusData);
+                this.state.mercenariesStatus = response.data as MercenariesStatusData;
                 break;
             case RequestType.HIRE_MERCENARY:
                 this.onRoomStatus(response.data as RoomStatusData);
@@ -170,10 +170,6 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
         this.state.rooms = data.rooms.filter(room => room.scenario.id !== SCENARIO_IDS.TRAINING);
         this.state.scenarios = data.scenarios.filter(scenario => scenario.id !== SCENARIO_IDS.TRAINING);
         this.update();
-    }
-
-    protected onMercenariesStatus(data: MercenariesStatusData): void {
-        this.mercenariesPopup.update(data.mercenaries.mercenaries);
     }
 
     protected onRoomStatus(data: RoomStatusData): void {
@@ -302,11 +298,13 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
     }
 
     protected updateState(isUserInRooms: boolean): void {
-        const level = this.state.userState.unit.stats.progress.level;
         this.configuratorButton.enabled = !isUserInRooms;
     }
 
     protected onHireMercenary(roomUid: number): void {
+        const room = this.state.rooms.find(room => room.uid === roomUid)!;
+        this.mercenariesPopup.update(this.state.mercenariesStatus.mercenaries.mercenaries.filter(
+            mercenary => !room.mercenaries.some(m => mercenary.code === m.code)));
         this.mercenariesPopup.show();
         this.mercenariesPopup.roomUid = roomUid;
     }

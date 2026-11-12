@@ -32,8 +32,12 @@ export default class MercenaryItem extends Component {
         this.icon.descriptionPopup = value;
     }
 
-    protected data: Mercenary;
+    protected _data: Mercenary;
     protected onHireMercenaryCallback?: (code: string) => void;
+
+    public get data(): Mercenary {
+        return this._data;
+    }
 
     public set onHireMercenary(callback: (code: string) => void) {
         this.onHireMercenaryCallback = callback;
@@ -56,12 +60,12 @@ export default class MercenaryItem extends Component {
     }
 
     protected initialize(): void {
-        this.buttonHire.onClick = target => this.onHireMercenaryCallback?.(this.data.code!);
+        this.buttonHire.onClick = target => this.onHireMercenaryCallback?.(this._data.code!);
     }
 
     public update(mercenary: Mercenary): void {
         const unit = this.state.userState.unit;
-        this.data = mercenary;
+        this._data = mercenary;
         this.icon.icon = mercenary.code!;
         this.icon.description = {
             description: mercenary.description,

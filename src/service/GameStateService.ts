@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { Equipment, GameEvent, GameScenarioConfig, GameShopStatus, GameUnit, InventoryItem, PlayerInfo, RoomInfo, UnitAchievements, UnitBooty, UnitQuests, UnitRequirements, Weapon } from '../domain/domain';
-import { UserStateData } from '../dto/responces';
+import { MercenariesStatusData, UserStateData } from '../dto/responces';
 
 @singleton()
 export default class GameStateService {
@@ -8,6 +8,7 @@ export default class GameStateService {
     private _playerInfo: PlayerInfo;
     private _shopStatus: GameShopStatus;
     private _gameState: GameEvent;
+    private _mercenariesStatus: MercenariesStatusData;
     private _rooms: RoomInfo[];
     private _scenarios: GameScenarioConfig[];
     private _usersNumber: number;
@@ -66,6 +67,14 @@ export default class GameStateService {
 
     public set scenarios(value: GameScenarioConfig[]) {
         this._scenarios = value;
+    }
+
+    public get mercenariesStatus(): MercenariesStatusData {
+        return this._mercenariesStatus;
+    }
+
+    public set mercenariesStatus(value: MercenariesStatusData) {
+        this._mercenariesStatus = value;
     }
 
     public isUserInRooms(roomInfos: RoomInfo[]): boolean {
