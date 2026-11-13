@@ -593,14 +593,7 @@ export default class SpotCell extends Component {
     }
 
     public updateWithTurnOrder(order: number, isPlayer: boolean): void {
-        this.turnOrderLabel.value = String(order);
-        if (isPlayer) {
-            this.turnOrderLabel.view.classList.remove('grey');
-            this.turnOrderLabel.view.classList.add('green');
-        } else {
-            this.turnOrderLabel.view.classList.add('grey');
-            this.turnOrderLabel.view.classList.remove('green');
-        }
+        this.turnOrderLabel.value = `${order}`;
         order ? this.turnOrderLabel.show() : this.turnOrderLabel.hide();
     }
 
