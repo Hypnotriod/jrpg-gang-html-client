@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, ItemType, Weapon } from '../../domain/domain';
+import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnitFaction, ItemType, Weapon } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -265,6 +265,10 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
             case GamePhase.SCENARIO_COMPLETE:
             case GamePhase.PREPARE_UNIT:
+                const units = this.state.gameState.spot.battlefield.units;
+                if (units.filter(u => u.faction === GameUnitFaction.PARTY).length > 1) {
+                    this.tips.showTip(GameTipKey.SWAP_PLACES);
+                }
                 break;
             default:
                 if (!playersUnit.achievements[ACHIEVEMENT_IDS.TRAINING_COMPLETED]) {

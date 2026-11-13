@@ -228,6 +228,7 @@ export default class GameBattlefield extends GameBase {
         const unut = this.playersUnit();
         if (!unut || unut.isDead) return;
         if (this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT) {
+            if (unut.position.x === target.unit?.position.x && unut.position.y === target.unit.position.y) return;
             this.placeUnit({ x: target.x, y: target.y });
         } else if (this.canUseItem() && target.unit) {
             this.useItem(target.unit.uid!);

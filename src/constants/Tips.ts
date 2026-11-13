@@ -11,6 +11,7 @@ export enum GameTipKey {
     WAIT_SKIP = 'tip_wait_skip',
     TURN_ORDER = 'tip_turn_order',
     ACTION_POINTS = 'tip_action_points',
+    SWAP_PLACES = 'tip_swap_places',
     CLOSE_COMBAT_WARRIOR = 'tip_close_combat_warrior',
     CLOSE_COMBAT_BARBARIAN = 'tip_close_combat_barbarian',
     CLOSE_COMBAT_MAGE = 'tip_close_combat_mage',
@@ -219,6 +220,9 @@ export const GAME_TIPS: { [key in GameTipKey]?: string } = {
         A weapon, spell, or disposable item requires action points to perform an action.<br>
         Character movement always costs 4 action points. Changing gear costs no action points.<br>
         The number of action points is displayed in the bottom right corner of the character icon during their turn.`,
+    [GameTipKey.SWAP_PLACES]: `
+        Before the start of the battle, you can reposition your character.<br>
+        You can switch places with your allies by clicking on them.`,
     [GameTipKey.WAIT_SKIP]: `
         By clicking the <span class="green-text text-lighten-1" style="padding: 0;">WAIT</span> button, you will be at the end of the turn order.<br>
         Clicking the <span class="purple-text" style="padding: 0;">END TURN</span> button will skip your turn entirely.`,
