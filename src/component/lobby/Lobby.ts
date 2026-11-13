@@ -79,6 +79,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
             RequestType.USER_STATUS,
             RequestType.MERCENARIES_STATUS,
             RequestType.HIRE_MERCENARY,
+            RequestType.DISMISS_MERCENARY,
             RequestType.LOBBY_CHAT_MESSAGE,
             RequestType.LOBBY_CHAT_STATE,
             RequestType.LOBBY_CHAT_PARTICIPANT,
@@ -127,9 +128,9 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
                 this.state.mercenariesStatus = response.data as MercenariesStatusData;
                 break;
             case RequestType.HIRE_MERCENARY:
+            case RequestType.DISMISS_MERCENARY:
                 this.onRoomStatus(response.data as RoomStatusData);
                 this.communicator.sendMessage(RequestType.USER_STATUS);
-                this.communicator.sendMessage(RequestType.MERCENARIES_STATUS);
                 SoundService.play(SoundName.TREASURE);
                 break;
             case RequestType.ROOM_STATUS:

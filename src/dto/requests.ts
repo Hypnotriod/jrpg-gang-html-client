@@ -11,6 +11,7 @@ export enum RequestType {
     JOIN_ROOM = 'joinRoom',
     KICK_FROM_ROOM = 'kickFromRoom',
     HIRE_MERCENARY = 'hireMercenary',
+    DISMISS_MERCENARY = 'dismissMercenary',
     LEAVE_ROOM = 'leaveRoom',
     LOBBY_STATUS = 'lobbyStatus',
     MERCENARIES_STATUS = 'mercenariesStatus',
@@ -89,6 +90,10 @@ export interface SwitchUnitRequestData extends RequestData {
 }
 
 export interface GameRoomHireMercenaryRequestData extends RequestData {
+    code: string;
+}
+
+export interface GameRoomDismissMercenaryRequestData extends RequestData {
     code: string;
 }
 

@@ -2,7 +2,7 @@ import { container, injectable } from 'tsyringe';
 import { BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, BUTTON_START_GAME, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
 import { ROOM_DESIGN } from '../../constants/Resources';
 import { RoomInfo } from '../../domain/domain';
-import { JoinGameRoomRequestData, KickFromGameRoomRequestData, RequestType } from '../../dto/requests';
+import { GameRoomDismissMercenaryRequestData, JoinGameRoomRequestData, KickFromGameRoomRequestData, RequestType } from '../../dto/requests';
 import GameStateService from '../../service/GameStateService';
 import ResourceLoaderService from '../../service/ResourceLoaderService';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -24,6 +24,8 @@ export default class Room extends Component {
     private readonly userLevelLabels: Label[] = [];
     private readonly userConnectionStatusLabels: Label[] = [];
     private readonly userIcons: Icon[] = [];
+    private readonly kickPlayerButtons: Button[] = [];
+    private readonly dismissMercenaryButtons: Button[] = [];
     private _objectDescription: ObjectDescription;
     private _hireMercenaryCallback?: (roomUid: number) => void;
 
@@ -47,6 +49,12 @@ export default class Room extends Component {
     private readonly kickPlayer3Button: Button;
     @component('button_kick_player_4', Button)
     private readonly kickPlayer4Button: Button;
+    @component('button_dismiss_mercenary_2', Button)
+    private readonly dismissMercenary2Button: Button;
+    @component('button_dismiss_mercenary_3', Button)
+    private readonly dismissMercenary3Button: Button;
+    @component('button_dismiss_mercenary_4', Button)
+    private readonly dismissMercenary4Button: Button;
     @component('icon_room', Image)
     protected readonly roomIcon: Image;
 
@@ -81,6 +89,12 @@ export default class Room extends Component {
         this.userConnectionStatusLabels[0].htmlValue = roomInfo.host.isOffline ?
             '<img src="./assets/icons/offline.png" style="height: 16px;"/>' : '<img src="./assets/icons/online.png" style="height: 16px;"/>';
 
+        const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
+        const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
+
+        this.kickPlayerButtons.forEach(b => b.hide());
+        this.dismissMercenaryButtons.forEach(b => b.hide());
+
         [...roomInfo.joinedUsers, ...roomInfo.mercenaries].forEach((user, i) => {
             const clazz = user.class;
             this.userPlaceholders[i + 1].show();
@@ -89,6 +103,8 @@ export default class Room extends Component {
             this.userIcons[i + 1].icon = user.code;
             this.userIcons[i + 1].descriptionPopup = this._objectDescription;
             this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[user.code]?.description };
+            isUserHostOfRoom && user.playerId && this.kickPlayerButtons[i].show();
+            isUserHostOfRoom && !user.playerId && this.dismissMercenaryButtons[i].show();
 
             this.userConnectionStatusLabels[i + 1].htmlValue = !user.playerId ? '' : user.isOffline ?
                 '<img src="./assets/icons/offline.png" style="height: 16px;"/>' : '<img src="./assets/icons/online.png" style="height: 16px;"/>';
@@ -97,8 +113,6 @@ export default class Room extends Component {
         this.dungeonLabel.value = roomInfo.scenario.name;
         this.roomIcon.src = `./assets/icons/${roomInfo.scenario.id}.png`;
 
-        const isUserInRoom: boolean = this.state.isUserInRoom(roomInfo);
-        const isUserHostOfRoom: boolean = this.state.isUserHostOfRoom(roomInfo);
         const roomIsFull: boolean = roomInfo.mercenaries.length + roomInfo.joinedUsers.length >= roomInfo.scenario.capacity - 1;
         if (isUserInRoom) {
             this.joinRoomButton.hide();
@@ -123,10 +137,6 @@ export default class Room extends Component {
         } else {
             this.hireMercenaryPlaceholder.show();
         }
-
-        isUserHostOfRoom && roomInfo.joinedUsers.length >= 1 ? this.kickPlayer2Button.show() : this.kickPlayer2Button.hide();
-        isUserHostOfRoom && roomInfo.joinedUsers.length >= 2 ? this.kickPlayer3Button.show() : this.kickPlayer3Button.hide();
-        isUserHostOfRoom && roomInfo.joinedUsers.length >= 3 ? this.kickPlayer4Button.show() : this.kickPlayer4Button.hide();
     }
 
     protected initialize(): void {
@@ -148,6 +158,9 @@ export default class Room extends Component {
             this._hireMercenaryCallback?.(this.roomInfo.uid);
         }
 
+        this.kickPlayerButtons.push(this.kickPlayer2Button, this.kickPlayer3Button, this.kickPlayer4Button);
+        this.dismissMercenaryButtons.push(this.dismissMercenary2Button, this.dismissMercenary3Button, this.dismissMercenary4Button);
+
         this.joinRoomButton.onClick = target => this.doJoinRoom();
         this.leaveRoomButton.onClick = target => this.doLeaveRoom();
         this.startGameButton.onClick = target => this.doStartGame();
@@ -155,6 +168,10 @@ export default class Room extends Component {
         this.kickPlayer2Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[0].playerId);
         this.kickPlayer3Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[1].playerId);
         this.kickPlayer4Button.onClick = target => this.kickPlayer(this.roomInfo.joinedUsers[2].playerId);
+
+        this.dismissMercenary2Button.onClick = target => this.dismissMercenary(this.roomInfo.mercenaries[0 - this.roomInfo.joinedUsers.length].code);
+        this.dismissMercenary3Button.onClick = target => this.dismissMercenary(this.roomInfo.mercenaries[1 - this.roomInfo.joinedUsers.length].code);
+        this.dismissMercenary4Button.onClick = target => this.dismissMercenary(this.roomInfo.mercenaries[2 - this.roomInfo.joinedUsers.length].code);
     }
 
     public onHireMercenary(callback: (roomUid: number) => void): void {
@@ -177,6 +194,10 @@ export default class Room extends Component {
 
     protected kickPlayer(playerId: string): void {
         this.communicator.sendMessage(RequestType.KICK_FROM_ROOM, { playerId } as KickFromGameRoomRequestData);
+    }
+
+    protected dismissMercenary(code: string): void {
+        this.communicator.sendMessage(RequestType.DISMISS_MERCENARY, { code } as GameRoomDismissMercenaryRequestData);
     }
 
     protected doLeaveRoom(): void {
