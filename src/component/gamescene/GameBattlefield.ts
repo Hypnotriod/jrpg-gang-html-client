@@ -53,38 +53,46 @@ export default class GameBattlefield extends GameBase {
 
     public updateActionTargets(): void {
         const unitActionResult: GameUnitActionResult | undefined = this.state.gameState.unitActionResult;
-        if (unitActionResult?.result.result !== ActionResultType.ACCOMPLISHED) { return; }
-        const playersUnit = this.playersUnit();
-        const targets: number[] = this.actionService.targets(unitActionResult.result);
-        const unit: GameUnit = this.findUnitByUid(unitActionResult.action.uid!)!;
-        const item = this.findItemInInventory(unit.inventory, unitActionResult.action.itemUid!);
-        const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
-        if (item && (item as Weapon).damage && targets.length) {
-            this.spots[unit.position.x][unit.position.y].bounce(unit.faction === GameUnitFaction.ENEMY ? 'left' : 'right');
-        } else if (unitActionResult.action.action === ActionType.MOVE ||
-            unitActionResult.action.action === ActionType.PLACE ||
-            unitActionResult.action.action === ActionType.USE
-        ) {
-            this.spots[unit.position.x][unit.position.y].bounce('up');
-        } else if (unitActionResult.action.action === ActionType.EQUIP) {
-            this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
-            this.spots[unit.position.x][unit.position.y].bounce('up');
-        } else if (unitActionResult.action.action === ActionType.SKIP) {
-            this.spots[unit.position.x][unit.position.y].onSkip();
-        } else if (unitActionResult.action.action === ActionType.WAIT) {
-            this.spots[unit.position.x][unit.position.y].onWait();
-        }
-        targets.forEach(targetUid => {
-            const target: GameUnit = this.findUnitByUid(targetUid)!;
-            if (target.uid === playersUnit?.uid &&
-                this.actionService.hasDamage(unitActionResult.result, targetUid) &&
-                target.inventory.armor?.some(a => a?.equipped)
+        const endRoundResult: EndRoundResult | undefined = this.state.gameState.endRoundResult;
+        if (unitActionResult?.result.result === ActionResultType.ACCOMPLISHED) {
+            const playersUnit = this.playersUnit();
+            const targets: number[] = this.actionService.targets(unitActionResult.result);
+            const unit: GameUnit = this.findUnitByUid(unitActionResult.action.uid!)!;
+            const item = this.findItemInInventory(unit.inventory, unitActionResult.action.itemUid!);
+            const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
+            if (item && (item as Weapon).damage && targets.length) {
+                this.spots[unit.position.x][unit.position.y].bounce(unit.faction === GameUnitFaction.ENEMY ? 'left' : 'right');
+            } else if (unitActionResult.action.action === ActionType.MOVE ||
+                unitActionResult.action.action === ActionType.PLACE ||
+                unitActionResult.action.action === ActionType.USE
             ) {
-                this.tips.showTip(GameTipKey.ARMOR_PROTECTION);
+                this.spots[unit.position.x][unit.position.y].bounce('up');
+            } else if (unitActionResult.action.action === ActionType.EQUIP) {
+                this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
+                this.spots[unit.position.x][unit.position.y].bounce('up');
+            } else if (unitActionResult.action.action === ActionType.SKIP) {
+                this.spots[unit.position.x][unit.position.y].onSkip();
+            } else if (unitActionResult.action.action === ActionType.WAIT) {
+                this.spots[unit.position.x][unit.position.y].onWait();
             }
-            this.spots[target.position.x][target.position.y].updateWithActionResult(unitActionResult.result, targetUid, item, ammo,);
-        })
-
+            targets.forEach(targetUid => {
+                const target: GameUnit = this.findUnitByUid(targetUid)!;
+                if (target.uid === playersUnit?.uid &&
+                    this.actionService.hasDamage(unitActionResult.result, targetUid) &&
+                    target.inventory.armor?.some(a => a?.equipped)
+                ) {
+                    this.tips.showTip(GameTipKey.ARMOR_PROTECTION);
+                }
+                this.spots[target.position.x][target.position.y].updateWithActionResult(unitActionResult.result, targetUid, item, ammo);
+            })
+        } else if (endRoundResult?.damage) {
+            Object.keys(endRoundResult.damage).forEach(key => {
+                const targetUid = Number(key);
+                const damage = endRoundResult.damage![targetUid];
+                const target: GameUnit = this.findUnitByUid(targetUid)!;
+                this.spots[target.position.x][target.position.y].updateWithDamageResult(damage);
+            })
+        }
     }
 
     public updateWithExperience(): void {

@@ -13,6 +13,7 @@ export enum SoundName {
     EQUIP = 'equip',
     HIT = 'hit',
     MISS = 'miss',
+    END_ROUND_DAMAGE = 'end_round_damage',
     FIREBALL = 'fireball',
     LIGHTNING = 'lightning',
     ICE = 'ice',
@@ -99,6 +100,7 @@ export class SoundService {
         SoundService.sounds[SoundName.EQUIP] = new Howl({ src: ['assets/sounds/equip.mp3'] });
         SoundService.sounds[SoundName.HIT] = new Howl({ src: ['assets/sounds/hit.mp3'] });
         SoundService.sounds[SoundName.MISS] = new Howl({ src: ['assets/sounds/miss.mp3'] });
+        SoundService.sounds[SoundName.END_ROUND_DAMAGE] = new Howl({ src: ['assets/sounds/end_round_damage.mp3'] });
         SoundService.sounds[SoundName.FIREBALL] = new Howl({ src: ['assets/sounds/fireball.mp3'] });
         SoundService.sounds[SoundName.LIGHTNING] = new Howl({ src: ['assets/sounds/lightning.mp3'] });
         SoundService.sounds[SoundName.ICE] = new Howl({ src: ['assets/sounds/ice.mp3'] });

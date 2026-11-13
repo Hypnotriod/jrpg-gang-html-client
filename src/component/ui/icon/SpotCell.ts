@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM, ICON_HIT_ACID, ICON_ACID } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
-import { ActionRange, ActionResult, Ammunition, Cell, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
+import { ActionRange, ActionResult, Ammunition, Cell, Damage, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
 import Component from '../../Component';
@@ -675,6 +675,17 @@ export default class SpotCell extends Component {
                 this._iconEffect.show();
             }
         }
+    }
+
+    public updateWithDamageResult(damage: Damage): void {
+        this.onActionResultIcon();
+        const physicalDamage = this.actionService.physicalDamage([damage]);
+        this.shake();
+        if (!physicalDamage) return;
+        SoundService.play(SoundName.END_ROUND_DAMAGE);
+        this._iconHit.show();
+        this.hitHpLabel.show();
+        this.hitHpLabel.value = `${physicalDamage}HP`;
     }
 
     public async shake(): Promise<void> {
