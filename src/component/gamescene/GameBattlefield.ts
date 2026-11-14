@@ -33,6 +33,7 @@ export default class GameBattlefield extends GameBase {
     private currUnit: GameUnit | null = null;
     private spots: SpotCell[][];
     private lastPlayers: GameUnit[] = [];
+    private lastUnitPositions: { [key: number]: Position } = {};
 
     public destroy(): void {
         for (const x in this.spots) {
@@ -67,8 +68,12 @@ export default class GameBattlefield extends GameBase {
             } else if (unitActionResult.action.action === ActionType.USE) {
                 this.spots[unit.position.x][unit.position.y].bounce('up');
                 targets.forEach(t => this.drawActionArrow(unit.position, this.findUnitByUid(t)!.position, false));
-            } else if (unitActionResult.action.action === ActionType.MOVE || unitActionResult.action.action === ActionType.PLACE) {
+            } else if (unitActionResult.action.action === ActionType.PLACE) {
                 this.spots[unit.position.x][unit.position.y].bounce('up');
+            } else if (unitActionResult.action.action === ActionType.MOVE) {
+                this.spots[unit.position.x][unit.position.y].bounce('up');
+                const lastPosition = this.lastUnitPositions[unit.uid!];
+                lastPosition && this.drawMoveArrow(lastPosition, unit.position);
             } else if (unitActionResult.action.action === ActionType.EQUIP) {
                 this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
                 this.spots[unit.position.x][unit.position.y].bounce('up');
@@ -104,6 +109,15 @@ export default class GameBattlefield extends GameBase {
         const endElem = this.spots[to.x][to.y].view;
         const line = new LeaderLine(startElem, endElem, { color, size: 2, dash: { animation: true } });
         await timeout(1100);
+        line.remove();
+    }
+
+    protected async drawMoveArrow(from: Position, to: Position): Promise<void> {
+        const color = '#b7b7b7';
+        const startElem = this.spots[from.x][from.y].center;
+        const endElem = this.spots[to.x][to.y].center;
+        const line = new LeaderLine(startElem, endElem, { color, size: 2, dash: {} });
+        await timeout(400);
         line.remove();
     }
 
@@ -231,6 +245,7 @@ export default class GameBattlefield extends GameBase {
     }
 
     protected updateBattlefieldCells(): void {
+        this.lastUnitPositions = {};
         const matrix: Cell[][] = this.state.gameState.spot.battlefield.matrix;
         const isActive =
             (this.state.gameState.nextPhase === GamePhase.TAKE_ACTION &&
@@ -238,6 +253,10 @@ export default class GameBattlefield extends GameBase {
                 this.state.gameState.nextPhase === GamePhase.PREPARE_UNIT);
         for (const x in matrix) {
             for (const y in matrix[x]) {
+                const unit = this.spots[x][y].unit;
+                if (unit) {
+                    this.lastUnitPositions[unit.uid!] = unit.position;
+                }
                 this.spots[x][y].updateWithCell(matrix[x][y], FLOOR_TILES[this.state.gameState.spot.code], isActive);
                 this.spots[x][y].highlight(false);
             }

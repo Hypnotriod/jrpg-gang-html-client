@@ -105,6 +105,8 @@ export default class SpotCell extends Component {
     protected readonly staminaBar: Container;
     @component(MANA_BAR, Container)
     protected readonly manaBar: Container;
+    @component('cell_center', Container)
+    protected readonly _center: Container;
 
     private _descriptionPopup: ObjectDescription;
     private _unit: GameUnit | undefined;
@@ -134,6 +136,10 @@ export default class SpotCell extends Component {
     }
     public set hideSpreadChance(value: (position: Position) => void) {
         this._hideSpreadChance = value;
+    }
+
+    public get center(): HTMLElement {
+        return this._center.view;
     }
 
     public get hint(): string | undefined {
