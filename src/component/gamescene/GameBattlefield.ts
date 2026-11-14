@@ -13,6 +13,7 @@ import { SoundName, SoundService } from '../../service/SoundService';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
 import { FLOOR_TILES } from '../../constants/Configuration';
+import { timeout } from '../../utils/utils';
 
 @injectable()
 @singleton()
@@ -62,10 +63,11 @@ export default class GameBattlefield extends GameBase {
             const ammo = (item as Weapon | undefined)?.ammunitionKind ? unit.inventory.ammunition?.find(a => a.equipped) : undefined;
             if (item && (item as Weapon).damage && targets.length) {
                 this.spots[unit.position.x][unit.position.y].bounce(unit.faction === GameUnitFaction.ENEMY ? 'left' : 'right');
-            } else if (unitActionResult.action.action === ActionType.MOVE ||
-                unitActionResult.action.action === ActionType.PLACE ||
-                unitActionResult.action.action === ActionType.USE
-            ) {
+                targets.forEach(t => this.drawActionArrow(unit.position, this.findUnitByUid(t)!.position, true));
+            } else if (unitActionResult.action.action === ActionType.USE) {
+                this.spots[unit.position.x][unit.position.y].bounce('up');
+                targets.forEach(t => this.drawActionArrow(unit.position, this.findUnitByUid(t)!.position, false));
+            } else if (unitActionResult.action.action === ActionType.MOVE || unitActionResult.action.action === ActionType.PLACE) {
                 this.spots[unit.position.x][unit.position.y].bounce('up');
             } else if (unitActionResult.action.action === ActionType.EQUIP) {
                 this.spots[unit.position.x][unit.position.y].changeGear(item!.code);
@@ -93,6 +95,16 @@ export default class GameBattlefield extends GameBase {
                 this.spots[target.position.x][target.position.y].updateWithDamageResult(damage);
             })
         }
+    }
+
+    protected async drawActionArrow(from: Position, to: Position, withDamage: boolean): Promise<void> {
+        if (Math.abs(from.x - to.x) <= 1 && Math.abs(from.y - to.y) <= 1) return;
+        const color = withDamage ? '#b77f79' : '#79b79b';
+        const startElem = this.spots[from.x][from.y].view;
+        const endElem = this.spots[to.x][to.y].view;
+        const line = new LeaderLine(startElem, endElem, { color, size: 2, dash: { animation: true } });
+        await timeout(1100);
+        line.remove();
     }
 
     public updateWithExperience(): void {
