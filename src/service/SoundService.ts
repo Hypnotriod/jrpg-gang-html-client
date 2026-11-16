@@ -44,11 +44,17 @@ export enum SoundName {
     QUEST_COMPLETE = 'quest_complete',
     FOOD = 'food',
     PAGE_TURN = 'page_turn',
+    WOODS_WALK = 'woods_walk',
+    COINS_IN_A_CAN = 'coins_in_a_can',
+    LAUNDRY_HANDWASH = 'laundry_handwash',
 }
 
 export const JOB_SOUND: { [key: string]: SoundName } = {
+    'job-begging-01': SoundName.COINS_IN_A_CAN,
     'job-clean-01': SoundName.BROOM,
     'job-clean-02': SoundName.WASHING,
+    'job-laundry-01': SoundName.LAUNDRY_HANDWASH,
+    'job-gather-herbs-01': SoundName.WOODS_WALK,
     'job-library-01': SoundName.BOOK,
     'job-chicken-chase-01': SoundName.CHINKEN_HUNTING,
     'job-mining-01': SoundName.PROSPECTING,
@@ -131,6 +137,9 @@ export class SoundService {
         SoundService.sounds[SoundName.QUEST_COMPLETE] = new Howl({ src: ['assets/sounds/quest_complete.mp3'] });
         SoundService.sounds[SoundName.FOOD] = new Howl({ src: ['assets/sounds/food.mp3'] });
         SoundService.sounds[SoundName.PAGE_TURN] = new Howl({ src: ['assets/sounds/page_turn.mp3'] });
+        SoundService.sounds[SoundName.WOODS_WALK] = new Howl({ src: ['assets/sounds/woods_walk.mp3'] });
+        SoundService.sounds[SoundName.COINS_IN_A_CAN] = new Howl({ src: ['assets/sounds/coins_in_a_can.mp3'] });
+        SoundService.sounds[SoundName.LAUNDRY_HANDWASH] = new Howl({ src: ['assets/sounds/laundry_handwash.mp3'] });
         SoundService.sounds[MusicName.DRONE_MAIN] = new Howl({ src: ['assets/sounds/drone_main.mp3'] });
         SoundService.sounds[MusicName.DRONE_CAVE] = new Howl({ src: ['assets/sounds/drone_cave.mp3'] });
     }
