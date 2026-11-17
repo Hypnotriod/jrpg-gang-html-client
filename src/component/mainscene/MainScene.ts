@@ -77,9 +77,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         super();
     }
 
-    protected async initialize(): Promise<void> {
+    protected initialize(): void {
         this.hide();
-        await this.communicator.sendConfigurationMessage(RequestType.START_GAME);
         SoundService.initialize();
         this.initializeComponents().then(() => {
             this.login.tryToAutoLogin();
