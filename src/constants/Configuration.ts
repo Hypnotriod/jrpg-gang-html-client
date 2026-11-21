@@ -1,4 +1,5 @@
 import { ComponentResizeConfig } from '../component/Component';
+import { Position } from '../domain/domain';
 
 export const USER_CLASSES: string[] = [
     'warrior',
@@ -447,3 +448,10 @@ export const RESIZE_CONFIG: ComponentResizeConfig = {
     maxScale: 2,
     minScale: 1,
 }
+
+export const SPOT_COMPLETE_UNIT_POSITIONS: Position[] = [
+    { x: 2, y: 1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 0 },
+    { x: 1, y: 2 },
+];

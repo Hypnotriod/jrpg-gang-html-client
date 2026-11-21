@@ -43,6 +43,7 @@ export default class GameBattlefield extends GameBase {
         }
         (this.spots as SpotCell[][] | undefined) = undefined;
         this.lastPlayers = [];
+        SoundService.stop(SoundName.CAMPFIRE);
     }
 
     public set objectDescription(value: ObjectDescription) {
@@ -149,6 +150,10 @@ export default class GameBattlefield extends GameBase {
         if (unit?.isDead === true && !this.deathSoundPlayed) {
             this.deathSoundPlayed = true;
             SoundService.play(SoundName.GAME_OVER);
+        }
+        if (this.state.gameState.nextPhase === GamePhase.SCENARIO_COMPLETE ||
+            this.state.gameState.nextPhase === GamePhase.SPOT_COMPLETE) {
+            SoundService.play(SoundName.CAMPFIRE, { loop: true, skipIfPlaying: true });
         }
     }
 

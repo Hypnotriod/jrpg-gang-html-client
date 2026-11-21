@@ -28,6 +28,7 @@ export enum SoundName {
     HORN = 'horn',
     BATTLE_START = 'battle_start',
     DOOR = 'door',
+    CAMPFIRE = 'campfire',
     COMPLETE = 'complete',
     BROOM = 'broom',
     WASHING = 'washing',
@@ -121,6 +122,7 @@ export class SoundService {
         SoundService.sounds[SoundName.HORN] = new Howl({ src: ['assets/sounds/horn.mp3'] });
         SoundService.sounds[SoundName.BATTLE_START] = new Howl({ src: ['assets/sounds/battle_start.mp3'] });
         SoundService.sounds[SoundName.DOOR] = new Howl({ src: ['assets/sounds/door.mp3'] });
+        SoundService.sounds[SoundName.CAMPFIRE] = new Howl({ src: ['assets/sounds/campfire.mp3'] });
         SoundService.sounds[SoundName.COMPLETE] = new Howl({ src: ['assets/sounds/complete.mp3'] });
         SoundService.sounds[SoundName.BROOM] = new Howl({ src: ['assets/sounds/broom.mp3'] });
         SoundService.sounds[SoundName.WASHING] = new Howl({ src: ['assets/sounds/washing.mp3'] });

@@ -21,7 +21,7 @@ import GameUnitsQueue from './GameUnitsQueue';
 import { DungeonLootPopup } from '../ui/popup/DungeonLootPopup';
 import { LeaveDungeonPopup } from '../ui/popup/LeaveDungeonPopup';
 import Container from '../ui/container/Container';
-import { ACHIEVEMENT_IDS } from '../../constants/Configuration';
+import { ACHIEVEMENT_IDS, SPOT_COMPLETE_UNIT_POSITIONS } from '../../constants/Configuration';
 import { TipsPopup } from '../ui/popup/TipsPopup';
 import { closeCombatTip, GameTipKey, rangeCombatTip } from '../../constants/Tips';
 import GameLogRenderer from '../../service/GameLogRenderer';
@@ -108,6 +108,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             this.communicator.sendMessage(RequestType.LEAVE_GAME);
             this.communicator.sendMessage(RequestType.USER_STATUS);
             SoundService.play(SoundName.DOOR);
+            SoundService.stop(SoundName.CAMPFIRE);
         }
     }
 
@@ -120,6 +121,7 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         this.leaveDungeonPopup.onYes = () => {
             this.communicator.sendMessage(RequestType.LEAVE_GAME);
             this.communicator.sendMessage(RequestType.USER_STATUS);
+            SoundService.stop(SoundName.CAMPFIRE);
             SoundService.play(SoundName.DOOR);
             SoundService.play(SoundName.TREASURE, { delay: 0.2 });
         }
@@ -132,14 +134,14 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
         }
         switch (response.type) {
             case RequestType.GAME_STATE:
-                this.state.gameState = (response.data as GameStateData).gameState;
+                this.state.gameState = this.modifyGameEvent((response.data as GameStateData).gameState);
                 this.handleGameState();
                 this.communicator.sendMessage(RequestType.GAME_CHAT_STATE);
                 break;
             case RequestType.GAME_ACTION:
             case RequestType.NEXT_GAME_PHASE:
                 const corpsesNumber = this.state.gameState?.spot.battlefield.corpses?.length ?? 0;
-                this.state.gameState = (response.data as GameActionData | GameNextPhaseData).actionResult;
+                this.state.gameState = this.modifyGameEvent((response.data as GameActionData).actionResult);
                 this.handleGameAction();
                 if (corpsesNumber < (this.state.gameState?.spot.battlefield.corpses?.length ?? 0)) {
                     SoundService.play(SoundName.DEATH);
@@ -165,6 +167,21 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                 break;
         }
         this.battlefield.updateUnitsTurnOrder();
+    }
+
+    protected modifyGameEvent(data: GameEvent): GameEvent {
+        if (data.nextPhase === GamePhase.SPOT_COMPLETE || data.nextPhase === GamePhase.SCENARIO_COMPLETE) {
+            data.spot.battlefield.units.forEach((u, i) => u.position = SPOT_COMPLETE_UNIT_POSITIONS[i]);
+            data.spot.battlefield.corpses.forEach((u, i) => u.position = { x: -1, y: -1 });
+            for (const x in data.spot.battlefield.matrix) {
+                for (const y in data.spot.battlefield.matrix[x]) {
+                    data.spot.battlefield.matrix[x][y].code = '';
+                }
+            }
+            data.spot.battlefield.matrix[3][1].code = 'treasure';
+            data.spot.battlefield.matrix[1][1].code = 'campfire';
+        }
+        return data;
     }
 
     public async show(): Promise<void> {
