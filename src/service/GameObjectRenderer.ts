@@ -174,20 +174,20 @@ export default class GameObjectRenderer {
     }
 
     protected renderShopPriceValue(header: string, price: any, booty: any): string {
-        function keyValueIcon(key: string, icon: string, value: number, has: number): string {
-            if (has < Number(price[key])) {
+        function keyValueIcon(icon: string, value: number, has: number): string {
+            if (has < value) {
                 return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" />
-                <span class="red-text" style="padding: 0">${value || 0}</span> `;
+                <span class="red-text" style="padding: 0">${value}</span> `;
             }
-            return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" /> ${value || 0} `;
+            return `<img src="./assets/icons/${icon}.png" style="vertical-align: middle; padding-bottom: 2px; width: 12px;" /> ${value} `;
         }
         header = this.capitalize(header);
         let result = `<span class="orange-text text-lighten-1">${header}</span>: `;
         if (price.coins) {
-            result += `${keyValueIcon('coins', 'coin', price.coins, booty.coins)}`;
+            result += `${keyValueIcon('coin', price.coins, booty.coins ?? 0)}`;
         }
         if (price.ruby) {
-            result += `${keyValueIcon('ruby', 'ruby', price.ruby, booty.ruby)}`;
+            result += `${keyValueIcon('ruby', price.ruby, booty.ruby ?? 0)}`;
         }
         return result + '<br>';
     }
