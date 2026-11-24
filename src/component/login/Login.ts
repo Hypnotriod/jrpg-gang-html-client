@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import AppConfig from '../../application/AppConfig';
 import { BUTTON_JOIN, ICONS_CONTAINER, INPUT_LABEL_USER_NAME, INPUT_USER_NAME, ITEM_DESCRIPTION_POPUP, LABEL_ERROR } from '../../constants/Components';
-import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES } from '../../constants/Configuration';
+import { BASE_UNIT_DESCRIPTIONS, USER_CLASSES, USER_CLASSES_SKINS } from '../../constants/Configuration';
 import { USER_NAME_MAX_LENGTH, USER_NAME_REGEXP } from '../../constants/RegularExpressions';
 import { RequestType, SetPlayerInfoRequestData } from '../../dto/requests';
 import { KEY_IS_NEW_PLAYER, KEY_IS_GUEST, KEY_SESSION_ID, KEY_TOKEN, Response, ResponseStatus, UserStateData, UserStatus, VALUE_FALSE, VALUE_TRUE } from '../../dto/responces';
@@ -19,6 +19,7 @@ import { InventoryItem } from '../../domain/domain';
 import ObjectDescription from '../ui/popup/ObjectDescription';
 import { SoundName, SoundService } from '../../service/SoundService';
 import QuestLog from '../quests/QuestLog';
+import { CustomizationPopup } from '../ui/popup/CustomizationPopup';
 
 @injectable()
 @singleton()
@@ -47,6 +48,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
         private readonly communicator: ServerCommunicatorService,
         private readonly query: QueryService,
         private readonly state: GameStateService,
+        private readonly customization: CustomizationPopup,
         private readonly auth: Auth) {
         super();
     }
@@ -77,8 +79,8 @@ export default class Login extends Component implements ServerCommunicatorHandle
             icon.descriptionPopup = this.objectDescription;
             this.icons.push(icon);
         });
-        this.icons[0].select();
-        this.icons[0].choose();
+        // this.icons[0].select();
+        // this.icons[0].choose();
         this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
@@ -92,10 +94,16 @@ export default class Login extends Component implements ServerCommunicatorHandle
         target.choose();
         this.onUserNameInput();
         SoundService.play(SoundName.CLICK);
+        this.customization.update(USER_CLASSES_SKINS[this.getClass()], target.icon);
+        this.customization.show();
+        this.customization.onSelect = skin => target.icon = skin;
     }
 
     protected onUserNameInput(): void {
-        if (this.userNameInput.isValid && this.userNameInput.value !== '' && !this.isJoining) {
+        if (this.userNameInput.isValid &&
+            this.userNameInput.value !== '' &&
+            !this.isJoining &&
+            this.icons.some(icon => icon.selected)) {
             this.joinButton.enable();
         } else {
             this.joinButton.disable();
@@ -133,9 +141,11 @@ export default class Login extends Component implements ServerCommunicatorHandle
     protected async updatePlayerInfoAndJoin(): Promise<void> {
         const nickname: string = this.getNickname();
         const clazz: string = this.getClass();
+        const skin = this.getSkin();
         const response = await this.communicator.sendConfigurationMessage(RequestType.SET_PLAYER_INFO, {
             token: this.token,
             nickname,
+            skin,
             class: clazz,
         } as SetPlayerInfoRequestData);
         if (response.status === ResponseStatus.ALREADY_EXISTS || response.status === ResponseStatus.NOT_ALLOWED) {
@@ -195,11 +205,15 @@ export default class Login extends Component implements ServerCommunicatorHandle
 
     protected getClass(): string {
         let clazz: string = '';
-        this.icons.forEach(icon => {
+        this.icons.forEach((icon, n) => {
             if (!icon.selected) { return; }
-            clazz = icon.icon;
+            clazz = USER_CLASSES[n];
         });
         return clazz;
+    }
+
+    protected getSkin(): string {
+        return this.icons.find(icon => icon.selected)?.icon ?? '';
     }
 
     protected getNickname(): string {

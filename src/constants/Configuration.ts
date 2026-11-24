@@ -8,6 +8,13 @@ export const USER_CLASSES: string[] = [
     'ranger',
 ];
 
+export const USER_CLASSES_SKINS: { [clazz: string]: string[] } = {
+    'warrior': ['warrior', 'warrior-02', 'warrior-03', 'warrior-04'],
+    'barbarian': ['barbarian', 'barbarian-02', 'barbarian-03', 'barbarian-04'],
+    'mage': ['mage', 'mage-02', 'mage-03', 'mage-04'],
+    'ranger': ['ranger', 'ranger-02', 'ranger-03', 'ranger-04'],
+};
+
 export const BASE_UNIT_DESCRIPTIONS: { [key: string]: any } = {
     warrior: {
         name: "Warrior",

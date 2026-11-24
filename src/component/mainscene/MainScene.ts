@@ -27,6 +27,7 @@ import { AchievementPopup } from '../ui/popup/AchievementPopup';
 import QuestLog from '../quests/QuestLog';
 import { SettingsPopup } from '../ui/popup/SettingsPopup';
 import isMobile from 'ismobilejs';
+import { CustomizationPopup } from '../ui/popup/CustomizationPopup';
 
 const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
@@ -50,6 +51,8 @@ export default class MainScene extends Component implements ServerCommunicatorHa
     private readonly settingsPopupShadow: Container;
     @component('settings_popup', SettingsPopup)
     private readonly settingsPopup: SettingsPopup;
+    @component('customization_popup', CustomizationPopup)
+    private readonly customizationPopup: CustomizationPopup;
     @component('settings_icon', Button)
     private readonly settingsIcon: Button;
     @component('scale_container', Container)
@@ -89,8 +92,10 @@ export default class MainScene extends Component implements ServerCommunicatorHa
         this.settingsPopup.shadow = this.settingsPopupShadow;
         this.tipsPopup.shadow = this.tipsPopupShadow;
         this.rulesPopup.shadow = this.rulesPopupShadow;
+        this.customizationPopup.shadow = this.tipsPopupShadow;;
         this.settingsPopup.hide();
         this.rulesPopup.hide();
+        this.customizationPopup.hide();
         this.buttonFullscreen.onClick = target => this.toggleFullscreen();
         this.buttonRules.onClick = target => {
             !this.rulesPopup.visible ? this.rulesPopup.show() : this.rulesPopup.hide();

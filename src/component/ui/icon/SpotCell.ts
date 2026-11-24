@@ -184,7 +184,7 @@ export default class SpotCell extends Component {
             this.displayActionChance && this.showActionChance();
             this._descriptionPopup.data = {
                 name: this._unit.playerInfo?.nickname || this._unit.name,
-                code: this._unit.code,
+                code: this._unit.customization?.skin ?? this._unit.code,
                 unitUid: this._unit.uid,
                 state: this._unit.state,
                 stats: this._unit.stats,
@@ -557,7 +557,7 @@ export default class SpotCell extends Component {
         this._unit.modification?.find(m => m.baseAttributes?.health || m.recovery?.health) ? this._iconHealth.show() : this._iconHealth.hide();
         this._unit.modification?.find(m => m.baseAttributes?.stamina || m.recovery?.stamina) ? this._iconStamina.show() : this._iconStamina.hide();
         this._unit.modification?.find(m => m.baseAttributes?.mana || m.recovery?.mana) ? this._iconMana.show() : this._iconMana.hide();
-        this.icon = this._unit.playerInfo ? this._unit.playerInfo.class! : this._unit.code!;
+        this.icon = this._unit.customization?.skin ?? this._unit.playerInfo?.class ?? this._unit.code!;
         this._unit.state.stress ? this._iconStressedSm.show() : this._iconStressedSm.hide();
         if ((this._unit.faction === GameUnitFaction.ENEMY || this._unit.faction === GameUnitFaction.PARTY) && isActive) {
             this._icon.enable();

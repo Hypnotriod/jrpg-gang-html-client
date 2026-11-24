@@ -55,6 +55,7 @@ export interface SetPlayerInfoRequestData extends RequestData {
     token: string;
     nickname: string;
     class: string;
+    skin: string;
 }
 
 export interface JoinRequestData extends RequestData {

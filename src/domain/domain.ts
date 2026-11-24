@@ -4,6 +4,7 @@ export interface PlayerInfo {
     class: string;
     code: string;
     level: number;
+    customization?: UnitCustomization;
     unitUid?: number;
     isOffline?: boolean;
     isReady?: boolean;
@@ -265,6 +266,10 @@ export enum UnitQuestStatus {
     FAILED = 'failed',
 }
 
+export interface UnitCustomization {
+    skin?: string;
+}
+
 export type UnitAchievements = { [key: string]: number };
 
 export type UnitQuests = { [key: string]: UnitQuestStatus };
@@ -285,6 +290,7 @@ export interface Unit {
     quests: { [key: string]: UnitQuestStatus };
     position: Position;
     description?: string;
+    customization?: UnitCustomization;
 }
 
 export enum GameUnitFaction {
@@ -405,6 +411,7 @@ export enum ActionType {
     WAIT = 'wait',
     LEVEL_UP = 'levelUp',
     SKILL_UP = 'skillUp',
+    CUSTOMIZE = 'customize',
 }
 
 export enum ActionProperty {
@@ -434,6 +441,7 @@ export interface Action {
     property?: ActionProperty;
     questCode?: string;
     position?: Position;
+    customization?: UnitCustomization;
 }
 
 export enum ActionResultType {

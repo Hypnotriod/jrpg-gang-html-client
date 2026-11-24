@@ -83,7 +83,7 @@ export default class Room extends Component {
         this.userPlaceholders[0].show();
         this.userNameLabels[0].value = roomInfo.host.nickname;
         this.userLevelLabels[0].value = `Level: ${roomInfo.host.level}`;
-        this.userIcons[0].icon = roomInfo.host.code;
+        this.userIcons[0].icon = roomInfo.host.customization?.skin ?? roomInfo.host.code;
         this.userIcons[0].descriptionPopup = this._objectDescription;
         this.userIcons[0].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[roomInfo.host.code]?.description };
         this.userConnectionStatusLabels[0].htmlValue = roomInfo.host.isOffline ?
@@ -100,7 +100,7 @@ export default class Room extends Component {
             this.userPlaceholders[i + 1].show();
             this.userNameLabels[i + 1].value = user.nickname;
             this.userLevelLabels[i + 1].value = `Level: ${user.level}`;
-            this.userIcons[i + 1].icon = user.code;
+            this.userIcons[i + 1].icon = user.customization?.skin ?? user.code;
             this.userIcons[i + 1].descriptionPopup = this._objectDescription;
             this.userIcons[i + 1].description = { [clazz]: BASE_UNIT_DESCRIPTIONS[user.code]?.description };
             isUserHostOfRoom && user.playerId && this.kickPlayerButtons[i].show();

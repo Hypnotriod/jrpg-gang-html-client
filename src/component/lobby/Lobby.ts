@@ -230,7 +230,7 @@ export default class Lobby extends Component implements ServerCommunicatorHandle
 
     protected updateUnitInfo(): void {
         const clazz = this.state.userState.playerInfo.class;
-        this.unitIcon.icon = clazz
+        this.unitIcon.icon = this.state.userState.playerInfo.customization?.skin ?? clazz;
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
         this.unitIcon.description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
     }

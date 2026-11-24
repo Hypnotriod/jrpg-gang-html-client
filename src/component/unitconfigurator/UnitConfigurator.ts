@@ -17,7 +17,7 @@ import ItemIcon from '../ui/icon/ItemIcon';
 import ShopItemIcon from '../ui/icon/ShopItemIcon';
 import Label from '../ui/label/Label';
 import ObjectDescription from '../ui/popup/ObjectDescription';
-import { ACHIEVEMENT_IDS, BASE_UNIT_DESCRIPTIONS, QUEST_IDS, SCENARIO_IDS, USER_CLASSES } from '../../constants/Configuration';
+import { ACHIEVEMENT_IDS, BASE_UNIT_DESCRIPTIONS, QUEST_IDS, SCENARIO_IDS, USER_CLASSES, USER_CLASSES_SKINS } from '../../constants/Configuration';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
 import { MusicName, SoundName, SoundService } from '../../service/SoundService';
 import Quests from '../quests/Quests';
@@ -28,6 +28,7 @@ import { TipsPopup } from '../ui/popup/TipsPopup';
 import { GameTipKey } from '../../constants/Tips';
 import { StorageService } from '../../service/StorageService';
 import UpgradePopup from './UpgradePopup';
+import { CustomizationPopup } from '../ui/popup/CustomizationPopup';
 
 @singleton()
 @injectable()
@@ -140,7 +141,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         private readonly state: GameStateService,
         private readonly renderer: GameObjectRenderer,
         private readonly tips: TipsPopup,
-        protected readonly storage: StorageService,
+        private readonly storage: StorageService,
+        private readonly customization: CustomizationPopup,
         @inject(delay(() => Lobby)) private readonly lobby: Lobby,
         @inject(delay(() => Jobs)) private readonly jobs: Jobs,
         @inject(delay(() => Quests)) private readonly quests: Quests,
@@ -275,6 +277,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.storage.setItem(KEY_ARE_INSTRUCTIONS_SHOWN, 'true');
             this.tips.showTip(GameTipKey.MAIN_HUB);
         };
+
+        this.unitIcon.onClick = () => this.changePortrait();
 
         this.newQuestsIcon.hide();
     }
@@ -435,7 +439,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
     protected updateUserStatus(data: UserStateData): void {
         this.state.userState = data;
         const clazz = this.state.userState.playerInfo.class;
-        this.unitIcon.icon = clazz;
+        this.unitIcon.icon = this.state.userState.playerInfo.customization?.skin ?? this.state.userState.playerInfo.class;
         this.unitIcon.description = { [clazz]: BASE_UNIT_DESCRIPTIONS[clazz].description };
         this.unitInfo.value = this.state.userState.playerInfo.nickname;
         this.labelClass.value = clazz;
@@ -843,5 +847,18 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.SHOP_STATUS);
         this.communicator.sendMessage(RequestType.USER_STATUS);
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
+    }
+
+    protected changePortrait() {
+        this.customization.update(USER_CLASSES_SKINS[this.state.userState.playerInfo.class], this.unitIcon.icon);
+        this.customization.show();
+        this.customization.onSelect = (skin) => {
+            if (this.unitIcon.icon === skin) return;
+            this.communicator.sendMessage(RequestType.CONFIGURATION_ACTION, {
+                action: ActionType.CUSTOMIZE,
+                customization: { skin }
+            } as ActionRequestData);
+            this.communicator.sendMessage(RequestType.USER_STATUS);
+        }
     }
 }
