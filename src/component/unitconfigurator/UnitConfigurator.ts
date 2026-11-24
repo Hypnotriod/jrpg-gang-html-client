@@ -278,7 +278,7 @@ export default class UnitConfigurator extends Component implements ServerCommuni
             this.tips.showTip(GameTipKey.MAIN_HUB);
         };
 
-        this.unitIcon.onClick = () => this.changePortrait();
+        this.unitIcon.onClick = () => this.onUnitIconClick();
 
         this.newQuestsIcon.hide();
     }
@@ -849,7 +849,8 @@ export default class UnitConfigurator extends Component implements ServerCommuni
         this.communicator.sendMessage(RequestType.QUESTS_STATUS);
     }
 
-    protected changePortrait() {
+    protected onUnitIconClick() {
+        SoundService.play(SoundName.CLICK);
         this.customization.update(USER_CLASSES_SKINS[this.state.userState.playerInfo.class], this.unitIcon.icon);
         this.customization.show();
         this.customization.onSelect = (skin) => {

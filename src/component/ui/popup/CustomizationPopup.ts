@@ -1,12 +1,10 @@
 import { injectable, singleton } from 'tsyringe';
-import GameStateService from '../../../service/GameStateService';
-import ServerCommunicatorService from '../../../service/ServerCommunicatorService';
 import { component } from '../../decorator/decorator';
 import Button from '../button/Button';
 import Container from '../container/Container';
-import { TipsPopup } from './TipsPopup';
 import ItemIcon from '../icon/ItemIcon';
 import { ICONS_CONTAINER } from '../../../constants/Components';
+import { SoundName, SoundService } from '../../../service/SoundService';
 
 @injectable()
 @singleton()
@@ -23,14 +21,6 @@ export class CustomizationPopup extends Container {
 
     public set shadow(value: Container) {
         this._shadow = value;
-    }
-
-    constructor(
-        private readonly tipsPopup: TipsPopup,
-        private readonly state: GameStateService,
-        private readonly communicator: ServerCommunicatorService
-    ) {
-        super();
     }
 
     public update(skins: string[], current: string) {
@@ -52,6 +42,7 @@ export class CustomizationPopup extends Container {
         this.icons.forEach(icon => icon.unchoose());
         target.select();
         target.choose();
+        SoundService.play(SoundName.CLICK);
     }
 
     public override show(): void {
