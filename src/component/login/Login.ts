@@ -54,6 +54,7 @@ export default class Login extends Component implements ServerCommunicatorHandle
     }
 
     protected initialize(): void {
+        this.hide();
         const isGuest = Boolean(this.query.parsedQuery[KEY_IS_GUEST]);
         this.userNameInput.validationRegEx = USER_NAME_REGEXP;
         this.userNameInput.maxLength = USER_NAME_MAX_LENGTH;
@@ -74,20 +75,17 @@ export default class Login extends Component implements ServerCommunicatorHandle
         this.objectDescription.hide();
         USER_CLASSES.forEach((clazz) => {
             const icon = ItemIcon.createBigItemIcon(clazz, this, ICONS_CONTAINER)!;
-            icon.onClick = target => this.onClassIconClick(target);
+            icon.onClick = target => this.onClassIconClick(target, clazz);
             icon.update(BASE_UNIT_DESCRIPTIONS[clazz] as InventoryItem, this.state);
             icon.descriptionPopup = this.objectDescription;
             this.icons.push(icon);
         });
-        // this.icons[0].select();
-        // this.icons[0].choose();
-        this.hide();
 
         this.communicator.subscribe([RequestType.JOIN], this);
         this.onUserNameInput();
     }
 
-    protected onClassIconClick(target: ItemIcon): void {
+    protected onClassIconClick(target: ItemIcon, clazz: string): void {
         this.icons.forEach(icon => icon.unselect());
         this.icons.forEach(icon => icon.unchoose());
         target.select();
@@ -96,7 +94,12 @@ export default class Login extends Component implements ServerCommunicatorHandle
         SoundService.play(SoundName.CLICK);
         this.customization.update(USER_CLASSES_SKINS[this.getClass()], target.icon);
         this.customization.show();
-        this.customization.onSelect = skin => target.icon = skin;
+        this.customization.onSelect = skin => {
+            target.update({ ...BASE_UNIT_DESCRIPTIONS[clazz], customization: { skin } }, this.state);
+            target.icon = skin;
+            target.select();
+            target.choose();
+        }
     }
 
     protected onUserNameInput(): void {

@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
-import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnitFaction, ItemType, Weapon } from '../../domain/domain';
+import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnitFaction, ItemType, Position, Weapon } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
 import ActionService from '../../service/ActionService';
@@ -58,6 +58,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
     private readonly gamePhaseInfoLabel: Label;
     @component('game_chat', Chat)
     private readonly gameChat: Chat;
+
+    protected campfireFormation: { [key: number]: Position } = {};
 
     constructor(
         private readonly questLog: QuestLog,
@@ -171,7 +173,10 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
 
     protected modifyGameEvent(data: GameEvent): GameEvent {
         if (data.nextPhase === GamePhase.SPOT_COMPLETE || data.nextPhase === GamePhase.SCENARIO_COMPLETE) {
-            data.spot.battlefield.units.forEach((u, i) => u.position = SPOT_COMPLETE_UNIT_POSITIONS[i]);
+            data.spot.battlefield.units.forEach((u, i) => {
+                u.position = this.campfireFormation[u.uid!] ?? SPOT_COMPLETE_UNIT_POSITIONS[i];
+                this.campfireFormation[u.uid!] = u.position;
+            });
             data.spot.battlefield.corpses.forEach((u, i) => u.position = { x: -1, y: -1 });
             for (const x in data.spot.battlefield.matrix) {
                 for (const y in data.spot.battlefield.matrix[x]) {
@@ -180,6 +185,8 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
             }
             data.spot.battlefield.matrix[3][1].code = 'treasure';
             data.spot.battlefield.matrix[1][1].code = 'campfire';
+        } else {
+            this.campfireFormation = {};
         }
         return data;
     }
@@ -299,35 +306,37 @@ export default class GameScene extends GameBase implements ServerCommunicatorHan
                     }
                 }
         }
-        if (playersUnit.state.stamina < playersUnit.stats.baseAttributes.stamina * 0.25) {
-            this.tips.showTip(GameTipKey.LOW_STAMINA);
-        }
-        if (playersUnit.state.stamina === 0) {
-            this.tips.showTip(GameTipKey.NO_STAMINA);
+        if (this.isCurrentUnitTurn()) {
+            if (playersUnit.state.stamina < playersUnit.stats.baseAttributes.stamina * 0.25) {
+                this.tips.showTip(GameTipKey.LOW_STAMINA);
+            }
+            if (playersUnit.state.stamina === 0) {
+                this.tips.showTip(GameTipKey.NO_STAMINA);
+            }
+            if (playersUnit.state.stress) {
+                this.tips.showTip(GameTipKey.STRESSED);
+            }
+            if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.5) {
+                this.tips.showTip(GameTipKey.LOW_HEALTH);
+            }
+            if (playersUnit.state.mana < playersUnit.stats.baseAttributes.mana * 0.25) {
+                this.tips.showTip(GameTipKey.LOW_MANA);
+            }
+            if (playersUnit.damage?.some(d => d.bleeding)) {
+                this.tips.showTip(GameTipKey.BLEADING);
+            }
+            if (playersUnit.damage?.some(d => d.poison)) {
+                this.tips.showTip(GameTipKey.POISONED);
+            }
+            if (playersUnit.inventory.armor?.some(a => a.durability && (a.wearout ?? 0) >= a.durability)) {
+                this.tips.showTip(GameTipKey.BROKEN_GEAR);
+            }
+            if (playersUnit.inventory.weapon?.some(w => w.durability && (w.wearout ?? 0) >= w.durability)) {
+                this.tips.showTip(GameTipKey.BROKEN_GEAR);
+            }
         }
         if (playersUnit.state.isStunned) {
             this.tips.showTip(GameTipKey.STUNNED);
-        }
-        if (playersUnit.state.stress) {
-            this.tips.showTip(GameTipKey.STRESSED);
-        }
-        if (playersUnit.state.health < playersUnit.stats.baseAttributes.health * 0.5) {
-            this.tips.showTip(GameTipKey.LOW_HEALTH);
-        }
-        if (playersUnit.state.mana < playersUnit.stats.baseAttributes.mana * 0.25) {
-            this.tips.showTip(GameTipKey.LOW_MANA);
-        }
-        if (playersUnit.damage?.some(d => d.bleeding)) {
-            this.tips.showTip(GameTipKey.BLEADING);
-        }
-        if (playersUnit.damage?.some(d => d.poison)) {
-            this.tips.showTip(GameTipKey.POISONED);
-        }
-        if (playersUnit.inventory.armor?.some(a => a.durability && (a.wearout ?? 0) >= a.durability)) {
-            this.tips.showTip(GameTipKey.BROKEN_GEAR);
-        }
-        if (playersUnit.inventory.weapon?.some(w => w.durability && (w.wearout ?? 0) >= w.durability)) {
-            this.tips.showTip(GameTipKey.BROKEN_GEAR);
         }
         if (playersUnit.isDead) {
             this.tips.showTip(GameTipKey.DEFEATED);

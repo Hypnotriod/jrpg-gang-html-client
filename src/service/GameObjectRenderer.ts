@@ -21,8 +21,8 @@ export default class GameObjectRenderer {
             const hint = data.hint[0] === '!' ? data.hint.slice(1) : data.hint;
             result += `<b><img src="./assets/icons/info.png" style="height:20px; vertical-align: middle; padding-bottom: 3px;" /><span class="${data.hint[0] === '!' ? 'red-text' : 'orange-text'} lighten-1" style="font-size: 13px;">${hint}</span></b><br>`;
         }
-        if (data.code) {
-            result += `<img src="./assets/icons/${data.code}.png" style="width: 96px; height: 96px;"><br>`;
+        if (data.customization?.skin || data.code) {
+            result += `<img src="./assets/icons/${data.customization?.skin ?? data.code}.png" style="width: 96px; height: 96px;"><br>`;
         }
         if (data.name) {
             result += `<span class="purple lighten-1">${data.name}</span><br>`;
@@ -63,9 +63,9 @@ export default class GameObjectRenderer {
             if (data.modification) {
                 result += this.renderObjects(data.modification, [], 'modification', 2);
             }
-            ignoreHeaders.push('upgradesNumber', 'upgrades', 'baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification');
+            ignoreHeaders.push('upgradesNumber', 'upgrades', 'baseAttributes', 'stats', 'inventory', 'state', 'progress', 'damage', 'modification', 'ai');
         } else {
-            ignoreHeaders.push('upgradesNumber', 'upgrades', 'requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity');
+            ignoreHeaders.push('upgradesNumber', 'upgrades', 'requirements', 'useCost', 'price', 'purchasePrice', 'repairPrice', 'quantity', 'ai');
         }
         if (data.type) {
             result += this.keyValueColor('type', 'blue', data.type);
