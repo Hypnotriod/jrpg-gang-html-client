@@ -19,7 +19,7 @@ export default class ItemIcon extends Component {
     @component(LABEL_NAME)
     protected readonly nameLabel: Label;
     @component(LABEL_QUANTITY)
-    protected readonly quantityLabel: Label;
+    protected readonly quantityLabel?: Label;
     @component(ICON_CURRENT)
     protected readonly iconCurrent: Container;
     @component(ICON_CANT_USE)
@@ -61,7 +61,7 @@ export default class ItemIcon extends Component {
     public destroy(): void {
         this._icon.destroy();
         this.nameLabel.destroy();
-        this.quantityLabel.destroy();
+        this.quantityLabel?.destroy();
         super.destroy();
     }
 
