@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { ACHIEVEMENT_POPUP, AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER } from '../../constants/Components';
+import { ACHIEVEMENT_POPUP, AUTH_CONTAINER, GAME_CONTAINER, JOBS_CONTAINER, LOBBY_CONTAINER, LOGIN_CONTAINER, QUESTS_CONTAINER, UNIT_CONFIGURATOR_CONTAINER, BUTTON_FULLSCREEN, RULES_POPUP, TIPS_POPUP, BUTTON_RULES, LABEL_USER_NUMBER, RULES_POPUP_SHADOW, TIPS_POPUP_SHADOW, SETTINGS_POPUP_SHADOW, SETTINGS_POPUP, CUSTOMIZATION_POPUP, SETTINGS_ICON, SCALE_CONTAINER, QUEST_LOG } from '../../constants/Components';
 import { AUTH_DESIGN, AUTH_STYLE, DUNGEON_DESIGN, GAME_DESIGN, GAME_STYLE, ITEM_ICON_DESIGN, JOBS_DESIGN, JOBS_STYLE, JOB_DESIGN, LOBBY_DESIGN, LOBBY_STYLE, LOGIN_DESIGN, LOGIN_STYLE, MERCENARY_DESIGN, QUESTS_DESIGN, QUESTS_STYLE, QUEST_DESIGN, ROOM_DESIGN, SHOP_ITEM_ICON_DESIGN, SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN as SPOT_CELL_QUEUE_DESIGN, UNIT_CONFIGURATOR_DESIGN, UNIT_CONFIGURATOR_STYLE, UPGRADE_DESIGN } from '../../constants/Resources';
 import ResourceLoaderService, { RESOURCE_DESIGN } from '../../service/ResourceLoaderService';
 import SceneSwitcherService from '../../service/SceneSwitcherService';
@@ -33,33 +33,33 @@ const LEAVE_ON_OUT_OF_FOCUS_TIMEOUT_MS: number = 10 * 60 * 1000;
 
 @injectable()
 export default class MainScene extends Component implements ServerCommunicatorHandler {
-    @component('button_fullscreen', Button)
+    @component(BUTTON_FULLSCREEN)
     private readonly buttonFullscreen: Button;
-    @component('rules_popup', InstructionsPopup)
+    @component(RULES_POPUP)
     private readonly rulesPopup: InstructionsPopup;
-    @component('tips_popup', TipsPopup)
+    @component(TIPS_POPUP)
     private readonly tipsPopup: TipsPopup;
-    @component('button_rules', Button)
+    @component(BUTTON_RULES)
     private readonly buttonRules: Button;
-    @component('label_user_number', Label)
+    @component(LABEL_USER_NUMBER)
     private readonly labelUserNumber: Label;
-    @component('rules_popup_shadow', Container)
+    @component(RULES_POPUP_SHADOW)
     private readonly rulesPopupShadow: Container;
-    @component('tips_popup_shadow', Container)
+    @component(TIPS_POPUP_SHADOW)
     private readonly tipsPopupShadow: Container;
-    @component('settings_popup_shadow', Container)
+    @component(SETTINGS_POPUP_SHADOW)
     private readonly settingsPopupShadow: Container;
-    @component('settings_popup', SettingsPopup)
+    @component(SETTINGS_POPUP)
     private readonly settingsPopup: SettingsPopup;
-    @component('customization_popup', CustomizationPopup)
+    @component(CUSTOMIZATION_POPUP)
     private readonly customizationPopup: CustomizationPopup;
-    @component('settings_icon', Button)
+    @component(SETTINGS_ICON)
     private readonly settingsIcon: Button;
-    @component('scale_container', Container)
+    @component(SCALE_CONTAINER)
     private readonly scaleContainer: Container;
-    @component(ACHIEVEMENT_POPUP, AchievementPopup)
+    @component(ACHIEVEMENT_POPUP)
     private readonly achievementPopup: AchievementPopup;
-    @component('quest_log', QuestLog)
+    @component(QUEST_LOG)
     private readonly questLog: QuestLog;
 
     private login: Login;

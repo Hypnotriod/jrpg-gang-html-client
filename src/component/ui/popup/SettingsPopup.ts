@@ -1,3 +1,4 @@
+import { CHECKBOX_SOUND, CHECKBOX_INFO, CHECKBOX_TIPS, BUTTON_OK, SLIDER_SOUND_VOLUME, SLIDER_MUSIC_VOLUME, CHECKBOX_DELETE_ACCOUNT, BUTTON_DELETE_ACCOUNT, DELETE_ACCOUNT_CONTAINER } from '../../../constants/Components';
 import { injectable, singleton } from 'tsyringe';
 import Container from '../container/Container';
 import { component } from '../../decorator/decorator';
@@ -14,23 +15,23 @@ import GameStateService from '../../../service/GameStateService';
 @injectable()
 @singleton()
 export class SettingsPopup extends Container {
-    @component('checkbox_sound', Checkbox)
+    @component(CHECKBOX_SOUND)
     private readonly checkboxSound: Checkbox;
-    @component('checkbox_info', Checkbox)
+    @component(CHECKBOX_INFO)
     private readonly checkboxInfo: Checkbox;
-    @component('checkbox_tips', Checkbox)
+    @component(CHECKBOX_TIPS)
     private readonly checkboxTips: Checkbox;
-    @component('button_ok', Button)
+    @component(BUTTON_OK)
     private readonly buttonOk: Button;
-    @component('slider_sound_volume', HSlider)
+    @component(SLIDER_SOUND_VOLUME)
     private readonly soundVolumeSlider: HSlider;
-    @component('slider_music_volume', HSlider)
+    @component(SLIDER_MUSIC_VOLUME)
     private readonly musicVolumeSlider: HSlider;
-    @component('checkbox_delete_account', Checkbox)
+    @component(CHECKBOX_DELETE_ACCOUNT)
     private readonly checkboxDeleteAccount: Checkbox;
-    @component('button_delete_account', Button)
+    @component(BUTTON_DELETE_ACCOUNT)
     private readonly buttonDeleteAccount: Button;
-    @component('delete_account_container', Container)
+    @component(DELETE_ACCOUNT_CONTAINER)
     private readonly containerDeleteAccount: Container;
     private _shadow?: Container;
 

@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM, ICON_HIT_ACID, ICON_ACID } from '../../../constants/Components';
+import { HEALTH_BAR, ICON, ICON_BLEEDING, ICON_CURRENT, ICON_EFFECT, ICON_EXPERIENCE, ICON_FIRE, ICON_HIT, ICON_LIGHTING, ICON_MISSED, ICON_POISON, ICON_COLD, ICON_STUNNED, LABEL_ACTION_POINTS, LABEL_EXP, LABEL_HIT_HP, LABEL_TURN_ORDER, MANA_BAR, STAMINA_BAR, ICON_HEALTH, ICON_STAMINA, ICON_MANA, ICON_TARGET, LABEL_HIT_CHANCE, ICON_UNREACHABLE, ICON_FOOD, ICON_NO_STAMINA, LABEL_CRITICAL_HIT, ICON_HIT_COLD, ICON_HIT_FIRE, ICON_HIT_LIGHTING, ICON_HIT_POISON, ICON_HIT_DRAIN, ICON_DRAIN, ICON_STRESSED, LABEL_CRITICAL_MISS, ICON_READY, ICON_GEAR_CHANGE, LABEL_SKIP, LABEL_WAIT, ICON_STRESSED_SM, ICON_HIT_ACID, ICON_ACID, LABEL_MISSED, CELL_CENTER } from '../../../constants/Components';
 import { SPOT_CELL_DESIGN, SPOT_CELL_QEUE_DESIGN } from '../../../constants/Resources';
 import { ActionRange, ActionResult, Ammunition, Cell, Damage, DamageImpact, GamePhase, GameUnit, GameUnitFaction, Item, ItemType, Magic, Position, Provision, UnitBaseAttributes, UnitModificationImpact, Weapon } from '../../../domain/domain';
 import ActionService from '../../../service/ActionService';
@@ -17,95 +17,95 @@ import Image from '../image/Image';
 
 @injectable()
 export default class SpotCell extends Component {
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly _icon: Icon;
-    @component(ICON_STUNNED, Container)
+    @component(ICON_STUNNED)
     protected readonly _iconStunned: Container;
-    @component(ICON_NO_STAMINA, Container)
+    @component(ICON_NO_STAMINA)
     protected readonly _iconNoStamina: Container;
-    @component(ICON_STRESSED, Container)
+    @component(ICON_STRESSED)
     protected readonly _iconStressed: Container;
-    @component(ICON_READY, Container)
+    @component(ICON_READY)
     protected readonly _iconReady: Container;
-    @component(ICON_BLEEDING, Container)
+    @component(ICON_BLEEDING)
     protected readonly _iconBleeding: Container;
-    @component(ICON_POISON, Container)
+    @component(ICON_POISON)
     protected readonly _iconPoison: Container;
-    @component(ICON_ACID, Container)
+    @component(ICON_ACID)
     protected readonly _iconAcid: Container;
-    @component(ICON_COLD, Container)
+    @component(ICON_COLD)
     protected readonly _iconCold: Container;
-    @component(ICON_FIRE, Container)
+    @component(ICON_FIRE)
     protected readonly _iconFire: Container;
-    @component(ICON_LIGHTING, Container)
+    @component(ICON_LIGHTING)
     protected readonly _iconLighting: Container;
-    @component(ICON_HEALTH, Container)
+    @component(ICON_HEALTH)
     protected readonly _iconHealth: Container;
-    @component(ICON_STAMINA, Container)
+    @component(ICON_STAMINA)
     protected readonly _iconStamina: Container;
-    @component(ICON_MANA, Container)
+    @component(ICON_MANA)
     protected readonly _iconMana: Container;
-    @component(ICON_DRAIN, Container)
+    @component(ICON_DRAIN)
     protected readonly _iconDrain: Container;
-    @component(ICON_STRESSED_SM, Container)
+    @component(ICON_STRESSED_SM)
     protected readonly _iconStressedSm: Container;
-    @component(ICON_CURRENT, Container)
+    @component(ICON_CURRENT)
     protected readonly _iconCurrent: Container;
-    @component(ICON_EFFECT, Container)
+    @component(ICON_EFFECT)
     protected readonly _iconEffect: Container;
-    @component(ICON_FOOD, Container)
+    @component(ICON_FOOD)
     protected readonly _iconFood: Container;
-    @component(ICON_GEAR_CHANGE, Image)
+    @component(ICON_GEAR_CHANGE)
     protected readonly _iconGearChange: Image;
-    @component(ICON_HIT, Container)
+    @component(ICON_HIT)
     protected readonly _iconHit: Container;
-    @component(ICON_HIT_COLD, Container)
+    @component(ICON_HIT_COLD)
     protected readonly _iconHitCold: Container;
-    @component(ICON_HIT_FIRE, Container)
+    @component(ICON_HIT_FIRE)
     protected readonly _iconHitFire: Container;
-    @component(ICON_HIT_LIGHTING, Container)
+    @component(ICON_HIT_LIGHTING)
     protected readonly _iconHitLighting: Container;
-    @component(ICON_HIT_POISON, Container)
+    @component(ICON_HIT_POISON)
     protected readonly _iconHitPoison: Container;
-    @component(ICON_HIT_ACID, Container)
+    @component(ICON_HIT_ACID)
     protected readonly _iconHitAcid: Container;
-    @component(ICON_HIT_DRAIN, Container)
+    @component(ICON_HIT_DRAIN)
     protected readonly _iconHitDrain: Container;
-    @component(ICON_MISSED, Container)
+    @component(ICON_MISSED)
     protected readonly _iconMissed: Container;
-    @component('label_missed', Container)
+    @component(LABEL_MISSED)
     protected readonly _labelMissed: Container;
-    @component(ICON_TARGET, Container)
+    @component(ICON_TARGET)
     protected readonly _iconTarget: Container;
-    @component(ICON_UNREACHABLE, Container)
+    @component(ICON_UNREACHABLE)
     protected readonly _iconUnreachable: Container;
-    @component(ICON_EXPERIENCE, Container)
+    @component(ICON_EXPERIENCE)
     protected readonly _iconExperience: Container;
-    @component(LABEL_HIT_HP, Label)
+    @component(LABEL_HIT_HP)
     protected readonly hitHpLabel: Label;
-    @component(LABEL_CRITICAL_HIT, Label)
+    @component(LABEL_CRITICAL_HIT)
     protected readonly hitCriticalLabel: Label;
-    @component(LABEL_CRITICAL_MISS, Label)
+    @component(LABEL_CRITICAL_MISS)
     protected readonly missCriticalLabel: Label;
-    @component(LABEL_SKIP, Label)
+    @component(LABEL_SKIP)
     protected readonly skipLabel: Label;
-    @component(LABEL_WAIT, Label)
+    @component(LABEL_WAIT)
     protected readonly waitLabel: Label;
-    @component(LABEL_HIT_CHANCE, Label)
+    @component(LABEL_HIT_CHANCE)
     protected readonly hitChanceLabel: Label;
-    @component(LABEL_EXP, Label)
+    @component(LABEL_EXP)
     protected readonly expLabel: Label;
-    @component(LABEL_TURN_ORDER, Label)
+    @component(LABEL_TURN_ORDER)
     protected readonly turnOrderLabel: Label;
-    @component(LABEL_ACTION_POINTS, Label)
+    @component(LABEL_ACTION_POINTS)
     protected readonly actionPointsLabel: Label;
-    @component(HEALTH_BAR, Container)
+    @component(HEALTH_BAR)
     protected readonly healthBar: Container;
-    @component(STAMINA_BAR, Container)
+    @component(STAMINA_BAR)
     protected readonly staminaBar: Container;
-    @component(MANA_BAR, Container)
+    @component(MANA_BAR)
     protected readonly manaBar: Container;
-    @component('cell_center', Container)
+    @component(CELL_CENTER)
     protected readonly _center: Container;
 
     private _descriptionPopup: ObjectDescription;

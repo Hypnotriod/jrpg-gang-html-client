@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS, LABEL_UPGRADE } from '../../constants/Components';
+import { LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS, LABEL_UPGRADE, BUTTON_UPGRADE } from '../../constants/Components';
 import { UPGRADE_DESIGN } from '../../constants/Resources';
 import { Upgrade } from '../../domain/domain';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
@@ -13,17 +13,17 @@ import Label from '../ui/label/Label';
 
 @injectable()
 export default class UpgradeItem extends Component {
-    @component(LABEL_HEADER, Label)
+    @component(LABEL_HEADER)
     protected readonly labelHeader: Label;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_UPGRADE, Container)
+    @component(LABEL_UPGRADE)
     protected readonly labelUpgrade: Container;
-    @component(LABEL_REQUIREMENTS, Container)
+    @component(LABEL_REQUIREMENTS)
     protected readonly labelRequirements: Container;
-    @component(LABEL_PRICE, Container)
+    @component(LABEL_PRICE)
     protected readonly labelPrice: Container;
-    @component('button_upgrade', Button)
+    @component(BUTTON_UPGRADE)
     protected readonly buttonUpgrade: Button;
 
     protected data: Upgrade;

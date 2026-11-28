@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_CONFIGURATOR, DUNGEONS_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_USER_NUMBER, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO } from '../../constants/Components';
+import { BUTTON_CONFIGURATOR, DUNGEONS_CONTAINER, ITEM_DESCRIPTION_POPUP, LABEL_USER_NUMBER, ROOMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, POPUP_SHADOW, MERCENARIES_POPUP, BUTTON_DUNGEONS, BUTTON_PARTIES, LOBBY_CHAT } from '../../constants/Components';
 import { BASE_UNIT_DESCRIPTIONS, SCENARIO_IDS } from '../../constants/Configuration';
 import { ChatMessage, ChatState, RoomInfo, UnitBooty } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
@@ -26,31 +26,31 @@ import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/
 @injectable()
 @singleton()
 export default class Lobby extends Component implements ServerCommunicatorHandler {
-    @component(ROOMS_CONTAINER, Container)
+    @component(ROOMS_CONTAINER)
     private readonly roomsContainer: Container;
-    @component(DUNGEONS_CONTAINER, Container)
+    @component(DUNGEONS_CONTAINER)
     private readonly dungeonsContainer: Container;
-    @component(BUTTON_CONFIGURATOR, Button)
+    @component(BUTTON_CONFIGURATOR)
     private readonly configuratorButton: Button;
-    @component(UNIT_ICON, Icon)
+    @component(UNIT_ICON)
     private readonly unitIcon: Icon;
-    @component(UNIT_INFO, Container)
+    @component(UNIT_INFO)
     private readonly unitInfo: Container;
-    @component(LABEL_USER_NUMBER, Label)
+    @component(LABEL_USER_NUMBER)
     private readonly userNumberLabel: Label;
-    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    @component(ITEM_DESCRIPTION_POPUP)
     private readonly objectDescription: ObjectDescription;
-    @component('popup_shadow', Container)
+    @component(POPUP_SHADOW)
     private readonly popupShadow: Container;
-    @component('mercenaries_popup', MercenariesPopup)
+    @component(MERCENARIES_POPUP)
     private readonly mercenariesPopup: MercenariesPopup;
-    @component('button_dungeons', Button)
+    @component(BUTTON_DUNGEONS)
     private readonly dungeonsButton: Button;
-    @component('button_parties', Button)
+    @component(BUTTON_PARTIES)
     private readonly partiesButton: Button;
-    @component('lobby_chat', Chat)
+    @component(LOBBY_CHAT)
     private readonly lobbyChat: Chat;
-    @component(UNIT_BOOTY, Label)
+    @component(UNIT_BOOTY)
     private readonly unitBooty: Label;
 
     private readonly rooms: Map<number, Room> = new Map();

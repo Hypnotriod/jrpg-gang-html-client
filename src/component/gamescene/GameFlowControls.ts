@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, ICON_ACID, ICON_BLEEDING, ICON_COLD, ICON_DRAIN, ICON_FIRE, ICON_HEALTH, ICON_LIGHTING, ICON_MANA, ICON_POISON, ICON_STAMINA, ICON_STRESSED_SM, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME } from '../../constants/Components';
+import { BUTTON_ABANDON, BUTTON_LEAVE, BUTTON_NEXT_BATTLE, BUTTON_NEXT_PHASE, BUTTON_SKIP, BUTTON_WAIT, ICON_ACID, ICON_BLEEDING, ICON_COLD, ICON_DRAIN, ICON_FIRE, ICON_HEALTH, ICON_LIGHTING, ICON_MANA, ICON_POISON, ICON_STAMINA, ICON_STRESSED_SM, LABEL_DUNGEON_NAME, LABEL_DUNGEON_STATE, LABEL_GAME_STATUS, LABEL_USERS_IN_GAME, LABEL_HEALTH, LABEL_STAMINA, LABEL_MANA, LABEL_STRESS, LABEL_ACTION_POINTS, HEALTH_BAR, STAMINA_BAR, MANA_BAR } from '../../constants/Components';
 import { ActionType, GamePhase, GameUnitFaction, PlayerInfo } from '../../domain/domain';
 import { ActionRequestData, NextGamePhaseData, RequestType } from '../../dto/requests';
 import ActionService from '../../service/ActionService';
@@ -19,64 +19,64 @@ import { timeout } from '../../utils/utils';
 export default class GameFlowControls extends GameBase {
     private readonly BAR_WIDTH: number = 110;
 
-    @component(LABEL_GAME_STATUS, Label)
+    @component(LABEL_GAME_STATUS)
     private readonly gameStatusLabel: Label;
-    @component(LABEL_DUNGEON_NAME, Label)
+    @component(LABEL_DUNGEON_NAME)
     private readonly dungeonNameLabel: Label;
-    @component(LABEL_USERS_IN_GAME, Label)
+    @component(LABEL_USERS_IN_GAME)
     private readonly usersInGameLabel: Label;
-    @component(LABEL_DUNGEON_STATE, Label)
+    @component(LABEL_DUNGEON_STATE)
     private readonly dungeonStateLabel: Label;
-    @component(BUTTON_NEXT_PHASE, Button)
+    @component(BUTTON_NEXT_PHASE)
     private readonly nextPhaseButton: Button;
-    @component(BUTTON_NEXT_BATTLE, Button)
+    @component(BUTTON_NEXT_BATTLE)
     private readonly nextBattleButton: Button;
-    @component(BUTTON_WAIT, Button)
+    @component(BUTTON_WAIT)
     private readonly waitButton: Button;
-    @component(BUTTON_SKIP, Button)
+    @component(BUTTON_SKIP)
     private readonly skipButton: Button;
-    @component(BUTTON_ABANDON, Button)
+    @component(BUTTON_ABANDON)
     private readonly retreatButton: Button;
-    @component(BUTTON_LEAVE, Button)
+    @component(BUTTON_LEAVE)
     private readonly leaveButton: Button;
 
-    @component(ICON_BLEEDING, Container)
+    @component(ICON_BLEEDING)
     protected readonly _iconBleeding: Container;
-    @component(ICON_POISON, Container)
+    @component(ICON_POISON)
     protected readonly _iconPoison: Container;
-    @component(ICON_ACID, Container)
+    @component(ICON_ACID)
     protected readonly _iconAcid: Container;
-    @component(ICON_COLD, Container)
+    @component(ICON_COLD)
     protected readonly _iconCold: Container;
-    @component(ICON_FIRE, Container)
+    @component(ICON_FIRE)
     protected readonly _iconFire: Container;
-    @component(ICON_LIGHTING, Container)
+    @component(ICON_LIGHTING)
     protected readonly _iconLighting: Container;
-    @component(ICON_HEALTH, Container)
+    @component(ICON_HEALTH)
     protected readonly _iconHealth: Container;
-    @component(ICON_STAMINA, Container)
+    @component(ICON_STAMINA)
     protected readonly _iconStamina: Container;
-    @component(ICON_MANA, Container)
+    @component(ICON_MANA)
     protected readonly _iconMana: Container;
-    @component(ICON_DRAIN, Container)
+    @component(ICON_DRAIN)
     protected readonly _iconDrain: Container;
-    @component(ICON_STRESSED_SM, Container)
+    @component(ICON_STRESSED_SM)
     protected readonly _iconStressedSm: Container;
-    @component('label_health', Label)
+    @component(LABEL_HEALTH)
     private readonly labelHealth: Label;
-    @component('label_stamina', Label)
+    @component(LABEL_STAMINA)
     private readonly labelStamina: Label;
-    @component('label_mana', Label)
+    @component(LABEL_MANA)
     private readonly labelMana: Label;
-    @component('label_stress', Label)
+    @component(LABEL_STRESS)
     private readonly labelStress: Label;
-    @component('label_action_points', Label)
+    @component(LABEL_ACTION_POINTS)
     private readonly labelActionPoints: Label;
-    @component('health_bar', Container)
+    @component(HEALTH_BAR)
     private readonly healthBar: Container;
-    @component('stamina_bar', Container)
+    @component(STAMINA_BAR)
     private readonly staminaBar: Container;
-    @component('mana_bar', Container)
+    @component(MANA_BAR)
     private readonly manaBar: Container;
 
     private onRetreateCallback?: () => void;

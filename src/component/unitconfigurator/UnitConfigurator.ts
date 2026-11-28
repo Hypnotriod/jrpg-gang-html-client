@@ -1,5 +1,5 @@
 import { delay, inject, injectable, singleton } from 'tsyringe';
-import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, BUTTON_TRAINING, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE } from '../../constants/Components';
+import { BUTTON_AGILITY, BUTTON_ENDURANCE, BUTTON_HEALTH, BUTTON_INITIATIVE, BUTTON_INTELLIGENCE, BUTTON_JOBS, BUTTON_LEVEL_UP, BUTTON_LOBBY, BUTTON_LUCK, BUTTON_MANA, BUTTON_NEXT, BUTTON_PHYSIQUE, BUTTON_PREVIOUS, BUTTON_QUESTS, BUTTON_STAMINA, BUTTON_STRENGTH, BUTTON_TAB_SHOP_AMMUNITION, BUTTON_TAB_SHOP_ARMOR, BUTTON_TAB_SHOP_ITEMS, BUTTON_TAB_SHOP_MAGIC, BUTTON_TAB_SHOP_WEAPON, BUTTON_TRAINING, CHECKBOX_REPAIR, CHECKBOX_SELL, ITEM_DESCRIPTION_POPUP, LABEL_ACTION_POINTS, LABEL_AGILITY, LABEL_CLASS, LABEL_ENDURANCE, LABEL_HEALTH, LABEL_INITIATIVE, LABEL_INTELLIGENCE, LABEL_LUCK, LABEL_MANA, LABEL_PHYSIQUE, LABEL_STAMINA, LABEL_STRENGTH, SHOP_ITEMS_CONTAINER, UNIT_BOOTY, UNIT_ICON, UNIT_INFO, UNIT_ITEMS_CONTAINER, UNIT_PROGRESS, UNIT_RESISTANCE, CHECKBOX_UPGRADE, BUTTON_REPAIR_ALL, SHOP_ITEM_POPUP, UPGRADE_ITEM_POPUP, INSTRUCTIONS_POPUP, POPUP_SHADOW, NEW_QUESTS_ICON } from '../../constants/Components';
 import { ActionType, Ammunition, InventoryItem, ItemType, UnitAttributes, UnitBaseAttributes, UnitInventory, ActionProperty, UnitProgress, UnitResistance, UnitBooty, GameShopStatus, Equipment, ActionResultType, EquipmentSlot, GameUnit, Weapon, UnitQuestStatus } from '../../domain/domain';
 import { ActionRequestData, CreateRoomRequestData, RequestType, SwitchUnitRequestData } from '../../dto/requests';
 import { ActionResultData, KEY_ARE_INSTRUCTIONS_SHOWN, QuestsStatusData, Response, ResponseStatus, ShopStatusData, UserStateData } from '../../dto/responces';
@@ -33,103 +33,103 @@ import { CustomizationPopup } from '../ui/popup/CustomizationPopup';
 @singleton()
 @injectable()
 export default class UnitConfigurator extends Component implements ServerCommunicatorHandler {
-    @component(BUTTON_LOBBY, Button)
+    @component(BUTTON_LOBBY)
     private readonly lobbyButton: Button;
-    @component(BUTTON_TRAINING, Button)
+    @component(BUTTON_TRAINING)
     private readonly trainingButton: Button;
-    @component(BUTTON_JOBS, Button)
+    @component(BUTTON_JOBS)
     private readonly jobsButton: Button;
-    @component(BUTTON_QUESTS, Button)
+    @component(BUTTON_QUESTS)
     private readonly questsButton: Button;
-    @component(UNIT_ICON, Icon)
+    @component(UNIT_ICON)
     private readonly unitIcon: Icon;
-    @component(UNIT_INFO, Container)
+    @component(UNIT_INFO)
     private readonly unitInfo: Container;
-    @component(UNIT_BOOTY, Label)
+    @component(UNIT_BOOTY)
     private readonly unitBooty: Label;
-    @component(UNIT_PROGRESS, Label)
+    @component(UNIT_PROGRESS)
     private readonly unitProgress: Label;
-    @component(BUTTON_HEALTH, Button)
+    @component(BUTTON_HEALTH)
     private readonly btnHealth: Button;
-    @component(BUTTON_STAMINA, Button)
+    @component(BUTTON_STAMINA)
     private readonly btnStamina: Button;
-    @component(BUTTON_MANA, Button)
+    @component(BUTTON_MANA)
     private readonly btnMana: Button;
-    @component(BUTTON_STRENGTH, Button)
+    @component(BUTTON_STRENGTH)
     private readonly btnStrength: Button;
-    @component(BUTTON_PHYSIQUE, Button)
+    @component(BUTTON_PHYSIQUE)
     private readonly btnPhysique: Button;
-    @component(BUTTON_AGILITY, Button)
+    @component(BUTTON_AGILITY)
     private readonly btnAgility: Button;
-    @component(BUTTON_ENDURANCE, Button)
+    @component(BUTTON_ENDURANCE)
     private readonly btnEndurance: Button;
-    @component(BUTTON_INTELLIGENCE, Button)
+    @component(BUTTON_INTELLIGENCE)
     private readonly btnIntelligence: Button;
-    @component(BUTTON_INITIATIVE, Button)
+    @component(BUTTON_INITIATIVE)
     private readonly btnInitiative: Button;
-    @component(BUTTON_LUCK, Button)
+    @component(BUTTON_LUCK)
     private readonly btnLuck: Button;
-    @component(BUTTON_PREVIOUS, Button)
+    @component(BUTTON_PREVIOUS)
     private readonly btnUnitPrevious: Button;
-    @component(BUTTON_NEXT, Button)
+    @component(BUTTON_NEXT)
     private readonly btnUnitNext: Button;
-    @component(LABEL_CLASS, Label)
+    @component(LABEL_CLASS)
     private readonly labelClass: Label;
-    @component(LABEL_HEALTH, Label)
+    @component(LABEL_HEALTH)
     private readonly labelHealth: Label;
-    @component(LABEL_STAMINA, Label)
+    @component(LABEL_STAMINA)
     private readonly labelStamina: Label;
-    @component(LABEL_MANA, Label)
+    @component(LABEL_MANA)
     private readonly labelMana: Label;
-    @component(LABEL_ACTION_POINTS, Label)
+    @component(LABEL_ACTION_POINTS)
     private readonly labelActionPoints: Label;
-    @component(LABEL_STRENGTH, Label)
+    @component(LABEL_STRENGTH)
     private readonly labelStrength: Label;
-    @component(LABEL_PHYSIQUE, Label)
+    @component(LABEL_PHYSIQUE)
     private readonly labelPhysique: Label;
-    @component(LABEL_AGILITY, Label)
+    @component(LABEL_AGILITY)
     private readonly labelAgility: Label;
-    @component(LABEL_ENDURANCE, Label)
+    @component(LABEL_ENDURANCE)
     private readonly labelEndurance: Label;
-    @component(LABEL_INTELLIGENCE, Label)
+    @component(LABEL_INTELLIGENCE)
     private readonly labelIntelligence: Label;
-    @component(LABEL_INITIATIVE, Label)
+    @component(LABEL_INITIATIVE)
     private readonly labelInitiative: Label;
-    @component(LABEL_LUCK, Label)
+    @component(LABEL_LUCK)
     private readonly labelLuck: Label;
-    @component(UNIT_RESISTANCE, Label)
+    @component(UNIT_RESISTANCE)
     private readonly unitResistance: Label;
-    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    @component(ITEM_DESCRIPTION_POPUP)
     private readonly itemDescription: ObjectDescription;
-    @component(CHECKBOX_SELL, Checkbox)
+    @component(CHECKBOX_SELL)
     private readonly checkboxSell: Checkbox;
-    @component('checkbox_upgrade', Checkbox)
+    @component(CHECKBOX_UPGRADE)
     private readonly checkboxUpgrade: Checkbox;
-    @component(CHECKBOX_REPAIR, Checkbox)
+    @component(CHECKBOX_REPAIR)
     private readonly checkboxRepair: Checkbox;
-    @component('button_repair_all', Button)
+    @component(BUTTON_REPAIR_ALL)
     private readonly btnRepairAll: Button;
-    @component(BUTTON_LEVEL_UP, Button)
+    @component(BUTTON_LEVEL_UP)
     private readonly btnLevelUp: Button;
-    @component(BUTTON_TAB_SHOP_WEAPON, Button)
+    @component(BUTTON_TAB_SHOP_WEAPON)
     private readonly btnTabShopWeapon: Button;
-    @component(BUTTON_TAB_SHOP_AMMUNITION, Button)
+    @component(BUTTON_TAB_SHOP_AMMUNITION)
     private readonly btnTabShopAmmunition: Button;
-    @component(BUTTON_TAB_SHOP_ARMOR, Button)
+    @component(BUTTON_TAB_SHOP_ARMOR)
     private readonly btnTabShopArmor: Button;
-    @component(BUTTON_TAB_SHOP_MAGIC, Button)
+    @component(BUTTON_TAB_SHOP_MAGIC)
     private readonly btnTabShopMagic: Button;
-    @component(BUTTON_TAB_SHOP_ITEMS, Button)
+    @component(BUTTON_TAB_SHOP_ITEMS)
     private readonly btnTabShopItems: Button;
-    @component('shop_item_popup', ShopItemPopup)
+    @component(SHOP_ITEM_POPUP)
     private readonly shopItemPopup: ShopItemPopup;
-    @component('upgrade_item_popup', UpgradePopup)
+    @component(UPGRADE_ITEM_POPUP)
     private readonly upgradeItemPopup: UpgradePopup;
-    @component('instructions_popup', InstructionsPopup)
+    @component(INSTRUCTIONS_POPUP)
     private readonly instructionsPopup: InstructionsPopup;
-    @component('popup_shadow', Container)
+    @component(POPUP_SHADOW)
     private readonly popupShadow: Container;
-    @component('new_quests_icon', Container)
+    @component(NEW_QUESTS_ICON)
     private readonly newQuestsIcon: Container;
 
     private readonly unitItems: Map<number, ItemIcon> = new Map();

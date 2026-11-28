@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { ICON, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS } from '../../constants/Components';
+import { ICON, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_PRICE, LABEL_REQUIREMENTS, BUTTON_HIRE } from '../../constants/Components';
 import { MERCENARY_DESIGN } from '../../constants/Resources';
 import { Mercenary } from '../../domain/domain';
 import GameObjectRenderer from '../../service/GameObjectRenderer';
@@ -15,17 +15,17 @@ import ObjectDescription from '../ui/popup/ObjectDescription';
 
 @injectable()
 export default class MercenaryItem extends Component {
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly icon: Icon;
-    @component(LABEL_HEADER, Label)
+    @component(LABEL_HEADER)
     protected readonly labelHeader: Label;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_REQUIREMENTS, Container)
+    @component(LABEL_REQUIREMENTS)
     protected readonly labelRequirements: Container;
-    @component(LABEL_PRICE, Container)
+    @component(LABEL_PRICE)
     protected readonly labelPrice: Container;
-    @component('button_hire', Button)
+    @component(BUTTON_HIRE)
     protected readonly buttonHire: Button;
 
     public set descriptionPopup(value: ObjectDescription) {

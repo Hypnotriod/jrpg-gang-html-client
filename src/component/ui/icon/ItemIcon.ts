@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY } from '../../../constants/Components';
+import { ICON, ICON_BROKEN, ICON_CANT_USE, ICON_CURRENT, LABEL_ACTION_POINTS, LABEL_NAME, LABEL_QUANTITY, ICON_SLOT, ICON_UPGRADED } from '../../../constants/Components';
 import { ITEM_ICON_DESIGN } from '../../../constants/Resources';
 import { Ammunition, Equipment, EquipmentSlot, GamePhase, GameUnit, InventoryItem, ItemType, Weapon } from '../../../domain/domain';
 import ResourceLoaderService from '../../../service/ResourceLoaderService';
@@ -14,23 +14,23 @@ import Image from '../image/Image';
 import { SoundName, SoundService } from '../../../service/SoundService';
 
 export default class ItemIcon extends Component {
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly _icon: Icon;
-    @component(LABEL_NAME, Label)
+    @component(LABEL_NAME)
     protected readonly nameLabel: Label;
-    @component(LABEL_QUANTITY, Label)
-    protected readonly quantityLabel: Label | null;
-    @component(ICON_CURRENT, Container)
+    @component(LABEL_QUANTITY)
+    protected readonly quantityLabel: Label;
+    @component(ICON_CURRENT)
     protected readonly iconCurrent: Container;
-    @component(ICON_CANT_USE, Container)
+    @component(ICON_CANT_USE)
     protected readonly iconCantUse: Container;
-    @component('icon_slot', Image)
+    @component(ICON_SLOT)
     protected readonly iconSlot: Image;
-    @component(ICON_BROKEN, Container)
+    @component(ICON_BROKEN)
     protected readonly iconBroken: Container;
-    @component('icon_upgraded', Container)
+    @component(ICON_UPGRADED)
     protected readonly iconUpgraded?: Container;
-    @component(LABEL_ACTION_POINTS, Label)
+    @component(LABEL_ACTION_POINTS)
     protected readonly actionPointsLabel: Label;
 
     private _data: InventoryItem;
@@ -61,7 +61,7 @@ export default class ItemIcon extends Component {
     public destroy(): void {
         this._icon.destroy();
         this.nameLabel.destroy();
-        this.quantityLabel?.destroy();
+        this.quantityLabel.destroy();
         super.destroy();
     }
 

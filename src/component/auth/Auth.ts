@@ -9,9 +9,9 @@ import { MusicName, SoundService } from '../../service/SoundService';
 @injectable()
 @singleton()
 export default class Auth extends Component {
-    @component(BUTTON_AUTH, Button)
+    @component(BUTTON_AUTH)
     private readonly authGoogleButton: Button;
-    @component(BUTTON_AUTH_GUEST, Button)
+    @component(BUTTON_AUTH_GUEST)
     private readonly authGuestButton: Button;
 
     constructor(private readonly appConfig: AppConfig) {

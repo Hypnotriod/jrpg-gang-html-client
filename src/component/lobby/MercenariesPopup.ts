@@ -1,3 +1,4 @@
+import { BUTTON_CLOSE } from '../../constants/Components';
 import { injectable, singleton } from 'tsyringe';
 import { Mercenary } from '../../domain/domain';
 import { GameRoomHireMercenaryRequestData, RequestType } from '../../dto/requests';
@@ -12,7 +13,7 @@ import ObjectDescription from '../ui/popup/ObjectDescription';
 @injectable()
 @singleton()
 export default class MercenariesPopup extends Component {
-    @component('button_close', Button)
+    @component(BUTTON_CLOSE)
     protected readonly buttonClose: Button;
 
     public roomUid: number;

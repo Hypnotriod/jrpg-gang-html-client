@@ -1,3 +1,4 @@
+import { QUESTS_STATUS_LABEL, QUESTS_LOG_ICON } from '../../constants/Components';
 import { injectable, singleton } from 'tsyringe';
 import { ACHIEVEMENTS } from '../../constants/AchievementInfo';
 import { GameQuestStatus, GameUnit, UnitQuestStatus, UnitRequirements } from '../../domain/domain';
@@ -17,9 +18,9 @@ export default class QuestLog extends Component implements ServerCommunicatorHan
     private questsStatus?: QuestsStatusData;
     private unit?: GameUnit;
 
-    @component('quests_status_label', Container)
+    @component(QUESTS_STATUS_LABEL)
     private readonly questsStatusLabel: Container;
-    @component('quests_log_icon', Button)
+    @component(QUESTS_LOG_ICON)
     private readonly questsLogIcon: Button;
 
     constructor(

@@ -1,5 +1,5 @@
 import { container, injectable } from 'tsyringe';
-import { BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, BUTTON_START_GAME, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER } from '../../constants/Components';
+import { BUTTON_JOIN_ROOM, BUTTON_LEAVE_ROOM, BUTTON_START_GAME, PRFX_CONNECTION_STATUS, PRFX_USER_ICON, PRFX_USER_LEVEL, PRFX_USER_NAME, PRFX_USER_PLACEHOLDER, LABEL_DUNGEON, HIRE_MERCENARY_PLACEHOLDER, BUTTON_HIRE_MERCENARY, MERCENARY_ICON, BUTTON_KICK_PLAYER_2, BUTTON_KICK_PLAYER_3, BUTTON_KICK_PLAYER_4, BUTTON_DISMISS_MERCENARY_2, BUTTON_DISMISS_MERCENARY_3, BUTTON_DISMISS_MERCENARY_4, ICON_ROOM } from '../../constants/Components';
 import { ROOM_DESIGN } from '../../constants/Resources';
 import { RoomInfo } from '../../domain/domain';
 import { GameRoomDismissMercenaryRequestData, JoinGameRoomRequestData, KickFromGameRoomRequestData, RequestType } from '../../dto/requests';
@@ -29,33 +29,33 @@ export default class Room extends Component {
     private _objectDescription: ObjectDescription;
     private _hireMercenaryCallback?: (roomUid: number) => void;
 
-    @component(BUTTON_JOIN_ROOM, Button)
+    @component(BUTTON_JOIN_ROOM)
     private readonly joinRoomButton: Button;
-    @component(BUTTON_LEAVE_ROOM, Button)
+    @component(BUTTON_LEAVE_ROOM)
     private readonly leaveRoomButton: Button;
-    @component(BUTTON_START_GAME, Button)
+    @component(BUTTON_START_GAME)
     private readonly startGameButton: Button;
-    @component('dungeon_label', Label)
+    @component(LABEL_DUNGEON)
     private readonly dungeonLabel: Label;
-    @component('hire_mercenary_placeholder', Container)
+    @component(HIRE_MERCENARY_PLACEHOLDER)
     private readonly hireMercenaryPlaceholder: Container;
-    @component('button_hire_mercenary', Button)
+    @component(BUTTON_HIRE_MERCENARY)
     private readonly hireMercenaryButton: Button;
-    @component('mercenary_icon', Icon)
+    @component(MERCENARY_ICON)
     private readonly mercenaryIcon: Icon;
-    @component('button_kick_player_2', Button)
+    @component(BUTTON_KICK_PLAYER_2)
     private readonly kickPlayer2Button: Button;
-    @component('button_kick_player_3', Button)
+    @component(BUTTON_KICK_PLAYER_3)
     private readonly kickPlayer3Button: Button;
-    @component('button_kick_player_4', Button)
+    @component(BUTTON_KICK_PLAYER_4)
     private readonly kickPlayer4Button: Button;
-    @component('button_dismiss_mercenary_2', Button)
+    @component(BUTTON_DISMISS_MERCENARY_2)
     private readonly dismissMercenary2Button: Button;
-    @component('button_dismiss_mercenary_3', Button)
+    @component(BUTTON_DISMISS_MERCENARY_3)
     private readonly dismissMercenary3Button: Button;
-    @component('button_dismiss_mercenary_4', Button)
+    @component(BUTTON_DISMISS_MERCENARY_4)
     private readonly dismissMercenary4Button: Button;
-    @component('icon_room', Image)
+    @component(ICON_ROOM)
     protected readonly roomIcon: Image;
 
     public set objectDescription(value: ObjectDescription) {

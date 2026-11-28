@@ -17,19 +17,19 @@ import { ACHIEVEMENTS } from '../../constants/AchievementInfo';
 
 @injectable()
 export default class Quest extends Component {
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly icon: Icon;
-    @component(LABEL_HEADER, Label)
+    @component(LABEL_HEADER)
     protected readonly labelHeader: Label;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_REQUIREMENTS, Container)
+    @component(LABEL_REQUIREMENTS)
     protected readonly labelRequirements: Container;
-    @component(LABEL_REWARD, Container)
+    @component(LABEL_REWARD)
     protected readonly labelReward: Container;
-    @component(BUTTON_APPLY, Button)
+    @component(BUTTON_APPLY)
     protected readonly buttonApply: Button;
-    @component(BUTTON_COMPLETE_QUEST, Button)
+    @component(BUTTON_COMPLETE_QUEST)
     private readonly buttonComplete: Button;
     protected status: GameQuestStatus;
 

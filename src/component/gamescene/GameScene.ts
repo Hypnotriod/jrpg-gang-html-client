@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER } from '../../constants/Components';
+import { BATTLEFIELD_CONTAINER, GAME_FLOW_CONTROLS_CONTAINER as FLOW_CONTROLS_CONTAINER, GAME_LOG, ITEM_DESCRIPTION_POPUP, LABEL_LOOT_COINS, LABEL_LOOT_RUBIES, UNITS_QUEUE_CONTAINER, UNIT_ITEMS_CONTAINER, DUNGEON_LOOT_POPUP, LEAVE_DUNGEON_POPUP, POPUP_SHADOW, LABEL_GAME_PHASE_INFO, GAME_CHAT } from '../../constants/Components';
 import { ActionResultType, ActionType, ChatMessage, ChatState, GameEvent, GamePhase, GameUnitFaction, ItemType, Position, Weapon } from '../../domain/domain';
 import { ChatMessageRequestData, RequestType } from '../../dto/requests';
 import { ChatMessageData, ChatStateData, GameActionData, GameNextPhaseData, GameStateData, PlayerInfoData, Response, ResponseStatus, UserStateData, UserStatus } from '../../dto/responces';
@@ -32,31 +32,31 @@ import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/
 @injectable()
 @singleton()
 export default class GameScene extends GameBase implements ServerCommunicatorHandler {
-    @component(GAME_LOG, TextField)
+    @component(GAME_LOG)
     private readonly gameLog: TextField;
-    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    @component(ITEM_DESCRIPTION_POPUP)
     private readonly objectDescription: ObjectDescription;
-    @component(UNITS_QUEUE_CONTAINER, GameUnitsQueue)
+    @component(UNITS_QUEUE_CONTAINER)
     private readonly unitsQueue: GameUnitsQueue;
-    @component(UNIT_ITEMS_CONTAINER, GameUnitItems)
+    @component(UNIT_ITEMS_CONTAINER)
     private readonly unitItems: GameUnitItems;
-    @component(FLOW_CONTROLS_CONTAINER, GameFlowControls)
+    @component(FLOW_CONTROLS_CONTAINER)
     private readonly flowControls: GameFlowControls;
-    @component(BATTLEFIELD_CONTAINER, GameBattlefield)
+    @component(BATTLEFIELD_CONTAINER)
     private readonly battlefield: GameBattlefield;
-    @component(LABEL_LOOT_COINS, Label)
+    @component(LABEL_LOOT_COINS)
     protected readonly coinsLabel: Label;
-    @component(LABEL_LOOT_RUBIES, Label)
+    @component(LABEL_LOOT_RUBIES)
     protected readonly rubiesLabel: Label;
-    @component('dungeon_loot_popup', DungeonLootPopup)
+    @component(DUNGEON_LOOT_POPUP)
     private readonly dungeonLootPopup: DungeonLootPopup;
-    @component('leave_dungeon_popup', LeaveDungeonPopup)
+    @component(LEAVE_DUNGEON_POPUP)
     private readonly leaveDungeonPopup: LeaveDungeonPopup;
-    @component('popup_shadow', Container)
+    @component(POPUP_SHADOW)
     private readonly popupShadow: Container;
-    @component('label_game_phase_info', Label)
+    @component(LABEL_GAME_PHASE_INFO)
     private readonly gamePhaseInfoLabel: Label;
-    @component('game_chat', Chat)
+    @component(GAME_CHAT)
     private readonly gameChat: Chat;
 
     protected campfireFormation: { [key: number]: Position } = {};

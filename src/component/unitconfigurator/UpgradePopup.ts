@@ -1,5 +1,5 @@
 import { injectable, singleton } from 'tsyringe';
-import { ICON } from '../../constants/Components';
+import { ICON, BUTTON_CLOSE, UPGRADES_CONTAINER } from '../../constants/Components';
 import { ActionType, Upgrade, InventoryItem } from '../../domain/domain';
 import { ActionRequestData, RequestType } from '../../dto/requests';
 import ServerCommunicatorService from '../../service/ServerCommunicatorService';
@@ -14,11 +14,11 @@ import UpgradeItem from './UpgradeItem';
 @injectable()
 @singleton()
 export default class UpgradePopup extends Component {
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly icon: Icon;
-    @component('button_close', Button)
+    @component(BUTTON_CLOSE)
     protected readonly buttonClose: Button;
-    @component('upgrades_container', Container)
+    @component(UPGRADES_CONTAINER)
     protected readonly upgradesContainer: Container;
 
     protected items: UpgradeItem[] = [];

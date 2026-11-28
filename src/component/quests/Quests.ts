@@ -16,7 +16,7 @@ import { startLoaderAnimation, stopLoaderAnimation, timeout } from '../../utils/
 @injectable()
 @singleton()
 export default class Quests extends Component implements ServerCommunicatorHandler {
-    @component(BUTTON_CONFIGURATOR, Button)
+    @component(BUTTON_CONFIGURATOR)
     private readonly configuratorButton: Button;
     private quests: Quest[] = [];
 

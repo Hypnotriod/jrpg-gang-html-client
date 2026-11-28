@@ -5,17 +5,17 @@ import { component } from '../../decorator/decorator';
 import Container from '../container/Container';
 import Label from '../label/Label';
 import Button from '../button/Button';
-import { LABEL_DESCRIPTION } from '../../../constants/Components';
+import { LABEL_DESCRIPTION, LABEL_BOOTY, BUTTON_YES, BUTTON_NO } from '../../../constants/Components';
 
 @injectable()
 export class LeaveDungeonPopup extends Container {
-    @component('label_booty', Label)
+    @component(LABEL_BOOTY)
     protected readonly labelBooty: Label;
-    @component('button_yes', Button)
+    @component(BUTTON_YES)
     protected readonly yesButton: Button;
-    @component('button_no', Button)
+    @component(BUTTON_NO)
     protected readonly noButton: Button;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
 
     protected onYesCallback: (() => void) | null;

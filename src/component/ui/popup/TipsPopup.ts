@@ -1,3 +1,4 @@
+import { BUTTON_OK, MESSAGE_LABEL } from '../../../constants/Components';
 import { injectable, singleton } from 'tsyringe';
 import { component } from '../../decorator/decorator';
 import Button from '../button/Button';
@@ -19,9 +20,9 @@ export class TipsPopup extends Container {
     protected _currentTip?: Tip;
     protected _shadow?: Container;
 
-    @component('button_ok', Button)
+    @component(BUTTON_OK)
     protected readonly buttonOk: Button;
-    @component('message_label', Label)
+    @component(MESSAGE_LABEL)
     protected readonly messageLabel: Label;
 
     constructor(protected readonly storage: StorageService) {

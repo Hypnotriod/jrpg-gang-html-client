@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { ICON, LABEL_DESCRIPTION, LABEL_PRICE, LABEL_QUANTITY } from '../../../constants/Components';
+import { ICON, LABEL_DESCRIPTION, LABEL_PRICE, LABEL_QUANTITY, SLIDER_QUANTITY, BUTTON_YES, BUTTON_NO, BUTTON_MINUS, BUTTON_PLUS } from '../../../constants/Components';
 import { Disposable, InventoryItem, ItemType, UnitBooty } from '../../../domain/domain';
 import GameStateService from '../../../service/GameStateService';
 import { component } from '../../decorator/decorator';
@@ -23,23 +23,23 @@ export enum ShopItemPopupMode {
 export class ShopItemPopup extends Container {
     private static MAX_ITEMS: number = 30;
 
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly icon: Icon;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_PRICE, Label)
+    @component(LABEL_PRICE)
     protected readonly priceLabel: Label;
-    @component(LABEL_QUANTITY, Label)
+    @component(LABEL_QUANTITY)
     protected readonly quantityLabel: Label;
-    @component('slider_quantity', HSlider)
+    @component(SLIDER_QUANTITY)
     protected readonly quantitySlider: HSlider;
-    @component('button_yes', Button)
+    @component(BUTTON_YES)
     protected readonly yesButton: Button;
-    @component('button_no', Button)
+    @component(BUTTON_NO)
     protected readonly noButton: Button;
-    @component('button_minus', Button)
+    @component(BUTTON_MINUS)
     protected readonly minusButton: Button;
-    @component('button_plus', Button)
+    @component(BUTTON_PLUS)
     protected readonly plusButton: Button;
 
     protected _shadow?: Container;

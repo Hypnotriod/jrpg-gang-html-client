@@ -10,7 +10,7 @@ import ItemIcon from './ItemIcon';
 import GameStateService from '../../../service/GameStateService';
 
 export default class ShopItemIcon extends ItemIcon {
-    @component(LABEL_PRICE, Label)
+    @component(LABEL_PRICE)
     protected readonly priceLabel: Label;
 
     protected initialize(): void {

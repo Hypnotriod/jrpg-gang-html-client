@@ -1,3 +1,4 @@
+import { CHAT_MESSAGES, CHAT_INPUT } from '../../../constants/Components';
 import { injectable } from 'tsyringe';
 import Component from '../../Component';
 import { component } from '../../decorator/decorator';
@@ -21,9 +22,9 @@ export class Chat extends Component {
     private _chatState?: ChatState;
     private _sendMessage?: (message: string) => void;
 
-    @component('chat_messages', TextField)
+    @component(CHAT_MESSAGES)
     private readonly chatMessages: TextField;
-    @component('chat_input', TextInput)
+    @component(CHAT_INPUT)
     private readonly messageInput: TextInput;
 
     public static muteUser(nickname: string): void {

@@ -1,6 +1,6 @@
 import { container, injectable } from 'tsyringe';
 import { ACHIEVEMENTS } from '../../constants/AchievementInfo';
-import { BUTTON_ENTER, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_REQUIREMENTS } from '../../constants/Components';
+import { BUTTON_ENTER, LABEL_DESCRIPTION, LABEL_HEADER, LABEL_REQUIREMENTS, ICON_DUNGEON, ICON_DUNGEON_COMPLETED } from '../../constants/Components';
 import { DUNGEON_DESIGN } from '../../constants/Resources';
 import { GameScenarioConfig, UnitRequirements } from '../../domain/domain';
 import { CreateRoomRequestData, RequestType } from '../../dto/requests';
@@ -19,17 +19,17 @@ import Image from '../ui/image/Image';
 
 @injectable()
 export default class Dungeon extends Component {
-    @component(LABEL_HEADER, Label)
+    @component(LABEL_HEADER)
     protected readonly labelHeader: Label;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_REQUIREMENTS, Container)
+    @component(LABEL_REQUIREMENTS)
     protected readonly labelRequirements: Container;
-    @component(BUTTON_ENTER, Button)
+    @component(BUTTON_ENTER)
     protected readonly buttonEnter: Button;
-    @component('icon_dungeon', Image)
+    @component(ICON_DUNGEON)
     protected readonly dungeonIcon: Image;
-    @component('icon_dungeon_completed', Image)
+    @component(ICON_DUNGEON_COMPLETED)
     protected readonly dungeonCompletedIcon: Image;
     protected config: GameScenarioConfig;
 

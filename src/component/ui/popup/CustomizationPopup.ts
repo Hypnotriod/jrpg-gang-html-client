@@ -3,13 +3,13 @@ import { component } from '../../decorator/decorator';
 import Button from '../button/Button';
 import Container from '../container/Container';
 import ItemIcon from '../icon/ItemIcon';
-import { ICONS_CONTAINER } from '../../../constants/Components';
+import { ICONS_CONTAINER, BUTTON_OK } from '../../../constants/Components';
 import { SoundName, SoundService } from '../../../service/SoundService';
 
 @injectable()
 @singleton()
 export class CustomizationPopup extends Container {
-    @component('button_ok', Button)
+    @component(BUTTON_OK)
     private readonly buttonOk: Button;
     private icons: ItemIcon[] = [];
     private _shadow?: Container;

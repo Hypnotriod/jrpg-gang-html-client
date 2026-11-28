@@ -1,3 +1,4 @@
+import { LABEL_BOOTY } from '../../../constants/Components';
 import { injectable } from 'tsyringe';
 import { UnitBooty } from '../../../domain/domain';
 import GameObjectRenderer from '../../../service/GameObjectRenderer';
@@ -9,7 +10,7 @@ import Label from '../label/Label';
 export class DungeonLootPopup extends Container {
     private static readonly TIMEOUT_MS: number = 4000;
 
-    @component('label_booty', Label)
+    @component(LABEL_BOOTY)
     protected readonly labelBooty: Label;
 
     constructor(

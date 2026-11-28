@@ -26,15 +26,15 @@ import { CustomizationPopup } from '../ui/popup/CustomizationPopup';
 export default class Login extends Component implements ServerCommunicatorHandler {
     private MAX_UNSUCCESS_JOIN_ATTEMPTS: number = 5;
 
-    @component(INPUT_USER_NAME, TextInput)
+    @component(INPUT_USER_NAME)
     private readonly userNameInput: TextInput;
-    @component(INPUT_LABEL_USER_NAME, TextInput)
+    @component(INPUT_LABEL_USER_NAME)
     private readonly userNameInputLabel: Label;
-    @component(LABEL_ERROR, Label)
+    @component(LABEL_ERROR)
     private readonly errorLabel: Label;
-    @component(BUTTON_JOIN, Button)
+    @component(BUTTON_JOIN)
     private readonly joinButton: Button;
-    @component(ITEM_DESCRIPTION_POPUP, ObjectDescription)
+    @component(ITEM_DESCRIPTION_POPUP)
     private readonly objectDescription: ObjectDescription;
     private readonly icons: ItemIcon[] = [];
     private isJoining: boolean = false;

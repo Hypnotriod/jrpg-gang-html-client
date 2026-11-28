@@ -13,11 +13,11 @@ import Label from '../label/Label';
 export class AchievementPopup extends Component {
     private static readonly TIMEOUT_MS: number = 4000;
 
-    @component(ICON, Icon)
+    @component(ICON)
     protected readonly icon: Icon;
-    @component(LABEL_DESCRIPTION, Label)
+    @component(LABEL_DESCRIPTION)
     protected readonly labelDescription: Label;
-    @component(LABEL_REQUIREMENTS, Label)
+    @component(LABEL_REQUIREMENTS)
     protected readonly labelRequirements: Label;
 
     private queue: string[] = [];

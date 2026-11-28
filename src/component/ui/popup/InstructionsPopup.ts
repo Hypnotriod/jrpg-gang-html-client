@@ -1,3 +1,4 @@
+import { BUTTON_OK } from '../../../constants/Components';
 import { injectable } from 'tsyringe';
 import { component } from '../../decorator/decorator';
 import Button from '../button/Button';
@@ -8,7 +9,7 @@ export class InstructionsPopup extends Container {
     protected _onHide?: (() => void) | undefined;
     protected _shadow?: Container;
 
-    @component('button_ok', Button)
+    @component(BUTTON_OK)
     protected readonly buttonOk: Button;
 
     public set onHide(value: (() => void) | undefined) {
